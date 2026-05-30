@@ -25,3 +25,4 @@ Thumbs.db
 
 # Claude 本地配置（如生成）
 .claude/settings.json
+.gstack/
