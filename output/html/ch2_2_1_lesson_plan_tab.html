@@ -114,10 +114,14 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="#">2.1 组成部分</a>
-        <a class="nav-link" href="#">2.1.1 IOS工作区</a>
-        <a class="nav-link" href="#">2.1.2 用户交互</a>
-        <a class="nav-link" href="#">2.1.3 参数选择</a>
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">2.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">2.1.2 用户交互</a>
+            <a class="nav-link" href="#">2.1.3 参数选择</a>
+          </div>
+        </div>
         <div class="nav-group">
           <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
           <div class="nav-children collapsed">
@@ -157,7 +161,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <!-- 原始图片1：课程计划选项卡整体界面 -->
     <div class="img-block">
-      <img src="../../assets/images/ch2_2_1_lesson_plan_overview.png" alt="课程计划选项卡整体界面" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 143 行的飞书图片保存到 assets/images/ch2_2_1_lesson_plan_overview.png&lt;/div&gt;'">
+      <img src="./images/ch2_2_1_lesson_plan_overview.jpg" alt="课程计划选项卡整体界面">
       <div class="img-caption">图 1：课程计划选项卡（LESSON PLAN Tab）整体界面 — 来自 A320 原始文档</div>
     </div>
 
@@ -242,7 +246,7 @@ flowchart LR
 
     <!-- 原始图片2：界面拆解细节 -->
     <div class="img-block">
-      <img src="../../assets/images/ch2_2_1_lesson_plan_breakdown.png" alt="课程计划选项卡界面拆解细节" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 145 行的飞书图片保存到 assets/images/ch2_2_1_lesson_plan_breakdown.png&lt;/div&gt;'">
+      <img src="./images/ch2_2_1_lesson_plan_breakdown.jpg" alt="课程计划选项卡界面拆解细节">
       <div class="img-caption">图 2：课程计划选项卡界面拆解细节 — 标注文字及代表区域 — 来自 A320 原始文档</div>
     </div>
 
@@ -274,7 +278,7 @@ flowchart LR
 
     <!-- 原始图片3：课程步骤标识 -->
     <div class="img-block">
-      <img src="../../assets/images/ch2_2_1_lesson_step_flags.png" alt="课程步骤标识" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 147 行的飞书图片保存到 assets/images/ch2_2_1_lesson_step_flags.png&lt;/div&gt;'">
+      <img src="./images/ch2_2_1_lesson_step_flags.jpg" alt="课程步骤标识">
       <div class="img-caption">图 3：课程步骤类型标识 — 注释（NOTE）、模拟（SIM）、故障（MALF）图标 — 来自 A320 原始文档</div>
     </div>
 

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2.2 文档选项卡（DOC Tab）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+/* Image blocks */
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+.img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
+
+/* Collapsible */
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+.tag-sim{background:#d1fae5;color:#065f46}
+.tag-malf{background:#fee2e2;color:#991b1b}
+.tag-free{background:#dbeafe;color:#1e40af}
+.tag-nest{background:#ede9fe;color:#5b21b6}
+
+/* Mermaid */
+.mermaid{margin:24px 0;display:flex;justify-content:center}
+
+/* Footer nav */
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">2.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">2.1.2 用户交互</a>
+            <a class="nav-link" href="#">2.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link active" href="ch2_2_1_lesson_plan_tab.html">2.2.2 文档选项卡</a>
+            <a class="nav-link" href="ch2_2_2_doc_tab.html" class="nav-link active">2.2.2 文档选项卡</a>
+            <a class="nav-link" href="#">2.2.3 当前条件选项卡</a>
+            <a class="nav-link" href="#">2.2.4 飞机/航空器选项卡</a>
+            <a class="nav-link" href="#">2.2.5 参考机场选项卡</a>
+            <a class="nav-link" href="#">2.2.6 教员台滑动面板</a>
+            <a class="nav-link" href="#">2.2.7 控制面板底部</a>
+          </div>
+        </div>
+        <a class="nav-link" href="#">2.3 维护页面</a>
+        <a class="nav-link" href="#">2.4 仪表复示器</a>
+        <a class="nav-link" href="#">2.5 课程计划剖面</a>
+        <a class="nav-link" href="#">2.6 地图工作区</a>
+        <a class="nav-link" href="#">2.7 高级</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span>
+    <a href="#">第 2 章 软件操作</a><span class="breadcrumb-sep">/</span>
+    <a href="#">2.2 控制面板工作区</a><span class="breadcrumb-sep">/</span>
+    <span>2.2.2 文档选项卡</span>
+  </div>
+
+  <article class="content">
+    <h1>2.2.2 文档选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">LESSON PLAN Tab</span></h1>
+    <p class="subtitle">原始手册对应：## 6. DOCS Tab &nbsp;|&nbsp; 整理时间：2026-05-30 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
+
+    <!-- ==================== 一、功能总览 ==================== -->
+    <h2>一、功能总览</h2>
+
+    <!-- 原始图片1：DOCS Tab 整体界面 -->
+    <div class="img-block">
+      <img src="./images/ch2_2_2_doc_tab_overview.jpg" alt="文档选项卡整体界面">
+      <div class="img-caption">图 1：文档选项卡（DOC Tab）整体界面 — 来自 A320 原始文档</div>
+    </div>
+
+    <blockquote>
+      <strong>核心定位：</strong>文档选项卡是教员<strong>查看、浏览和检索参考文档</strong>的核心入口。支持缩略图、列表、搜索、缩放等多种浏览方式。
+    </blockquote>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    A["📄 DOCS Tab
+文档选项卡"] --> B["🖼️ 缩略图视图
+Thumbnail View"]
+    A --> C["📋 列表视图
+List View"]
+    A --> D["🔍 搜索功能
+Search Function"]
+    A --> E["🔘 视图控制栏"]
+
+    E --> E1["⬆️⬇️ 上下滚动"]
+    E --> E2["🔎 视图扩展"]
+    E --> E3["🔍+ 放大 / 🔍- 缩小"]
+
+    B --> B1["点击缩略图 → 切换页面"]
+    C --> C1["点击列表项 → 切换页面"]
+    D --> D1["输入关键词 → 高亮匹配"]
+
+    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style D fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style E fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    </div>
+
+    <h3>1.2 教员核心浏览流程</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([打开 DOCS Tab]) --> Load[加载文档列表]
+    Load --> View{选择浏览方式}
+    View -->|缩略图| Thumb[浏览缩略图]
+    View -->|列表| List[浏览列表]
+    Thumb --> Click[点击页面]
+    List --> Click
+    Click --> Scroll[上下滚动浏览]
+    Scroll --> Zoom{需要缩放?}
+    Zoom -->|是| ZoomIn[放大/缩小]
+    Zoom -->|否| Search{需要搜索?}
+    ZoomIn --> Search
+    Search -->|是| SearchOp[输入关键词搜索]
+    Search -->|否| End([继续浏览])
+    SearchOp --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <!-- ==================== 二、界面结构 ==================== -->
+    <h2>二、界面结构</h2>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>区域</th><th>位置</th><th>功能说明</th></tr>
+        <tr><td><strong>文档浏览区</strong><br>Document Viewport</td><td>中央主区域</td><td>显示当前选中页面的文档内容，支持缩放和滚动</td></tr>
+        <tr><td><strong>视图切换栏</strong><br>View Toggle</td><td>顶部/左侧</td><td>缩略图视图 / 列表视图 互斥切换</td></tr>
+        <tr><td><strong>页面导航栏</strong><br>Page Navigation</td><td>底部</td><td>上一页 / 下一页 / 页码显示</td></tr>
+        <tr><td><strong>搜索栏</strong><br>Search Bar</td><td>顶部</td><td>输入关键词搜索文档内容</td></tr>
+        <tr><td><strong>缩放控制</strong><br>Zoom Controls</td><td>底部/右下角</td><td>放大(+) / 缩小(-) / 视图扩展</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 三、核心功能详解 ==================== -->
+    <h2>三、核心功能详解</h2>
+
+    <h3>3.1 缩略图视图（Thumbnail View）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>以小型图形缩略图的形式展示每个文档页面的预览</td></tr>
+        <tr><td>呈现方式</td><td>网格/横向排列的小型页面预览图</td></tr>
+        <tr><td>交互</td><td>点击缩略图 → 主浏览区切换到对应页面</td></tr>
+        <tr><td>适用场景</td><td>快速定位已知的图表、航图或插图页面</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_thumbnail_view.jpg" alt="缩略图视图">
+      <div class="img-caption">图 2：缩略图视图 — 提供每个较大页面的小型图形表示列表</div>
+    </div>
+
+    <h3>3.2 列表视图（List View）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>以纯文本列表形式展示所有文档页面的标题</td></tr>
+        <tr><td>呈现方式</td><td>纵向列表，每行显示一个页面标题</td></tr>
+        <tr><td>交互</td><td>点击列表项 → 主浏览区切换到对应页面</td></tr>
+        <tr><td>适用场景</td><td>已知页面标题时快速跳转；文本密集型文档浏览</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_list_view.jpg" alt="列表视图">
+      <div class="img-caption">图 3：列表视图 — 提供所有页面标题的列表</div>
+    </div>
+
+    <h3>3.3 视图切换逻辑</h3>
+    <div class="mermaid">
+graph LR
+    A["🖼️ 缩略图视图"] -->|点击[列表]| B["📋 列表视图"]
+    B -->|点击[缩略图]| A
+    A -->|点击页面| C["📄 页面详情"]
+    B -->|点击页面| C
+
+    style A fill:#dbeafe,stroke:#2563eb
+    style B fill:#dbeafe,stroke:#2563eb
+    style C fill:#f0fdf4,stroke:#059669
+    </div>
+
+    <ul>
+      <li>缩略图视图和列表视图是<strong>互斥状态</strong>，同一时间只能显示一种</li>
+      <li>切换视图<strong>不会丢失</strong>当前选中的页面位置</li>
+      <li>切换后，当前高亮/选中的页面在另一种视图中保持选中状态</li>
+    </ul>
+
+    <h3>3.4 上下滚动（Scroll Up and Down）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>以"上一页 / 下一页"的离散方式逐页浏览文档</td></tr>
+        <tr><td>交互方式</td><td>点击「上一页」/「下一页」按钮，或手势滑动</td></tr>
+        <tr><td>边界行为</td><td>到达第一页时「上一页」禁用；到达最后一页时「下一页」禁用</td></tr>
+        <tr><td>状态反馈</td><td>当前页码 / 总页数 在底部或顶部显示</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_scroll.jpg" alt="上下滚动">
+      <div class="img-caption">图 4：上下滚动 — 以"下一页"、"上一页"的方式在文档中上下滚动</div>
+    </div>
+
+    <h3>3.5 搜索功能（Search Function）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>在文档内容中搜索特定单词或字符串</td></tr>
+        <tr><td>输入方式</td><td>文本输入框 + 搜索按钮 / 回车触发</td></tr>
+        <tr><td>搜索结果</td><td>高亮匹配文本；提供匹配结果列表供快速跳转</td></tr>
+        <tr><td>边界条件</td><td>无匹配时应提示"未找到结果"；支持空字符串校验</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_search.jpg" alt="搜索功能">
+      <div class="img-caption">图 5：搜索功能 — 允许教员搜索一个单词或一串字符</div>
+    </div>
+
+    <h3>3.6 视图扩展（View Expansion）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>将当前文档视图扩展为更大的可视区域，通常覆盖大部分屏幕</td></tr>
+        <tr><td>交互方式</td><td>点击「扩展视图」按钮，或双击文档区域</td></tr>
+        <tr><td>退出方式</td><td>再次点击按钮、按 ESC 键、或点击关闭区域</td></tr>
+        <tr><td>联动</td><td>扩展视图下仍支持缩放和滚动操作</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_view_expansion.jpg" alt="视图扩展">
+      <div class="img-caption">图 6：视图扩展 — 扩展可查看文档的视图</div>
+    </div>
+
+    <h3>3.7 缩放（Zoom）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>放大或缩小文档的显示比例</td></tr>
+        <tr><td>控制方式</td><td>「+」放大 / 「-」缩小按钮；或捏合手势</td></tr>
+        <tr><td>缩放范围</td><td>存在最小和最大缩放比例限制（待确认具体数值）</td></tr>
+        <tr><td>状态保持</td><td>切换页面时是否保持当前缩放比例？（待确认）</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_2_zoom.jpg" alt="缩放">
+      <div class="img-caption">图 7：缩放 — 放大和缩小控制</div>
+    </div>
+
+    <!-- ==================== 四、视图状态机 ==================== -->
+    <h2>四、视图状态机</h2>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 缩略图视图 : 加载默认视图
+    [*] --> 列表视图 : 记忆上次视图
+
+    缩略图视图 --> 列表视图 : 点击[列表]
+    列表视图 --> 缩略图视图 : 点击[缩略图]
+
+    缩略图视图 --> 页面浏览 : 点击页面
+    列表视图 --> 页面浏览 : 点击列表项
+
+    页面浏览 --> 扩展视图 : 点击[扩展视图]
+    扩展视图 --> 页面浏览 : 退出扩展
+
+    页面浏览 --> 搜索中 : 输入关键词
+    搜索中 --> 结果展示 : 有匹配
+    搜索中 --> 无结果 : 无匹配
+    无结果 --> 搜索中 : 修改关键词
+    结果展示 --> 页面浏览 : 点击结果
+
+    页面浏览 --> 缩放调整 : 点击[+]/[-]
+    缩放调整 --> 页面浏览 : 完成缩放
+    </div>
+
+    <!-- ==================== 五、关联依赖与异常边界 ==================== -->
+    <h2>五、关联依赖与异常边界</h2>
+
+    <h3>5.1 关联依赖</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>功能点</th><th>依赖项</th><th>说明</th></tr>
+        <tr><td>文档选项卡</td><td>文档管理系统</td><td>需预先上传文档至 IOS 文档库，无文档则选项卡为空</td></tr>
+        <tr><td>搜索功能</td><td>文档全文索引</td><td>依赖后台对文档内容的索引构建，未索引文档无法搜索</td></tr>
+        <tr><td>缩略图视图</td><td>文档页面预览图</td><td>首次打开时需生成或预加载缩略图，大文档可能延迟</td></tr>
+        <tr><td>视图扩展</td><td>显示分辨率/屏幕尺寸</td><td>扩展视图的最大尺寸受限于当前显示屏物理分辨率</td></tr>
+      </table>
+    </div>
+
+    <h3>5.2 异常边界</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>场景</th><th>预期行为</th></tr>
+        <tr><td>IOS 上无可用文档</td><td>浏览区域显示为空，所有视图控件禁用或隐藏</td></tr>
+        <tr><td>搜索无结果</td><td>显示"未找到匹配内容"提示，保留当前页面</td></tr>
+        <tr><td>缩略图加载失败</td><td>显示占位图标或文件名，点击仍可浏览原图</td></tr>
+        <tr><td>缩放至最大/最小比例</td><td>对应按钮禁用，防止继续操作</td></tr>
+        <tr><td>文档格式不支持</td><td>提示"不支持的文档格式"，建议联系管理员转换</td></tr>
+        <tr><td>扩展视图下系统弹窗</td><td>弹窗以更高层级覆盖扩展视图，关闭后恢复</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 六、数据流推导 ==================== -->
+    <h2>六、数据流与开发流程推导</h2>
+
+    <h3>6.1 数据流（文档加载与浏览）</h3>
+    <pre><code>教员点击 DOCS Tab
+    ↓
+IOS 请求可用文档列表
+    ↓
+文档管理系统返回文档元数据 [id, title, pageCount, thumbnailUrls[]]
+    ↓
+前端渲染缩略图视图（默认）或列表视图
+    ↓
+教员点击页面 / 搜索关键词 / 切换视图
+    ↓
+前端请求对应页面内容或搜索结果
+    ↓
+渲染引擎解析并显示文档页面（PDF/图片/HTML）
+    ↓
+教员执行缩放/滚动/扩展操作
+    ↓
+前端调整视口变换（CSS transform / canvas scale）</code></pre>
+
+    <h3>6.2 API 接口契约建议</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th></tr>
+        <tr><td><code>getAvailableDocuments</code></td><td>GET</td><td>-</td><td><code>documentList: [{id, title, pageCount, format}]</code></td></tr>
+        <tr><td><code>getDocumentPages</code></td><td>GET</td><td><code>documentId, pageRange</code></td><td><code>pages: [{pageNumber, thumbnailUrl, contentUrl}]</code></td></tr>
+        <tr><td><code>searchDocument</code></td><td>GET</td><td><code>documentId, keyword</code></td><td><code>results: [{pageNumber, matches[], highlightText}]</code></td></tr>
+        <tr><td><code>getPageContent</code></td><td>GET</td><td><code>documentId, pageNumber</code></td><td><code>contentUrl, width, height</code></td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 七、测试要点 ==================== -->
+    <h2>七、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>测试类型</th><th>测试场景</th></tr>
+        <tr><td>正向路径</td><td>打开 DOCS Tab → 缩略图视图正常显示 → 点击页面切换正常</td></tr>
+        <tr><td>正向路径</td><td>缩略图视图 → 点击「列表」→ 列表视图正常显示 → 点击返回缩略图</td></tr>
+        <tr><td>正向路径</td><td>在文档中搜索关键词 → 结果高亮显示 → 点击结果跳转正确页面</td></tr>
+        <tr><td>异常路径</td><td>无文档时，确认所有视图控件禁用或隐藏</td></tr>
+        <tr><td>异常路径</td><td>搜索不存在的关键词，确认显示"无结果"提示</td></tr>
+        <tr><td>边界条件</td><td>仅包含1页的文档，确认「上一页」「下一页」按钮状态正确</td></tr>
+        <tr><td>边界条件</td><td>缩放至最大/最小值，确认对应按钮禁用</td></tr>
+        <tr><td>联动测试</td><td>扩展视图下执行缩放和滚动，确认操作流畅无冲突</td></tr>
+        <tr><td>性能测试</td><td>包含100+页的大文档，确认缩略图加载不阻塞主线程</td></tr>
+      </table>
+    </div>
+
+    <!-- Footer nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch2_2_1_lesson_plan_tab.html"><span>←</span><span>2.2.1 课程计划选项卡（LESSON PLAN Tab）</span></a>
+      <a class="next" href="#"><span>2.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</span><span>→</span></a>
+    </div>
+    <div class="footer-nav">
+      <a class="prev" href="ch2_2_1_lesson_plan_tab.html"><span>←</span><span>2.2.1 课程计划选项卡（LESSON PLAN Tab）</span></a>
+      <a class="next" href="ch2_2_2_doc_tab.html"><span>2.2.2 文档选项卡（DOC Tab）</span><span>→</span></a>
+    </div>
+  </article>
+</main>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  stateDiagram:{curve:'basis'}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : children.scrollHeight + 'px';
+  }
+}
+
+function toggleCollapsible(header){
+  const parent = header.parentElement;
+  parent.classList.toggle('collapsed');
+  const badge = header.querySelector('.badge');
+  if(badge) badge.textContent = parent.classList.contains('collapsed') ? '展开' : '收起';
+}
+</script>
+</body>
+</html>
