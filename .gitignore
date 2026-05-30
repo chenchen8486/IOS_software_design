@@ -1,0 +1,27 @@
+# 原始大文件（PDF 二进制，不适合 Git 管理）
+input/*.pdf
+input/**/*.pdf
+
+# 中间产物与缓存
+temp/
+*.tmp
+*.log
+
+# Python 环境
+venv/
+__pycache__/
+*.pyc
+
+# 编辑器/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# Claude 本地配置（如生成）
+.claude/settings.json

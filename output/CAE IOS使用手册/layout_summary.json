@@ -1,0 +1,14 @@
+﻿{
+  "total_elements": 5279,
+  "page_count": 329,
+  "type_distribution": {
+    "text": 3748,
+    "header": 718,
+    "footer": 553,
+    "table": 22,
+    "page_number": 20,
+    "unknown": 9,
+    "image": 209
+  },
+  "translatable_count": 5019
+}

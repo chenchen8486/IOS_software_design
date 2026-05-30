@@ -1,0 +1,21 @@
+﻿{
+  "source_path": "D:\\project\\python_release\\avation_doc\\input\\CAE IOS使用手册.pdf",
+  "source_mtime": 1778159880.9574776,
+  "stages": {
+    "mineru": {
+      "status": "done",
+      "timestamp": "2026-05-14T09:47:40",
+      "error": ""
+    },
+    "layout": {
+      "status": "done",
+      "timestamp": "2026-05-14T09:47:41",
+      "error": ""
+    },
+    "translate": {
+      "status": "done",
+      "timestamp": "2026-05-14T10:04:39",
+      "error": ""
+    }
+  }
+}
