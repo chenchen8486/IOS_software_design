@@ -9,46 +9,26 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
 :root{
-  --primary:#2563eb;
-  --primary-light:#dbeafe;
-  --primary-dark:#1e40af;
-  --accent:#059669;
-  --danger:#dc2626;
-  --warning:#d97706;
-  --bg:#f8fafc;
-  --surface:#ffffff;
-  --text:#1e293b;
-  --text-secondary:#64748b;
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
   --border:#e2e8f0;
   --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
   --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
-  --radius:8px;
-  --radius-lg:12px;
-  --sidebar-width:280px;
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
-a{color:var(--primary);text-decoration:none}
-a:hover{text-decoration:underline}
-
-/* Layout */
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .layout{display:flex;min-height:100vh}
-
-/* Sidebar */
-.sidebar{
-  width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);
-  position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s;
-}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
 .sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
 .sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
 .sidebar-header p{font-size:12px;color:var(--text-secondary)}
 .nav-tree{padding:12px}
 .nav-group{margin-bottom:4px}
-.nav-toggle{
-  display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);
-  cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s
-}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
 .nav-toggle:hover{background:var(--primary-light)}
 .nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
 .nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
@@ -57,21 +37,10 @@ a:hover{text-decoration:underline}
 .nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
 .nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
 .nav-link.active{background:var(--primary);color:#fff;font-weight:500}
-
-/* Main */
 .main{margin-left:var(--sidebar-width);flex:1;min-width:0}
-
-/* Breadcrumb */
-.breadcrumb{
-  position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40
-}
-.breadcrumb a{color:var(--text-secondary)}
-.breadcrumb a:hover{color:var(--primary)}
-.breadcrumb-sep{margin:0 8px;opacity:.5}
-
-/* Content */
-.content{max-width:960px;margin:0 auto;padding:32px}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
 .content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
 .content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
 .content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
@@ -85,12 +54,15 @@ a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-/* Collapsible sections */
+/* Image blocks */
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+.img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
+
+/* Collapsible */
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
-.collapsible-header{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
-  background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none
-}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
 .collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
 .collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
 .collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
@@ -105,21 +77,12 @@ th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
 th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
 tr:hover td{background:#f8fafc}
 tr:last-child td{border-bottom:none}
-td{color:var(--text)}
 td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
 .tag-note{background:#f3f4f6;color:#4b5563}
 .tag-sim{background:#d1fae5;color:#065f46}
 .tag-malf{background:#fee2e2;color:#991b1b}
 .tag-free{background:#dbeafe;color:#1e40af}
 .tag-nest{background:#ede9fe;color:#5b21b6}
-
-/* Cards */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
-.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
-.card h4{font-size:14px;color:var(--text-secondary);margin:0 0 8px;text-transform:uppercase;letter-spacing:.04em}
-.card .value{font-size:20px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
-.card p{font-size:13px;color:var(--text-secondary);margin:0}
 
 /* Mermaid */
 .mermaid{margin:24px 0;display:flex;justify-content:center}
@@ -137,22 +100,8 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
 
-/* Print */
-@media print{
-  .sidebar{display:none}
-  .main{margin-left:0}
-  .breadcrumb{position:static}
-  .collapsible-body{display:block!important}
-}
-
-/* Mobile */
-@media (max-width:768px){
-  :root{--sidebar-width:0}
-  .sidebar{transform:translateX(-100%)}
-  .main{margin-left:0}
-  .content{padding:20px}
-  .card-grid{grid-template-columns:1fr}
-}
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
 </style>
 </head>
 <body>
@@ -160,26 +109,17 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
 <!-- Sidebar -->
 <aside class="sidebar">
-  <div class="sidebar-header">
-    <h1>CAE IOS 教员台</h1>
-    <p>结构化整理与可视化手册</p>
-  </div>
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
   <nav class="nav-tree">
     <div class="nav-group">
-      <div class="nav-toggle" onclick="toggleNav(this)">
-        <span class="arrow">▼</span>
-        <span>第 2 章 软件操作</span>
-      </div>
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件操作</span></div>
       <div class="nav-children">
         <a class="nav-link" href="#">2.1 组成部分</a>
         <a class="nav-link" href="#">2.1.1 IOS工作区</a>
         <a class="nav-link" href="#">2.1.2 用户交互</a>
         <a class="nav-link" href="#">2.1.3 参数选择</a>
         <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)">
-            <span class="arrow">▼</span>
-            <span>2.2 控制面板工作区</span>
-          </div>
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
           <div class="nav-children collapsed">
             <a class="nav-link active" href="ch2_2_1_lesson_plan_tab.html">2.2.1 课程计划选项卡</a>
             <a class="nav-link" href="#">2.2.2 文档选项卡</a>
@@ -200,7 +140,6 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
   </nav>
 </aside>
 
-<!-- Main -->
 <main class="main">
   <div class="breadcrumb">
     <a href="#">首页</a><span class="breadcrumb-sep">/</span>
@@ -213,37 +152,100 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h1>2.2.1 课程计划选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">LESSON PLAN Tab</span></h1>
     <p class="subtitle">原始手册对应：## 5. LESSON PLAN Tab &nbsp;|&nbsp; 整理时间：2026-05-30 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
 
-    <!-- 一、功能总览 -->
+    <!-- ==================== 一、功能总览 ==================== -->
     <h2>一、功能总览</h2>
-    <div class="card-grid">
-      <div class="card">
-        <h4>选项卡名称</h4>
-        <div class="value">课程计划</div>
-        <p>LESSON PLAN Tab</p>
-      </div>
-      <div class="card">
-        <h4>所在工作区</h4>
-        <div class="value">控制面板</div>
-        <p>Control Board Workspace</p>
-      </div>
-      <div class="card">
-        <h4>核心目的</h4>
-        <div class="value">课程执行</div>
-        <p>查看、管理、执行训练课程</p>
-      </div>
-      <div class="card">
-        <h4>课程来源</h4>
-        <div class="value">Slick 编辑器</div>
-        <p>CAE Slick 网页编辑器创建</p>
-      </div>
+
+    <!-- 原始图片1：课程计划选项卡整体界面 -->
+    <div class="img-block">
+      <img src="../../assets/images/ch2_2_1_lesson_plan_overview.png" alt="课程计划选项卡整体界面" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 143 行的飞书图片保存到 assets/images/ch2_2_1_lesson_plan_overview.png&lt;/div&gt;'">
+      <div class="img-caption">图 1：课程计划选项卡（LESSON PLAN Tab）整体界面 — 来自 A320 原始文档</div>
     </div>
 
     <blockquote>
-      <strong>教员核心操作：</strong>查看所有可用课程 → 查看训练阶段 → 查看课程步骤 → 自动运行 / 逐步运行 → 执行 / 跳过 / 结束
+      <strong>核心定位：</strong>课程计划选项卡是教员<strong>查看、管理和执行训练课程</strong>的核心入口。所有课程均通过 <strong>CAE Slick 网页编辑器</strong> 创建，IOS 上仅支持执行，不支持编辑。
     </blockquote>
 
-    <!-- 二、界面结构 -->
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    A["📋 LESSON PLAN Tab
+    课程计划选项卡"] --> B["📑 课程大纲
+    Lesson Outline
+    【左侧区域】"]
+    A --> C["📄 课程步骤详情
+    Lesson Step Details
+    【右侧区域】"]
+    A --> D["🔘 控制按钮栏
+    Tab Buttons
+    【底部区域】"]
+
+    B --> B1["训练阶段 1
+    Training Phase 1"]
+    B --> B2["训练阶段 2
+    Training Phase 2"]
+    B --> B3["..."]
+
+    B1 --> B1a["📝 NOTE 注释"]
+    B1 --> B1b["⚙️ SIM 模拟条件"]
+    B1 --> B1c["⚠️ MALF 故障"]
+    B2 --> B2a["🔵 Freeplay 自由操作"]
+    B2 --> B2b["🔗 Nested 嵌套课程"]
+
+    C --> C1["当前选中步骤的
+    详细参数/说明/触发条件
+    （可滚动查看）"]
+
+    D --> D1["▶️ Autorun 自动运行"]
+    D --> D2["⏯️ Step-by-Step 逐步运行"]
+    D --> D3["📍 Go to Current 调到当前"]
+    D --> D4["⏭️ Skip Condition 跳过条件"]
+    D --> D5["✅ Execute 执行"]
+    D --> D6["🛑 End Lesson 结束课程"]
+
+    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style D fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style B1 fill:#f0fdf4,stroke:#059669,stroke-width:1px
+    style B2 fill:#f0fdf4,stroke:#059669,stroke-width:1px
+    style B1a fill:#f3f4f6,stroke:#9ca3af,stroke-width:1px
+    style B1b fill:#d1fae5,stroke:#059669,stroke-width:1px
+    style B1c fill:#fee2e2,stroke:#dc2626,stroke-width:1px
+    style B2a fill:#dbeafe,stroke:#2563eb,stroke-width:1px
+    style B2b fill:#ede9fe,stroke:#7c3aed,stroke-width:1px
+    </div>
+
+    <h3>1.2 教员核心操作流程</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([开始]) --> Load[加载课程]
+    Load --> View[查看训练阶段与步骤]
+    View --> Mode{选择运行模式}
+    Mode -->|Autorun| Auto[系统自动执行步骤]
+    Mode -->|Step-by-Step| Step[逐一点击 Execute]
+    Auto --> Check1{课程完成?}
+    Step --> Check2{课程完成?}
+    Check1 -->|否| Auto
+    Check1 -->|是| End1([结束课程])
+    Check2 -->|否| Step
+    Check2 -->|是| End2([结束课程])
+    Mode -->|End Lesson| Abort([中止课程])
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End1 fill:#d1fae5,stroke:#059669
+    style End2 fill:#d1fae5,stroke:#059669
+    style Abort fill:#fee2e2,stroke:#dc2626
+    </div>
+
+    <!-- ==================== 二、界面结构 ==================== -->
     <h2>二、界面结构</h2>
+
+    <!-- 原始图片2：界面拆解细节 -->
+    <div class="img-block">
+      <img src="../../assets/images/ch2_2_1_lesson_plan_breakdown.png" alt="课程计划选项卡界面拆解细节" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 145 行的飞书图片保存到 assets/images/ch2_2_1_lesson_plan_breakdown.png&lt;/div&gt;'">
+      <div class="img-caption">图 2：课程计划选项卡界面拆解细节 — 标注文字及代表区域 — 来自 A320 原始文档</div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <tr><th>区域</th><th>位置</th><th>功能说明</th></tr>
@@ -253,14 +255,14 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
       </table>
     </div>
 
-    <!-- 三、课程大纲 -->
+    <!-- ==================== 三、课程大纲 ==================== -->
     <h2>三、课程大纲（Lesson Outline）</h2>
 
     <h3>3.1 训练阶段（Training Phases）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>定义</td><td>课程按阶段结构化组织，匹配飞行阶段或培训任务</td></tr>
+        <tr><td>定义</td><td>课程按阶段结构化组织，以匹配飞行的各个阶段或培训任务</td></tr>
         <tr><td>创建方式</td><td>教员在 <strong>CAE Slick 编辑器</strong> 中定义</td></tr>
         <tr><td>层级关系</td><td>一个课程 → 多个训练阶段 → 每个阶段包含多个课程步骤</td></tr>
         <tr><td>典型示例</td><td>地面操作 → 起飞 → 爬升 → 巡航 → 进近 → 着陆</td></tr>
@@ -269,6 +271,13 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <h3>3.2 课程步骤（Lesson Steps）</h3>
     <p>插入训练阶段中的步骤分为 <strong>5 种类型</strong>，通过左侧图标标识：</p>
+
+    <!-- 原始图片3：课程步骤标识 -->
+    <div class="img-block">
+      <img src="../../assets/images/ch2_2_1_lesson_step_flags.png" alt="课程步骤标识" onerror="this.parentElement.innerHTML='&lt;div class=\'img-placeholder\'&gt;[图片占位] 请将 A320.md 第 147 行的飞书图片保存到 assets/images/ch2_2_1_lesson_step_flags.png&lt;/div&gt;'">
+      <div class="img-caption">图 3：课程步骤类型标识 — 注释（NOTE）、模拟（SIM）、故障（MALF）图标 — 来自 A320 原始文档</div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <tr><th>类型</th><th>标识</th><th>颜色</th><th>功能说明</th><th>交互</th></tr>
@@ -282,22 +291,19 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
-        <div style="display:flex;align-items:center;gap:10px">
-          <h4>步骤标识规则详情</h4>
-          <span class="badge">展开</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px"><h4>步骤标识规则详情</h4><span class="badge">展开</span></div>
         <span class="toggle-icon">▼</span>
       </div>
       <div class="collapsible-body">
         <ul>
-          <li>每个步骤左侧显示对应类型的 <strong>图标标识</strong></li>
+          <li>每个步骤左侧显示对应类型的 <strong>图标标识</strong>（见图 3）</li>
           <li>自由操作按钮和嵌套课程 <strong>没有固定的阶段序号</strong>，因为它们可在课程任意时间触发</li>
           <li>NOTE 步骤为纯信息，不参与执行流程计数</li>
         </ul>
       </div>
     </div>
 
-    <!-- 四、课程步骤详情 -->
+    <!-- ==================== 四、课程步骤详情 ==================== -->
     <h2>四、课程步骤详情（Lesson Step Details）</h2>
     <div class="table-wrap">
       <table>
@@ -309,7 +315,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
       </table>
     </div>
 
-    <!-- 五、控制按钮栏 -->
+    <!-- ==================== 五、控制按钮栏 ==================== -->
     <h2>五、控制按钮栏（Lesson Plan Tab Buttons）</h2>
 
     <h3>5.1 按钮总览</h3>
@@ -358,14 +364,11 @@ stateDiagram-v2
       </table>
     </div>
 
-    <!-- 六、课程创建 -->
+    <!-- ==================== 六、课程创建 ==================== -->
     <h2>六、课程创建与编辑（背景说明）</h2>
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
-        <div style="display:flex;align-items:center;gap:10px">
-          <h4>编辑器工具与可添加元素</h4>
-          <span class="badge">展开</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px"><h4>编辑器工具与可添加元素</h4><span class="badge">展开</span></div>
         <span class="toggle-icon">▼</span>
       </div>
       <div class="collapsible-body">
@@ -383,7 +386,7 @@ stateDiagram-v2
       </div>
     </div>
 
-    <!-- 七、关联依赖 -->
+    <!-- ==================== 七、关联依赖 ==================== -->
     <h2>七、关联依赖与异常边界</h2>
 
     <h3>7.1 关联依赖</h3>
@@ -409,7 +412,7 @@ stateDiagram-v2
       </table>
     </div>
 
-    <!-- 八、数据流推导 -->
+    <!-- ==================== 八、数据流推导 ==================== -->
     <h2>八、数据流与开发流程推导</h2>
 
     <h3>8.1 数据流（课程执行）</h3>
@@ -457,7 +460,7 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
       </table>
     </div>
 
-    <!-- 九、测试要点 -->
+    <!-- ==================== 九、测试要点 ==================== -->
     <h2>九、测试要点</h2>
     <div class="table-wrap">
       <table>
@@ -474,30 +477,29 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
 
     <!-- Footer nav -->
     <div class="footer-nav">
-      <a class="prev" href="#">
-        <span>←</span>
-        <span>2.2 控制面板工作区</span>
-      </a>
-      <a class="next" href="#">
-        <span>2.2.2 文档选项卡（DOC Tab）</span>
-        <span>→</span>
-      </a>
+      <a class="prev" href="#"><span>←</span><span>2.2 控制面板工作区</span></a>
+      <a class="next" href="#"><span>2.2.2 文档选项卡（DOC Tab）</span><span>→</span></a>
     </div>
   </article>
 </main>
-
 </div>
 
 <script>
 mermaid.initialize({
   startOnLoad:true,
-  theme:'default',
-  stateDiagram:{curve:'basis'},
-  themeCSS: `
-    .node rect{fill:#dbeafe;stroke:#2563eb;stroke-width:2px}
-    .edgeLabel{background:#fff;padding:2px 6px;border-radius:4px}
-    .transition-label{font-size:12px}
-  `
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  stateDiagram:{curve:'basis'}
 });
 
 function toggleNav(el){
