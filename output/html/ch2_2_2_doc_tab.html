@@ -85,7 +85,15 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 .tag-nest{background:#ede9fe;color:#5b21b6}
 
 /* Mermaid */
-.mermaid{margin:24px 0;display:flex;justify-content:center}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+/* Mermaid Zoom */
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
 
 /* Footer nav */
 .footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
@@ -172,28 +180,28 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["📄 DOCS Tab
-文档选项卡"] --> B["🖼️ 缩略图视图
-Thumbnail View"]
-    A --> C["📋 列表视图
-List View"]
-    A --> D["🔍 搜索功能
-Search Function"]
-    A --> E["🔘 视图控制栏"]
+    A["DOCS Tab
+文档选项卡"] --> B["缩略图/列表区
+左侧边栏"]
+    A --> C["文档主内容区
+右侧主区域"]
+    A --> D["顶部工具栏
+顶部单行"]
 
-    E --> E1["⬆️⬇️ 上下滚动"]
-    E --> E2["🔎 视图扩展"]
-    E --> E3["🔍+ 放大 / 🔍- 缩小"]
+    B --> B1["缩略图视图：点击切换页面"]
+    B --> B2["列表视图：点击跳转页面"]
+    C --> C1["显示文档内容，支持缩放/滚动"]
 
-    B --> B1["点击缩略图 → 切换页面"]
-    C --> C1["点击列表项 → 切换页面"]
-    D --> D1["输入关键词 → 高亮匹配"]
+    D --> D1["视图切换：缩略图/列表"]
+    D --> D2["上下滚动 + 页码"]
+    D --> D3["搜索：关键词匹配"]
+    D --> D4["视图扩展"]
+    D --> D5["缩放：+ / -"]
 
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
     style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style C fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style D fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style E fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style D fill:#f0fdf4,stroke:#059669,stroke-width:2px
     </div>
 
     <h3>1.2 教员核心浏览流程</h3>
@@ -228,8 +236,7 @@ flowchart LR
         <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
         <tr><td><strong>顶部工具栏</strong><br>Toolbar</td><td>顶部（单行）</td><td>集中放置所有控制按钮：视图切换、上下滚动、页码、搜索、视图扩展、缩放</td></tr>
         <tr><td><strong>文档主内容区</strong><br>Document Viewport</td><td>右侧主区域</td><td>显示当前选中页面的文档内容，支持缩放和滚动</td></tr>
-        <tr><td><strong>缩略图/列表区</strong><br>Thumbnail / List Panel</td><td>左侧边栏</td><td>以缩略图或列表形式展示文档所有页面，点击切换页面；两种视图互斥显示</td></tr>
-        <tr><td><strong>视图切换</strong><br>Thumbnail / List Toggle</td><td>顶部工具栏（最左侧）</td><td>缩略图视图按钮 / 列表视图按钮，切换左侧边栏显示模式</td></tr>
+        <tr><td><strong>缩略图/列表区</strong><br>Thumbnail / List Panel</td><td>左侧边栏</td><td>以缩略图或列表形式展示文档所有页面，点击切换页面；缩略图与列表两种视图<strong>互斥</strong>，只能激活其一</td></tr>
         <tr><td><strong>上下滚动</strong><br>Scroll Up and Down</td><td>顶部工具栏（中部）</td><td>向上 ▲ / 向下 ▼ 按钮，中间显示当前页码 / 总页数</td></tr>
         <tr><td><strong>搜索</strong><br>Search</td><td>顶部工具栏（中右部）</td><td>放大镜图标 🔍，点击后输入关键词搜索文档内容</td></tr>
         <tr><td><strong>视图扩展</strong><br>View Expansion</td><td>顶部工具栏（右部）</td><td>扩展图标 ⛶，点击后放大文档可视区域</td></tr>
@@ -248,6 +255,7 @@ flowchart LR
         <tr><td>呈现方式</td><td>网格/横向排列的小型页面预览图</td></tr>
         <tr><td>交互</td><td>点击缩略图 → 主浏览区切换到对应页面</td></tr>
         <tr><td>适用场景</td><td>快速定位已知的图表、航图或插图页面</td></tr>
+        <tr><td>与列表视图关系</td><td>与列表视图<strong>互斥</strong>，两者只能激活其一；切换后当前选中页面位置保持</td></tr>
       </table>
     </div>
 
@@ -264,6 +272,7 @@ flowchart LR
         <tr><td>呈现方式</td><td>纵向列表，每行显示一个页面标题</td></tr>
         <tr><td>交互</td><td>点击列表项 → 主浏览区切换到对应页面</td></tr>
         <tr><td>适用场景</td><td>已知页面标题时快速跳转；文本密集型文档浏览</td></tr>
+        <tr><td>与缩略图视图关系</td><td>与缩略图视图<strong>互斥</strong>，两者只能激活其一；切换后当前选中页面位置保持</td></tr>
       </table>
     </div>
 
@@ -272,26 +281,7 @@ flowchart LR
       <div class="img-caption">图 3：列表视图 — 提供所有页面标题的列表</div>
     </div>
 
-    <h3>3.3 视图切换逻辑</h3>
-    <div class="mermaid">
-graph LR
-    A["🖼️ 缩略图视图"] -->|点击[列表]| B["📋 列表视图"]
-    B -->|点击[缩略图]| A
-    A -->|点击页面| C["📄 页面详情"]
-    B -->|点击页面| C
-
-    style A fill:#dbeafe,stroke:#2563eb
-    style B fill:#dbeafe,stroke:#2563eb
-    style C fill:#f0fdf4,stroke:#059669
-    </div>
-
-    <ul>
-      <li>缩略图视图和列表视图是<strong>互斥状态</strong>，同一时间只能显示一种</li>
-      <li>切换视图<strong>不会丢失</strong>当前选中的页面位置</li>
-      <li>切换后，当前高亮/选中的页面在另一种视图中保持选中状态</li>
-    </ul>
-
-    <h3>3.4 上下滚动（Scroll Up and Down）</h3>
+    <h3>3.3 上下滚动（Scroll Up and Down）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -307,7 +297,7 @@ graph LR
       <div class="img-caption">图 4：上下滚动 — 以"下一页"、"上一页"的方式在文档中上下滚动</div>
     </div>
 
-    <h3>3.5 搜索功能（Search Function）</h3>
+    <h3>3.4 搜索功能（Search Function）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -323,7 +313,7 @@ graph LR
       <div class="img-caption">图 5：搜索功能 — 允许教员搜索一个单词或一串字符</div>
     </div>
 
-    <h3>3.6 视图扩展（View Expansion）</h3>
+    <h3>3.5 视图扩展（View Expansion）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -339,7 +329,7 @@ graph LR
       <div class="img-caption">图 6：视图扩展 — 扩展可查看文档的视图</div>
     </div>
 
-    <h3>3.7 缩放（Zoom）</h3>
+    <h3>3.6 缩放（Zoom）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -474,6 +464,7 @@ IOS 请求可用文档列表
 <script>
 mermaid.initialize({
   startOnLoad:true,
+  securityLevel:'loose',
   theme:'base',
   themeVariables:{
     primaryColor:'#dbeafe',
@@ -504,6 +495,92 @@ function toggleCollapsible(header){
   const badge = header.querySelector('.badge');
   if(badge) badge.textContent = parent.classList.contains('collapsed') ? '展开' : '收起';
 }
+
+// Mermaid 图表点击放大与交互功能 (缩放/拖拽)
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
 </script>
 </body>
 </html>

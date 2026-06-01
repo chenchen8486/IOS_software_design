@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+/* Image blocks */
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+.img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
+
+/* Collapsible */
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+.tag-sim{background:#d1fae5;color:#065f46}
+.tag-malf{background:#fee2e2;color:#991b1b}
+.tag-free{background:#dbeafe;color:#1e40af}
+.tag-nest{background:#ede9fe;color:#5b21b6}
+
+/* Mermaid */
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+/* Mermaid Zoom */
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+/* Footer nav */
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">2.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">2.1.2 用户交互</a>
+            <a class="nav-link" href="#">2.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch2_2_1_lesson_plan_tab.html">2.2.1 课程计划选项卡</a>
+            <a class="nav-link" href="ch2_2_2_doc_tab.html">2.2.2 文档选项卡</a>
+            <a class="nav-link active" href="ch2_2_3_current_conditions_tab.html">2.2.3 当前条件选项卡</a>
+            <a class="nav-link" href="#">2.2.4 飞机/航空器选项卡</a>
+            <a class="nav-link" href="#">2.2.5 参考机场选项卡</a>
+            <a class="nav-link" href="#">2.2.6 教员台滑动面板</a>
+            <a class="nav-link" href="#">2.2.7 控制面板底部</a>
+          </div>
+        </div>
+        <a class="nav-link" href="#">2.3 维护页面</a>
+        <a class="nav-link" href="#">2.4 仪表复示器</a>
+        <a class="nav-link" href="#">2.5 课程计划剖面</a>
+        <a class="nav-link" href="#">2.6 地图工作区</a>
+        <a class="nav-link" href="#">2.7 高级</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span>
+    <a href="#">第 2 章 软件操作</a><span class="breadcrumb-sep">/</span>
+    <a href="#">2.2 控制面板工作区</a><span class="breadcrumb-sep">/</span>
+    <span>2.2.3 当前条件选项卡</span>
+  </div>
+
+  <article class="content">
+    <h1>2.2.3 当前条件选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">CURRENT CONDITIONS Tab</span></h1>
+    <p class="subtitle">原始手册对应：## 7. CURRENT CONDITIONS Tab &nbsp;|&nbsp; 整理时间：2026-06-01 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
+
+    <!-- ==================== 一、功能总览 ==================== -->
+    <h2>一、功能总览</h2>
+
+    <!-- 原始图片1：CURRENT CONDITIONS Tab 整体界面 -->
+    <div class="img-block">
+      <img src="./images/ch2_2_3_overview.jpg" alt="当前条件选项卡整体界面">
+      <div class="img-caption">图 1：当前条件选项卡（CURRENT CONDITIONS Tab）整体界面 — 来自 A320 原始文档</div>
+    </div>
+
+    <blockquote>
+      <strong>核心定位：</strong>当前条件选项卡是教员<strong>查看和更改飞机本机状态及所在环境条件</strong>的核心入口。涵盖高度、空速、航向、云/雾/能见度、结冰、湍流、风、外界大气温度等全部参数。
+    </blockquote>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    A["CURRENT CONDITIONS Tab\n当前条件选项卡"] --> B["本机状态参数\n主区域上半部分"]
+    A --> C["环境条件参数\n主区域中下部"]
+    A --> D["滑动面板\n点击字段弹出"]
+    A --> E["键盘输入\n精确数值输入"]
+
+    B --> B1["ASL 海拔高度"]
+    B --> B2["IAS 指示空速"]
+    B --> B3["Mach 马赫数"]
+    B --> B4["Heading 航向"]
+
+    C --> C1["云和能见度"]
+    C --> C2["Icing 结冰条件"]
+    C --> C3["Turbulence 湍流"]
+    C --> C4["A/C Wind 飞机风向"]
+    C --> C5["A/C OAT 外界大气温度"]
+    C --> C6["A/C ISA Dev ISA偏差"]
+
+    D --> D1["CLOUDS AT AIRCRAFT\n飞机处云层"]
+    D --> D2["SLEW 位移"]
+    D --> D3["ICING 结冰"]
+    D --> D4["TURBULENCE 湍流"]
+
+    E --> E1["A/C Wind Keypad\n飞机风键盘"]
+    E --> E2["A/C OAT Keypad\n飞机OAT键盘"]
+    E --> E3["A/C ISA Dev Keypad\n飞机ISA偏差键盘"]
+
+    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style E fill:#ede9fe,stroke:#7c3aed,stroke-width:2px
+    </div>
+
+    <h3>1.2 教员核心操作流程</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([打开 CURRENT CONDITIONS]) --> View[查看当前参数]
+    View --> Select{选择修改项}
+    Select -->|本机状态| State[点击 ASL/IAS/Mach/Heading]
+    Select -->|环境条件| Env[点击 云/结冰/湍流/风/OAT/ISA]
+    State --> SLEW[SLEW 滑动面板]
+    Env --> Panel{选择面板类型}
+    Panel -->|云| Clouds[CLOUDS 滑动面板]
+    Panel -->|结冰| Icing[ICING 滑动面板]
+    Panel -->|湍流| Turb[TURBULENCE 滑动面板]
+    Panel -->|风/OAT/ISA| Keypad[键盘输入]
+    SLEW --> Input[输入新值 / 滑块调整]
+    Clouds --> Input
+    Icing --> Input
+    Turb --> Input
+    Keypad --> Input
+    Input --> Confirm{确认方式}
+    Confirm -->|Slew按钮| Exec[执行位移]
+    Confirm -->|绿色勾号| Apply[立即生效/延迟生效]
+    Confirm -->|红色X| Cancel[取消修改]
+    Exec --> End([参数更新完成])
+    Apply --> End
+    Cancel --> View
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <!-- ==================== 二、界面结构 ==================== -->
+    <h2>二、界面结构</h2>
+
+    <p>下方表格中的位置描述基于图 1（CURRENT CONDITIONS Tab 整体界面）实际截图分析得出。</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
+        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（整体）</td><td>集中显示所有本机状态参数和环境条件参数，每个字段可点击弹出对应滑动面板或键盘</td></tr>
+        <tr><td><strong>云和能见度部分</strong><br>Clouds and Visibility</td><td>主区域（顶部）</td><td>点击后显示飞机处云层滑动面板，用于修改云层类型、厚度、能见度、雾和天气预设</td></tr>
+        <tr><td><strong>ASL 海拔高度</strong><br>Above Sea Level</td><td>主区域</td><td>显示当前飞机海拔高度，点击后显示 SLEW 滑动面板</td></tr>
+        <tr><td><strong>IAS 指示空速</strong><br>Indicated Airspeed</td><td>主区域</td><td>显示当前指示空速，点击后显示 SLEW 滑动面板</td></tr>
+        <tr><td><strong>Mach 马赫数</strong><br>Mach Speed</td><td>主区域</td><td>显示当前马赫速度，点击后显示 SLEW 滑动面板</td></tr>
+        <tr><td><strong>Heading 航向</strong><br>Aircraft Heading</td><td>主区域</td><td>显示当前飞机航向，点击后显示 SLEW 滑动面板</td></tr>
+        <tr><td><strong>Icing Conditions 结冰条件</strong><br>Icing Conditions</td><td>主区域</td><td>显示当前飞机结冰条件，点击后显示 ICING 滑动面板；也可使用滚轮选择器</td></tr>
+        <tr><td><strong>Turbulence 湍流</strong><br>Turbulence</td><td>主区域</td><td>显示当前湍流状况，点击后显示 TURBULENCE 滑动面板</td></tr>
+        <tr><td><strong>A/C Wind 飞机风向</strong><br>A/C Wind</td><td>主区域</td><td>显示当前飞机处风向风速，点击后显示飞机风键盘</td></tr>
+        <tr><td><strong>A/C OAT 外界大气温度</strong><br>A/C OAT</td><td>主区域</td><td>显示当前飞机处 OAT，点击后显示飞机 OAT 键盘；也可使用滚轮选择器</td></tr>
+        <tr><td><strong>A/C ISA Dev ISA 偏差</strong><br>A/C ISA Dev</td><td>主区域</td><td>显示当前 ISA 偏差，点击后显示 ISA 偏差键盘；也可使用滚轮选择器</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 三、核心功能详解 ==================== -->
+    <h2>三、核心功能详解</h2>
+
+    <h3>3.1 参数输入文本字段总览</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>当前条件选项卡的主交互区域，以输入文本字段形式展示所有可调参数</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出对应滑动面板或键盘；长按/上下滑动 → 显示滚轮选择器</td></tr>
+        <tr><td>滚轮选择器确认</td><td>绿色勾号确认选择 / 红色 X 取消选择</td></tr>
+        <tr><td>状态反馈</td><td>字段实时显示当前值；修改后若飞行冻结激活，部分参数变更将延迟至冻结解除</td></tr>
+      </table>
+    </div>
+
+    <h3>3.2 云和能见度部分（Clouds and Visibility Section）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示飞机飞行所在地理区域的当前云设置，点击后打开飞机处云层滑动面板</td></tr>
+        <tr><td>交互方式</td><td>点击该部分区域 → 弹出 CLOUDS AT AIRCRAFT 滑动面板</td></tr>
+        <tr><td>联动</td><td>云层滑动面板中的设置会同步反映到该部分的显示文本中</td></tr>
+      </table>
+    </div>
+
+    <h3>3.3 ASL（Above Sea Level / 海拔高度）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前飞机海拔高度</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 SLEW 滑动面板（ALTITUDE/SPEED 选项卡）</td></tr>
+        <tr><td>输入范围</td><td>动态最小/最大值（Dynamic Min/Max）</td></tr>
+        <tr><td>单位</td><td>米 / 英尺</td></tr>
+        <tr><td>边界条件</td><td>飞机在地面时，高度位移被禁止</td></tr>
+      </table>
+    </div>
+
+    <h3>3.4 IAS（Indicated Airspeed / 指示空速）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前指示空速</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 SLEW 滑动面板；或通过空速滑块调整</td></tr>
+        <tr><td>单位</td><td>节（knots）</td></tr>
+        <tr><td>边界行为</td><td>飞机将配平至请求速度；襟翼和起落架位置将自动驱动以避免超速；完成后自动设置飞行冻结</td></tr>
+        <tr><td>联动</td><td>修改 IAS 时，Mach 值可能同步变化</td></tr>
+      </table>
+    </div>
+
+    <h3>3.5 Mach（马赫数）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前马赫速度</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 SLEW 滑动面板中的键盘输入</td></tr>
+        <tr><td>边界行为</td><td>飞机将在请求的马赫速度下进行配平；襟翼和起落架位置自动驱动以避免超速；完成后自动设置飞行冻结</td></tr>
+      </table>
+    </div>
+
+    <h3>3.6 Heading（航向）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前飞机航向</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 SLEW 滑动面板（HEADING/POSITION 选项卡）</td></tr>
+        <tr><td>单位</td><td>磁航向（度）</td></tr>
+        <tr><td>边界行为</td><td>仅修改航向，其他参数不受影响</td></tr>
+      </table>
+    </div>
+
+    <h3>3.7 Icing Conditions（结冰条件）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示当前飞机结冰条件，允许修改结冰等级</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 ICING 滑动面板；或使用滚轮选择器</td></tr>
+        <tr><td>状态标志</td><td>预位黄色标志（已选择但不在云中）/ 激活红色标志（已选择且在云中）</td></tr>
+        <tr><td>触发条件</td><td>TAT &lt; 6°C 且 TAT &gt; -20°C</td></tr>
+      </table>
+    </div>
+
+    <h3>3.8 Turbulence（湍流）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前飞机处的湍流状况</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 TURBULENCE 滑动面板</td></tr>
+        <tr><td>类型</td><td>晴空湍流、雷暴湍流、低空湍流</td></tr>
+        <tr><td>互斥关系</td><td>三种湍流类型的轻/中/重度按钮各自组内互斥；不同类型可同时激活</td></tr>
+      </table>
+    </div>
+
+    <h3>3.9 A/C Wind（飞机风向风速）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的风向和风速</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机风键盘；或使用滑块控件</td></tr>
+        <tr><td>风向范围</td><td>1° ~ 360°</td></tr>
+        <tr><td>边界行为</td><td>飞行冻结未激活时立即以预定速率渐变；飞行冻结激活时延迟至冻结解除</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_wind_keypad.jpg" alt="飞机风键盘">
+      <div class="img-caption">图 2：飞机风键盘（A/C Wind Keypad）— 显示当前风向风速并支持键盘/滑块输入</div>
+    </div>
+
+    <h3>3.10 A/C OAT（外界大气温度）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的外界大气温度</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机 OAT 键盘；或使用滑块/滚轮选择器</td></tr>
+        <tr><td>边界行为</td><td>飞机在地面时 OAT 更改立即生效；在空中时若飞行冻结未激活则渐变，若冻结激活则延迟</td></tr>
+        <tr><td>状态反馈</td><td>更改过程中 IOS 警告页脚显示"温度正在变化"</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_oat_keypad.jpg" alt="飞机OAT键盘">
+      <div class="img-caption">图 3：飞机 OAT 键盘（A/C OAT Keypad）— 显示当前外界大气温度并支持键盘/滑块输入</div>
+    </div>
+
+    <h3>3.11 A/C ISA Dev（ISA 偏差）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的 ISA 温度偏差</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 ISA 偏差键盘；或使用滚轮选择器</td></tr>
+        <tr><td>联动</td><td>整个温度剖面将根据 ISA 偏差的变化进行偏移</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_isa_keypad.jpg" alt="飞机ISA偏差键盘">
+      <div class="img-caption">图 4：飞机 ISA 偏差键盘（A/C ISA Dev Keypad）— 显示当前 ISA 温度偏差</div>
+    </div>
+
+    <!-- 3.12 飞机处云层滑动面板 -->
+    <h3>3.12 飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>允许教员修改本机周围区域的云层和能见度参数</td></tr>
+        <tr><td>包含区域</td><td>能见度部分、云层高度部分、雾区、天气预设区</td></tr>
+        <tr><td>控件类型</td><td>下拉按钮（云层类型）、输入文本字段（上下限）、单选按钮（雾类型）、按钮（天气预设）</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_clouds_panel.jpg" alt="飞机处云层滑动面板">
+      <div class="img-caption">图 5：飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）— 云层类型、厚度、能见度、雾、天气预设</div>
+    </div>
+
+    <h4>3.12.1 能见度部分（Visibility Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并调整云层之间的能见度</td></tr>
+        <tr><td>降雨限制</td><td>小雨最大 15 nm；中雨最大 5 nm；大雨最大 1 nm</td></tr>
+        <tr><td>输入范围</td><td>Min = 0，Max = 动态值；也可使用法定英里（sm）显示</td></tr>
+      </table>
+    </div>
+
+    <h4>3.12.2 云层高度部分（Cloud Level Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>层级</th><th>可选类型</th><th>厚度设置</th></tr>
+        <tr><td><strong>高云</strong></td><td>无、卷积云、卷云、卷层云</td><td>—</td></tr>
+        <tr><td><strong>中云</strong></td><td>晴朗、疏云、裂云、阴天</td><td>Top ASL / Base ASL（英尺）</td></tr>
+        <tr><td><strong>低云</strong></td><td>晴朗、疏云、多云、阴天</td><td>Top ASL / Base AGL（英尺）</td></tr>
+        <tr><td colspan="3"><strong>厚度说明：</strong>最小/最大厚度取决于覆盖类型；输入字段有时定义为 MSL 或 AGL</td></tr>
+      </table>
+    </div>
+
+    <h4>3.12.3 雾区（Fog Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>选项</th><th>说明</th></tr>
+        <tr><td><strong>无雾</strong></td><td>点击移除雾</td></tr>
+        <tr><td><strong>零星雾</strong></td><td>雾厚度在预设 RVR 最小/最大及零星雾顶部高度之间随机变化</td></tr>
+        <tr><td><strong>浓雾</strong></td><td>雾厚度在给定 RVR 最小/最大之间变化</td></tr>
+        <tr><td><strong>RVR 最小/最大</strong></td><td>仅在零星雾激活时可用；RVR MIN: 0 ~ RVR MAX；RVR MAX: RVR MIN ~ 3045 米 / 9990 英尺</td></tr>
+        <tr><td><strong>互斥关系</strong></td><td>无雾、零星雾、浓雾三个单选按钮<strong>互斥</strong>，只能激活其一</td></tr>
+      </table>
+    </div>
+
+    <h4>3.12.4 天气预设区（Weather Presets Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>预设按钮</th><th>说明</th></tr>
+        <tr><td><strong>CAVOK</strong></td><td>无云底低于 5000 英尺；无积雨云；能见度 ≥ 6 sm/10 km；无降水、雷暴、浅雾或低吹雪</td></tr>
+        <tr><td><strong>1000/5km</strong></td><td>激活 1000/5km 条件下的盘旋</td></tr>
+        <tr><td><strong>800/2km</strong></td><td>激活 800/2km 条件下的盘旋</td></tr>
+        <tr><td><strong>CAT I ~ CAT IIIC</strong></td><td>按对应仪表着陆等级激活视觉条件</td></tr>
+        <tr><td><strong>0/0</strong></td><td>激活 0/0 条件</td></tr>
+        <tr><td><strong>MIN T/O RVR</strong></td><td>激活最小起飞 RVR 条件</td></tr>
+      </table>
+    </div>
+
+    <!-- 3.13 SLEW -->
+    <h3>3.13 位移滑动面板（SLEW Sliding Panel）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>允许教员查看和更改飞机的高度、指示空速、航向和位置</td></tr>
+        <tr><td>选项卡</td><td>ALTITUDE/SPEED、HEADING/POSITION</td></tr>
+        <tr><td>边界条件</td><td>位置冻结激活时可进行位置位移；低于 100 ft AGL 时飞机离地高度保持不变；飞机在地面时高度和速度位移被禁止</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_slew_panel.jpg" alt="位移滑动面板">
+      <div class="img-caption">图 6：飞机位移滑动面板（SLEW Sliding Panel）— 包含 ALTITUDE/SPEED 和 HEADING/POSITION 两个选项卡</div>
+    </div>
+
+    <h4>3.13.1 ALTITUDE / SPEED 选项卡</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>控件</th><th>功能说明</th></tr>
+        <tr><td><strong>Altitude 高度</strong></td><td>点击输入字段显示键盘；支持高度滑块（上下滑动 +/-）；+/- 按钮以固定速率位移飞机</td></tr>
+        <tr><td><strong>Airspeed 空速</strong></td><td>点击输入字段显示键盘；支持空速滑块（左右滑动 +/-）；飞机配平至请求速度；襟翼和起落架自动驱动防超速</td></tr>
+        <tr><td><strong>Mach 马赫</strong></td><td>点击输入字段显示键盘；飞机配平至请求马赫速度；襟翼和起落架自动驱动防超速</td></tr>
+        <tr><td><strong>Graph 图表</strong></td><td>交互式图表，触摸并移动 + 符号可同时更新高度和速度参数</td></tr>
+      </table>
+    </div>
+
+    <h4>3.13.2 HEADING / POSITION 选项卡</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>控件</th><th>功能说明</th></tr>
+        <tr><td><strong>Heading 航向</strong></td><td>点击输入字段显示键盘；仅修改航向，不影响其他参数</td></tr>
+        <tr><td><strong>Heading Slew +/-</strong></td><td>以固定速率增加或减少磁航向；磁航向位移功能不可用时禁用</td></tr>
+        <tr><td><strong>Forward/Back/Left/Right</strong></td><td>向前/后/左/右位移飞机；加速期间禁用</td></tr>
+        <tr><td><strong>Lat / Long</strong></td><td>点击输入字段显示键盘，输入新经纬度坐标以重新定位飞机</td></tr>
+        <tr><td><strong>Hook（可选）</strong></td><td>将飞机定位到地图工作区预设的挂钩地理坐标（无高度）</td></tr>
+        <tr><td><strong>Position Slew Rate Slider</strong></td><td>1~5 档位控制位移速率（Min=1, Max=5）</td></tr>
+        <tr><td><strong>Slew 按钮</strong></td><td>立即根据新参数位移飞机；无选择更改或位移激活时禁用</td></tr>
+        <tr><td><strong>Discard 按钮</strong></td><td>立即取消所选位移参数的更改；无选择更改或位移激活时禁用</td></tr>
+      </table>
+    </div>
+
+    <!-- 3.14 ICING -->
+    <h3>3.14 结冰滑动面板（ICING Sliding Panel）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>控制飞机上的结冰条件</td></tr>
+        <tr><td>互斥关系</td><td>轻度、中度、重度三个按钮<strong>互斥</strong>，只能激活其一</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_icing_panel.jpg" alt="结冰滑动面板">
+      <div class="img-caption">图 7：结冰滑动面板（ICING Sliding Panel）— 轻度/中度/重度互斥按钮 + 积冰量只读显示</div>
+    </div>
+
+    <h4>3.14.1 结冰条件存在标志</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>标志</th><th>状态</th><th>条件</th></tr>
+        <tr><td><strong>预位黄色</strong></td><td>已选择结冰条件，飞机未在云中</td><td>TAT &lt; 6°C 且 TAT &gt; -20°C</td></tr>
+        <tr><td><strong>激活红色</strong></td><td>已选择结冰条件，飞机在云中</td><td>TAT &lt; 6°C 且 TAT &gt; -20°C</td></tr>
+      </table>
+    </div>
+
+    <h4>3.14.2 结冰等级控制</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>按钮</th><th>说明</th></tr>
+        <tr><td><strong>轻度（Light）</strong></td><td>积冰速率和量设置为 33%</td></tr>
+        <tr><td><strong>中度（Moderate）</strong></td><td>积冰速率和量设置为 67%</td></tr>
+        <tr><td><strong>重度（Severe）</strong></td><td>积冰速率和量设置为 100%</td></tr>
+        <tr><td><strong>除冰（Remove Ice）</strong></td><td>逐渐消除现有积冰，完成后速率和量设为 0</td></tr>
+      </table>
+    </div>
+
+    <h4>3.14.3 积冰量部分（ICE ACCUMULATION Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>只读文本字段，显示各飞机部件的积冰重量和百分比</td></tr>
+        <tr><td>显示组件</td><td>机身、发动机 #1、发动机 #2、左机翼、右机翼、尾翼、总质量</td></tr>
+        <tr><td>单位</td><td>重量：千克/磅；百分比：%</td></tr>
+      </table>
+    </div>
+
+    <!-- 3.15 TURBULENCE -->
+    <h3>3.15 湍流滑动面板（TURBULENCE Sliding Panel）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>选择可在飞机上引发的各种湍流类型和强度</td></tr>
+        <tr><td>包含类型</td><td>晴空湍流（CLEAR AIR）、雷暴湍流（THUNDERSTORM）、低空湍流（LOW LEVEL）</td></tr>
+        <tr><td>互斥关系</td><td>每种类型的轻/中/重度按钮组内互斥；不同类型间可同时激活</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_turbulence_panel.jpg" alt="湍流滑动面板">
+      <div class="img-caption">图 8：湍流滑动面板（TURBULENCE Sliding Panel）— 晴空/雷暴/低空三种湍流类型控制</div>
+    </div>
+
+    <h4>3.15.1 晴空湍流（CLEAR AIR Turbulence）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>适用高度</td><td>所有高度（地面除外）</td></tr>
+        <tr><td>&lt; 50 ft AGL</td><td>标称强度随 AGL 高度线性减弱</td></tr>
+        <tr><td>&gt; 50 ft AGL</td><td>100% 标称强度</td></tr>
+        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
+        <tr><td>Intensity 输入</td><td>Min = 0，Max = 100%</td></tr>
+      </table>
+    </div>
+
+    <h4>3.15.2 雷暴湍流（THUNDERSTORM Turbulence）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>适用高度</td><td>所有高度（地面除外）</td></tr>
+        <tr><td>衰减特性</td><td>同晴空湍流（&lt; 50 ft AGL 线性减弱，&gt; 50 ft AGL 100%）</td></tr>
+        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
+      </table>
+    </div>
+
+    <h4>3.15.3 低空湍流（LOW LEVEL Turbulence）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>高度区间</th><th>强度表现</th></tr>
+        <tr><td>&gt; 10,000 ft AGL</td><td>无</td></tr>
+        <tr><td>5,000 ~ 10,000 ft AGL</td><td>随 AGL 高度线性衰减</td></tr>
+        <tr><td>500 ~ 5,000 ft AGL</td><td>100% 标称强度</td></tr>
+        <tr><td>50 ~ 500 ft AGL</td><td>随 AGL 高度指数衰减</td></tr>
+        <tr><td>&lt; 50 ft AGL</td><td>随 AGL 高度线性衰减（地面无）</td></tr>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
+        <tr><td>全部清除（Clear All）</td><td>清除环境中所有活跃的湍流类型</td></tr>
+        <tr><td>湍流类型优先级</td><td>点击可展开按钮显示湍流类型优先级滑动面板</td></tr>
+      </table>
+    </div>
+
+    <!-- 3.16-3.18 Keypads -->
+    <h3>3.16 飞机风键盘（A/C Wind Keypad）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的风向和风速</td></tr>
+        <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
+        <tr><td>风向范围</td><td>1° ~ 360°</td></tr>
+        <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
+        <tr><td>边界行为</td><td>飞行冻结未激活时立即渐变；冻结激活时延迟至冻结解除</td></tr>
+      </table>
+    </div>
+
+    <h3>3.17 飞机 OAT 键盘（A/C OAT Keypad）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的外界大气温度</td></tr>
+        <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
+        <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
+        <tr><td>联动</td><td>整个温度剖面根据 OAT 变化偏移</td></tr>
+        <tr><td>边界行为</td><td>地面时立即生效；空中无冻结时渐变；空中冻结激活时延迟</td></tr>
+        <tr><td>状态反馈</td><td>更改过程中显示"温度正在变化"警告信息</td></tr>
+      </table>
+    </div>
+
+    <h3>3.18 飞机 ISA 偏差键盘（A/C ISA Dev Keypad）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并修改当前飞机位置的 ISA 温度偏差</td></tr>
+        <tr><td>输入方式</td><td>键盘输入</td></tr>
+        <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 四、状态机/流程图 ==================== -->
+    <h2>四、状态机与流程图</h2>
+
+    <h3>4.1 参数修改状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 空闲状态
+    空闲状态 --> 面板打开中 : 点击参数字段
+    面板打开中 --> 空闲状态 : 点击取消/关闭
+    面板打开中 --> 值已修改 : 输入新值
+    值已修改 --> 参数生效中 : 点击确认/Slew
+    参数生效中 --> 生效完成 : 冻结未激活:立即生效
+    参数生效中 --> 生效完成 : 冻结激活:延迟至解除
+    生效完成 --> [*]
+
+    值已修改 --> 空闲状态 : 点击取消/Discard
+    </div>
+
+    <h3>4.2 SLEW 位移操作流程</h3>
+    <div class="mermaid">
+flowchart TD
+    Start([打开SLEW面板]) --> Tab{选择选项卡}
+    Tab -->|ALTITUDE/SPEED| Alt[修改高度/空速/Mach]
+    Tab -->|HEADING/POSITION| Pos[修改航向/位置坐标]
+    Alt --> Verify1{校验边界}
+    Pos --> Verify2{校验边界}
+    Verify1 -->|通过| Exec1[点击Slew执行]
+    Verify1 -->|不通过| Err1[提示超出范围]
+    Verify2 -->|通过| Exec2[点击Slew执行]
+    Verify2 -->|不通过| Err2[提示超出范围]
+    Exec1 --> Freeze{飞行冻结?}
+    Exec2 --> Freeze
+    Freeze -->|未激活| Immediate[立即渐变执行]
+    Freeze -->|激活| Deferred[缓存至冻结解除后执行]
+    Immediate --> Update[更新飞机参数]
+    Deferred --> Update
+    Update --> End([完成])
+    Err1 --> Alt
+    Err2 --> Pos
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style Err1 fill:#fee2e2,stroke:#dc2626
+    style Err2 fill:#fee2e2,stroke:#dc2626
+    </div>
+
+    <!-- ==================== 五、关联依赖与异常边界 ==================== -->
+    <h2>五、关联依赖与异常边界</h2>
+
+    <h3>5.1 关联依赖</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>功能点</th><th>依赖项</th><th>说明</th></tr>
+        <tr><td>ASL/IAS/Mach/Heading 修改</td><td>SLEW 滑动面板</td><td>点击字段后必须正确弹出 SLEW 面板</td></tr>
+        <tr><td>高度/速度位移</td><td>飞机状态</td><td>飞机在地面时高度和速度位移被禁止</td></tr>
+        <tr><td>位置位移</td><td>位置冻结</td><td>位置冻结激活时才能进行位置位移；低于 100 ft AGL 时保持离地高度</td></tr>
+        <tr><td>OAT/风/ISA 修改</td><td>飞行冻结状态</td><td>冻结未激活时立即渐变；冻结激活时延迟至解除</td></tr>
+        <tr><td>结冰条件</td><td>TAT 温度</td><td>需满足 TAT &lt; 6°C 且 TAT &gt; -20°C 才能激活</td></tr>
+        <tr><td>能见度</td><td>降雨状态</td><td>降雨激活时最大能见度受限（小雨 15nm / 中雨 5nm / 大雨 1nm）</td></tr>
+        <tr><td>天气预设</td><td>标准体系</td><td>CAVOK/CAT I~III 等预设按 FAA/EASA/TCA/EUR 标准执行</td></tr>
+      </table>
+    </div>
+
+    <h3>5.2 异常边界</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>场景</th><th>预期行为</th></tr>
+        <tr><td>飞机在地面时尝试高度/速度位移</td><td>SLEW 面板中对应控件禁用或操作无效</td></tr>
+        <tr><td>飞行冻结激活时修改 OAT/风/ISA</td><td>变更延迟至飞行冻结解除后执行</td></tr>
+        <tr><td>TAT 不在结冰温度范围内</td><td>结冰条件标志显示预位（黄色），但不会激活（红色）</td></tr>
+        <tr><td>降雨激活时能见度超出限制</td><td>系统自动限制最大能见度为对应降雨等级的上限</td></tr>
+        <tr><td>Slew 参数未选择或位移进行中</td><td>Slew 按钮和 Discard 按钮禁用</td></tr>
+        <tr><td>加速期间（Speed Up）</td><td>SLEW 面板的 Forward/Back/Left/Right 按钮禁用</td></tr>
+        <tr><td>输入值超出动态最小/最大范围</td><td>系统拒绝输入并提示有效范围</td></tr>
+        <tr><td>磁航向位移功能不可用</td><td>Heading Slew +/- 按钮禁用</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 六、数据流推导 ==================== -->
+    <h2>六、数据流与开发流程推导</h2>
+
+    <h3>6.1 数据流（参数修改与生效）</h3>
+    <pre><code>教员点击参数输入文本字段
+    ↓
+IOS 弹出对应滑动面板 / 键盘
+    ↓
+教员输入新值或选择新状态
+    ↓
+点击确认（绿色勾号）或 Slew 按钮
+    ↓
+前端校验输入值范围（Dynamic Min/Max）
+    ↓
+校验通过 → 发送参数变更指令至模拟器核心
+    ↓
+模拟器核心判断飞行冻结状态
+    ├─ 冻结未激活 → 立即执行参数渐变
+    └─ 冻结激活   → 缓存变更，冻结解除后执行
+    ↓
+模拟器反馈当前参数值至 IOS 显示
+    ↓
+IOS 更新对应文本字段和状态标志</code></pre>
+
+    <h3>6.2 API 接口契约建议</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th></tr>
+        <tr><td><code>getCurrentConditions</code></td><td>GET</td><td>-</td><td><code>asl, ias, mach, heading, icing, turbulence, windDirection, windSpeed, oat, isaDev, clouds, visibility</code></td></tr>
+        <tr><td><code>updateAircraftSlew</code></td><td>POST</td><td><code>altitude, airspeed, mach, heading, lat, long, slewRate</code></td><td><code>status, estimatedTime, currentValues</code></td></tr>
+        <tr><td><code>setCloudsAtAircraft</code></td><td>POST</td><td><code>cloudLevels[], visibility, fogType, fogRvrMin, fogRvrMax, weatherPreset</code></td><td><code>status, updatedFields</code></td></tr>
+        <tr><td><code>setIcingConditions</code></td><td>POST</td><td><code>icingLevel</code></td><td><code>status, armedFlag, activeFlag, accumulationData</code></td></tr>
+        <tr><td><code>setTurbulence</code></td><td>POST</td><td><code>clearAir, thunderstorm, lowLevel</code></td><td><code>status, activeTypes[]</code></td></tr>
+        <tr><td><code>setACWind</code></td><td>POST</td><td><code>direction, speed</code></td><td><code>status, rampingState</code></td></tr>
+        <tr><td><code>setACOAT</code></td><td>POST</td><td><code>temperature</code></td><td><code>status, rampingState, advisoryMessage</code></td></tr>
+        <tr><td><code>setACISADev</code></td><td>POST</td><td><code>isaDeviation</code></td><td><code>status</code></td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 七、测试要点 ==================== -->
+    <h2>七、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>测试类型</th><th>测试场景</th></tr>
+        <tr><td>正向路径</td><td>打开 CURRENT CONDITIONS Tab → 各参数字段正确显示当前值</td></tr>
+        <tr><td>正向路径</td><td>点击 ASL 字段 → SLEW 面板弹出 → 输入新高度 → Slew 执行 → 高度正确更新</td></tr>
+        <tr><td>正向路径</td><td>点击 Icing 字段 → ICING 面板弹出 → 选择轻度结冰 → 预位标志变黄</td></tr>
+        <tr><td>正向路径</td><td>点击云层部分 → CLOUDS 面板弹出 → 选择天气预设 CAT I → 能见度/云底高自动设置</td></tr>
+        <tr><td>正向路径</td><td>使用滚轮选择器修改 OAT → 绿色勾号确认 → 值正确更新</td></tr>
+        <tr><td>异常路径</td><td>飞机在地面时确认高度/速度位移控件被禁用</td></tr>
+        <tr><td>异常路径</td><td>飞行冻结激活时修改风/OAT → 确认变更延迟至冻结解除</td></tr>
+        <tr><td>异常路径</td><td>TAT 不在结冰范围内时确认结冰标志保持预位（黄色）不激活（红色）</td></tr>
+        <tr><td>异常路径</td><td>未选择 Slew 参数时确认 Slew/Discard 按钮禁用</td></tr>
+        <tr><td>边界条件</td><td>能见度输入超出降雨限制时确认系统自动截断至上限</td></tr>
+        <tr><td>边界条件</td><td>输入高度/空速超出动态 Min/Max 时确认系统拒绝并提示范围</td></tr>
+        <tr><td>联动测试</td><td>修改 GW 关联参数时确认 ZFW/Fuel 等联动参数自动调整</td></tr>
+        <tr><td>性能测试</td><td>快速连续修改多个参数时确认界面响应无延迟、无状态冲突</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 八、变更记录 ==================== -->
+    <h2>八、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
+        <tr><td>2026-06-01</td><td>V0.1</td><td>完成当前条件选项卡的细化整理，包含功能总览、11项参数字段详解、4个滑动面板详解、3个键盘详解、状态机、数据流推导、API建议、测试要点</td></tr>
+      </table>
+    </div>
+
+    <!-- Footer nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch2_2_2_doc_tab.html"><span>←</span><span>2.2.2 文档选项卡（DOC Tab）</span></a>
+      <a class="next" href="#"><span>2.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</span><span>→</span></a>
+    </div>
+  </article>
+</main>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  stateDiagram:{curve:'basis'}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : children.scrollHeight + 'px';
+  }
+}
+
+function toggleCollapsible(header){
+  const parent = header.parentElement;
+  parent.classList.toggle('collapsed');
+  const badge = header.querySelector('.badge');
+  if(badge) badge.textContent = parent.classList.contains('collapsed') ? '展开' : '收起';
+}
+
+// Mermaid 图表点击放大与交互功能 (缩放/拖拽)
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
+</body>
+</html>
