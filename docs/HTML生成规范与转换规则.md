@@ -15,7 +15,7 @@
 | 配图资源 | `output/html/images/` | 所有配图统一归集到此处，HTML 内引用 `./images/xxx.jpg` |
 
 **禁止事项：**
-- 禁止在根目录创建 `assets/images/` 等分散目录
+- 禁止在根目录创建分散的图片或缓存目录
 - 禁止把细化 MD 单独放到 `docs/refined/` 等中间目录
 - 禁止把 HTML 和 MD 分开放
 
@@ -26,8 +26,8 @@
 ### 2.1 自动查找，禁止手动占位
 - HTML 中**不允许**出现 `[图片占位]` 提示
 - 自动从以下两个来源查找配图：
-  1. 版面分析 MD（`output/CAE IOS使用手册/auto/CAE IOS使用手册.md`）中的图片引用
-  2. 图片库（`output/CAE IOS使用手册/auto/images/`）
+  1. 版面分析 MD（`reference/CAE IOS使用手册.md`）中的图片引用
+  2. 图片库（`reference/images/`）
 - 找到后自动复制到 `output/html/images/`，并生成正确的相对路径引用
 
 ### 2.2 格式与命名
@@ -179,8 +179,184 @@
 
 ---
 
-## 十、变更记录
+## 十、Mermaid 图表交互规范（点击放大 / 滚轮缩放 / 拖拽平移）
+
+### 10.1 需求背景
+
+Mermaid.js 在 HTML 中渲染的 SVG 流程图尺寸受限于正文容器宽度，复杂结构图（如功能层级结构、核心操作流程）在页面上显示过小，无法看清节点文字与连线细节。因此所有 HTML 页面的 Mermaid 图表必须支持**点击放大、滚轮缩放、按住拖拽**的交互能力。
+
+**核心约束**：本项目 HTML 文件通常在 `file://` 协议下直接双击打开（本地离线浏览），**严禁触发浏览器的同源安全（CORS）错误**。
+
+### 10.2 方案演进与踩坑记录
+
+| 轮次 | 方案 | 结果 | 失败原因 |
+|------|------|------|----------|
+| 1 | 模态框 + `innerHTML` 复制 SVG | ❌ 报错 | `file://` 协议下，`innerHTML` 序列化含 `<foreignObject>` 的 SVG 会触发 `Unsafe attempt to load URL` frame 同源阻断 |
+| 2 | 模态框 + `cloneNode(true)` 克隆 SVG | ❌ 报错 | 同上，Mermaid SVG 内部包含 `<foreignObject>` 元素，DOM 克隆后仍触发 frame 安全限制 |
+| 3 | 模态框 + `Blob URL` + `<img>` 加载 | ❌ 显示小方块 | `URL.createObjectURL()` 生成的 blob URL 在 `file://` 协议下被浏览器阻止加载，图片无法渲染 |
+| **4** | **CSS 直接放大原始 `.mermaid` 元素** | ✅ 通过 | **不创建新 DOM 节点、不克隆 SVG、不生成任何 URL**，仅给现有元素添加 CSS 类切换 `position: fixed` + `transform` |
+
+**结论**：在 `file://` 协议下，任何涉及"创建新 DOM 节点并复制/引用 SVG 内容"的方案都会踩到同源安全限制。**唯一可行路线是纯粹 CSS 状态切换**。
+
+### 10.3 最终实现（定稿，所有 HTML 统一复用）
+
+**交互行为**：
+1. **点击图表** → 原始 `.mermaid` 元素切换为 `position: fixed`，居中放大至 `90vw × 90vh`
+2. **滚轮滚动** → 图表内部 SVG 通过 `transform: scale()` 平滑缩放（范围 `0.3x ~ 5x`）
+3. **按住鼠标左键拖动** → SVG 通过 `transform: translate()` 平移，实现 Pan 浏览
+4. **点击黑色遮罩层** 或按 **ESC** → 移除放大状态，恢复原状
+
+**CSS 核心**：
+
+```css
+/* 遮罩层 */
+.mermaid-zoom-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.85);
+  z-index: 999; backdrop-filter: blur(4px);
+  cursor: zoom-out;
+}
+
+/* 放大状态：直接作用于原始 .mermaid 容器 */
+.mermaid.is-zoomed {
+  position: fixed !important;
+  top: 50% !important; left: 50% !important;
+  transform: translate(-50%,-50%) !important;
+  z-index: 1000 !important;
+  width: 90vw !important; height: 90vh !important;
+  max-width: none !important;
+  background: var(--surface) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  cursor: grab !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  user-select: none;
+}
+.mermaid.is-zoomed:active { cursor: grabbing !important; }
+.mermaid.is-zoomed svg {
+  transition: transform .1s ease-out;
+  transform-origin: center center;
+  max-width: none !important;
+}
+```
+
+**JavaScript 核心**：
+
+```javascript
+// Mermaid 图表点击放大与交互功能 (缩放/拖拽)
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let startX, startY, translateX=0, translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  // 1. 点击放大 / 点击遮罩关闭
+  document.addEventListener('click', function(e){
+    const zoomed = document.querySelector('.mermaid.is-zoomed');
+    if(zoomed && e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    const mermaidEl = e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay = document.createElement('div');
+      overlay.className = 'mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  // 2. ESC 关闭
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      const zoomed = document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  // 3. 滚轮缩放（必须 {passive:false} 才能 preventDefault）
+  document.addEventListener('wheel', function(e){
+    const zoomed = document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg = zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    currentScale += delta;
+    currentScale = Math.max(0.3, Math.min(currentScale, 5));
+    updateTransform(svg);
+  }, {passive: false});
+
+  // 4. 鼠标拖拽平移
+  document.addEventListener('mousedown', function(e){
+    const zoomed = document.querySelector('.mermaid.is-zoomed');
+    if(zoomed && e.target.closest('.mermaid.is-zoomed')){
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!isDragging) return;
+    const zoomed = document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      const svg = zoomed.querySelector('svg');
+      if(svg){svg.style.transition = 'none'; updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup', function(){
+    isDragging = false;
+    const zoomed = document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg = zoomed.querySelector('svg');
+      if(svg) svg.style.transition = 'transform .1s ease-out';
+    }
+  });
+})();
+```
+
+**关键实现要点**：
+- **事件委托**：使用 `document.addEventListener('click', ...)` 而非逐个元素绑定，规避 Mermaid 异步渲染时机问题
+- **passive: false**：滚轮事件必须显式声明，否则 `preventDefault()` 无效，页面会随滚轮一起滚动
+- **不创建新节点**：全程只操作现有 `.mermaid` 元素和遮罩层 `div`，不触碰 SVG 内部结构
+- **transform 叠加**：通过 `translate(x,y) scale(s)` 矩阵实现 Pan + Zoom 的组合变换
+
+### 10.4 已应用文件
+
+- `output/html/ch2_2_1_lesson_plan_tab.html`
+- `output/html/ch2_2_2_doc_tab.html`
+- `output/html/ch2_2_3_current_conditions_tab.html`
+
+**后续生成的所有 HTML 文件必须复用上述同一套 CSS + JS**，保持交互体验一致。
+
+---
+
+## 十一、变更记录
 
 | 日期 | 版本 | 变更内容 |
 |------|------|----------|
 | 2026-05-30 | V1.0 | 基于 2.2.1、2.2.2 生成实践，整理 HTML 生成规范与转换规则 |
+| 2026-06-01 | V1.1 | 新增第 10 章：Mermaid 图表交互规范（点击放大 / 滚轮缩放 / 拖拽平移），记录方案演进与踩坑指南 |
