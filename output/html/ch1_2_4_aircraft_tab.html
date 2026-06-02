@@ -55,8 +55,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre code{background:transparent;padding:0;color:inherit}
 
 .img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
 .collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
@@ -1533,6 +1539,35 @@ mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'base',themeVar
       const svg=zoomed.querySelector('svg');
       if(svg) svg.style.transition='transform .1s ease-out';
     }
+  });
+})();
+
+// 图片点击放大与关闭交互
+(function(){
+  function closeImgZoom(){
+    const overlay=document.querySelector('.img-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  document.addEventListener('click',function(e){
+    const img=e.target.closest('.img-block img');
+    if(img && !document.querySelector('.img-zoom-overlay')){
+      const overlay=document.createElement('div');
+      overlay.className='img-zoom-overlay';
+      const clonedImg=document.createElement('img');
+      clonedImg.src=img.src;
+      clonedImg.alt=img.alt;
+      overlay.appendChild(clonedImg);
+      document.body.appendChild(overlay);
+      return;
+    }
+    if(e.target.classList.contains('img-zoom-overlay')){
+      closeImgZoom();
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape') closeImgZoom();
   });
 })();
 </script>
