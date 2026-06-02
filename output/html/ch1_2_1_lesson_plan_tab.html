@@ -240,7 +240,7 @@ graph TD
     <!-- ==================== 二、核心功能详解 ==================== -->
     <h2>二、核心功能详解</h2>
 
-    <h3>1.1 训练阶段（Training Phases）</h3>
+    <h3>2.1 训练阶段（Training Phases）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -251,7 +251,7 @@ graph TD
       </table>
     </div>
 
-    <h4>1.1.1 训练阶段浏览流程</h4>
+    <h4>2.1.1 训练阶段浏览流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([进入 LESSON PLAN Tab]) --> Load[加载课程]
@@ -264,7 +264,7 @@ flowchart LR
     style End fill:#d1fae5,stroke:#059669
     </div>
 
-    <h3>1.2 课程步骤（Lesson Steps）</h3>
+    <h3>2.2 课程步骤（Lesson Steps）</h3>
     <p>插入训练阶段中的步骤分为 <strong>5 种类型</strong>，通过左侧图标标识：</p>
 
     <!-- 原始图片3：课程步骤标识 -->
@@ -298,7 +298,7 @@ flowchart LR
       </div>
     </div>
 
-    <h4>1.2.1 课程步骤执行流程</h4>
+    <h4>2.2.1 课程步骤执行流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([课程步骤]) --> Identify[识别步骤类型]
@@ -321,7 +321,7 @@ flowchart LR
     style Nest fill:#ede9fe,stroke:#7c3aed
     </div>
 
-    <h3>1.3 课程步骤详情（Lesson Step Details）</h3>
+    <h3>2.3 课程步骤详情（Lesson Step Details）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -332,7 +332,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>1.3.1 课程步骤详情查看流程</h4>
+    <h4>2.3.1 课程步骤详情查看流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([选中步骤]) --> Display[右侧显示详细参数]
@@ -344,9 +344,9 @@ flowchart LR
     style End fill:#d1fae5,stroke:#059669
     </div>
 
-    <h3>1.4 控制按钮栏（Lesson Plan Tab Buttons）</h3>
+    <h3>2.4 控制按钮栏（Lesson Plan Tab Buttons）</h3>
 
-    <h4>1.4.1 按钮总览</h4>
+    <h4>2.4.1 按钮总览</h4>
     <div class="table-wrap">
       <table>
         <tr><th>按钮</th><th>英文</th><th>类型</th><th>功能</th><th>前置条件</th><th>异常/边界</th></tr>
@@ -359,7 +359,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>1.4.2 自动运行与逐步运行对比</h4>
+    <h4>2.4.2 自动运行与逐步运行对比</h4>
     <div class="table-wrap">
       <table>
         <tr><th>对比维度</th><th>自动运行（Autorun）</th><th>逐步运行（Step-by-Step）</th></tr>
@@ -371,7 +371,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>1.4.3 控制按钮栏操作流程</h4>
+    <h4>2.4.3 控制按钮栏操作流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([课程加载完成]) --> Mode{选择运行模式}
@@ -391,7 +391,7 @@ flowchart LR
     style Abort fill:#fee2e2,stroke:#dc2626
     </div>
 
-    <h3>1.5 课程创建与编辑（背景说明）</h3>
+    <h3>2.5 课程创建与编辑（背景说明）</h3>
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
         <div style="display:flex;align-items:center;gap:10px"><h4>编辑器工具与可添加元素</h4><span class="badge">展开</span></div>
@@ -416,7 +416,7 @@ flowchart LR
     <h2>三、全局操作流程与推导</h2>
 
     <h3>3.1 LESSON PLAN Tab 教员核心操作流程全景图</h3>
-    <p>下图汇总了 Chapter 1 全部子章节（1.1~1.4）的核心操作流程，形成<strong>从加载课程到执行完成的完整闭环</strong>。教员可从任意入口触发对应功能；每个功能内部的关键操作步骤均在对应纵向 subgraph 中展开。如需查看各功能更详细的字段属性与边界行为，请参见对应子章节的横向流程图（1.1.1、1.2.1、1.3.1、1.4.3）。</p>
+    <p>下图汇总了 Chapter 1 全部子章节（2.1~2.4）的核心操作流程，形成<strong>从加载课程到执行完成的完整闭环</strong>。教员可从任意入口触发对应功能；每个功能内部的关键操作步骤均在对应纵向 subgraph 中展开。如需查看各功能更详细的字段属性与边界行为，请参见对应子章节的横向流程图（2.1.1、2.2.1、2.3.1、2.4.3）。</p>
     <div class="mermaid">
 flowchart LR
     Start([进入 LESSON PLAN Tab])
@@ -538,7 +538,7 @@ stateDiagram-v2
         <tr><td>课程计划选项卡</td><td>CAE Slick 编辑器</td><td>课程数据源，无课程则选项卡为空</td></tr>
         <tr><td>执行步骤（SIM）</td><td>模拟器核心系统</td><td>步骤指令需模拟器响应才能生效</td></tr>
         <tr><td>执行步骤（MALF）</td><td>故障系统（8.12）</td><td>触发故障需与故障滑动面板联动</td></tr>
-        <tr><td>结束课程</td><td>课程计划剖面工作区（1.5）</td><td>结束后课程计划剖面同步更新状态</td></tr>
+        <tr><td>结束课程</td><td>课程计划剖面工作区（2.5）</td><td>结束后课程计划剖面同步更新状态</td></tr>
         <tr><td>课程状态</td><td>控制面板底部 Footer（1.2.7）</td><td>课程运行状态可能在 Footer 指示</td></tr>
       </table>
     </div>
@@ -607,7 +607,7 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
       <table>
         <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
         <tr><td>2026-05-30</td><td>V0.1</td><td>完成课程计划选项卡细化整理，包含功能总览、界面结构、课程大纲、步骤详情、控制按钮栏、课程创建、关联依赖、数据流推导、测试要点</td></tr>
-        <tr><td>2026-06-02</td><td>V0.2</td><td>按规范V1.6重构为三层架构：一、功能层级与界面总览；二、核心功能详解（1.1~1.5）；三、全局操作流程与推导（3.1核心流程+3.2通用状态机+3.3关联依赖+3.4数据流）；四、测试要点；五、变更记录。修复导航链接，修正Mermaid节点格式</td></tr>
+        <tr><td>2026-06-02</td><td>V0.2</td><td>按规范V1.6重构为三层架构：一、功能层级与界面总览；二、核心功能详解（2.1~2.5）；三、全局操作流程与推导（3.1核心流程+3.2通用状态机+3.3关联依赖+3.4数据流）；四、测试要点；五、变更记录。修复导航链接，修正Mermaid节点格式</td></tr>
       </table>
     </div>
 
