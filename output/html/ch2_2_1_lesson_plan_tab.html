@@ -180,14 +180,14 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["📋 LESSON PLAN Tab
-    课程计划选项卡"] --> B["📑 课程大纲
+    A["LESSON PLAN Tab
+    课程计划选项卡"] --> B["课程大纲
     Lesson Outline
     【左侧区域】"]
-    A --> C["📄 课程步骤详情
+    A --> C["课程步骤详情
     Lesson Step Details
     【右侧区域】"]
-    A --> D["🔘 控制按钮栏
+    A --> D["控制按钮栏
     Tab Buttons
     【底部区域】"]
 
@@ -197,22 +197,22 @@ graph TD
     Training Phase 2"]
     B --> B3["..."]
 
-    B1 --> B1a["📝 NOTE 注释"]
-    B1 --> B1b["⚙️ SIM 模拟条件"]
-    B1 --> B1c["⚠️ MALF 故障"]
-    B2 --> B2a["🔵 Freeplay 自由操作"]
-    B2 --> B2b["🔗 Nested 嵌套课程"]
+    B1 --> B1a["NOTE 注释"]
+    B1 --> B1b["SIM 模拟条件"]
+    B1 --> B1c["MALF 故障"]
+    B2 --> B2a["Freeplay 自由操作"]
+    B2 --> B2b["Nested 嵌套课程"]
 
     C --> C1["当前选中步骤的
     详细参数/说明/触发条件
     （可滚动查看）"]
 
-    D --> D1["▶️ Autorun 自动运行"]
-    D --> D2["⏯️ Step-by-Step 逐步运行"]
-    D --> D3["📍 Go to Current 调到当前"]
-    D --> D4["⏭️ Skip Condition 跳过条件"]
-    D --> D5["✅ Execute 执行"]
-    D --> D6["🛑 End Lesson 结束课程"]
+    D --> D1["Autorun 自动运行"]
+    D --> D2["Step-by-Step 逐步运行"]
+    D --> D3["Go to Current 调到当前"]
+    D --> D4["Skip Condition 跳过条件"]
+    D --> D5["Execute 执行"]
+    D --> D6["End Lesson 结束课程"]
 
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
     style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
@@ -335,7 +335,7 @@ flowchart LR
       <table>
         <tr><th>按钮</th><th>英文</th><th>类型</th><th>功能</th><th>前置条件</th><th>异常/边界</th></tr>
         <tr><td><strong>自动运行</strong></td><td>Autorun</td><td>Action Button</td><td>运行已设置为自动运行的步骤</td><td>课程已加载</td><td>无自动步骤时状态待确认</td></tr>
-        <tr><td><strong>逐步运行</strong></td><td>Step-by-step</td><td>Action Button</td><td>逐步运行，每步需确认</td><td>课程已加载</td><td>首次点击进入逐步模式</td></tr>
+        <tr><td><strong>逐步运行</strong></td><td>Step-by-Step</td><td>Action Button</td><td>逐步运行，每步需确认</td><td>课程已加载</td><td>首次点击进入逐步模式</td></tr>
         <tr><td><strong>调到当前</strong></td><td>Go to Current</td><td>Action Button</td><td>右侧显示当前步骤</td><td>课程正在运行</td><td>无当前步骤时可能禁用</td></tr>
         <tr><td><strong>跳过条件</strong></td><td>Skip Condition</td><td>Action Button</td><td>跳过步骤关联条件</td><td>当前步骤有条件</td><td>无条件时禁用</td></tr>
         <tr><td><strong>执行</strong></td><td>Execute</td><td>Action Button</td><td>执行当前步骤</td><td>已选中步骤</td><td>未选中时禁用</td></tr>
@@ -490,7 +490,7 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
     <!-- Footer nav -->
     <div class="footer-nav">
       <a class="prev" href="#"><span>←</span><span>2.2 控制面板工作区</span></a>
-      <a class="next" href="#"><span>2.2.2 文档选项卡（DOC Tab）</span><span>→</span></a>
+      <a class="next" href="ch2_2_2_doc_tab.html"><span>2.2.2 文档选项卡（DOC Tab）</span><span>→</span></a>
     </div>
   </article>
 </main>

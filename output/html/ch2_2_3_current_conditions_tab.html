@@ -446,8 +446,8 @@ flowchart LR
         <tr><th>选项</th><th>说明</th></tr>
         <tr><td><strong>无雾</strong></td><td>点击移除雾</td></tr>
         <tr><td><strong>零星雾</strong></td><td>雾厚度在预设 RVR 最小/最大及零星雾顶部高度之间随机变化</td></tr>
-        <tr><td><strong>浓雾</strong></td><td>雾厚度在给定 RVR 最小/最大之间变化</td></tr>
-        <tr><td><strong>RVR 最小/最大</strong></td><td>仅在零星雾激活时可用；RVR MIN: 0 ~ RVR MAX；RVR MAX: RVR MIN ~ 3045 米 / 9990 英尺</td></tr>
+        <tr><td><strong>浓雾</strong></td><td>雾厚度在给定 RVR 最小/最大之间变化；支持输入浓雾顶部值（英尺）</td></tr>
+        <tr><td><strong>RVR 最小/最大</strong></td><td>点击输入文本字段输入最小/最大跑道视程（米/英尺）；RVR MIN: 0 ~ RVR MAX；RVR MAX: RVR MIN ~ 3045 米 / 9990 英尺</td></tr>
         <tr><td><strong>互斥关系</strong></td><td>无雾、零星雾、浓雾三个单选按钮<strong>互斥</strong>，只能激活其一</td></tr>
       </table>
     </div>
@@ -485,9 +485,9 @@ flowchart LR
     <div class="table-wrap">
       <table>
         <tr><th>控件</th><th>功能说明</th></tr>
-        <tr><td><strong>Altitude 高度</strong></td><td>点击输入字段显示键盘；支持高度滑块（上下滑动 +/-）；+/- 按钮以固定速率位移飞机</td></tr>
-        <tr><td><strong>Airspeed 空速</strong></td><td>点击输入字段显示键盘；支持空速滑块（左右滑动 +/-）；飞机配平至请求速度；襟翼和起落架自动驱动防超速</td></tr>
-        <tr><td><strong>Mach 马赫</strong></td><td>点击输入字段显示键盘；飞机配平至请求马赫速度；襟翼和起落架自动驱动防超速</td></tr>
+        <tr><td><strong>Altitude 高度</strong></td><td>点击输入字段显示键盘；支持高度滑块（上下滑动 +/-）；+/- 按钮以固定速率位移飞机；动态最小/最大值</td></tr>
+        <tr><td><strong>Airspeed 空速</strong></td><td>点击输入字段显示键盘；支持空速滑块（左右滑动 +/-）；飞机配平至请求速度；襟翼和起落架自动驱动防超速；完成后自动设置飞行冻结；动态最小/最大值</td></tr>
+        <tr><td><strong>Mach 马赫</strong></td><td>点击输入字段显示键盘；飞机配平至请求马赫速度；襟翼和起落架自动驱动防超速；完成后自动设置飞行冻结；动态最小/最大值</td></tr>
         <tr><td><strong>Graph 图表</strong></td><td>交互式图表，触摸并移动 + 符号可同时更新高度和速度参数</td></tr>
       </table>
     </div>
@@ -537,7 +537,7 @@ flowchart LR
         <tr><th>按钮</th><th>说明</th></tr>
         <tr><td><strong>轻度（Light）</strong></td><td>积冰速率和量设置为 33%</td></tr>
         <tr><td><strong>中度（Moderate）</strong></td><td>积冰速率和量设置为 67%</td></tr>
-        <tr><td><strong>重度（Severe）</strong></td><td>积冰速率和量设置为 100%</td></tr>
+        <tr><td><strong>重度（Severe）</strong></td><td>积冰速率和量设置为重度等级（A320.md 原文未明确标注具体百分比）</td></tr>
         <tr><td><strong>除冰（Remove Ice）</strong></td><td>逐渐消除现有积冰，完成后速率和量设为 0</td></tr>
       </table>
     </div>
@@ -575,8 +575,11 @@ flowchart LR
         <tr><td>适用高度</td><td>所有高度（地面除外）</td></tr>
         <tr><td>&lt; 50 ft AGL</td><td>标称强度随 AGL 高度线性减弱</td></tr>
         <tr><td>&gt; 50 ft AGL</td><td>100% 标称强度</td></tr>
-        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
-        <tr><td>Intensity 输入</td><td>Min = 0，Max = 100%</td></tr>
+        <tr><td>交互方式</td><td>点击轻度/中度/重度按钮之一（组内互斥），将晴空湍流强度设置为对应等级</td></tr>
+        <tr><td>轻度（Light）</td><td>点击后强度设置为 33%</td></tr>
+        <tr><td>中度（Moderate）</td><td>点击后强度设置为 66%</td></tr>
+        <tr><td>重度（Severe）</td><td>点击后强度设置为 100%</td></tr>
+        <tr><td>Intensity 输入</td><td>点击输入文本字段显示键盘，允许手动修改强度；Min = 0，Max = 100%</td></tr>
       </table>
     </div>
 
@@ -586,7 +589,11 @@ flowchart LR
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>适用高度</td><td>所有高度（地面除外）</td></tr>
         <tr><td>衰减特性</td><td>同晴空湍流（&lt; 50 ft AGL 线性减弱，&gt; 50 ft AGL 100%）</td></tr>
-        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
+        <tr><td>交互方式</td><td>点击轻度/中度/重度按钮之一（组内互斥），将雷暴湍流强度设置为对应等级</td></tr>
+        <tr><td>轻度（Light）</td><td>点击后强度设置为 33%</td></tr>
+        <tr><td>中度（Moderate）</td><td>点击后强度设置为 66%</td></tr>
+        <tr><td>重度（Severe）</td><td>点击后强度设置为 100%</td></tr>
+        <tr><td>Intensity 输入</td><td>点击输入文本字段显示键盘，允许手动修改强度；Min = 0，Max = 100%</td></tr>
       </table>
     </div>
 
@@ -605,8 +612,11 @@ flowchart LR
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>强度等级</td><td>轻度 33%、中度 66%、重度 100%</td></tr>
-        <tr><td>全部清除（Clear All）</td><td>清除环境中所有活跃的湍流类型</td></tr>
+        <tr><td>交互方式</td><td>点击轻度/中度/重度按钮之一（组内互斥），将低空湍流强度设置为对应等级</td></tr>
+        <tr><td>轻度（Light）</td><td>点击后强度设置为 33%</td></tr>
+        <tr><td>中度（Moderate）</td><td>点击后强度设置为 66%</td></tr>
+        <tr><td>重度（Severe）</td><td>点击后强度设置为 100%</td></tr>
+        <tr><td>全部清除（Clear All）</td><td>点击后清除环境中所有活跃的湍流类型</td></tr>
         <tr><td>湍流类型优先级</td><td>点击可展开按钮显示湍流类型优先级滑动面板</td></tr>
       </table>
     </div>

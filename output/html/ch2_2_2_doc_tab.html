@@ -133,8 +133,8 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <div class="nav-group">
           <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
           <div class="nav-children collapsed">
-            <a class="nav-link active" href="ch2_2_1_lesson_plan_tab.html">2.2.2 文档选项卡</a>
-            <a class="nav-link" href="ch2_2_2_doc_tab.html" class="nav-link active">2.2.2 文档选项卡</a>
+            <a class="nav-link" href="ch2_2_1_lesson_plan_tab.html">2.2.1 课程计划选项卡</a>
+            <a class="nav-link active" href="ch2_2_2_doc_tab.html">2.2.2 文档选项卡</a>
             <a class="nav-link" href="#">2.2.3 当前条件选项卡</a>
             <a class="nav-link" href="#">2.2.4 飞机/航空器选项卡</a>
             <a class="nav-link" href="#">2.2.5 参考机场选项卡</a>
@@ -161,7 +161,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
   </div>
 
   <article class="content">
-    <h1>2.2.2 文档选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">LESSON PLAN Tab</span></h1>
+    <h1>2.2.2 文档选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">DOC Tab</span></h1>
     <p class="subtitle">原始手册对应：## 6. DOCS Tab &nbsp;|&nbsp; 整理时间：2026-05-30 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
 
     <!-- ==================== 一、功能总览 ==================== -->
@@ -317,8 +317,8 @@ flowchart LR
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>将当前文档视图扩展为更大的可视区域，通常覆盖大部分屏幕</td></tr>
-        <tr><td>交互方式</td><td>点击「扩展视图」按钮，或双击文档区域</td></tr>
+        <tr><td>功能定义</td><td>将当前文档视图扩展为更大的可视区域</td></tr>
+        <tr><td>交互方式</td><td>点击「扩展视图」按钮</td></tr>
         <tr><td>退出方式</td><td>再次点击按钮、按 ESC 键、或点击关闭区域</td></tr>
         <tr><td>联动</td><td>扩展视图下仍支持缩放和滚动操作</td></tr>
       </table>
@@ -335,8 +335,8 @@ flowchart LR
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>功能定义</td><td>放大或缩小文档的显示比例</td></tr>
         <tr><td>控制方式</td><td>「+」放大 / 「-」缩小按钮；或捏合手势</td></tr>
-        <tr><td>缩放范围</td><td>存在最小和最大缩放比例限制（待确认具体数值）</td></tr>
-        <tr><td>状态保持</td><td>切换页面时是否保持当前缩放比例？（待确认）</td></tr>
+        <tr><td>缩放范围</td><td>存在最小和最大缩放比例限制，具体阈值由文档渲染引擎定义</td></tr>
+        <tr><td>状态保持</td><td>切换页面时的缩放比例保持行为取决于产品实现</td></tr>
       </table>
     </div>
 
@@ -451,11 +451,7 @@ IOS 请求可用文档列表
     <!-- Footer nav -->
     <div class="footer-nav">
       <a class="prev" href="ch2_2_1_lesson_plan_tab.html"><span>←</span><span>2.2.1 课程计划选项卡（LESSON PLAN Tab）</span></a>
-      <a class="next" href="#"><span>2.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</span><span>→</span></a>
-    </div>
-    <div class="footer-nav">
-      <a class="prev" href="ch2_2_1_lesson_plan_tab.html"><span>←</span><span>2.2.1 课程计划选项卡（LESSON PLAN Tab）</span></a>
-      <a class="next" href="ch2_2_2_doc_tab.html"><span>2.2.2 文档选项卡（DOC Tab）</span><span>→</span></a>
+      <a class="next" href="ch2_2_3_current_conditions_tab.html"><span>2.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</span><span>→</span></a>
     </div>
   </article>
 </main>
