@@ -219,7 +219,7 @@ graph TD
     <h2>二、核心功能详解</h2>
 
     <!-- 2.1 参数输入文本字段速览 -->
-    <h3>2.1 参数输入文本字段速览</h3>
+    <h3>2.1 参数输入文本字段速览（Parameter Input Text Fields）</h3>
     <p>飞机选项卡主区域上半部分集中显示 5 个重量与平衡相关参数。所有参数均支持键盘输入和滚轮选择器两种修改方式。</p>
     <div class="table-wrap">
       <table>
@@ -236,8 +236,34 @@ graph TD
       <strong>滚轮选择器通用操作：</strong>长按参数直至滚轮选择器显示，或向上/向下滑动参数呼出滚轮。滚动选择后，点击绿色勾号确认，或点击红色 X 取消。
     </blockquote>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_gw_keyboard.jpg" alt="总重键盘">
+      <p>总重键盘显示当前总重量，并允许教员通过键盘或滑块输入另一个总重值。</p>
+      <div class="img-caption">图 2：总重键盘（GW Keyboard）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_gw_cg_keyboard.jpg" alt="总重重心键盘">
+      <p>总重重心键盘显示当前总重量重心（GW CG），并允许教员通过键盘或滑块输入另一个总重重心值。</p>
+      <div class="img-caption">图 3：总重重心键盘（GW CG Keyboard）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_zfw_keyboard.jpg" alt="零燃油重量键盘">
+      <p>零燃油重量键盘显示当前零燃油重量（ZFW），并允许教员通过键盘或滑块输入另一个零燃油重量值。</p>
+      <div class="img-caption">图 4：零燃油重量键盘（ZFW Keyboard）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_zfw_cg_keyboard.jpg" alt="零燃油重量重心键盘">
+      <p>零燃油重量重心键盘显示当前零燃油重量重心（ZFW CG），并允许教员通过键盘或滑块输入另一个零燃油重量重心值。</p>
+      <div class="img-caption">图 5：零燃油重量重心键盘（ZFW CG Keyboard）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_fuel_keyboard.jpg" alt="燃油键盘">
+      <p>燃油键盘显示当前燃油重量，并允许教员通过键盘或滑块输入另一个燃油重量值。</p>
+      <div class="img-caption">图 6：燃油键盘（Fuel Keyboard）</div>
+    </div>
+
     <!-- 2.2 快速访问按钮速览 -->
-    <h3>2.2 快速访问按钮速览</h3>
+    <h3>2.2 快速访问按钮速览（Quick Access Buttons）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>按钮</th><th>功能定义</th><th>呈现方式</th><th>交互方式</th></tr>
@@ -253,12 +279,12 @@ graph TD
     </div>
 
     <!-- 2.3 数据链滑动面板 -->
-    <h3>2.3 数据链（DL/UL）滑动面板</h3>
+    <h3>2.3 数据链（DL/UL）滑动面板（Data Link Sliding Panel）</h3>
     <p>数据链滑动面板允许教员向模拟飞机发送上行消息、显示模拟飞机与地面站之间的通信、查看并回复来自模拟飞机的消息，以及控制 ATC 和 ADS 连接。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_datalink_panel.jpg" alt="数据链滑动面板">
-      <div class="img-caption">图 2：数据链滑动面板（Data Link Sliding Panel）</div>
+      <div class="img-caption">图 7：数据链滑动面板（Data Link Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
@@ -266,9 +292,9 @@ graph TD
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面 DL 或 UL 快速访问按钮弹出</td></tr>
         <tr><td>面板结构</td><td>包含两个选项卡：日志（Log）、连接控制（Connection Control）</td></tr>
-        <tr><td>日志选项卡</td><td>显示模拟飞机与地面站之间的通信历史，最新消息始终显示在页面顶部。包含清除一条、清除全部、发送上行链路按钮</td></tr>
-        <tr><td>新上行链路选项卡</td><td>允许教员发送上行消息，包含组（Group）、场景（Scenario）、场景消息（Scene Message）、消息编辑器（Message Editor）四部分，以及添加、移除、上下优先级调整按钮</td></tr>
-        <tr><td>连接控制选项卡</td><td>提供 ATC 和 ADS 中心的连接/断开控制，包含 ATC 部分、ADS 部分、地面部分</td></tr>
+        <tr><td>日志选项卡（Log）</td><td>显示模拟飞机与地面站之间的通信历史，最新消息始终显示在页面顶部。包含清除一条、清除全部、发送上行链路按钮</td></tr>
+        <tr><td>新上行链路选项卡（New Uplink）</td><td>允许教员发送上行消息，包含组（Group）、场景（Scenario）、场景消息（Scene Message）、消息编辑器（Message Editor）四部分，以及添加、移除、上下优先级调整按钮</td></tr>
+        <tr><td>连接控制选项卡（Connection Control）</td><td>提供 ATC 和 ADS 中心的连接/断开控制，包含 ATC 部分、ADS 部分、地面部分</td></tr>
         <tr><td>ATC 管理模式</td><td>三个互斥单选按钮：自动 ATC 管理（地面站自动处理）、自动预选（软件建议，教员点击发送启动）、手动选择（教员通过显示输入字段选择）</td></tr>
         <tr><td>断开按钮</td><td>点击断开当前 ATC 连接，弹出确认菜单</td></tr>
         <tr><td>ADS 部分</td><td>显示最近一次 ADS 报告的只读字段（飞机ID、纬度、经度、高度、ADS基本报告模式）及 ADS 中心 ID 列表</td></tr>
@@ -276,13 +302,30 @@ graph TD
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_datalink_new_uplink.jpg" alt="新建上行链路选项卡">
+      <div class="img-caption">图 8：新建上行链路选项卡（New Uplink Tab）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_datalink_connection.jpg" alt="连接控制选项卡">
+      <div class="img-caption">图 9：连接控制选项卡（Connection Control Tab）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_datalink_atc.jpg" alt="ATC部分">
+      <div class="img-caption">图 10：ATC 部分（ATC Section）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_datalink_ads.jpg" alt="ADS选项卡">
+      <div class="img-caption">图 11：ADS 选项卡（ADS Tab）</div>
+    </div>
+
     <!-- 2.4 通信滑动面板 -->
-    <h3>2.4 通信滑动面板</h3>
+    <h3>2.4 通信滑动面板（Communication Sliding Panel）</h3>
     <p>通信滑动面板允许教员建立 VHF/HF 无线电通信、与内部通信系统（ICS）通信、收听无线电导航信号、选择各种通信模式。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_comm_panel.jpg" alt="通信滑动面板">
-      <div class="img-caption">图 3：通信滑动面板（Communication Sliding Panel）</div>
+      <div class="img-caption">图 12：通信滑动面板（Communication Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
@@ -290,47 +333,86 @@ graph TD
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面 VHF 快速访问按钮弹出</td></tr>
         <tr><td>面板结构</td><td>包含五个选项卡：音量（Volume）、无线电（Radio）、内部通话（Intercom）、导航（Navigation）、特殊功能（Special Features）</td></tr>
-        <tr><td>音量选项卡</td><td>通过滑块控制无线电/内部通话耳机音频、导航音频信号、耳机音频、背景噪音音量，范围从最小值到最大值</td></tr>
-        <tr><td>无线电选项卡</td><td>显示所有可用 VHF 和 HF 电台，每个电台包含电台名称、所选频率、调谐地面站类型。每个电台有三个按钮：发射（Transmit）、接收（Receive）、SELCAL</td></tr>
-        <tr><td>内部通话选项卡</td><td>允许教员与 ICS 通信，包括驾驶舱（FLT）、客舱（CAB）、旅客广播（PA）。每个 ICS 包含发射和接收按钮；若无线电发射机无电源，发射按钮禁用</td></tr>
-        <tr><td>导航选项卡</td><td>允许监听 NAV、DME、Marker Beacon、ADF、ILS 信号。每个导航接收机显示接收机名称、调谐频率、接收台站名称</td></tr>
-        <tr><td>特殊功能选项卡</td><td>包含机长私密、副驾驶私密、机长监听、副驾驶监听、紧急呼叫、机械师呼叫、乘务员呼叫、撤离（EVAC）、面罩（Mask）、硬件 ACP 开关、VHF LOS OVRD 等按钮</td></tr>
+        <tr><td>音量选项卡（Volume）</td><td>通过滑块控制无线电/内部通话耳机音频、导航音频信号、耳机音频、背景噪音音量，范围从最小值到最大值</td></tr>
+        <tr><td>无线电选项卡（Radio）</td><td>显示所有可用 VHF 和 HF 电台，每个电台包含电台名称、所选频率、调谐地面站类型。每个电台有三个按钮：发射（Transmit）、接收（Receive）、SELCAL</td></tr>
+        <tr><td>内部通话选项卡（Intercom）</td><td>允许教员与 ICS 通信，包括驾驶舱（FLT）、客舱（CAB）、旅客广播（PA）。每个 ICS 包含发射和接收按钮；若无线电发射机无电源，发射按钮禁用</td></tr>
+        <tr><td>导航选项卡（Navigation）</td><td>允许监听 NAV、DME、Marker Beacon、ADF、ILS 信号。每个导航接收机显示接收机名称、调谐频率、接收台站名称</td></tr>
+        <tr><td>特殊功能选项卡（Special Features）</td><td>包含机长私密、副驾驶私密、机长监听、副驾驶监听、紧急呼叫、机械师呼叫、乘务员呼叫、撤离（EVAC）、面罩（Mask）、硬件 ACP 开关、VHF LOS OVRD 等按钮</td></tr>
         <tr><td>VHF LOS OVRD</td><td>选中时教员 VHF 无线电被视为机载设备，与驾驶舱机组 VHF 相同；取消选中时根据飞机与地面站距离和高度进行真实空对地通信模拟</td></tr>
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_comm_volume.jpg" alt="音量选项卡">
+      <div class="img-caption">图 13：音量选项卡（Volume Tab）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_comm_radio.jpg" alt="RADIO选项卡">
+      <div class="img-caption">图 14：RADIO 选项卡（Radio Tab）</div>
+    </div>
+
     <!-- 2.5 重量与平衡滑动面板 -->
-    <h3>2.5 重量与平衡滑动面板</h3>
+    <h3>2.5 重量与平衡滑动面板（Weight & Balance Sliding Panel）</h3>
     <p>重量与平衡滑动面板允许教员快速配置飞机重量，包含快速设置预定义重量、调整零燃油重量、调整燃油重量、管理每个燃油箱油量等功能。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_weight_panel.jpg" alt="重量与平衡滑动面板">
-      <div class="img-caption">图 4：重量与平衡滑动面板（Weight and Balance Sliding Panel）</div>
+      <div class="img-caption">图 15：重量与平衡滑动面板（Weight &amp; Balance Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面"重量与重心"快速访问按钮弹出；或点击主界面 GW、GW CG、ZFW、ZFW CG、燃油参数字段弹出对应键盘</td></tr>
-        <tr><td>面板结构</td><td>包含三个选项卡：快速设置（Quick Set）、性能数据（Performance Data）、重量与重心（Weight and CG）</td></tr>
-        <tr><td>快速设置选项卡</td><td>三个互斥按钮：轻重量（Light）、中重量（Medium）、重重量（Heavy），点击后将飞机设置为预定义重量（含 GW、ZFW、GW CG）</td></tr>
-        <tr><td>性能数据选项卡</td><td>只读字段：安定面配平、襟翼位置、V1、VR、V2、VREF。速度旁 FMS 标志表示速度来自飞行管理系统</td></tr>
-        <tr><td>重量与重心选项卡</td><td>可调整 ZFW、燃油、GW、GW CG、ZFW CG，每个参数支持输入文本字段或滑块控制。调整任一参数会自动联动其他参数</td></tr>
-        <tr><td>燃油管理</td><td>支持单独调整左外侧、左内侧、右外侧、右内侧、中央燃油箱油量；支持燃油平衡（一键平衡所有油箱）；支持燃油冻结（冻结期间燃油量指示器保持不动，但仍可加油）</td></tr>
-        <tr><td>重心限制图</td><td>交互式图表显示飞机重量与重心运行包线，当前重量和重心由包线内光标指示，可触摸并移动光标直接修改</td></tr>
-        <tr><td>激活/取消按钮</td><td>激活按钮执行新的重量和重心选择；取消按钮取消选定值。未选择任何更改时两个按钮均禁用</td></tr>
-        <tr><td>燃油冻结边界</td><td>燃油冻结激活时所有仪表正常指示（除燃油量指示器外）；重新定位期间燃油冻结按钮禁用，直到重新定位或飞行配平完成</td></tr>
-        <tr><td>动态最小/最大值</td><td>任何重量参数调整后，若新值超出批准数据限制，系统自动调整其他参数（燃油或 ZFW）以保持合规</td></tr>
+        <tr><td>面板结构</td><td>包含三个选项卡：快速设置（Quick Set）、性能数据（Performance Data）、重量与重心（Weight & CG）</td></tr>
+        <tr><td>快速设置选项卡（Quick Set）</td><td>三个互斥按钮：轻重量（Light）、中重量（Medium）、重重量（Heavy），点击后将飞机设置为预定义重量（含 GW、ZFW、GW CG）</td></tr>
+        <tr><td>性能数据选项卡（Performance Data）</td><td>只读字段：安定面配平、襟翼位置、V1、VR、V2、VREF。速度旁 FMS 标志表示速度来自飞行管理系统</td></tr>
+        <tr><td>重量与重心选项卡（Weight & CG）</td><td>可调整 ZFW、燃油、GW、GW CG、ZFW CG，每个参数支持输入文本字段或滑块控制。调整任一参数会自动联动其他参数</td></tr>
+        <tr><td>燃油管理（Fuel Management）</td><td>支持单独调整左外侧、左内侧、右外侧、右内侧、中央燃油箱油量；支持燃油平衡（一键平衡所有油箱）；支持燃油冻结（冻结期间燃油量指示器保持不动，但仍可加油）</td></tr>
+        <tr><td>重心限制图（CG Envelope Graph）</td><td>交互式图表显示飞机重量与重心运行包线，当前重量和重心由包线内光标指示，可触摸并移动光标直接修改</td></tr>
+        <tr><td>激活/取消按钮（Activate/Cancel）</td><td>激活按钮执行新的重量和重心选择；取消按钮取消选定值。未选择任何更改时两个按钮均禁用</td></tr>
+        <tr><td>燃油冻结边界（Fuel Freeze Boundary）</td><td>燃油冻结激活时所有仪表正常指示（除燃油量指示器外）；重新定位期间燃油冻结按钮禁用，直到重新定位或飞行配平完成</td></tr>
+        <tr><td>动态最小/最大值（Dynamic Min/Max）</td><td>任何重量参数调整后，若新值超出批准数据限制，系统自动调整其他参数（燃油或 ZFW）以保持合规</td></tr>
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_weight_cg_tab.jpg" alt="重量与重心选项卡">
+      <div class="img-caption">图 16：重量与重心选项卡（Weight &amp; CG Tab）</div>
+    </div>
+
+    <h4>2.5.1 重量调整联动流程（Weight Adjustment Flow）</h4>
+    <div class="mermaid">
+flowchart TD
+    Start([调整重量参数]) --> Input{输入方式}
+    Input -->|键盘输入| Key[输入新值]
+    Input -->|滑块控制| Slide[拖动滑块]
+    Input -->|快速设置| Quick[点击轻中重按钮]
+    Key --> Calc[联动计算引擎]
+    Slide --> Calc
+    Quick --> Calc
+    Calc --> Check{是否超出限制}
+    Check -->|否| Ready[参数组合合规]
+    Check -->|是| Auto[自动调整燃油或ZFW]
+    Auto --> Ready
+    Ready --> Active{点击激活}
+    Active -->|是| Sync[同步至模拟器与FMS]
+    Active -->|否| Cancel[点击取消]
+    Sync --> End([完成])
+    Cancel --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style Auto fill:#fee2e2,stroke:#dc2626
+    </div>
+
     <!-- 2.6 服务与舱门滑动面板 -->
-    <h3>2.6 服务与舱门滑动面板</h3>
+    <h3>2.6 服务与舱门滑动面板（Services & Doors Sliding Panel）</h3>
     <p>服务与舱门滑动面板允许教员执行地面服务操作、打开和关闭各种飞机舱门、模拟驾驶舱门禁请求。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_service_panel.jpg" alt="服务与舱门滑动面板">
-      <div class="img-caption">图 5：服务与舱门滑动面板（Service and Doors Sliding Panel）</div>
+      <div class="img-caption">图 17：服务与舱门滑动面板（Services &amp; Doors Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
@@ -338,87 +420,124 @@ graph TD
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面"服务与舱门"快速访问按钮弹出</td></tr>
         <tr><td>面板结构</td><td>包含两个选项卡：服务（Service）、舱门（Doors）</td></tr>
-        <tr><td>服务选项卡</td><td>包含导航快速校准、发动机快速启动、发动机差异、外部气源、地面交流电源、飞机轮挡、飞机顶升、APU 快速启动等按钮</td></tr>
-        <tr><td>导航快速校准</td><td>点击后校准参考系统（IRS、INS、AHRS、ADIRS），绕过正常校准周期。按钮点亮并保持激活 2 秒；已校准或系统关闭时禁用</td></tr>
-        <tr><td>发动机快速启动</td><td>点击后启动熄火发动机（需满足正确条件：有可用燃油、燃油手柄在慢车位）。保持点亮直到发动机启动；所有发动机运行时禁用</td></tr>
-        <tr><td>发动机差异</td><td>切换按钮，启用后确保某些发动机读数不完全相同（如 EGT），增加模拟真实感</td></tr>
-        <tr><td>外部气源</td><td>切换按钮，连接/断开外部气源地面供气。飞机开始移动时自动断开，此时按钮禁用</td></tr>
-        <tr><td>地面交流电源</td><td>切换按钮，激活/停用外部交流电源。飞机移动时自动断开，此时按钮禁用</td></tr>
-        <tr><td>飞机轮挡</td><td>切换按钮，放置/移除飞机轮挡。轮挡放置时飞机不会移动；飞机移动时禁用。与飞机顶升<strong>互斥</strong></td></tr>
-        <tr><td>飞机顶升</td><td>切换按钮，将飞机置于顶升状态（起落架支柱完全伸展，可收放起落架、施加推力而不掉落）。飞机移动时禁用。与飞机轮挡<strong>互斥</strong></td></tr>
-        <tr><td>APU 快速启动</td><td>点击后启动 APU，电气和气动输出在 5 秒内可用。APU 运行或未满足条件（主开关打开、断路器闭合、有可用燃油）时禁用</td></tr>
-        <tr><td>舱门选项卡</td><td>包含飞机舱门按钮、滑梯部分、驾驶舱通道部分、客舱准备部分</td></tr>
-        <tr><td>关闭所有舱门</td><td>切换按钮，正常状态点击打开所有舱门；激活状态（浅蓝色）点击关闭所有舱门</td></tr>
-        <tr><td>航电设备舱门</td><td>切换按钮，打开/关闭相应航电设备检修门</td></tr>
-        <tr><td>客舱门</td><td>四个切换按钮：前左侧、前右侧、后左侧、后右侧乘客/机组客舱门，分别打开/关闭</td></tr>
-        <tr><td>紧急出口</td><td>左侧和右侧紧急出口切换按钮，打开/关闭相应机翼上方紧急出口门</td></tr>
-        <tr><td>货舱门</td><td>前货舱、后货舱、散装货物三个切换按钮</td></tr>
-        <tr><td>滑梯部分</td><td>两个互斥按钮：预位所有滑梯（浅蓝色）、解除所有滑梯（浅蓝色）</td></tr>
-        <tr><td>驾驶舱通道部分</td><td>包含门（打开/关闭驾驶舱通道门）、常规请求、紧急请求、系统重置四个按钮。后三个按钮选中后保持激活 2 秒；若驾驶舱门键盘停用或系统控制器断电则禁用</td></tr>
-        <tr><td>客舱准备部分</td><td>两个互斥单选按钮：自动模式（默认）、手动模式（选择后可在 ECAM/EICAS 显示单元上显示客舱就绪指示）</td></tr>
+        <tr><td>服务选项卡（Services）</td><td>包含导航快速校准、发动机快速启动、发动机差异、外部气源、地面交流电源、飞机轮挡、飞机顶升、APU 快速启动等按钮</td></tr>
+        <tr><td>导航快速校准（Quick Align）</td><td>点击后校准参考系统（IRS、INS、AHRS、ADIRS），绕过正常校准周期。按钮点亮并保持激活 2 秒；已校准或系统关闭时禁用</td></tr>
+        <tr><td>发动机快速启动（Quick Engine Start）</td><td>点击后启动熄火发动机（需满足正确条件：有可用燃油、燃油手柄在慢车位）。保持点亮直到发动机启动；所有发动机运行时禁用</td></tr>
+        <tr><td>发动机差异（Engine Differential）</td><td>切换按钮，启用后确保某些发动机读数不完全相同（如 EGT），增加模拟真实感</td></tr>
+        <tr><td>外部气源（External Pneumatic）</td><td>切换按钮，连接/断开外部气源地面供气。飞机开始移动时自动断开，此时按钮禁用</td></tr>
+        <tr><td>地面交流电源（Ground AC Power）</td><td>切换按钮，激活/停用外部交流电源。飞机移动时自动断开，此时按钮禁用</td></tr>
+        <tr><td>飞机轮挡（Chocks）</td><td>切换按钮，放置/移除飞机轮挡。轮挡放置时飞机不会移动；飞机移动时禁用。与飞机顶升<strong>互斥</strong></td></tr>
+        <tr><td>飞机顶升（Jacked）</td><td>切换按钮，将飞机置于顶升状态（起落架支柱完全伸展，可收放起落架、施加推力而不掉落）。飞机移动时禁用。与飞机轮挡<strong>互斥</strong></td></tr>
+        <tr><td>APU 快速启动（Quick APU Start）</td><td>点击后启动 APU，电气和气动输出在 5 秒内可用。APU 运行或未满足条件（主开关打开、断路器闭合、有可用燃油）时禁用</td></tr>
+        <tr><td>舱门选项卡（Doors）</td><td>包含飞机舱门按钮、滑梯部分、驾驶舱通道部分、客舱准备部分</td></tr>
+        <tr><td>关闭所有舱门（Close All Doors）</td><td>切换按钮，正常状态点击打开所有舱门；激活状态（浅蓝色）点击关闭所有舱门</td></tr>
+        <tr><td>航电设备舱门（Avionics Doors）</td><td>切换按钮，打开/关闭相应航电设备检修门</td></tr>
+        <tr><td>客舱门（Cabin Doors）</td><td>四个切换按钮：前左侧、前右侧、后左侧、后右侧乘客/机组客舱门，分别打开/关闭</td></tr>
+        <tr><td>紧急出口（Emergency Exits）</td><td>左侧和右侧紧急出口切换按钮，打开/关闭相应机翼上方紧急出口门</td></tr>
+        <tr><td>货舱门（Cargo Doors）</td><td>前货舱、后货舱、散装货物三个切换按钮</td></tr>
+        <tr><td>滑梯部分（Slides）</td><td>两个互斥按钮：预位所有滑梯（浅蓝色）、解除所有滑梯（浅蓝色）</td></tr>
+        <tr><td>驾驶舱通道部分（Cockpit Access）</td><td>包含门（打开/关闭驾驶舱通道门）、常规请求、紧急请求、系统重置四个按钮。后三个按钮选中后保持激活 2 秒；若驾驶舱门键盘停用或系统控制器断电则禁用</td></tr>
+        <tr><td>客舱准备部分（Cabin Ready）</td><td>两个互斥单选按钮：自动模式（默认）、手动模式（选择后可在 ECAM/EICAS 显示单元上显示客舱就绪指示）</td></tr>
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_service_tab.jpg" alt="服务选项卡">
+      <div class="img-caption">图 18：服务选项卡（Services Tab）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_doors_tab.jpg" alt="舱门选项卡">
+      <div class="img-caption">图 19：舱门选项卡（Doors Tab）</div>
+    </div>
+
     <!-- 2.7 故障滑动面板 -->
-    <h3>2.7 故障滑动面板</h3>
+    <h3>2.7 故障滑动面板（Malfunction Sliding Panel）</h3>
     <p>故障滑动面板允许教员预选并激活模拟中的故障。故障分为两种类型：激活（红色标志）和预位（黄色标志）。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_malf_panel.jpg" alt="故障滑动面板">
-      <div class="img-caption">图 6：故障滑动面板（Malfunction Sliding Panel）</div>
+      <div class="img-caption">图 20：故障滑动面板（Malfunction Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面"故障"快速访问按钮弹出；或点击主界面故障部分的"点击添加"按钮</td></tr>
-        <tr><td>面板结构</td><td>包含状态部分（Status）、ATA章节选项卡、字母顺序选项卡、飞行阶段选项卡</td></tr>
-        <tr><td>状态部分</td><td>提供激活和预位故障的摘要，以及清除激活、清除预位、清除所有故障的操作按钮</td></tr>
-        <tr><td>ATA章节选项卡</td><td>按 ATA 章节编号排序的飞机系统列表。ATA 章节旁警告标志：黄色=仅有预位故障；红色=有激活故障或同时有多个预位和至少一个激活故障</td></tr>
-        <tr><td>字母顺序选项卡</td><td>按字母顺序排序的飞机系统列表，警告标志含义同 ATA 章节选项卡</td></tr>
-        <tr><td>飞行阶段选项卡</td><td>可选功能，按飞行阶段分组故障列表</td></tr>
-        <tr><td>激活/预位流程</td><td>1. 通过 ATA 或字母顺序选择飞机系统；2. 选择所需故障；3. 显示故障面板，包含激活、清除、编辑数值、布防按钮及因果描述</td></tr>
-        <tr><td>激活按钮</td><td>立即触发所选故障</td></tr>
-        <tr><td>清除按钮</td><td>停用并清除所选故障</td></tr>
-        <tr><td>编辑数值按钮</td><td>显示键盘，允许更改故障判据的数值</td></tr>
-        <tr><td>布防按钮</td><td>显示布防判据滑动面板，允许选择故障触发条件。选择判据后布防按钮变为可用</td></tr>
-        <tr><td>故障显示位置</td><td>激活和预位故障同时显示在控制板故障部分、控制板页脚、地图工作区标题、故障滑动面板</td></tr>
+        <tr><td>面板结构</td><td>包含状态部分（Status）、ATA章节选项卡（ATA Chapters）、字母顺序选项卡（Alphabetical）、飞行阶段选项卡（Flight Phase）</td></tr>
+        <tr><td>状态部分（Status）</td><td>提供激活和预位故障的摘要，以及清除激活、清除预位、清除所有故障的操作按钮</td></tr>
+        <tr><td>ATA章节选项卡（ATA Chapters）</td><td>按 ATA 章节编号排序的飞机系统列表。ATA 章节旁警告标志：黄色=仅有预位故障；红色=有激活故障或同时有多个预位和至少一个激活故障</td></tr>
+        <tr><td>字母顺序选项卡（Alphabetical）</td><td>按字母顺序排序的飞机系统列表，警告标志含义同 ATA 章节选项卡</td></tr>
+        <tr><td>飞行阶段选项卡（Flight Phase）</td><td>可选功能，按飞行阶段分组故障列表</td></tr>
+        <tr><td>激活/预位流程（Activate/Arm Flow）</td><td>1. 通过 ATA 或字母顺序选择飞机系统；2. 选择所需故障；3. 显示故障面板，包含激活、清除、编辑数值、布防按钮及因果描述</td></tr>
+        <tr><td>激活按钮（Activate）</td><td>立即触发所选故障</td></tr>
+        <tr><td>清除按钮（Clear）</td><td>停用并清除所选故障</td></tr>
+        <tr><td>编辑数值按钮（Edit Value）</td><td>显示键盘，允许更改故障判据的数值</td></tr>
+        <tr><td>布防按钮（Arm）</td><td>显示布防判据滑动面板，允许选择故障触发条件。选择判据后布防按钮变为可用</td></tr>
+        <tr><td>故障显示位置（Malfunction Display Locations）</td><td>激活和预位故障同时显示在控制板故障部分、控制板页脚、地图工作区标题、故障滑动面板</td></tr>
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_status.jpg" alt="故障状态部分">
+      <div class="img-caption">图 21：故障状态部分（Malfunction Status Section）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_selection.jpg" alt="故障选择">
+      <div class="img-caption">图 22：故障选择（Malfunction Selection）</div>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_arm_criteria.jpg" alt="布防判据滑动面板">
+      <div class="img-caption">图 23：布防判据滑动面板（Arm Criteria Sliding Panel）</div>
+    </div>
+
     <!-- 2.8 断路器滑动面板 -->
-    <h3>2.8 断路器滑动面板</h3>
+    <h3>2.8 断路器滑动面板（Circuit Breaker Sliding Panel）</h3>
     <p>断路器滑动面板允许教员按飞机系统分别跳开和弹出各种硬件和软件断路器（CBs）。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_cb_panel.jpg" alt="断路器滑动面板">
-      <div class="img-caption">图 7：断路器滑动面板（Circuit Breaker Sliding Panel）</div>
+      <div class="img-caption">图 24：断路器滑动面板（Circuit Breaker Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面"断路器"快速访问按钮弹出</td></tr>
-        <tr><td>面板结构</td><td>包含三个选项卡：ATA章节、字母顺序（A-Z）、断路器（CB）</td></tr>
-        <tr><td>ATA章节选项卡</td><td>按 ATA 章节编号排序的飞机系统列表。系统旁红色徽章表示该系统跳闸/弹出的断路器数量</td></tr>
-        <tr><td>字母顺序选项卡</td><td>按字母顺序排序的飞机系统列表。系统旁红色徽章含义同 ATA 章节选项卡</td></tr>
-        <tr><td>断路器选项卡</td><td>显示所有硬件和软件 CB 的状态，分为硬件 CB 和软件 CB 两部分</td></tr>
-        <tr><td>硬件 CB 类型 1</td><td>可由教员弹出、由飞行机组复位的断路器</td></tr>
-        <tr><td>硬件 CB 类型 2</td><td>可由教员弹出和跳开、但不可由飞行机组复位的断路器</td></tr>
-        <tr><td>软件 CB</td><td>无法由飞行机组复位</td></tr>
-        <tr><td>硬件 CB 状态</td><td>四种状态图标：未弹出、教员触发跳闸（可复位）、未跳闸、教员触发跳闸（不可复位）</td></tr>
-        <tr><td>软件 CB 状态</td><td>两种状态图标：未跳闸、已跳闸</td></tr>
-        <tr><td>断电标志</td><td>表示总线上无电流</td></tr>
+        <tr><td>面板结构</td><td>包含三个选项卡：ATA章节（ATA Chapters）、字母顺序（Alphabetical A-Z）、断路器（CB）</td></tr>
+        <tr><td>ATA章节选项卡（ATA Chapters）</td><td>按 ATA 章节编号排序的飞机系统列表。系统旁红色徽章表示该系统跳闸/弹出的断路器数量</td></tr>
+        <tr><td>字母顺序选项卡（Alphabetical）</td><td>按字母顺序排序的飞机系统列表。系统旁红色徽章含义同 ATA 章节选项卡</td></tr>
+        <tr><td>断路器选项卡（CB）</td><td>显示所有硬件和软件 CB 的状态，分为硬件 CB 和软件 CB 两部分</td></tr>
+        <tr><td>硬件 CB 类型 1（Hardware CB Type 1）</td><td>可由教员弹出、由飞行机组复位的断路器</td></tr>
+        <tr><td>硬件 CB 类型 2（Hardware CB Type 2）</td><td>可由教员弹出和跳开、但不可由飞行机组复位的断路器</td></tr>
+        <tr><td>软件 CB（Software CB）</td><td>无法由飞行机组复位</td></tr>
+        <tr><td>硬件 CB 状态（Hardware CB Status）</td><td>四种状态图标：未弹出、教员触发跳闸（可复位）、未跳闸、教员触发跳闸（不可复位）</td></tr>
+        <tr><td>软件 CB 状态（Software CB Status）</td><td>两种状态图标：未跳闸、已跳闸</td></tr>
+        <tr><td>断电标志（Power Off Flag）</td><td>表示总线上无电流</td></tr>
       </table>
     </div>
 
+    <div class="img-block">
+      <img src="./images/ch2_2_4_cb_definition.jpg" alt="断路器定义">
+      <div class="img-caption">图 25：断路器 – 定义（Circuit Breaker – Definition）</div>
+    </div>
+
+    <h4>2.8.1 硬件断路器状态流转（Hardware CB State Transition）</h4>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 正常态
+    正常态 --> 跳闸可复位 : 教员弹出
+    跳闸可复位 --> 正常态 : 机组复位
+    正常态 --> 跳闸不可复位 : 教员跳开
+    跳闸不可复位 --> [*] : 不可恢复
+    </div>
+
     <!-- 2.9 故障总结滑动面板 -->
-    <h3>2.9 故障总结滑动面板</h3>
+    <h3>2.9 故障总结滑动面板（Malfunction Summary Sliding Panel）</h3>
     <p>故障总结滑动面板提供所有激活/预位故障、跳闸断路器、故障无线电台的总体状态，便于教员统一管理和控制训练课程中的所有故障。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_malf_summary_panel.jpg" alt="故障总结滑动面板">
-      <div class="img-caption">图 8：故障总结滑动面板（Malfunction Summary Sliding Panel）</div>
+      <div class="img-caption">图 26：故障总结滑动面板（Malfunction Summary Sliding Panel）</div>
     </div>
 
     <div class="table-wrap">
@@ -426,30 +545,30 @@ graph TD
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>触发方式</td><td>点击主界面"故障总结"快速访问按钮弹出</td></tr>
         <tr><td>面板结构</td><td>包含三个选项卡：故障（Malfunctions）、断路器（Circuit Breakers）、无线电台（Radio Stations）</td></tr>
-        <tr><td>故障选项卡</td><td>显示所有激活和预位故障的摘要。可清除所有激活或预位故障，或清除单个故障。黄色标志=预位；红色标志=激活</td></tr>
-        <tr><td>断路器选项卡</td><td>列出所有拔出、跳闸和触发的硬件及软件断路器。可重置单个断路器或全部断路器</td></tr>
-        <tr><td>无线电台选项卡</td><td>提供所有故障无线电台的列表。可重置单个无线电台或全部无线电台</td></tr>
+        <tr><td>故障选项卡（Malfunctions）</td><td>显示所有激活和预位故障的摘要。可清除所有激活或预位故障，或清除单个故障。黄色标志=预位；红色标志=激活</td></tr>
+        <tr><td>断路器选项卡（Circuit Breakers）</td><td>列出所有拔出、跳闸和触发的硬件及软件断路器。可重置单个断路器或全部断路器</td></tr>
+        <tr><td>无线电台选项卡（Radio Stations）</td><td>提供所有故障无线电台的列表。可重置单个无线电台或全部无线电台</td></tr>
       </table>
     </div>
 
     <!-- 2.10 故障部分 -->
-    <h3>2.10 故障部分（主界面底部）</h3>
+    <h3>2.10 故障部分（Malfunction Section）</h3>
     <p>故障部分位于飞机选项卡主界面底部，提供所有激活和预位故障的摘要，并提供快速操作入口。</p>
 
     <div class="img-block">
       <img src="./images/ch2_2_4_malf_section.jpg" alt="故障部分">
-      <div class="img-caption">图 9：飞机选项卡 — 故障部分（Malfunction Section）</div>
+      <div class="img-caption">图 27：飞机选项卡 — 故障部分（Malfunction Section）</div>
     </div>
 
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
         <tr><td>位置</td><td>主区域底部，故障滑动面板的外部速览区域</td></tr>
-        <tr><td>激活按钮</td><td>点击激活预位的故障</td></tr>
-        <tr><td>清除按钮</td><td>点击停用并清除选定的故障</td></tr>
-        <tr><td>全部清除按钮</td><td>点击停用并清除所有已预位或激活的故障</td></tr>
-        <tr><td>点击添加按钮</td><td>点击打开故障滑动面板，向模拟中添加新的故障</td></tr>
-        <tr><td>滚动浏览</td><td>当有超过四个激活或预位故障时，可进行滚动浏览</td></tr>
+        <tr><td>激活按钮（Activate）</td><td>点击激活预位的故障</td></tr>
+        <tr><td>清除按钮（Clear）</td><td>点击停用并清除选定的故障</td></tr>
+        <tr><td>全部清除按钮（Clear All）</td><td>点击停用并清除所有已预位或激活的故障</td></tr>
+        <tr><td>点击添加按钮（Tap to Add）</td><td>点击打开故障滑动面板，向模拟中添加新的故障</td></tr>
+        <tr><td>滚动浏览（Scroll）</td><td>当有超过四个激活或预位故障时，可进行滚动浏览</td></tr>
       </table>
     </div>
 
@@ -493,7 +612,7 @@ stateDiagram-v2
     已清除 --> [*] : 故障从模拟中移除
     </div>
 
-    <h4>3.2.1 状态说明</h4>
+    <h4>3.2.1 状态说明（State Definitions）</h4>
     <div class="table-wrap">
       <table>
         <tr><th>状态</th><th>定义</th><th>视觉标志</th><th>流转条件</th></tr>
@@ -544,28 +663,32 @@ stateDiagram-v2
 
     <h3>3.4 数据流与开发流程推导</h3>
 
-    <h4>3.4.1 数据流</h4>
-    <p>飞机选项卡涉及的数据流主要围绕重量与平衡参数的联动计算、故障状态的统一管理、以及通信/数据链的数据交互。</p>
-    <div class="mermaid">
-flowchart TD
-    A["教员输入\nGW/ZFW/FUEL/CG"] --> B["重量与平衡计算引擎"]
-    B --> C{"是否超出限制?"}
-    C -->|否| D["更新所有关联参数\n并同步至模拟器"]
-    C -->|是| E["自动调整其他参数\n保持合规"]
-    E --> D
-    D --> F["飞机系统仿真\nFMS/ECAM/EICAS"]
-
-    G["教员操作故障面板"] --> H["故障管理系统"]
-    H --> I["激活故障\n实时注入模拟器"]
-    H --> J["预位故障\n写入触发条件表"]
-    J --> K{"判据满足?"}
-    K -->|是| I
-    I --> L["更新所有显示位置\n面板/页脚/地图/总结"]
-
-    M["教员操作通信面板"] --> N["音频路由系统"]
-    N --> O["VHF/HF/ICS 信号"]
-    O --> P["驾驶舱机组接收"]
-    </div>
+    <h4>3.4.1 数据流（参数修改与生效）</h4>
+    <pre><code>教员点击参数输入文本字段或快速访问按钮
+    ↓
+IOS 弹出对应滑动面板 / 键盘
+    ↓
+教员输入新值或选择新状态
+    ↓
+点击确认（绿色勾号）或激活按钮
+    ↓
+前端校验输入值范围（Dynamic Min/Max）
+    ↓
+校验通过 → 发送参数变更指令至模拟器核心
+    ↓
+模拟器核心判断功能类型
+    ├─ 重量与平衡参数 → 重量与平衡计算引擎
+    │   ├─ 未超出限制 → 更新所有关联参数并同步至模拟器
+    │   └─ 超出限制   → 自动调整燃油或ZFW以保持合规
+    ├─ 故障操作       → 故障管理系统
+    │   ├─ 立即激活   → 实时注入模拟器
+    │   └─ 预位       → 写入触发条件表，等待判据满足后自动激活
+    └─ 通信/数据链    → 音频路由系统 / 数据链通信系统
+        → VHF/HF/ICS 信号或上行链路消息发送至驾驶舱
+    ↓
+模拟器反馈当前参数值至 IOS 显示
+    ↓
+IOS 更新对应文本字段、状态标志、快速访问按钮指示灯</code></pre>
 
     <h4>3.4.2 API 接口契约建议</h4>
     <div class="table-wrap">
@@ -635,10 +758,11 @@ function toggleNav(el){
   const children=el.nextElementSibling;
   if(children&&children.classList.contains('nav-children')){
     children.classList.toggle('collapsed');
+    children.style.maxHeight=children.classList.contains('collapsed')?'0':children.scrollHeight+'px';
   }
 }
 
-mermaid.initialize({startOnLoad:true,theme:'default',themeVariables:{primaryColor:'#dbeafe',primaryTextColor:'#1e293b',primaryBorderColor:'#2563eb',lineColor:'#64748b',secondaryColor:'#f1f5f9',tertiaryColor:'#fff',fontFamily:'Noto Sans SC,system-ui,sans-serif'},flowchart:{useMaxWidth:true,htmlLabels:true},stateDiagram:{useMaxWidth:true}});
+mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'base',themeVariables:{primaryColor:'#dbeafe',primaryTextColor:'#1e293b',primaryBorderColor:'#2563eb',lineColor:'#64748b',secondaryColor:'#f1f5f9',tertiaryColor:'#fff',fontFamily:'Noto Sans SC,system-ui,sans-serif',fontSize:'14px'},flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},stateDiagram:{curve:'basis'}});
 
 (function(){
   let currentScale=1;
