@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2.4 飞机/航空器选项卡（AIRCRAFT Tab）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+.tag-sim{background:#d1fae5;color:#065f46}
+.tag-malf{background:#fee2e2;color:#991b1b}
+.tag-free{background:#dbeafe;color:#1e40af}
+.tag-nest{background:#ede9fe;color:#5b21b6}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">2.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">2.1.2 用户交互</a>
+            <a class="nav-link" href="#">2.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch2_2_1_lesson_plan_tab.html">2.2.1 课程计划选项卡</a>
+            <a class="nav-link" href="ch2_2_2_doc_tab.html">2.2.2 文档选项卡</a>
+            <a class="nav-link" href="ch2_2_3_current_conditions_tab.html">2.2.3 当前条件选项卡</a>
+            <a class="nav-link active" href="ch2_2_4_aircraft_tab.html">2.2.4 飞机/航空器选项卡</a>
+            <a class="nav-link" href="#">2.2.5 参考机场选项卡</a>
+            <a class="nav-link" href="#">2.2.6 教员台滑动面板</a>
+            <a class="nav-link" href="#">2.2.7 控制面板底部</a>
+          </div>
+        </div>
+        <a class="nav-link" href="#">2.3 维护页面</a>
+        <a class="nav-link" href="#">2.4 仪表复示器</a>
+        <a class="nav-link" href="#">2.5 课程计划剖面</a>
+        <a class="nav-link" href="#">2.6 地图工作区</a>
+        <a class="nav-link" href="#">2.7 高级</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span>
+    <a href="#">第 2 章 软件操作</a><span class="breadcrumb-sep">/</span>
+    <a href="#">2.2 控制面板工作区</a><span class="breadcrumb-sep">/</span>
+    <span>2.2.4 飞机/航空器选项卡</span>
+  </div>
+
+  <article class="content">
+    <h1>2.2.4 飞机/航空器选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">AIRCRAFT Tab</span></h1>
+    <p class="subtitle">原始手册对应：## 7. AIRCRAFT Tab &nbsp;|&nbsp; 整理时间：2026-06-02 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
+
+    <!-- ==================== 一、功能层级与界面总览 ==================== -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_overview.jpg" alt="飞机选项卡整体界面">
+      <div class="img-caption">图 1：飞机/航空器选项卡（AIRCRAFT Tab）整体界面 — 来自 A320 原始文档</div>
+    </div>
+
+    <blockquote>
+      <strong>核心定位：</strong>飞机选项卡是教员<strong>快速设置飞机初始条件、控制和监控飞机参数、管理通信导航、执行地面服务、触发故障及监控飞机状态</strong>的核心入口。涵盖重量与平衡、燃油、数据链、通信、舱门服务、故障与断路器等全部飞机相关功能。
+    </blockquote>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    A["AIRCRAFT Tab\n飞机/航空器选项卡"] --> B["参数输入文本字段\n主区域上半部分"]
+    A --> C["快速访问按钮\n主区域中部"]
+    A --> D["故障部分\n主区域底部"]
+
+    B --> B1["总重 GW\n点击后弹出总重键盘"]
+    B --> B2["总重重心 GW CG\n点击后弹出总重重心键盘"]
+    B --> B3["零燃油重量 ZFW\n点击后弹出ZFW键盘"]
+    B --> B4["ZFW CG\n点击后弹出ZFW CG键盘"]
+    B --> B5["燃油 FUEL\n点击后弹出燃油键盘"]
+
+    C --> C1["DL 数据链\n点击后弹出数据链滑动面板"]
+    C --> C2["UL 上行链路\n点击后弹出数据链滑动面板"]
+    C --> C3["VHF 通信\n点击后弹出通信滑动面板"]
+    C --> C4["重量与重心\n点击后弹出重量与平衡滑动面板"]
+    C --> C5["服务与舱门\n点击后弹出服务与舱门滑动面板"]
+    C --> C6["故障\n点击后弹出故障滑动面板"]
+    C --> C7["断路器\n点击后弹出断路器滑动面板"]
+    C --> C8["故障总结\n点击后弹出故障总结滑动面板"]
+
+    D --> D1["激活故障\n红色标记"]
+    D --> D2["预位故障\n黄色标记"]
+
+    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style D fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <p>下方表格中的位置描述基于图 1（AIRCRAFT Tab 整体界面）实际截图分析得出。</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
+        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（上半部分）</td><td>集中显示飞机重量与平衡相关参数，每个字段可点击弹出对应键盘或使用滚轮选择器</td></tr>
+        <tr><td><strong>总重 GW</strong><br>Gross Weight</td><td>参数区第一行</td><td>显示飞机总重，点击弹出总重键盘；支持滚轮选择器</td></tr>
+        <tr><td><strong>总重重心 GW CG</strong><br>GW Center of Gravity</td><td>参数区第二行</td><td>显示总重重心（% MAC），点击弹出总重重心键盘；支持滚轮选择器</td></tr>
+        <tr><td><strong>零燃油重量 ZFW</strong><br>Zero Fuel Weight</td><td>参数区第三行</td><td>显示零燃油重量，点击弹出 ZFW 键盘；支持滚轮选择器</td></tr>
+        <tr><td><strong>ZFW CG</strong><br>ZFW Center of Gravity</td><td>参数区第四行</td><td>显示零燃油重量重心（% MAC），点击弹出 ZFW CG 键盘；支持滚轮选择器</td></tr>
+        <tr><td><strong>燃油 FUEL</strong><br>Fuel Weight</td><td>参数区第五行</td><td>显示总燃油量，点击弹出燃油键盘；支持滚轮选择器</td></tr>
+        <tr><td><strong>快速访问按钮区</strong><br>Quick Access Buttons</td><td>主区域（中部）</td><td>一排快捷按钮，点击后弹出对应滑动面板，部分按钮显示状态指示灯或红色标记</td></tr>
+        <tr><td><strong>故障部分</strong><br>Malfunction Section</td><td>主区域（底部）</td><td>显示激活和预位故障摘要，提供清除和激活操作</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 二、核心功能详解 ==================== -->
+    <h2>二、核心功能详解</h2>
+
+    <!-- 2.1 参数输入文本字段速览 -->
+    <h3>2.1 参数输入文本字段速览</h3>
+    <p>飞机选项卡主区域上半部分集中显示 5 个重量与平衡相关参数。所有参数均支持键盘输入和滚轮选择器两种修改方式。</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数</th><th>功能定义</th><th>交互方式</th><th>与其他功能关系</th></tr>
+        <tr><td><strong>总重 GW</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总重</td><td>点击弹出总重键盘，或使用滚轮选择器（详见 2.5 重量与平衡滑动面板）</td><td>与 ZFW、燃油动态联动；修改 GW 时 ZFW 自动调整，若超出限制则燃油自动调整</td></tr>
+        <tr><td><strong>总重重心 GW CG</strong></td><td>以 % MAC 显示总重重心</td><td>点击弹出总重重心键盘，或使用滚轮选择器（详见 2.5）</td><td>与 ZFW CG 动态联动；修改 GW CG 时 ZFW CG 自动调整，若超出限制则燃油减少、ZFW 增加</td></tr>
+        <tr><td><strong>零燃油重量 ZFW</strong></td><td>以所选单位（千克/磅 x1000）显示零燃油重量</td><td>点击弹出 ZFW 键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW、燃油动态联动；修改 ZFW 时 GW 自动变化，若超出限制则燃油自动调整</td></tr>
+        <tr><td><strong>ZFW CG</strong></td><td>以 % MAC 显示零燃油重量重心</td><td>点击弹出 ZFW CG 键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW CG 动态联动；修改 ZFW CG 时 GW CG 自动变化</td></tr>
+        <tr><td><strong>燃油 FUEL</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总燃油量</td><td>点击弹出燃油键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW、ZFW 动态联动；修改燃油时 GW 自动变化，若超出限制则 ZFW 自动调整；燃油按飞机燃油分配计划分配</td></tr>
+      </table>
+    </div>
+
+    <blockquote>
+      <strong>滚轮选择器通用操作：</strong>长按参数直至滚轮选择器显示，或向上/向下滑动参数呼出滚轮。滚动选择后，点击绿色勾号确认，或点击红色 X 取消。
+    </blockquote>
+
+    <!-- 2.2 快速访问按钮速览 -->
+    <h3>2.2 快速访问按钮速览</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>按钮</th><th>功能定义</th><th>呈现方式</th><th>交互方式</th></tr>
+        <tr><td><strong>DL 数据链</strong></td><td>显示数据链下行消息状态</td><td>当有来自机组的下行消息时，按钮亮起绿色</td><td>点击弹出数据链滑动面板（详见 2.3）</td></tr>
+        <tr><td><strong>UL 上行链路</strong></td><td>显示上行链路消息状态</td><td>当有教员发送给机组的上行消息时，按钮亮起橙色</td><td>点击弹出数据链滑动面板（详见 2.3）</td></tr>
+        <tr><td><strong>VHF 通信</strong></td><td>显示飞行员/副驾驶无线电通信状态和调谐频率</td><td>机组讲话时，飞行员/副驾驶图标旁显示绿色发射波</td><td>点击弹出通信滑动面板（详见 2.4）</td></tr>
+        <tr><td><strong>重量与重心</strong></td><td>快速访问重量与平衡设置</td><td>标准按钮</td><td>点击弹出重量与平衡滑动面板（详见 2.5）</td></tr>
+        <tr><td><strong>服务与舱门</strong></td><td>快速访问地面服务和舱门控制</td><td>标准按钮</td><td>点击弹出服务与舱门滑动面板（详见 2.6）</td></tr>
+        <tr><td><strong>故障</strong></td><td>快速访问故障预选和激活</td><td>按钮上红色标记表示已激活和待处理的故障数量</td><td>点击弹出故障滑动面板（详见 2.7）</td></tr>
+        <tr><td><strong>断路器</strong></td><td>快速访问断路器控制</td><td>按钮上红色标记表示跳闸/弹出的断路器数量</td><td>点击弹出断路器滑动面板（详见 2.8）</td></tr>
+        <tr><td><strong>故障总结</strong></td><td>快速访问所有故障和断路器的总体状态</td><td>按钮上红色标记表示故障总结中包含的故障数量</td><td>点击弹出故障总结滑动面板（详见 2.9）</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.3 数据链滑动面板 -->
+    <h3>2.3 数据链（DL/UL）滑动面板</h3>
+    <p>数据链滑动面板允许教员向模拟飞机发送上行消息、显示模拟飞机与地面站之间的通信、查看并回复来自模拟飞机的消息，以及控制 ATC 和 ADS 连接。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_datalink_panel.jpg" alt="数据链滑动面板">
+      <div class="img-caption">图 2：数据链滑动面板（Data Link Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面 DL 或 UL 快速访问按钮弹出</td></tr>
+        <tr><td>面板结构</td><td>包含两个选项卡：日志（Log）、连接控制（Connection Control）</td></tr>
+        <tr><td>日志选项卡</td><td>显示模拟飞机与地面站之间的通信历史，最新消息始终显示在页面顶部。包含清除一条、清除全部、发送上行链路按钮</td></tr>
+        <tr><td>新上行链路选项卡</td><td>允许教员发送上行消息，包含组（Group）、场景（Scenario）、场景消息（Scene Message）、消息编辑器（Message Editor）四部分，以及添加、移除、上下优先级调整按钮</td></tr>
+        <tr><td>连接控制选项卡</td><td>提供 ATC 和 ADS 中心的连接/断开控制，包含 ATC 部分、ADS 部分、地面部分</td></tr>
+        <tr><td>ATC 管理模式</td><td>三个互斥单选按钮：自动 ATC 管理（地面站自动处理）、自动预选（软件建议，教员点击发送启动）、手动选择（教员通过显示输入字段选择）</td></tr>
+        <tr><td>断开按钮</td><td>点击断开当前 ATC 连接，弹出确认菜单</td></tr>
+        <tr><td>ADS 部分</td><td>显示最近一次 ADS 报告的只读字段（飞机ID、纬度、经度、高度、ADS基本报告模式）及 ADS 中心 ID 列表</td></tr>
+        <tr><td>地面故障</td><td>可触发 VHF 地面故障、HF 地面故障、SATCOM/GES 故障三个切换按钮</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.4 通信滑动面板 -->
+    <h3>2.4 通信滑动面板</h3>
+    <p>通信滑动面板允许教员建立 VHF/HF 无线电通信、与内部通信系统（ICS）通信、收听无线电导航信号、选择各种通信模式。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_comm_panel.jpg" alt="通信滑动面板">
+      <div class="img-caption">图 3：通信滑动面板（Communication Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面 VHF 快速访问按钮弹出</td></tr>
+        <tr><td>面板结构</td><td>包含五个选项卡：音量（Volume）、无线电（Radio）、内部通话（Intercom）、导航（Navigation）、特殊功能（Special Features）</td></tr>
+        <tr><td>音量选项卡</td><td>通过滑块控制无线电/内部通话耳机音频、导航音频信号、耳机音频、背景噪音音量，范围从最小值到最大值</td></tr>
+        <tr><td>无线电选项卡</td><td>显示所有可用 VHF 和 HF 电台，每个电台包含电台名称、所选频率、调谐地面站类型。每个电台有三个按钮：发射（Transmit）、接收（Receive）、SELCAL</td></tr>
+        <tr><td>内部通话选项卡</td><td>允许教员与 ICS 通信，包括驾驶舱（FLT）、客舱（CAB）、旅客广播（PA）。每个 ICS 包含发射和接收按钮；若无线电发射机无电源，发射按钮禁用</td></tr>
+        <tr><td>导航选项卡</td><td>允许监听 NAV、DME、Marker Beacon、ADF、ILS 信号。每个导航接收机显示接收机名称、调谐频率、接收台站名称</td></tr>
+        <tr><td>特殊功能选项卡</td><td>包含机长私密、副驾驶私密、机长监听、副驾驶监听、紧急呼叫、机械师呼叫、乘务员呼叫、撤离（EVAC）、面罩（Mask）、硬件 ACP 开关、VHF LOS OVRD 等按钮</td></tr>
+        <tr><td>VHF LOS OVRD</td><td>选中时教员 VHF 无线电被视为机载设备，与驾驶舱机组 VHF 相同；取消选中时根据飞机与地面站距离和高度进行真实空对地通信模拟</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.5 重量与平衡滑动面板 -->
+    <h3>2.5 重量与平衡滑动面板</h3>
+    <p>重量与平衡滑动面板允许教员快速配置飞机重量，包含快速设置预定义重量、调整零燃油重量、调整燃油重量、管理每个燃油箱油量等功能。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_weight_panel.jpg" alt="重量与平衡滑动面板">
+      <div class="img-caption">图 4：重量与平衡滑动面板（Weight and Balance Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面"重量与重心"快速访问按钮弹出；或点击主界面 GW、GW CG、ZFW、ZFW CG、燃油参数字段弹出对应键盘</td></tr>
+        <tr><td>面板结构</td><td>包含三个选项卡：快速设置（Quick Set）、性能数据（Performance Data）、重量与重心（Weight and CG）</td></tr>
+        <tr><td>快速设置选项卡</td><td>三个互斥按钮：轻重量（Light）、中重量（Medium）、重重量（Heavy），点击后将飞机设置为预定义重量（含 GW、ZFW、GW CG）</td></tr>
+        <tr><td>性能数据选项卡</td><td>只读字段：安定面配平、襟翼位置、V1、VR、V2、VREF。速度旁 FMS 标志表示速度来自飞行管理系统</td></tr>
+        <tr><td>重量与重心选项卡</td><td>可调整 ZFW、燃油、GW、GW CG、ZFW CG，每个参数支持输入文本字段或滑块控制。调整任一参数会自动联动其他参数</td></tr>
+        <tr><td>燃油管理</td><td>支持单独调整左外侧、左内侧、右外侧、右内侧、中央燃油箱油量；支持燃油平衡（一键平衡所有油箱）；支持燃油冻结（冻结期间燃油量指示器保持不动，但仍可加油）</td></tr>
+        <tr><td>重心限制图</td><td>交互式图表显示飞机重量与重心运行包线，当前重量和重心由包线内光标指示，可触摸并移动光标直接修改</td></tr>
+        <tr><td>激活/取消按钮</td><td>激活按钮执行新的重量和重心选择；取消按钮取消选定值。未选择任何更改时两个按钮均禁用</td></tr>
+        <tr><td>燃油冻结边界</td><td>燃油冻结激活时所有仪表正常指示（除燃油量指示器外）；重新定位期间燃油冻结按钮禁用，直到重新定位或飞行配平完成</td></tr>
+        <tr><td>动态最小/最大值</td><td>任何重量参数调整后，若新值超出批准数据限制，系统自动调整其他参数（燃油或 ZFW）以保持合规</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.6 服务与舱门滑动面板 -->
+    <h3>2.6 服务与舱门滑动面板</h3>
+    <p>服务与舱门滑动面板允许教员执行地面服务操作、打开和关闭各种飞机舱门、模拟驾驶舱门禁请求。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_service_panel.jpg" alt="服务与舱门滑动面板">
+      <div class="img-caption">图 5：服务与舱门滑动面板（Service and Doors Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面"服务与舱门"快速访问按钮弹出</td></tr>
+        <tr><td>面板结构</td><td>包含两个选项卡：服务（Service）、舱门（Doors）</td></tr>
+        <tr><td>服务选项卡</td><td>包含导航快速校准、发动机快速启动、发动机差异、外部气源、地面交流电源、飞机轮挡、飞机顶升、APU 快速启动等按钮</td></tr>
+        <tr><td>导航快速校准</td><td>点击后校准参考系统（IRS、INS、AHRS、ADIRS），绕过正常校准周期。按钮点亮并保持激活 2 秒；已校准或系统关闭时禁用</td></tr>
+        <tr><td>发动机快速启动</td><td>点击后启动熄火发动机（需满足正确条件：有可用燃油、燃油手柄在慢车位）。保持点亮直到发动机启动；所有发动机运行时禁用</td></tr>
+        <tr><td>发动机差异</td><td>切换按钮，启用后确保某些发动机读数不完全相同（如 EGT），增加模拟真实感</td></tr>
+        <tr><td>外部气源</td><td>切换按钮，连接/断开外部气源地面供气。飞机开始移动时自动断开，此时按钮禁用</td></tr>
+        <tr><td>地面交流电源</td><td>切换按钮，激活/停用外部交流电源。飞机移动时自动断开，此时按钮禁用</td></tr>
+        <tr><td>飞机轮挡</td><td>切换按钮，放置/移除飞机轮挡。轮挡放置时飞机不会移动；飞机移动时禁用。与飞机顶升<strong>互斥</strong></td></tr>
+        <tr><td>飞机顶升</td><td>切换按钮，将飞机置于顶升状态（起落架支柱完全伸展，可收放起落架、施加推力而不掉落）。飞机移动时禁用。与飞机轮挡<strong>互斥</strong></td></tr>
+        <tr><td>APU 快速启动</td><td>点击后启动 APU，电气和气动输出在 5 秒内可用。APU 运行或未满足条件（主开关打开、断路器闭合、有可用燃油）时禁用</td></tr>
+        <tr><td>舱门选项卡</td><td>包含飞机舱门按钮、滑梯部分、驾驶舱通道部分、客舱准备部分</td></tr>
+        <tr><td>关闭所有舱门</td><td>切换按钮，正常状态点击打开所有舱门；激活状态（浅蓝色）点击关闭所有舱门</td></tr>
+        <tr><td>航电设备舱门</td><td>切换按钮，打开/关闭相应航电设备检修门</td></tr>
+        <tr><td>客舱门</td><td>四个切换按钮：前左侧、前右侧、后左侧、后右侧乘客/机组客舱门，分别打开/关闭</td></tr>
+        <tr><td>紧急出口</td><td>左侧和右侧紧急出口切换按钮，打开/关闭相应机翼上方紧急出口门</td></tr>
+        <tr><td>货舱门</td><td>前货舱、后货舱、散装货物三个切换按钮</td></tr>
+        <tr><td>滑梯部分</td><td>两个互斥按钮：预位所有滑梯（浅蓝色）、解除所有滑梯（浅蓝色）</td></tr>
+        <tr><td>驾驶舱通道部分</td><td>包含门（打开/关闭驾驶舱通道门）、常规请求、紧急请求、系统重置四个按钮。后三个按钮选中后保持激活 2 秒；若驾驶舱门键盘停用或系统控制器断电则禁用</td></tr>
+        <tr><td>客舱准备部分</td><td>两个互斥单选按钮：自动模式（默认）、手动模式（选择后可在 ECAM/EICAS 显示单元上显示客舱就绪指示）</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.7 故障滑动面板 -->
+    <h3>2.7 故障滑动面板</h3>
+    <p>故障滑动面板允许教员预选并激活模拟中的故障。故障分为两种类型：激活（红色标志）和预位（黄色标志）。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_panel.jpg" alt="故障滑动面板">
+      <div class="img-caption">图 6：故障滑动面板（Malfunction Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面"故障"快速访问按钮弹出；或点击主界面故障部分的"点击添加"按钮</td></tr>
+        <tr><td>面板结构</td><td>包含状态部分（Status）、ATA章节选项卡、字母顺序选项卡、飞行阶段选项卡</td></tr>
+        <tr><td>状态部分</td><td>提供激活和预位故障的摘要，以及清除激活、清除预位、清除所有故障的操作按钮</td></tr>
+        <tr><td>ATA章节选项卡</td><td>按 ATA 章节编号排序的飞机系统列表。ATA 章节旁警告标志：黄色=仅有预位故障；红色=有激活故障或同时有多个预位和至少一个激活故障</td></tr>
+        <tr><td>字母顺序选项卡</td><td>按字母顺序排序的飞机系统列表，警告标志含义同 ATA 章节选项卡</td></tr>
+        <tr><td>飞行阶段选项卡</td><td>可选功能，按飞行阶段分组故障列表</td></tr>
+        <tr><td>激活/预位流程</td><td>1. 通过 ATA 或字母顺序选择飞机系统；2. 选择所需故障；3. 显示故障面板，包含激活、清除、编辑数值、布防按钮及因果描述</td></tr>
+        <tr><td>激活按钮</td><td>立即触发所选故障</td></tr>
+        <tr><td>清除按钮</td><td>停用并清除所选故障</td></tr>
+        <tr><td>编辑数值按钮</td><td>显示键盘，允许更改故障判据的数值</td></tr>
+        <tr><td>布防按钮</td><td>显示布防判据滑动面板，允许选择故障触发条件。选择判据后布防按钮变为可用</td></tr>
+        <tr><td>故障显示位置</td><td>激活和预位故障同时显示在控制板故障部分、控制板页脚、地图工作区标题、故障滑动面板</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.8 断路器滑动面板 -->
+    <h3>2.8 断路器滑动面板</h3>
+    <p>断路器滑动面板允许教员按飞机系统分别跳开和弹出各种硬件和软件断路器（CBs）。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_cb_panel.jpg" alt="断路器滑动面板">
+      <div class="img-caption">图 7：断路器滑动面板（Circuit Breaker Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面"断路器"快速访问按钮弹出</td></tr>
+        <tr><td>面板结构</td><td>包含三个选项卡：ATA章节、字母顺序（A-Z）、断路器（CB）</td></tr>
+        <tr><td>ATA章节选项卡</td><td>按 ATA 章节编号排序的飞机系统列表。系统旁红色徽章表示该系统跳闸/弹出的断路器数量</td></tr>
+        <tr><td>字母顺序选项卡</td><td>按字母顺序排序的飞机系统列表。系统旁红色徽章含义同 ATA 章节选项卡</td></tr>
+        <tr><td>断路器选项卡</td><td>显示所有硬件和软件 CB 的状态，分为硬件 CB 和软件 CB 两部分</td></tr>
+        <tr><td>硬件 CB 类型 1</td><td>可由教员弹出、由飞行机组复位的断路器</td></tr>
+        <tr><td>硬件 CB 类型 2</td><td>可由教员弹出和跳开、但不可由飞行机组复位的断路器</td></tr>
+        <tr><td>软件 CB</td><td>无法由飞行机组复位</td></tr>
+        <tr><td>硬件 CB 状态</td><td>四种状态图标：未弹出、教员触发跳闸（可复位）、未跳闸、教员触发跳闸（不可复位）</td></tr>
+        <tr><td>软件 CB 状态</td><td>两种状态图标：未跳闸、已跳闸</td></tr>
+        <tr><td>断电标志</td><td>表示总线上无电流</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.9 故障总结滑动面板 -->
+    <h3>2.9 故障总结滑动面板</h3>
+    <p>故障总结滑动面板提供所有激活/预位故障、跳闸断路器、故障无线电台的总体状态，便于教员统一管理和控制训练课程中的所有故障。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_summary_panel.jpg" alt="故障总结滑动面板">
+      <div class="img-caption">图 8：故障总结滑动面板（Malfunction Summary Sliding Panel）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>触发方式</td><td>点击主界面"故障总结"快速访问按钮弹出</td></tr>
+        <tr><td>面板结构</td><td>包含三个选项卡：故障（Malfunctions）、断路器（Circuit Breakers）、无线电台（Radio Stations）</td></tr>
+        <tr><td>故障选项卡</td><td>显示所有激活和预位故障的摘要。可清除所有激活或预位故障，或清除单个故障。黄色标志=预位；红色标志=激活</td></tr>
+        <tr><td>断路器选项卡</td><td>列出所有拔出、跳闸和触发的硬件及软件断路器。可重置单个断路器或全部断路器</td></tr>
+        <tr><td>无线电台选项卡</td><td>提供所有故障无线电台的列表。可重置单个无线电台或全部无线电台</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.10 故障部分 -->
+    <h3>2.10 故障部分（主界面底部）</h3>
+    <p>故障部分位于飞机选项卡主界面底部，提供所有激活和预位故障的摘要，并提供快速操作入口。</p>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_4_malf_section.jpg" alt="故障部分">
+      <div class="img-caption">图 9：飞机选项卡 — 故障部分（Malfunction Section）</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>位置</td><td>主区域底部，故障滑动面板的外部速览区域</td></tr>
+        <tr><td>激活按钮</td><td>点击激活预位的故障</td></tr>
+        <tr><td>清除按钮</td><td>点击停用并清除选定的故障</td></tr>
+        <tr><td>全部清除按钮</td><td>点击停用并清除所有已预位或激活的故障</td></tr>
+        <tr><td>点击添加按钮</td><td>点击打开故障滑动面板，向模拟中添加新的故障</td></tr>
+        <tr><td>滚动浏览</td><td>当有超过四个激活或预位故障时，可进行滚动浏览</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 三、全局操作流程与推导 ==================== -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 教员核心操作流程</h3>
+    <p>下图展示了教员在飞机选项卡中完成一次典型的"设置飞机初始条件 + 触发故障"的完整操作流程。</p>
+    <div class="mermaid">
+flowchart LR
+    A["进入 AIRCRAFT Tab"] --> B["设置重量与平衡"]
+    B --> C{"选择方式"}
+    C -->|快速设置| D["点击轻/中/重重量"]
+    C -->|手动调整| E["修改 GW/ZFW/燃油/CG"]
+    D --> F["点击激活按钮确认"]
+    E --> F
+    F --> G["配置通信与数据链"]
+    G --> H{"需要故障？"}
+    H -->|是| I["打开故障滑动面板"]
+    H -->|否| J["继续训练"]
+    I --> K["选择飞机系统"]
+    K --> L["选择故障"]
+    L --> M{"触发方式"}
+    M -->|立即| N["点击激活"]
+    M -->|条件触发| O["点击布防并设置判据"]
+    N --> J
+    O --> J
+    </div>
+
+    <h3>3.2 故障生命周期通用状态机</h3>
+    <p>故障在模拟中存在明确的生命周期状态流转：从选择到预位/激活，再到清除。</p>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 未选择 : 进入故障滑动面板
+    未选择 --> 已选择 : 选择飞机系统与故障
+    已选择 --> 已预位 : 点击布防并设置判据
+    已选择 --> 已激活 : 点击激活
+    已预位 --> 已激活 : 满足判据条件时自动触发
+    已预位 --> 已清除 : 点击清除或全部清除
+    已激活 --> 已清除 : 点击清除或全部清除
+    已清除 --> [*] : 故障从模拟中移除
+    </div>
+
+    <h4>3.2.1 状态说明</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>状态</th><th>定义</th><th>视觉标志</th><th>流转条件</th></tr>
+        <tr><td>未选择</td><td>教员已打开故障滑动面板，但尚未选择任何故障</td><td>无</td><td>选择飞机系统和故障后进入已选择</td></tr>
+        <tr><td>已选择</td><td>教员已选定具体故障，可进行激活或预位操作</td><td>故障面板中显示该故障详情</td><td>点击布防并设置判据后进入已预位；点击激活后进入已激活</td></tr>
+        <tr><td>已预位</td><td>故障已设置触发条件，等待条件满足后自动激活</td><td>黄色标志</td><td>满足判据条件时自动进入已激活；点击清除后进入已清除</td></tr>
+        <tr><td>已激活</td><td>故障已在模拟中生效</td><td>红色标志</td><td>点击清除或全部清除后进入已清除</td></tr>
+        <tr><td>已清除</td><td>故障已从模拟中停用并移除</td><td>无</td><td>终端状态，可重新选择该故障</td></tr>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>功能 A</th><th>功能 B</th><th>依赖关系</th><th>触发条件</th></tr>
+        <tr><td>总重 GW</td><td>零燃油重量 ZFW</td><td>双向联动</td><td>修改 GW 时 ZFW 自动调整；修改 ZFW 时 GW 自动变化</td></tr>
+        <tr><td>总重 GW</td><td>燃油 FUEL</td><td>双向联动</td><td>修改 GW 超出限制时燃油自动调整；修改燃油时 GW 自动变化</td></tr>
+        <tr><td>总重重心 GW CG</td><td>ZFW CG</td><td>双向联动</td><td>修改 GW CG 时 ZFW CG 自动调整；反之亦然</td></tr>
+        <tr><td>飞机轮挡</td><td>飞机顶升</td><td>互斥</td><td>两者只能激活其一</td></tr>
+        <tr><td>外部气源</td><td>飞机移动</td><td>依赖</td><td>飞机开始移动时外部气源自动断开，按钮禁用</td></tr>
+        <tr><td>地面交流电源</td><td>飞机移动</td><td>依赖</td><td>飞机开始移动时地面交流电源自动断开，按钮禁用</td></tr>
+        <tr><td>燃油冻结</td><td>重新定位</td><td>依赖</td><td>重新定位期间燃油冻结按钮禁用，直到重新定位或飞行配平完成</td></tr>
+        <tr><td>DL 按钮</td><td>数据链日志</td><td>依赖</td><td>有下行消息时 DL 按钮亮起绿色</td></tr>
+        <tr><td>UL 按钮</td><td>数据链日志</td><td>依赖</td><td>有上行消息时 UL 按钮亮起橙色</td></tr>
+        <tr><td>故障按钮</td><td>故障滑动面板</td><td>依赖</td><td>按钮上红色标记数量=已激活和待处理故障数量</td></tr>
+        <tr><td>断路器按钮</td><td>断路器滑动面板</td><td>依赖</td><td>按钮上红色标记数量=跳闸/弹出断路器数量</td></tr>
+        <tr><td>APU 快速启动</td><td>主开关、断路器、燃油</td><td>依赖</td><td>主开关打开、断路器闭合、有可用燃油时方可启用</td></tr>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>场景</th><th>异常描述</th><th>系统行为</th><th>教员感知</th></tr>
+        <tr><td>重量超出限制</td><td>教员输入的 GW/ZFW/燃油超出批准数据限制</td><td>系统自动调整其他参数（动态最小/最大值），保持重量组合合规</td><td>调整后的数值与输入值可能不同，需在界面中显示调整提示</td></tr>
+        <tr><td>飞机移动中操作轮挡/顶升</td><td>教员在飞机移动时尝试放置轮挡或顶升飞机</td><td>轮挡按钮和顶升按钮在飞机移动时自动禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>飞机移动中操作地面电源/气源</td><td>教员在飞机移动时尝试连接地面电源或气源</td><td>地面电源和气源在飞机开始移动时自动断开，对应按钮禁用</td><td>按钮灰色不可点击，连接状态自动清除</td></tr>
+        <tr><td>无电源时发射</td><td>教员尝试在无电源的无线电发射机上发射</td><td>发射按钮禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>驾驶舱门键盘停用</td><td>因进入请求被拒绝导致驾驶舱门键盘停用，或系统控制器断电</td><td>常规请求、紧急请求、系统重置按钮禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>参考系统已校准</td><td>教员尝试对已校准的参考系统进行快速校准</td><td>导航快速校准按钮禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>所有发动机运行</td><td>教员尝试在所有发动机运行时快速启动发动机</td><td>发动机快速启动按钮禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>未选择重量更改</td><td>教员未修改任何重量参数时点击激活或取消</td><td>激活按钮和取消按钮均禁用</td><td>按钮灰色不可点击</td></tr>
+        <tr><td>燃油冻结期间加油</td><td>教员在燃油冻结激活时尝试加油</td><td>仍可进行加油操作，但燃油量指示器保持不动</td><td>指示器不变化，但实际燃油增加</td></tr>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <p>飞机选项卡涉及的数据流主要围绕重量与平衡参数的联动计算、故障状态的统一管理、以及通信/数据链的数据交互。</p>
+    <div class="mermaid">
+flowchart TD
+    A["教员输入\nGW/ZFW/FUEL/CG"] --> B["重量与平衡计算引擎"]
+    B --> C{"是否超出限制?"}
+    C -->|否| D["更新所有关联参数\n并同步至模拟器"]
+    C -->|是| E["自动调整其他参数\n保持合规"]
+    E --> D
+    D --> F["飞机系统仿真\nFMS/ECAM/EICAS"]
+
+    G["教员操作故障面板"] --> H["故障管理系统"]
+    H --> I["激活故障\n实时注入模拟器"]
+    H --> J["预位故障\n写入触发条件表"]
+    J --> K{"判据满足?"}
+    K -->|是| I
+    I --> L["更新所有显示位置\n面板/页脚/地图/总结"]
+
+    M["教员操作通信面板"] --> N["音频路由系统"]
+    N --> O["VHF/HF/ICS 信号"]
+    O --> P["驾驶舱机组接收"]
+    </div>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>接口</th><th>方法</th><th>输入</th><th>输出</th><th>说明</th></tr>
+        <tr><td>/api/aircraft/weight</td><td>POST</td><td>{gw, zfw, fuel, gw_cg, zfw_cg}</td><td>{status, adjusted_values, limits}</td><td>设置飞机重量，返回调整后值及是否触发动态限制</td></tr>
+        <tr><td>/api/aircraft/fuel/freeze</td><td>PUT</td><td>{enabled: bool}</td><td>{status, frozen_fuel_amount}</td><td>激活/停用燃油冻结</td></tr>
+        <tr><td>/api/aircraft/fuel/balance</td><td>POST</td><td>{}</td><td>{status, tank_levels}</td><td>一键平衡所有油箱</td></tr>
+        <tr><td>/api/malfunctions</td><td>GET</td><td>{}</td><td>[{id, system, name, status, criteria}]</td><td>获取所有故障列表及状态</td></tr>
+        <tr><td>/api/malfunctions/activate</td><td>POST</td><td>{malfunction_id}</td><td>{status, activated_at}</td><td>立即激活指定故障</td></tr>
+        <tr><td>/api/malfunctions/arm</td><td>POST</td><td>{malfunction_id, criteria}</td><td>{status, armed_at}</td><td>预位故障并设置触发条件</td></tr>
+        <tr><td>/api/malfunctions/clear</td><td>POST</td><td>{malfunction_id}</td><td>{status}</td><td>清除指定故障</td></tr>
+        <tr><td>/api/circuit-breakers</td><td>GET</td><td>{}</td><td>[{id, system, type, status, resettable}]</td><td>获取所有断路器状态</td></tr>
+        <tr><td>/api/circuit-breakers/toggle</td><td>POST</td><td>{cb_id, state}</td><td>{status}</td><td>切换断路器状态</td></tr>
+        <tr><td>/api/datalink/log</td><td>GET</td><td>{page, limit}</td><td>{messages, total}</td><td>获取数据链通信日志</td></tr>
+        <tr><td>/api/datalink/uplink</td><td>POST</td><td>{group, scenario, messages}</td><td>{status, sent_at}</td><td>发送上行链路消息</td></tr>
+        <tr><td>/api/communication/radio</td><td>PUT</td><td>{station_id, frequency, mode}</td><td>{status}</td><td>设置无线电频率和模式</td></tr>
+        <tr><td>/api/service/ground</td><td>POST</td><td>{service_type, action}</td><td>{status, disabled_reason}</td><td>执行地面服务操作</td></tr>
+        <tr><td>/api/service/doors</td><td>PUT</td><td>{door_id, state}</td><td>{status}</td><td>设置舱门开闭状态</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 四、测试要点 ==================== -->
+    <h2>四、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>测试维度</th><th>测试场景</th><th>期望结果</th></tr>
+        <tr><td rowspan="4">正向路径</td><td>通过快速设置按钮设置轻重量</td><td>GW、ZFW、GW CG 自动更新为预定义值，激活按钮可用</td></tr>
+        <tr><td>手动调整燃油重量</td><td>GW 自动变化，若超出限制 ZFW 自动调整，所有油箱按分配计划更新</td></tr>
+        <tr><td>激活一个故障</td><td>故障从已选择变为已激活，红色标志显示在面板、页脚、地图、总结四个位置</td></tr>
+        <tr><td>发送上行链路消息</td><td>消息出现在数据链日志顶部，UL 按钮亮起橙色</td></tr>
+        <tr><td rowspan="4">异常路径</td><td>飞机移动时点击轮挡按钮</td><td>按钮禁用，无法点击</td></tr>
+        <tr><td>所有发动机运行时点击发动机快速启动</td><td>按钮禁用，无法点击</td></tr>
+        <tr><td>未选择重量更改时点击激活</td><td>激活按钮禁用，无法点击</td></tr>
+        <tr><td>驾驶舱门键盘停用时点击常规请求</td><td>按钮禁用，无法点击</td></tr>
+        <tr><td rowspan="3">边界条件</td><td>输入 GW 为最大值限制 +1</td><td>系统自动将燃油减少至合规范围，ZFW 相应增加</td></tr>
+        <tr><td>燃油冻结激活时进行加油操作</td><td>加油成功，但燃油量指示器保持冻结前值</td></tr>
+        <tr><td>同时激活轮挡和顶升</td><td>两者互斥，激活其中一个后另一个自动取消</td></tr>
+        <tr><td rowspan="2">联动测试</td><td>修改 GW CG 后观察 ZFW CG 变化</td><td>ZFW CG 按联动公式自动更新</td></tr>
+        <tr><td>清除全部故障后观察各面板状态</td><td>故障按钮红色标记清零，页脚故障部分清空，地图标题警告标志消失</td></tr>
+        <tr><td>性能测试</td><td>同时预位 50 个故障并快速切换 ATA 章节</td><td>面板响应时间小于 200ms，无卡顿</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 五、变更记录 ==================== -->
+    <h2>五、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
+        <tr><td>2026-06-02</td><td>V0.1</td><td>按规范 V1.6 三层架构首次生成 2.2.4 飞机/航空器选项卡 HTML，包含功能层级图、参数输入字段速览、8 个快速访问按钮、9 个滑动面板/部分详述、故障生命周期状态机、关联依赖与异常边界表格、数据流推导及 API 契约建议</td></tr>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch2_2_3_current_conditions_tab.html">← 上一小节：2.2.3 当前条件选项卡</a>
+      <a class="next" href="#">下一小节：2.2.5 参考机场选项卡 →</a>
+    </div>
+
+  </article>
+</main>
+</div>
+
+<script>
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children=el.nextElementSibling;
+  if(children&&children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+  }
+}
+
+mermaid.initialize({startOnLoad:true,theme:'default',themeVariables:{primaryColor:'#dbeafe',primaryTextColor:'#1e293b',primaryBorderColor:'#2563eb',lineColor:'#64748b',secondaryColor:'#f1f5f9',tertiaryColor:'#fff',fontFamily:'Noto Sans SC,system-ui,sans-serif'},flowchart:{useMaxWidth:true,htmlLabels:true},stateDiagram:{useMaxWidth:true}});
+
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
+</body>
+</html>
