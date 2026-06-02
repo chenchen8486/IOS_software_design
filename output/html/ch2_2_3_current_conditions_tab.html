@@ -360,47 +360,27 @@ flowchart LR
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的风向和风速</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出飞机风键盘；或使用滑块控件</td></tr>
-        <tr><td>风向范围</td><td>1° ~ 360°</td></tr>
-        <tr><td>边界行为</td><td>飞行冻结未激活时立即以预定速率渐变；飞行冻结激活时延迟至冻结解除</td></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的风向和风速</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机风键盘（详见 3.16）；或使用滑块控件</td></tr>
       </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch2_2_3_wind_keypad.jpg" alt="飞机风键盘">
-      <div class="img-caption">图 2：飞机风键盘（A/C Wind Keypad）— 显示当前风向风速并支持键盘/滑块输入</div>
     </div>
 
     <h3>3.10 A/C OAT（外界大气温度）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的外界大气温度</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出飞机 OAT 键盘；或使用滑块/滚轮选择器</td></tr>
-        <tr><td>边界行为</td><td>飞机在地面时 OAT 更改立即生效；在空中时若飞行冻结未激活则渐变，若冻结激活则延迟</td></tr>
-        <tr><td>状态反馈</td><td>更改过程中 IOS 警告页脚显示"温度正在变化"</td></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的外界大气温度</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机 OAT 键盘（详见 3.17）；或使用滑块/滚轮选择器</td></tr>
       </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch2_2_3_oat_keypad.jpg" alt="飞机OAT键盘">
-      <div class="img-caption">图 3：飞机 OAT 键盘（A/C OAT Keypad）— 显示当前外界大气温度并支持键盘/滑块输入</div>
     </div>
 
     <h3>3.11 A/C ISA Dev（ISA 偏差）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的 ISA 温度偏差</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出 ISA 偏差键盘；或使用滚轮选择器</td></tr>
-        <tr><td>联动</td><td>整个温度剖面将根据 ISA 偏差的变化进行偏移</td></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的 ISA 温度偏差</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 ISA 偏差键盘（详见 3.18）；或使用滚轮选择器</td></tr>
       </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch2_2_3_isa_keypad.jpg" alt="飞机ISA偏差键盘">
-      <div class="img-caption">图 4：飞机 ISA 偏差键盘（A/C ISA Dev Keypad）— 显示当前 ISA 温度偏差</div>
     </div>
 
     <!-- 3.12 飞机处云层滑动面板 -->
@@ -626,35 +606,54 @@ flowchart LR
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的风向和风速</td></tr>
+        <tr><td>触发方式</td><td>点击主界面"A/C Wind"参数字段弹出</td></tr>
+        <tr><td>功能定义</td><td>显示当前飞机位置的风向和风速，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
         <tr><td>风向范围</td><td>1° ~ 360°</td></tr>
         <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
-        <tr><td>边界行为</td><td>飞行冻结未激活时立即渐变；冻结激活时延迟至冻结解除</td></tr>
+        <tr><td>边界行为</td><td>飞行冻结未激活时立即以预定速率渐变至请求值；飞行冻结激活时延迟至冻结解除</td></tr>
       </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_wind_keypad.jpg" alt="飞机风键盘">
+      <div class="img-caption">图 9：飞机风键盘（A/C Wind Keypad）— 显示当前风向风速并支持键盘/滑块输入</div>
     </div>
 
     <h3>3.17 飞机 OAT 键盘（A/C OAT Keypad）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的外界大气温度</td></tr>
+        <tr><td>触发方式</td><td>点击主界面"A/C OAT"参数字段弹出；或通过滚轮选择器触发</td></tr>
+        <tr><td>功能定义</td><td>显示当前飞机位置的外界大气温度，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
         <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
-        <tr><td>联动</td><td>整个温度剖面根据 OAT 变化偏移</td></tr>
-        <tr><td>边界行为</td><td>地面时立即生效；空中无冻结时渐变；空中冻结激活时延迟</td></tr>
-        <tr><td>状态反馈</td><td>更改过程中显示"温度正在变化"警告信息</td></tr>
+        <tr><td>联动</td><td>整个温度剖面根据 OAT 变化偏移（动态最小/最大值）</td></tr>
+        <tr><td>边界行为</td><td>飞机在地面时立即生效；在空中且飞行冻结未激活时渐变；在空中且飞行冻结激活时延迟至解除</td></tr>
+        <tr><td>状态反馈</td><td>更改过程中 IOS 警告页脚显示"温度正在变化"；达到新值前 OAT 读数逐渐变化</td></tr>
       </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_oat_keypad.jpg" alt="飞机OAT键盘">
+      <div class="img-caption">图 10：飞机 OAT 键盘（A/C OAT Keypad）— 显示当前外界大气温度并支持键盘/滑块输入</div>
     </div>
 
     <h3>3.18 飞机 ISA 偏差键盘（A/C ISA Dev Keypad）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并修改当前飞机位置的 ISA 温度偏差</td></tr>
+        <tr><td>触发方式</td><td>点击主界面"A/C ISA Dev"参数字段弹出；或通过滚轮选择器触发</td></tr>
+        <tr><td>功能定义</td><td>显示当前飞机位置的 ISA 温度偏差，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入</td></tr>
         <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
+        <tr><td>联动</td><td>整个温度剖面将根据 ISA 偏差的变化进行偏移</td></tr>
       </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch2_2_3_isa_keypad.jpg" alt="飞机ISA偏差键盘">
+      <div class="img-caption">图 11：飞机 ISA 偏差键盘（A/C ISA Dev Keypad）— 显示当前 ISA 温度偏差</div>
     </div>
 
     <!-- ==================== 四、状态机/流程图 ==================== -->
