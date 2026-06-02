@@ -182,35 +182,22 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 graph TD
     A["CURRENT CONDITIONS Tab\n当前条件选项卡"] --> B["本机状态参数\n主区域上半部分"]
     A --> C["环境条件参数\n主区域中下部"]
-    A --> D["滑动面板\n点击字段弹出"]
-    A --> E["键盘输入\n精确数值输入"]
 
-    B --> B1["ASL 海拔高度"]
-    B --> B2["IAS 指示空速"]
-    B --> B3["Mach 马赫数"]
-    B --> B4["Heading 航向"]
+    B --> B1["ASL 海拔高度\n点击后弹出 SLEW 面板"]
+    B --> B2["IAS 指示空速\n点击后弹出 SLEW 面板"]
+    B --> B3["Mach 马赫数\n点击后弹出 SLEW 面板"]
+    B --> B4["Heading 航向\n点击后弹出 SLEW 面板"]
 
-    C --> C1["云和能见度"]
-    C --> C2["Icing 结冰条件"]
-    C --> C3["Turbulence 湍流"]
-    C --> C4["A/C Wind 飞机风向"]
-    C --> C5["A/C OAT 外界大气温度"]
-    C --> C6["A/C ISA Dev ISA偏差"]
-
-    D --> D1["CLOUDS AT AIRCRAFT\n飞机处云层"]
-    D --> D2["SLEW 位移"]
-    D --> D3["ICING 结冰"]
-    D --> D4["TURBULENCE 湍流"]
-
-    E --> E1["A/C Wind Keypad\n飞机风键盘"]
-    E --> E2["A/C OAT Keypad\n飞机OAT键盘"]
-    E --> E3["A/C ISA Dev Keypad\n飞机ISA偏差键盘"]
+    C --> C1["云和能见度\n点击后弹出 CLOUDS 面板"]
+    C --> C2["Icing 结冰条件\n点击后弹出 ICING 面板"]
+    C --> C3["Turbulence 湍流\n点击后弹出 TURBULENCE 面板"]
+    C --> C4["A/C Wind 飞机风向\n点击后弹出风键盘"]
+    C --> C5["A/C OAT 外界大气温度\n点击后弹出 OAT 键盘"]
+    C --> C6["A/C ISA Dev ISA偏差\n点击后弹出 ISA 键盘"]
 
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
     style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style C fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style E fill:#ede9fe,stroke:#7c3aed,stroke-width:2px
     </div>
 
     <!-- 原 1.2 教员核心操作流程已后移至「三、全局操作流程与推导」章节，保持静态架构层与动态流程层解耦 -->
@@ -458,6 +445,34 @@ graph TD
       </table>
     </div>
 
+    <h4>3.13.3 SLEW 位移操作流程</h4>
+    <div class="mermaid">
+flowchart TD
+    Start([打开SLEW面板]) --> Tab{选择选项卡}
+    Tab -->|ALTITUDE/SPEED| Alt[修改高度/空速/Mach]
+    Tab -->|HEADING/POSITION| Pos[修改航向/位置坐标]
+    Alt --> Verify1{校验边界}
+    Pos --> Verify2{校验边界}
+    Verify1 -->|通过| Exec1[点击Slew执行]
+    Verify1 -->|不通过| Err1[提示超出范围]
+    Verify2 -->|通过| Exec2[点击Slew执行]
+    Verify2 -->|不通过| Err2[提示超出范围]
+    Exec1 --> Freeze{飞行冻结?}
+    Exec2 --> Freeze
+    Freeze -->|未激活| Immediate[立即渐变执行]
+    Freeze -->|激活| Deferred[缓存至冻结解除后执行]
+    Immediate --> Update[更新飞机参数]
+    Deferred --> Update
+    Update --> End([完成])
+    Err1 --> Alt
+    Err2 --> Pos
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style Err1 fill:#fee2e2,stroke:#dc2626
+    style Err2 fill:#fee2e2,stroke:#dc2626
+    </div>
+
     <!-- 3.14 ICING -->
     <h3>3.14 结冰滑动面板（ICING Sliding Panel）</h3>
     <div class="table-wrap">
@@ -507,30 +522,16 @@ graph TD
     <div class="mermaid">
 stateDiagram-v2
     [*] --> 未选择 : 默认
-    未选择 --> 轻度 : 点击轻度按钮
-    未选择 --> 中度 : 点击中度按钮
-    未选择 --> 重度 : 点击重度按钮
+    未选择 --> 已选择 : 点击轻度/中度/重度按钮
+    已选择 --> 未选择 : 点击除冰按钮
 
-    轻度 --> 中度 : 点击中度按钮
-    轻度 --> 重度 : 点击重度按钮
-    轻度 --> 未选择 : 点击除冰按钮
-
-    中度 --> 轻度 : 点击轻度按钮
-    中度 --> 重度 : 点击重度按钮
-    中度 --> 未选择 : 点击除冰按钮
-
-    重度 --> 轻度 : 点击轻度按钮
-    重度 --> 中度 : 点击中度按钮
-    重度 --> 未选择 : 点击除冰按钮
-
-    轻度 --> 预位黄 : TAT满足条件且不在云中
-    中度 --> 预位黄 : TAT满足条件且不在云中
-    重度 --> 预位黄 : TAT满足条件且不在云中
+    已选择 --> 预位黄 : TAT满足条件且不在云中
+    已选择 --> 激活红 : TAT满足条件且在云中
 
     预位黄 --> 激活红 : 飞机进入云中
     激活红 --> 预位黄 : 飞机离开云中
-    预位黄 --> 未选择 : 点击除冰
-    激活红 --> 未选择 : 点击除冰
+    预位黄 --> 未选择 : 点击除冰按钮
+    激活红 --> 未选择 : 点击除冰按钮
 </div>
 
     <!-- 3.15 TURBULENCE -->
@@ -657,10 +658,40 @@ stateDiagram-v2
       <div class="img-caption">图 11：飞机 ISA 偏差键盘（A/C ISA Dev Keypad）— 显示当前 ISA 温度偏差</div>
     </div>
 
-    <!-- ==================== 四、状态机/流程图 ==================== -->
-    <h2>四、状态机与流程图</h2>
+    <!-- ==================== 三、全局操作流程与推导 ==================== -->
+    <h2>三、全局操作流程与推导</h2>
 
-    <h3>4.1 参数修改状态机</h3>
+    <h3>3.1 当前条件选项卡中教员核心操作流程</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([打开 CURRENT CONDITIONS]) --> View[查看当前参数]
+    View --> Select{选择修改项}
+    Select -->|本机状态| State[点击 ASL/IAS/Mach/Heading]
+    Select -->|环境条件| Env[点击 云/结冰/湍流/风/OAT/ISA]
+    State --> SLEW[SLEW 滑动面板]
+    Env --> Panel{选择面板类型}
+    Panel -->|云| Clouds[CLOUDS 滑动面板]
+    Panel -->|结冰| Icing[ICING 滑动面板]
+    Panel -->|湍流| Turb[TURBULENCE 滑动面板]
+    Panel -->|风/OAT/ISA| Keypad[键盘输入]
+    SLEW --> Input[输入新值 / 滑块调整]
+    Clouds --> Input
+    Icing --> Input
+    Turb --> Input
+    Keypad --> Input
+    Input --> Confirm{确认方式}
+    Confirm -->|Slew按钮| Exec[执行位移]
+    Confirm -->|绿色勾号| Apply[立即生效/延迟生效]
+    Confirm -->|红色X| Cancel[取消修改]
+    Exec --> End([参数更新完成])
+    Apply --> End
+    Cancel --> View
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <h3>3.2 参数修改通用状态机</h3>
     <div class="mermaid">
 stateDiagram-v2
     [*] --> 空闲状态
@@ -675,38 +706,9 @@ stateDiagram-v2
     值已修改 --> 空闲状态 : 点击取消或Discard
     </div>
 
-    <h3>4.2 SLEW 位移操作流程</h3>
-    <div class="mermaid">
-flowchart TD
-    Start([打开SLEW面板]) --> Tab{选择选项卡}
-    Tab -->|ALTITUDE/SPEED| Alt[修改高度/空速/Mach]
-    Tab -->|HEADING/POSITION| Pos[修改航向/位置坐标]
-    Alt --> Verify1{校验边界}
-    Pos --> Verify2{校验边界}
-    Verify1 -->|通过| Exec1[点击Slew执行]
-    Verify1 -->|不通过| Err1[提示超出范围]
-    Verify2 -->|通过| Exec2[点击Slew执行]
-    Verify2 -->|不通过| Err2[提示超出范围]
-    Exec1 --> Freeze{飞行冻结?}
-    Exec2 --> Freeze
-    Freeze -->|未激活| Immediate[立即渐变执行]
-    Freeze -->|激活| Deferred[缓存至冻结解除后执行]
-    Immediate --> Update[更新飞机参数]
-    Deferred --> Update
-    Update --> End([完成])
-    Err1 --> Alt
-    Err2 --> Pos
+    <h3>3.3 关联依赖与异常边界</h3>
 
-    style Start fill:#dbeafe,stroke:#2563eb
-    style End fill:#d1fae5,stroke:#059669
-    style Err1 fill:#fee2e2,stroke:#dc2626
-    style Err2 fill:#fee2e2,stroke:#dc2626
-    </div>
-
-    <!-- ==================== 五、关联依赖与异常边界 ==================== -->
-    <h2>五、关联依赖与异常边界</h2>
-
-    <h3>5.1 关联依赖</h3>
+    <h4>3.3.1 关联依赖</h4>
     <div class="table-wrap">
       <table>
         <tr><th>功能点</th><th>依赖项</th><th>说明</th></tr>
@@ -720,7 +722,7 @@ flowchart TD
       </table>
     </div>
 
-    <h3>5.2 异常边界</h3>
+    <h4>3.3.2 异常边界</h4>
     <div class="table-wrap">
       <table>
         <tr><th>场景</th><th>预期行为</th></tr>
@@ -735,10 +737,9 @@ flowchart TD
       </table>
     </div>
 
-    <!-- ==================== 六、数据流推导 ==================== -->
-    <h2>六、数据流与开发流程推导</h2>
+    <h3>3.4 数据流与开发流程推导</h3>
 
-    <h3>6.1 数据流（参数修改与生效）</h3>
+    <h4>3.4.1 数据流（参数修改与生效）</h4>
     <pre><code>教员点击参数输入文本字段
     ↓
 IOS 弹出对应滑动面板 / 键盘
@@ -759,7 +760,7 @@ IOS 弹出对应滑动面板 / 键盘
     ↓
 IOS 更新对应文本字段和状态标志</code></pre>
 
-    <h3>6.2 API 接口契约建议</h3>
+    <h4>3.4.2 API 接口契约建议</h4>
     <div class="table-wrap">
       <table>
         <tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th></tr>
@@ -775,7 +776,7 @@ IOS 更新对应文本字段和状态标志</code></pre>
     </div>
 
     <!-- ==================== 七、测试要点 ==================== -->
-    <h2>七、测试要点</h2>
+    <h2>四、测试要点</h2>
     <div class="table-wrap">
       <table>
         <tr><th>测试类型</th><th>测试场景</th></tr>
@@ -796,7 +797,7 @@ IOS 更新对应文本字段和状态标志</code></pre>
     </div>
 
     <!-- ==================== 八、变更记录 ==================== -->
-    <h2>八、变更记录</h2>
+    <h2>五、变更记录</h2>
     <div class="table-wrap">
       <table>
         <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
