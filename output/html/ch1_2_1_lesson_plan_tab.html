@@ -66,6 +66,10 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
+/* Area mapping hint */
+.area-map{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px;padding:8px 12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.area-map strong{color:var(--primary-dark)}
+
 /* Collapsible */
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
 .collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
@@ -236,10 +240,10 @@ graph TD
 
     <div class="table-wrap">
       <table>
-        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
-        <tr><td><strong>课程大纲</strong><br>Lesson Outline</td><td>左侧区域</td><td>以树形结构列出课程的训练阶段及每个阶段内的步骤</td></tr>
-        <tr><td><strong>课程步骤详情</strong><br>Lesson Step Details</td><td>右侧区域</td><td>可滚动区域，显示当前选中步骤的详细参数和说明</td></tr>
-        <tr><td><strong>控制按钮栏</strong><br>Tab Buttons</td><td>底部区域</td><td>Autorun / Step-by-Step / Go to Current / Skip Condition / Execute / End Lesson</td></tr>
+        <tr><th>区域/控件<br>Area / Control</th><th>位置<br>Position</th><th>功能说明<br>Description</th><th>对应核心功能详解<br>Referenced Section</th></tr>
+        <tr><td><strong>课程大纲</strong><br>Lesson Outline</td><td>左侧区域<br>Left Panel</td><td>以树形结构列出课程的训练阶段及每个阶段内的步骤</td><td>详见 2.1 训练阶段、2.2 课程步骤</td></tr>
+        <tr><td><strong>课程步骤详情</strong><br>Lesson Step Details</td><td>右侧区域<br>Right Panel</td><td>可滚动区域，显示当前选中步骤的详细参数和说明</td><td>详见 2.3 课程步骤详情</td></tr>
+        <tr><td><strong>控制按钮栏</strong><br>Tab Buttons</td><td>底部区域<br>Bottom Bar</td><td>Autorun / Step-by-Step / Go to Current / Skip Condition / Execute / End Lesson</td><td>详见 2.4 控制按钮栏</td></tr>
       </table>
     </div>
 
@@ -247,13 +251,14 @@ graph TD
     <h2>二、核心功能详解</h2>
 
     <h3>2.1 训练阶段（Training Phases）</h3>
+    <p class="area-map"><strong>所属区域：</strong>课程大纲（Lesson Outline）— 左侧树形列表的顶层分组节点</p>
     <div class="table-wrap">
       <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>课程按阶段结构化组织，以匹配飞行的各个阶段或培训任务</td></tr>
-        <tr><td>创建方式</td><td>教员在 <strong>CAE Slick 编辑器</strong> 中定义</td></tr>
-        <tr><td>层级关系</td><td>一个课程 → 多个训练阶段 → 每个阶段包含多个课程步骤</td></tr>
-        <tr><td>典型示例</td><td>地面操作 → 起飞 → 爬升 → 巡航 → 进近 → 着陆</td></tr>
+        <tr><th>属性<br>Attribute</th><th>说明<br>Description</th></tr>
+        <tr><td>功能定义<br>Function Definition</td><td>课程按阶段结构化组织，以匹配飞行的各个阶段或培训任务</td></tr>
+        <tr><td>创建方式<br>Creation Method</td><td>教员在 <strong>CAE Slick 编辑器</strong> 中定义</td></tr>
+        <tr><td>层级关系<br>Hierarchy</td><td>一个课程 → 多个训练阶段 → 每个阶段包含多个课程步骤</td></tr>
+        <tr><td>典型示例<br>Typical Example</td><td>地面操作（Ground Operations）→ 起飞（Takeoff）→ 爬升（Climb）→ 巡航（Cruise）→ 进近（Approach）→ 着陆（Landing）</td></tr>
       </table>
     </div>
 
@@ -314,6 +319,7 @@ flowchart LR
     </div>
 
     <h3>2.2 课程步骤（Lesson Steps）</h3>
+    <p class="area-map"><strong>所属区域：</strong>课程大纲（Lesson Outline）— 左侧树形列表内的可执行元素</p>
     <p>插入训练阶段中的步骤分为 <strong>5 种类型</strong>，通过左侧图标标识：</p>
 
     <!-- 原始图片3：课程步骤标识 -->
@@ -371,13 +377,14 @@ flowchart LR
     </div>
 
     <h3>2.3 课程步骤详情（Lesson Step Details）</h3>
+    <p class="area-map"><strong>所属区域：</strong>课程步骤详情（Lesson Step Details）— 右侧可滚动区域</p>
     <div class="table-wrap">
       <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示当前选中步骤的详细参数、说明和触发条件</td></tr>
-        <tr><td>呈现方式</td><td>选项卡右侧可滚动区域</td></tr>
-        <tr><td>交互方式</td><td>上下滚动查看；点击左侧大纲步骤 → 右侧自动切换</td></tr>
-        <tr><td>联动</td><td>与课程大纲双向联动，选中即显示</td></tr>
+        <tr><th>属性<br>Attribute</th><th>说明<br>Description</th></tr>
+        <tr><td>功能定义<br>Function Definition</td><td>显示当前选中步骤的详细参数、说明和触发条件</td></tr>
+        <tr><td>呈现方式<br>Presentation</td><td>选项卡右侧可滚动区域</td></tr>
+        <tr><td>交互方式<br>Interaction</td><td>上下滚动查看；点击左侧大纲步骤 → 右侧自动切换</td></tr>
+        <tr><td>联动<br>Linkage</td><td>与课程大纲双向联动，选中即显示</td></tr>
       </table>
     </div>
 
@@ -394,6 +401,7 @@ flowchart LR
     </div>
 
     <h3>2.4 控制按钮栏（Lesson Plan Tab Buttons）</h3>
+    <p class="area-map"><strong>所属区域：</strong>控制按钮栏（Tab Buttons）— 底部操作栏</p>
 
     <h4>2.4.1 按钮总览</h4>
     <div class="table-wrap">
@@ -441,6 +449,7 @@ flowchart LR
     </div>
 
     <h3>2.5 课程创建与编辑（背景说明）</h3>
+    <p class="area-map"><strong>定位说明：</strong>本章节为 CAE Slick 编辑器的背景信息，不对应 LESSON PLAN Tab 界面内的具体区域</p>
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
         <div style="display:flex;align-items:center;gap:10px"><h4>编辑器工具与可添加元素</h4><span class="badge">展开</span></div>
@@ -567,7 +576,7 @@ stateDiagram-v2
     <h4>3.2.1 状态说明</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>状态</th><th>说明</th><th>转换条件</th></tr>
+        <tr><th>状态<br>State</th><th>说明<br>Description</th><th>转换条件<br>Transition Condition</th></tr>
         <tr><td><strong>IDLE 课程未运行</strong></td><td>空闲，课程已加载但未启动</td><td>加载课程后进入；Autorun → AUTO_RUNNING；Step-by-Step → STEP_RUNNING</td></tr>
         <tr><td><strong>AUTO_RUNNING 自动运行中</strong></td><td>系统自动依次执行步骤</td><td>步骤完成 → 继续下一步 或 COMPLETED</td></tr>
         <tr><td><strong>STEP_RUNNING 逐步运行中</strong></td><td>逐步运行模式，等待教员确认</td><td>Execute → 执行当前步骤；Skip → 跳过当前步骤</td></tr>
@@ -583,23 +592,23 @@ stateDiagram-v2
     <h4>3.3.1 关联依赖</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>功能点</th><th>依赖项</th><th>说明</th></tr>
-        <tr><td>课程计划选项卡</td><td>CAE Slick 编辑器</td><td>课程数据源，无课程则选项卡为空</td></tr>
-        <tr><td>执行步骤（SIM）</td><td>模拟器核心系统</td><td>步骤指令需模拟器响应才能生效</td></tr>
-        <tr><td>执行步骤（MALF）</td><td>故障系统（8.12）</td><td>触发故障需与故障滑动面板联动</td></tr>
-        <tr><td>结束课程</td><td>课程计划剖面工作区（2.5）</td><td>结束后课程计划剖面同步更新状态</td></tr>
-        <tr><td>课程状态</td><td>控制面板底部 Footer（1.2.7）</td><td>课程运行状态可能在 Footer 指示</td></tr>
+        <tr><th>功能点<br>Feature</th><th>依赖项<br>Dependency</th><th>说明<br>Description</th></tr>
+        <tr><td>课程计划选项卡<br>Lesson Plan Tab</td><td>CAE Slick 编辑器<br>CAE Slick Editor</td><td>课程数据源，无课程则选项卡为空</td></tr>
+        <tr><td>执行步骤（SIM）<br>Execute Step (SIM)</td><td>模拟器核心系统<br>Simulator Core</td><td>步骤指令需模拟器响应才能生效</td></tr>
+        <tr><td>执行步骤（MALF）<br>Execute Step (MALF)</td><td>故障系统（8.12）<br>Malfunction System</td><td>触发故障需与故障滑动面板联动</td></tr>
+        <tr><td>结束课程<br>End Lesson</td><td>课程计划剖面工作区（2.5）<br>Lesson Plan Profile</td><td>结束后课程计划剖面同步更新状态</td></tr>
+        <tr><td>课程状态<br>Lesson Status</td><td>控制面板底部 Footer（1.2.7）<br>Control Panel Footer</td><td>课程运行状态可能在 Footer 指示</td></tr>
       </table>
     </div>
 
     <h4>3.3.2 异常边界</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>场景</th><th>预期行为</th></tr>
-        <tr><td>IOS 上无可用课程</td><td>课程大纲区域为空，控制按钮禁用</td></tr>
-        <tr><td>课程执行中模拟器冻结</td><td>执行暂停，解冻后恢复或需重新执行</td></tr>
-        <tr><td>点击 End Lesson</td><td>立即停止执行，返回课程选择状态</td></tr>
-        <tr><td>步骤执行失败</td><td>显示错误提示，教员可重试或跳过</td></tr>
+        <tr><th>场景<br>Scenario</th><th>预期行为<br>Expected Behavior</th></tr>
+        <tr><td>IOS 上无可用课程<br>No Lesson Available</td><td>课程大纲区域为空，控制按钮禁用</td></tr>
+        <tr><td>课程执行中模拟器冻结<br>Simulator Freeze During Execution</td><td>执行暂停，解冻后恢复或需重新执行</td></tr>
+        <tr><td>点击 End Lesson<br>Click End Lesson</td><td>立即停止执行，返回课程选择状态</td></tr>
+        <tr><td>步骤执行失败<br>Step Execution Failed</td><td>显示错误提示，教员可重试或跳过</td></tr>
       </table>
     </div>
 
@@ -626,7 +635,7 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
     <h4>3.4.2 API 接口契约建议</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th></tr>
+        <tr><th>接口<br>API</th><th>方法<br>Method</th><th>请求字段<br>Request</th><th>响应字段<br>Response</th></tr>
         <tr><td><code>getAvailableLessons</code></td><td>GET</td><td>-</td><td><code>lessonList: [{id, name, phases[]}]</code></td></tr>
         <tr><td><code>getLessonDetail</code></td><td>GET</td><td><code>lessonId</code></td><td><code>phases: [{phaseId, name, steps}]</code></td></tr>
         <tr><td><code>executeStep</code></td><td>POST</td><td><code>lessonId, stepId, mode</code></td><td><code>status, message, nextStepId?</code></td></tr>
@@ -639,14 +648,14 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
     <h2>四、测试要点</h2>
     <div class="table-wrap">
       <table>
-        <tr><th>测试类型</th><th>测试场景</th></tr>
-        <tr><td>正向路径</td><td>加载课程 → 自动运行 → 所有步骤正常执行 → 课程完成</td></tr>
-        <tr><td>正向路径</td><td>加载课程 → 逐步运行 → 逐一点击 Execute → 课程完成</td></tr>
-        <tr><td>异常路径</td><td>无课程时，确认所有控制按钮禁用</td></tr>
-        <tr><td>异常路径</td><td>执行中点击 End Lesson，确认课程立即终止</td></tr>
-        <tr><td>边界条件</td><td>课程仅包含 NOTE 步骤，确认无需要执行的指令</td></tr>
-        <tr><td>边界条件</td><td>课程包含嵌套课程，确认嵌套课程正常加载和返回</td></tr>
-        <tr><td>联动测试</td><td>执行 MALF 步骤后，确认故障滑动面板显示对应故障状态</td></tr>
+        <tr><th>测试类型<br>Test Type</th><th>测试场景<br>Test Scenario</th></tr>
+        <tr><td>正向路径<br>Positive Path</td><td>加载课程 → 自动运行 → 所有步骤正常执行 → 课程完成</td></tr>
+        <tr><td>正向路径<br>Positive Path</td><td>加载课程 → 逐步运行 → 逐一点击 Execute → 课程完成</td></tr>
+        <tr><td>异常路径<br>Error Path</td><td>无课程时，确认所有控制按钮禁用</td></tr>
+        <tr><td>异常路径<br>Error Path</td><td>执行中点击 End Lesson，确认课程立即终止</td></tr>
+        <tr><td>边界条件<br>Boundary</td><td>课程仅包含 NOTE 步骤，确认无需要执行的指令</td></tr>
+        <tr><td>边界条件<br>Boundary</td><td>课程包含嵌套课程，确认嵌套课程正常加载和返回</td></tr>
+        <tr><td>联动测试<br>Integration</td><td>执行 MALF 步骤后，确认故障滑动面板显示对应故障状态</td></tr>
       </table>
     </div>
 
@@ -654,10 +663,11 @@ IOS 更新界面状态（步骤标记完成、加载下一步）</code></pre>
     <h2>五、变更记录</h2>
     <div class="table-wrap">
       <table>
-        <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
+        <tr><th>日期<br>Date</th><th>版本<br>Version</th><th>变更内容<br>Changes</th></tr>
         <tr><td>2026-05-30</td><td>V0.1</td><td>完成课程计划选项卡细化整理，包含功能总览、界面结构、课程大纲、步骤详情、控制按钮栏、课程创建、关联依赖、数据流推导、测试要点</td></tr>
         <tr><td>2026-06-02</td><td>V0.2</td><td>按规范V1.6重构为三层架构：一、功能层级与界面总览；二、核心功能详解（2.1~2.5）；三、全局操作流程与推导（3.1核心流程+3.2通用状态机+3.3关联依赖+3.4数据流）；四、测试要点；五、变更记录。修复导航链接，修正Mermaid节点格式</td></tr>
         <tr><td>2026-06-02</td><td>V0.3</td><td>补充丰满2.1训练阶段：新增2.1.1课程大纲树形结构说明、2.1.2训练阶段与步骤层级关系图（Mermaid TB）、2.1.3跨工作区关联（Lesson Plan Profile画布视图）。原2.1.1浏览流程图改为2.1.4，同步更新3.1全景图中的交叉引用</td></tr>
+        <tr><td>2026-06-02</td><td>V0.4</td><td>1. 建立1.2界面结构与2.x核心功能的明确映射：1.2表格新增"对应核心功能详解"列；2.1~2.5各章节开头新增area-map区域归属提示；2.5明确标注为"背景信息，不对应具体区域"；2. 全量表格属性列及关键术语补充英文对照（Attribute/Description/State/Scenario/API等）；3. 飞行阶段典型示例补充英文（Ground Operations/Takeoff/Climb/Cruise/Approach/Landing）</td></tr>
       </table>
     </div>
 
