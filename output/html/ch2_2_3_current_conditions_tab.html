@@ -164,8 +164,8 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h1>2.2.3 当前条件选项卡 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">CURRENT CONDITIONS Tab</span></h1>
     <p class="subtitle">原始手册对应：## 7. CURRENT CONDITIONS Tab &nbsp;|&nbsp; 整理时间：2026-06-01 &nbsp;|&nbsp; 细化粒度：三级菜单 + 状态流转 + 数据流推导</p>
 
-    <!-- ==================== 一、功能总览 ==================== -->
-    <h2>一、功能总览</h2>
+    <!-- ==================== 一、功能层级与界面总览 ==================== -->
+    <h2>一、功能层级与界面总览</h2>
 
     <!-- 原始图片1：CURRENT CONDITIONS Tab 整体界面 -->
     <div class="img-block">
@@ -213,38 +213,9 @@ graph TD
     style E fill:#ede9fe,stroke:#7c3aed,stroke-width:2px
     </div>
 
-    <h3>1.2 教员核心操作流程</h3>
-    <div class="mermaid">
-flowchart LR
-    Start([打开 CURRENT CONDITIONS]) --> View[查看当前参数]
-    View --> Select{选择修改项}
-    Select -->|本机状态| State[点击 ASL/IAS/Mach/Heading]
-    Select -->|环境条件| Env[点击 云/结冰/湍流/风/OAT/ISA]
-    State --> SLEW[SLEW 滑动面板]
-    Env --> Panel{选择面板类型}
-    Panel -->|云| Clouds[CLOUDS 滑动面板]
-    Panel -->|结冰| Icing[ICING 滑动面板]
-    Panel -->|湍流| Turb[TURBULENCE 滑动面板]
-    Panel -->|风/OAT/ISA| Keypad[键盘输入]
-    SLEW --> Input[输入新值 / 滑块调整]
-    Clouds --> Input
-    Icing --> Input
-    Turb --> Input
-    Keypad --> Input
-    Input --> Confirm{确认方式}
-    Confirm -->|Slew按钮| Exec[执行位移]
-    Confirm -->|绿色勾号| Apply[立即生效/延迟生效]
-    Confirm -->|红色X| Cancel[取消修改]
-    Exec --> End([参数更新完成])
-    Apply --> End
-    Cancel --> View
+    <!-- 原 1.2 教员核心操作流程已后移至「三、全局操作流程与推导」章节，保持静态架构层与动态流程层解耦 -->
 
-    style Start fill:#dbeafe,stroke:#2563eb
-    style End fill:#d1fae5,stroke:#059669
-    </div>
-
-    <!-- ==================== 二、界面结构 ==================== -->
-    <h2>二、界面结构</h2>
+    <h3>1.2 界面结构</h3>
 
     <p>下方表格中的位置描述基于图 1（CURRENT CONDITIONS Tab 整体界面）实际截图分析得出。</p>
 
@@ -532,6 +503,36 @@ flowchart LR
       </table>
     </div>
 
+    <h4>3.14.4 结冰条件状态流转</h4>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 未选择 : 默认
+    未选择 --> 轻度 : 点击轻度按钮
+    未选择 --> 中度 : 点击中度按钮
+    未选择 --> 重度 : 点击重度按钮
+
+    轻度 --> 中度 : 点击中度按钮
+    轻度 --> 重度 : 点击重度按钮
+    轻度 --> 未选择 : 点击除冰按钮
+
+    中度 --> 轻度 : 点击轻度按钮
+    中度 --> 重度 : 点击重度按钮
+    中度 --> 未选择 : 点击除冰按钮
+
+    重度 --> 轻度 : 点击轻度按钮
+    重度 --> 中度 : 点击中度按钮
+    重度 --> 未选择 : 点击除冰按钮
+
+    轻度 --> 预位黄 : TAT满足条件且不在云中
+    中度 --> 预位黄 : TAT满足条件且不在云中
+    重度 --> 预位黄 : TAT满足条件且不在云中
+
+    预位黄 --> 激活红 : 飞机进入云中
+    激活红 --> 预位黄 : 飞机离开云中
+    预位黄 --> 未选择 : 点击除冰
+    激活红 --> 未选择 : 点击除冰
+</div>
+
     <!-- 3.15 TURBULENCE -->
     <h3>3.15 湍流滑动面板（TURBULENCE Sliding Panel）</h3>
     <div class="table-wrap">
@@ -666,12 +667,12 @@ stateDiagram-v2
     空闲状态 --> 面板打开中 : 点击参数字段
     面板打开中 --> 空闲状态 : 点击取消/关闭
     面板打开中 --> 值已修改 : 输入新值
-    值已修改 --> 参数生效中 : 点击确认/Slew
-    参数生效中 --> 生效完成 : 冻结未激活:立即生效
-    参数生效中 --> 生效完成 : 冻结激活:延迟至解除
+    值已修改 --> 参数生效中 : 点击确认或Slew
+    参数生效中 --> 生效完成 : 冻结未激活时立即生效
+    参数生效中 --> 生效完成 : 冻结激活时延迟至解除
     生效完成 --> [*]
 
-    值已修改 --> 空闲状态 : 点击取消/Discard
+    值已修改 --> 空闲状态 : 点击取消或Discard
     </div>
 
     <h3>4.2 SLEW 位移操作流程</h3>
