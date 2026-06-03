@@ -177,32 +177,61 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["AIRCRAFT Tab\n飞机/航空器选项卡"] --> B["参数输入文本字段\n主区域上半部分"]
-    A --> C["快速访问按钮\n主区域中部"]
-    A --> D["故障部分\n主区域底部"]
+    subgraph Main["AIRCRAFT Tab / 飞机/航空器选项卡"]
+        B[Parameter Input Text Fields<br>参数输入文本字段]
+        C[Quick Access Buttons<br>快速访问按钮]
+        D[Malfunction Section<br>故障部分]
+    end
 
-    B --> B1["总重 GW\n点击后弹出总重键盘"]
-    B --> B2["总重重心 GW CG\n点击后弹出总重重心键盘"]
-    B --> B3["零燃油重量 ZFW\n点击后弹出ZFW键盘"]
-    B --> B4["ZFW CG\n点击后弹出ZFW CG键盘"]
-    B --> B5["燃油 FUEL\n点击后弹出燃油键盘"]
+    B --> B1[Gross Weight GW<br>总重]
+    B --> B2[GW CG<br>总重重心]
+    B --> B3[Zero Fuel Weight ZFW<br>零燃油重量]
+    B --> B4[ZFW CG<br>ZFW CG]
+    B --> B5[Fuel<br>燃油]
 
-    C --> C1["DL 数据链\n点击后弹出数据链滑动面板"]
-    C --> C2["UL 上行链路\n点击后弹出数据链滑动面板"]
-    C --> C3["VHF 通信\n点击后弹出通信滑动面板"]
-    C --> C4["重量与重心\n点击后弹出重量与平衡滑动面板"]
-    C --> C5["服务与舱门\n点击后弹出服务与舱门滑动面板"]
-    C --> C6["故障\n点击后弹出故障滑动面板"]
-    C --> C7["断路器\n点击后弹出断路器滑动面板"]
-    C --> C8["故障总结\n点击后弹出故障总结滑动面板"]
+    C --> C1[DL<br>数据链]
+    C --> C2[UL<br>上行链路]
+    C --> C3[VHF<br>通信]
+    C --> C4[Weight & CG<br>重量与重心]
+    C --> C5[Services & Doors<br>服务与舱门]
+    C --> C6[Malfunctions<br>故障]
+    C --> C7[Circuit Breakers<br>断路器]
+    C --> C8[Fail Summary<br>故障总结]
 
-    D --> D1["激活故障\n红色标记"]
-    D --> D2["预位故障\n黄色标记"]
+    D --> D1[Active Malfunctions<br>激活故障]
+    D --> D2[Armed Malfunctions<br>预位故障]
 
-    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
-    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style C fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style D fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    subgraph Popups["点击后弹出 / Pop-up Panels"]
+        E[GW Keypad<br>总重键盘]
+        F[GW CG Keypad<br>总重重心键盘]
+        G[ZFW Keypad<br>零燃油重量键盘]
+        H[ZFW CG Keypad<br>ZFW CG键盘]
+        I[Fuel Keypad<br>燃油键盘]
+        J[DATALINK Sliding Panel<br>数据链滑动面板]
+        K[COMMUNICATIONS Sliding Panel<br>通信滑动面板]
+        L[WEIGHT & BALANCE Sliding Panel<br>重量与平衡滑动面板]
+        M[SERVICES & DOORS Sliding Panel<br>服务与舱门滑动面板]
+        N[MALFUNCTIONS Sliding Panel<br>故障滑动面板]
+        O[CIRCUIT BREAKERS Sliding Panel<br>断路器滑动面板]
+        P[FAIL SUMMARY Sliding Panel<br>故障总结滑动面板]
+    end
+
+    B1 -.->|点击弹出| E
+    B2 -.->|点击弹出| F
+    B3 -.->|点击弹出| G
+    B4 -.->|点击弹出| H
+    B5 -.->|点击弹出| I
+    C1 -.->|点击弹出| J
+    C2 -.->|点击弹出| J
+    C3 -.->|点击弹出| K
+    C4 -.->|点击弹出| L
+    C5 -.->|点击弹出| M
+    C6 -.->|点击弹出| N
+    C7 -.->|点击弹出| O
+    C8 -.->|点击弹出| P
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
     </div>
 
     <h3>1.2 界面结构</h3>

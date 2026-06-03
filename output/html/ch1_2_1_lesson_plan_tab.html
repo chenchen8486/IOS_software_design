@@ -190,33 +190,72 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["LESSON PLAN Tab\n课程计划选项卡"] --> B["课程大纲\nLesson Outline\n【左侧区域】"]
-    A --> C["课程步骤详情\nLesson Step Details\n【右侧区域】"]
-    A --> D["控制按钮栏\nTab Buttons\n【底部区域】"]
+    A["LESSON PLAN Tab<br>课程计划选项卡"]
 
-    B --> B1["训练阶段 1\nTraining Phase 1"]
-    B --> B2["训练阶段 2\nTraining Phase 2"]
-    B --> B3["..."]
+    subgraph LeftPanel["左侧区域 / Left Panel — 课程大纲"]
+        B["课程大纲<br>Lesson Outline"]
+        B1["训练阶段 1<br>Training Phase 1"]
+        B2["训练阶段 2<br>Training Phase 2"]
+        B3["..."]
+        B1a["NOTE 注释"]
+        B1b["SIM 模拟条件"]
+        B1c["MALF 故障"]
+        B2a["Freeplay 自由操作"]
+        B2b["Nested 嵌套课程"]
+    end
 
-    B1 --> B1a["NOTE 注释"]
-    B1 --> B1b["SIM 模拟条件"]
-    B1 --> B1c["MALF 故障"]
-    B2 --> B2a["Freeplay 自由操作"]
-    B2 --> B2b["Nested 嵌套课程"]
+    subgraph RightPanel["右侧区域 / Right Panel — 步骤详情"]
+        C["课程步骤详情<br>Lesson Step Details<br>（可滚动查看）"]
+    end
 
-    C --> C1["当前选中步骤的\n详细参数/说明/触发条件\n（可滚动查看）"]
+    subgraph BottomPanel["底部区域 / Bottom Panel — 控制按钮"]
+        D["控制按钮栏<br>Tab Buttons"]
+        D1["Autorun 自动运行"]
+        D2["Step-by-Step 逐步运行"]
+        D3["Go to Current 调到当前"]
+        D4["Skip Condition 跳过条件"]
+        D5["Execute 执行"]
+        D6["End Lesson 结束课程"]
+    end
 
-    D --> D1["Autorun 自动运行"]
-    D --> D2["Step-by-Step 逐步运行"]
-    D --> D3["Go to Current 调到当前"]
-    D --> D4["Skip Condition 跳过条件"]
-    D --> D5["Execute 执行"]
-    D --> D6["End Lesson 结束课程"]
+    A --> B
+    A --> C
+    A --> D
+
+    B --> B1
+    B --> B2
+    B --> B3
+
+    B1 --> B1a
+    B1 --> B1b
+    B1 --> B1c
+    B2 --> B2a
+    B2 --> B2b
+
+    D --> D1
+    D --> D2
+    D --> D3
+    D --> D4
+    D --> D5
+    D --> D6
+
+    B1a -.->|选中显示| C
+    B1b -.->|选中显示| C
+    B1c -.->|选中显示| C
+    B2a -.->|选中显示| C
+    B2b -.->|选中显示| C
+
+    D5 -.->|点击执行| B1b
+    D5 -.->|点击执行| B1c
+    D6 -.->|点击结束| A
 
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style LeftPanel fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style RightPanel fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style BottomPanel fill:#fef3c7,stroke:#d97706,stroke-width:2px
     style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style C fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style D fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
     style B1 fill:#f0fdf4,stroke:#059669,stroke-width:1px
     style B2 fill:#f0fdf4,stroke:#059669,stroke-width:1px
     style B1a fill:#f3f4f6,stroke:#9ca3af,stroke-width:1px

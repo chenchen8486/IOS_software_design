@@ -186,24 +186,56 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["DOCS Tab\n文档选项卡"] --> B["缩略图/列表区\n左侧边栏"]
-    A --> C["文档主内容区\n右侧主区域"]
-    A --> D["顶部工具栏\n顶部单行"]
+    A["DOCS Tab<br>文档选项卡"]
 
-    B --> B1["缩略图视图：点击切换页面"]
-    B --> B2["列表视图：点击跳转页面"]
-    C --> C1["显示文档内容，支持缩放/滚动"]
+    subgraph LeftPanel["左侧区域 / Left Panel — 页面浏览"]
+        B["缩略图/列表区<br>Thumbnail/List Panel"]
+        B1["缩略图视图<br>Thumbnail View"]
+        B2["列表视图<br>List View"]
+    end
 
-    D --> D1["视图切换：缩略图/列表"]
-    D --> D2["上下滚动 + 页码"]
-    D --> D3["搜索：关键词匹配"]
-    D --> D4["视图扩展"]
-    D --> D5["缩放：+ / -"]
+    subgraph MainContent["主内容区 / Main Content — 文档显示"]
+        C["文档主内容区<br>Document Viewport"]
+    end
+
+    subgraph Toolbar["顶部工具栏 / Toolbar — 控制按钮"]
+        D["顶部工具栏<br>Toolbar"]
+        D1["视图切换<br>View Toggle"]
+        D2["上下滚动<br>Scroll Up/Down"]
+        D3["搜索<br>Search"]
+        D4["视图扩展<br>View Expansion"]
+        D5["缩放<br>Zoom"]
+    end
+
+    A --> B
+    A --> C
+    A --> D
+
+    B --> B1
+    B --> B2
+
+    D --> D1
+    D --> D2
+    D --> D3
+    D --> D4
+    D --> D5
+
+    B1 -.->|点击切换| C
+    B2 -.->|点击切换| C
+    D1 -.->|切换视图| B1
+    D1 -.->|切换视图| B2
+    D2 -.->|翻页浏览| C
+    D3 -.->|高亮匹配| C
+    D4 -.->|扩展可视区| C
+    D5 -.->|放大/缩小| C
 
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
+    style LeftPanel fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style MainContent fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style Toolbar fill:#fef3c7,stroke:#d97706,stroke-width:2px
     style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style C fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style D fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style C fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
     </div>
 
     <h3>1.2 界面结构</h3>

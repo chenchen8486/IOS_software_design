@@ -186,24 +186,46 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A["CURRENT CONDITIONS Tab\n当前条件选项卡"] --> B["本机状态参数\n主区域上半部分"]
-    A --> C["环境条件参数\n主区域中下部"]
+    subgraph Main["CURRENT CONDITIONS Tab / 当前条件选项卡"]
+        B[Aircraft State Parameters<br>本机状态参数]
+        C[Environmental Conditions<br>环境条件参数]
+    end
 
-    B --> B1["ASL 海拔高度\n点击后弹出 SLEW 面板"]
-    B --> B2["IAS 指示空速\n点击后弹出 SLEW 面板"]
-    B --> B3["Mach 马赫数\n点击后弹出 SLEW 面板"]
-    B --> B4["Heading 航向\n点击后弹出 SLEW 面板"]
+    B --> B1[ASL / Above Sea Level<br>海拔高度]
+    B --> B2[IAS / Indicated Airspeed<br>指示空速]
+    B --> B3[Mach / Mach Speed<br>马赫数]
+    B --> B4[Heading<br>航向]
 
-    C --> C1["云和能见度\n点击后弹出 CLOUDS 面板"]
-    C --> C2["Icing 结冰条件\n点击后弹出 ICING 面板"]
-    C --> C3["Turbulence 湍流\n点击后弹出 TURBULENCE 面板"]
-    C --> C4["A/C Wind 飞机风向\n点击后弹出风键盘"]
-    C --> C5["A/C OAT 外界大气温度\n点击后弹出 OAT 键盘"]
-    C --> C6["A/C ISA Dev ISA偏差\n点击后弹出 ISA 键盘"]
+    C --> C1[Clouds and Visibility<br>云和能见度]
+    C --> C2[Icing Conditions<br>结冰条件]
+    C --> C3[Turbulence<br>湍流]
+    C --> C4[A/C Wind<br>飞机风向]
+    C --> C5[A/C OAT<br>外界大气温度]
+    C --> C6[A/C ISA Dev<br>ISA 偏差]
 
-    style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
-    style B fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style C fill:#d1fae5,stroke:#059669,stroke-width:2px
+    subgraph Popups["点击后弹出 / Pop-up Panels"]
+        D[SLEW Sliding Panel<br>SLEW 滑动面板]
+        E[CLOUDS AT AIRCRAFT Sliding Panel<br>飞机处云层滑动面板]
+        F[ICING Sliding Panel<br>结冰滑动面板]
+        G[TURBULENCE Sliding Panel<br>湍流滑动面板]
+        H[A/C Wind Keypad<br>飞机风键盘]
+        I[A/C OAT Keypad<br>飞机 OAT 键盘]
+        J[A/C ISA Dev Keypad<br>ISA 偏差键盘]
+    end
+
+    B1 -.->|点击弹出| D
+    B2 -.->|点击弹出| D
+    B3 -.->|点击弹出| D
+    B4 -.->|点击弹出| D
+    C1 -.->|点击弹出| E
+    C2 -.->|点击弹出| F
+    C3 -.->|点击弹出| G
+    C4 -.->|点击弹出| H
+    C5 -.->|点击弹出| I
+    C6 -.->|点击弹出| J
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
     </div>
 
     <!-- 原 1.2 教员核心操作流程已后移至「三、全局操作流程与推导」章节，保持静态架构层与动态流程层解耦 -->

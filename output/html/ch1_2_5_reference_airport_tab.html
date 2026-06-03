@@ -162,65 +162,84 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    A[REFERENCE AIRPORT Tab<br>参考机场选项卡] --> B[参数输入文本字段]
-    A --> C[机场与重新定位滑动面板]
-    A --> D[时刻键盘 / 滑动面板]
-    A --> E[地面风滑动面板]
-    A --> F[能见度键盘 / RVR滑动面板]
-    A --> G[降水滑动面板]
-    A --> H[云层滑动面板]
-    A --> I[温度 / ISA / QNH键盘]
-    A --> J[风切变与微暴流滑动面板]
-    A --> K[跑道状况滑动面板]
+    subgraph Main["REFERENCE AIRPORT Tab / 参考机场选项卡"]
+        B[Parameter Input Text Fields<br>参数输入文本字段]
+        B14[Interactive Airport Section<br>交互式机场]
+    end
 
-    B --> B1[机场 ICAO]
-    B --> B2[跑道]
-    B --> B3[时间]
-    B --> B4[地面风]
-    B --> B5[能见度]
-    B --> B6[RVR]
-    B --> B7[降水]
-    B --> B8[云层]
-    B --> B9[温度]
-    B --> B10[ISA偏差]
-    B --> B11[QNH]
-    B --> B12[微暴流/风切变]
-    B --> B13[跑道状况]
-    B --> B14[交互式机场]
+    B --> B1[Airport ICAO<br>机场ICAO]
+    B --> B2[Runway<br>跑道]
+    B --> B3[Time of the Day<br>时间]
+    B --> B4[Surface Wind<br>地面风]
+    B --> B5[Visibility<br>能见度]
+    B --> B6[RVR<br>跑道视程]
+    B --> B7[Precipitation<br>降水]
+    B --> B8[Clouds<br>云层]
+    B --> B9[Temperature<br>温度]
+    B --> B10[ISA Dev<br>ISA偏差]
+    B --> B11[QNH<br>QNH]
+    B --> B12[Microburst/Windshear<br>微暴流/风切变]
+    B --> B13[Runway Condition<br>跑道状况]
 
-    C --> C1[参考位置选项卡]
-    C --> C2[机场重新定位选项卡]
-    C --> C3[地面操作选项卡]
-    C --> C4[FMS快速设置选项卡]
+    subgraph Popups["点击后弹出 / Pop-up Panels"]
+        C[AIRPORT & REPOSITION Sliding Panel<br>机场与重新定位滑动面板]
+        D[TIME OF DAY Keypad/Sliding Panel<br>时刻键盘/滑动面板]
+        E[SURFACE WIND Sliding Panel<br>地面风滑动面板]
+        F[VISIBILITY/RVR Keypad/Sliding Panel<br>能见度/RVR键盘/滑动面板]
+        G[PRECIPITATION Sliding Panel<br>降水滑动面板]
+        H[CLOUDS Sliding Panel<br>云层滑动面板]
+        I[Ref Temp/ISA Dev/QNH Keypad<br>参考温度/ISA偏差/QNH键盘]
+        J[WINDSHEAR & MICROBURST Sliding Panel<br>风切变与微暴流滑动面板]
+        K[RUNWAY CONDITION Sliding Panel<br>跑道状况滑动面板]
+    end
 
-    C1 --> C1a[更改参考/目的地机场]
-    C1 --> C1b[自动/手动参考位置]
+    C --> C1[REFERENCE LOCATION Tab<br>参考位置选项卡]
+    C --> C2[AIRPORT REPOSITION Tab<br>机场重新定位选项卡]
+    C --> C3[GROUND OPERATIONS Tab<br>地面操作选项卡]
+    C --> C4[FMS QUICKSET Tab<br>FMS快速设置选项卡]
 
-    C2 --> C2a[等待/滑行]
-    C2 --> C2b[登机口/停机位]
-    C2 --> C2c[重定位预设]
-    C2 --> C2d[跑道照明]
+    C1 --> C1a[Change Reference/Destination<br>更改参考/目的地机场]
+    C1 --> C1b[Auto/Manual Reference Location<br>自动/手动参考位置]
 
-    C3 --> C3a[引导员]
-    C3 --> C3b[飞机推出]
-    C3 --> C3c[轮挡]
-    C3 --> C3d[跑道状况]
-    C3 --> C3e[录制/场景交通]
+    C2 --> C2a[HOLD/TAXI<br>等待/滑行]
+    C2 --> C2b[GATE/PARKING SPOT<br>登机口/停机位]
+    C2 --> C2c[Reposition Presets<br>重定位预设]
+    C2 --> C2d[Runway Lighting<br>跑道照明]
 
-    C4 --> C4a[FMS保存]
-    C4 --> C4b[FMS召回]
-    C4 --> C4c[FMS内存面板]
+    C3 --> C3a[Marshaller<br>引导员]
+    C3 --> C3b[Aircraft Pushbacks<br>飞机推出]
+    C3 --> C3c[A/C on Chocks<br>轮挡]
+    C3 --> C3d[Runway Condition<br>跑道状况]
+    C3 --> C3e[Recorded/Scenario Traffic<br>录制/场景交通]
 
-    J --> J1[微暴流选项卡]
-    J --> J2[预测性风切变选项卡]
-    J --> J3[非预测性风切变选项卡]
-    J --> J4[弹跳着陆]
+    C4 --> C4a[FMS Save<br>FMS保存]
+    C4 --> C4b[FMS Recall<br>FMS召回]
+    C4 --> C4c[FMS MEMORY SAVE/RECALL<br>FMS内存面板]
 
-    K --> K1[污染物选项卡]
-    K --> K2[粗糙度选项卡]
+    J --> J1[Microburst Tab<br>微暴流选项卡]
+    J --> J2[Predictive Windshear Tab<br>预测性风切变选项卡]
+    J --> J3[Non-Predictive Windshear Tab<br>非预测性风切变选项卡]
+    J --> J4[Bounce Landing<br>弹跳着陆]
 
-    style A fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style C fill:#fef3c7,stroke:#d97706
+    K --> K1[Contamination Tab<br>污染物选项卡]
+    K --> K2[Roughness Tab<br>粗糙度选项卡]
+
+    B1 -.->|点击弹出| C
+    B2 -.->|点击弹出| C
+    B3 -.->|点击弹出| D
+    B4 -.->|点击弹出| E
+    B5 -.->|点击弹出| F
+    B6 -.->|点击弹出| F
+    B7 -.->|点击弹出| G
+    B8 -.->|点击弹出| H
+    B9 -.->|点击弹出| I
+    B10 -.->|点击弹出| I
+    B11 -.->|点击弹出| I
+    B12 -.->|点击弹出| J
+    B13 -.->|点击弹出| K
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
     style J fill:#fee2e2,stroke:#dc2626
     </div>
 
