@@ -67,9 +67,9 @@ IOS_software_design/
 
 | 章节 | A320.md 标题 | 原始手册对应 | 状态 |
 |------|-------------|-------------|------|
-| 2.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ⏳ 下一章 |
-| 2.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | 🔜 待处理 |
-| 2.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | 🔜 待处理 |
+| 2.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ✅ 已完成 |
+| 2.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | ✅ 已完成 |
+| 2.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | ⏳ 下一章 |
 | 2.2.7 | 控制面板底部（Footer） | ## 11. Control Board Footer | 🔜 待处理 |
 | 2.3 | 维护页面（Maintenance Pages） | ## 12. Maintenance Pages | 🔜 待处理 |
 | 2.4 | 仪表复示器工作区（INSTRUMENT REPEATER） | ## 13. INSTRUMENT REPEATER Workspace | 🔜 待处理 |
@@ -111,3 +111,4 @@ Claude 将自动：
 | 2026-05-30 | V0.1 | 项目初始化，完成 2.2.1、2.2.2 章节 |
 | 2026-06-01 | V0.2 | 完成 2.2.3 章节；重构 Mermaid 图表交互（点击放大 / 滚轮缩放 / 拖拽平移） |
 | 2026-06-01 | V0.3 | 迁移参考文件至 `reference/` 目录；创建根目录 `README.md`；统一文档路径引用 |
+| 2026-06-03 | V0.4 | 完成 2.2.5 章节（参考机场选项卡），涵盖 14 组参数字段、机场与重新定位滑动面板（4 选项卡）、时刻/地面风/能见度/降水/云层/温度/ISA/QNH/风切变/跑道状况等全部子面板，配套 27 张截图，含 Redline Review |

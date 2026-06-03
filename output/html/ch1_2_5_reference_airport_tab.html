@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link active" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="#">1.2.6 教员台滑动面板（IOS Slide Panels）</a>
+            <a class="nav-link" href="#">1.2.7 控制面板底部（Control Panel Bottom）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="#">1.3 维护页面</a>
+        <a class="nav-link" href="#">1.4 仪表复示器</a>
+        <a class="nav-link" href="#">1.5 课程计划剖面</a>
+        <a class="nav-link" href="#">1.6 地图工作区</a>
+        <a class="nav-link" href="#">1.7 高级</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><a href="#">1.2 控制面板工作区</a><span class="breadcrumb-sep">/</span><span>1.2.5 参考机场选项卡</span>
+  </div>
+
+  <div class="content">
+    <h1>1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</h1>
+    <p class="subtitle">对应原始手册：## 9. REFERENCE AIRPORT Tab</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    A[REFERENCE AIRPORT Tab<br>参考机场选项卡] --> B[参数输入文本字段]
+    A --> C[机场与重新定位滑动面板]
+    A --> D[时刻键盘 / 滑动面板]
+    A --> E[地面风滑动面板]
+    A --> F[能见度键盘 / RVR滑动面板]
+    A --> G[降水滑动面板]
+    A --> H[云层滑动面板]
+    A --> I[温度 / ISA / QNH键盘]
+    A --> J[风切变与微暴流滑动面板]
+    A --> K[跑道状况滑动面板]
+
+    B --> B1[机场 ICAO]
+    B --> B2[跑道]
+    B --> B3[时间]
+    B --> B4[地面风]
+    B --> B5[能见度]
+    B --> B6[RVR]
+    B --> B7[降水]
+    B --> B8[云层]
+    B --> B9[温度]
+    B --> B10[ISA偏差]
+    B --> B11[QNH]
+    B --> B12[微暴流/风切变]
+    B --> B13[跑道状况]
+    B --> B14[交互式机场]
+
+    C --> C1[参考位置选项卡]
+    C --> C2[机场重新定位选项卡]
+    C --> C3[地面操作选项卡]
+    C --> C4[FMS快速设置选项卡]
+
+    C1 --> C1a[更改参考/目的地机场]
+    C1 --> C1b[自动/手动参考位置]
+
+    C2 --> C2a[等待/滑行]
+    C2 --> C2b[登机口/停机位]
+    C2 --> C2c[重定位预设]
+    C2 --> C2d[跑道照明]
+
+    C3 --> C3a[引导员]
+    C3 --> C3b[飞机推出]
+    C3 --> C3c[轮挡]
+    C3 --> C3d[跑道状况]
+    C3 --> C3e[录制/场景交通]
+
+    C4 --> C4a[FMS保存]
+    C4 --> C4b[FMS召回]
+    C4 --> C4c[FMS内存面板]
+
+    J --> J1[微暴流选项卡]
+    J --> J2[预测性风切变选项卡]
+    J --> J3[非预测性风切变选项卡]
+    J --> J4[弹跳着陆]
+
+    K --> K1[污染物选项卡]
+    K --> K2[粗糙度选项卡]
+
+    style A fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style C fill:#fef3c7,stroke:#d97706
+    style J fill:#fee2e2,stroke:#dc2626
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>参考机场选项卡标签<br>REFERENCE AIRPORT Tab</td><td>控制面板顶部选项卡栏（第 5 个选项卡）</td><td>监控和更改参考机场、跑道、环境条件、微暴流/风切变</td></tr>
+          <tr><td>参数输入文本字段区域<br>Parameter Input Text Fields</td><td>选项卡主区域上半部分</td><td>14 组可点击参数字段，点击后弹出对应滑动面板或键盘</td></tr>
+          <tr><td>交互式机场部分<br>Interactive Airport Section</td><td>选项卡主区域中部</td><td>点击跑道图形即可直接切换参考跑道</td></tr>
+          <tr><td>重新定位按钮<br>Reposition Button</td><td>选项卡底部区域</td><td>执行选定的重新定位操作</td></tr>
+          <tr><td>放弃按钮<br>Discard Button</td><td>重新定位按钮旁</td><td>取消选定的重新定位并关闭滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_5_overview.jpg" alt="参考机场选项卡总览">
+      <p class="img-caption">图：参考机场选项卡总览</p>
+    </div>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 主界面参数字段速览</h3>
+    <p>参考机场选项卡包含 14 组参数输入文本字段，点击后显示相应的滑动面板或键盘。部分参数支持 Wheel Picker（长按或上下滑动呼出）。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>字段名称</th><th>显示内容</th><th>交互方式</th><th>弹出面板/键盘</th></tr></thead>
+        <tbody>
+          <tr><td>机场（Airport）</td><td>当前参考机场 ICAO 代码</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
+          <tr><td>跑道（Runway）</td><td>参考机场当前跑道号</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
+          <tr><td>时间（Time）</td><td>当前时刻</td><td>点击 / Wheel Picker</td><td>时刻键盘 / Wheel Picker 选择黎明/白天/黄昏/夜间</td></tr>
+          <tr><td>地面风（磁）（Surface Wind）</td><td>参考机场和跑道当前风况</td><td>点击 / 长按风向/风速字段 + Wheel Picker</td><td>地面风滑动面板（详见 2.4）</td></tr>
+          <tr><td>能见度（Visibility）</td><td>当前云下能见度</td><td>点击 / Wheel Picker</td><td>能见度键盘（详见 2.5）</td></tr>
+          <tr><td>RVR</td><td>当前跑道视程</td><td>点击 / Wheel Picker</td><td>能见度/RVR 滑动面板（详见 2.5）</td></tr>
+          <tr><td>降水（Precipitation）</td><td>参考机场当前降水情况</td><td>点击 / Wheel Picker</td><td>降水滑动面板（详见 2.6）</td></tr>
+          <tr><td>云层（Clouds）</td><td>参考机场/飞行场当前云层状况</td><td>点击 / Wheel Picker</td><td>云层滑动面板（详见 2.7）</td></tr>
+          <tr><td>温度（Temperature）</td><td>参考机场当前温度</td><td>点击 / Wheel Picker</td><td>参考温度键盘（详见 2.8）</td></tr>
+          <tr><td>ISA 偏差（ISA Dev）</td><td>当前 ISA 温度偏差</td><td>点击 / Wheel Picker</td><td>ISA 偏差键盘（详见 2.8）</td></tr>
+          <tr><td>QNH</td><td>当前机场海平面气压</td><td>点击 / Wheel Picker</td><td>QNH 键盘（详见 2.8）</td></tr>
+          <tr><td>微暴流/风切变（Microburst/Windshear）</td><td>当前激活的微暴流/风切变剖面</td><td>点击</td><td>风切变与微暴流滑动面板（详见 2.9）</td></tr>
+          <tr><td>跑道状况（Runway Condition）</td><td>参考机场当前跑道状况</td><td>点击 / Wheel Picker</td><td>跑道状况滑动面板（详见 2.10）</td></tr>
+          <tr><td>交互式机场（Interactive Airport）</td><td>机场跑道图形</td><td>点击跑道</td><td>直接更改参考跑道并更新跑道文本字段</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.2 机场与重新定位滑动面板（AIRPORT & REPOSITION Sliding Panel）</h3>
+    <p>触发方式：点击主界面「机场」或「跑道」参数字段弹出。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_airport_reposition_panel.jpg" alt="机场与重新定位滑动面板">
+      <p class="img-caption">图：机场与重新定位滑动面板</p>
+    </div>
+    <p>此滑动面板允许教员查看并选择参考/目的地机场和跑道、将飞机重新定位到预设位置、执行地面操作、调整跑道灯光强度。包含四个选项卡：参考位置、机场重新定位、地面操作、FMS 快速设置。</p>
+
+    <h4>2.2.1 参考位置选项卡（REFERENCE LOCATION Tab）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>参考机场</td><td>只读文本字段，显示参考机场 ICAO 代码和活动跑道编号</td></tr>
+          <tr><td>目的地机场</td><td>只读文本字段，显示目的地机场 ICAO 代码和活动跑道编号</td></tr>
+          <tr><td>更改参考按钮</td><td>点击展开参考机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
+          <tr><td>更改目的地按钮</td><td>点击展开目的地机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
+          <tr><td>自动参考位置复选框</td><td>切换自动/手动模式。自动模式：参考机场自动更新至最近可用跑道；手动模式：除非教员或课程计划输入，否则不更改</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_reference_location_tab.jpg" alt="参考位置选项卡">
+      <p class="img-caption">图：参考位置选项卡（典型）</p>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_airport_list.jpg" alt="参考机场列表">
+      <p class="img-caption">图：参考机场列表（典型）</p>
+    </div>
+
+    <h4>2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</h4>
+    <p>包含四个部分：等待/滑行、登机口/停机位、重定位预设、跑道照明。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_reposition_tab.jpg" alt="机场重新定位选项卡">
+      <p class="img-caption">图：机场重新定位选项卡（典型）</p>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>等待/滑行部分（HOLD / TAXI）</h4>
+        <span class="badge">互斥单选</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>预设</th><th>飞机配置</th><th>边界行为</th></tr></thead>
+            <tbody>
+              <tr><td>等待（HOLD）</td><td>起落架放下；襟翼保持（若当前位置对起飞有效）否则襟翼 5；舱门关闭</td><td>重新定位结束时设置飞行冻结，停用加速</td></tr>
+              <tr><td>滑行（TAXI）</td><td>起落架放下；襟翼保持（若当前位置对起飞有效）否则襟翼 5；舱门关闭</td><td>重新定位结束时设置飞行冻结，停用加速</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>登机口/停机位部分（GATE / PARKING SPOT）</h4>
+        <span class="badge">互斥单选</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <p>点击所需单选按钮将飞机重新定位到登机口/停机位。飞机配置：起落架放下、襟翼收上、减速板收起、1L 舱门及右前/右后货舱门打开。重新定位结束时设置飞行冻结，停用加速。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>重定位预设部分（Reposition Presets）</h4>
+        <span class="badge">互斥单选</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>预设</th><th>位置描述</th><th>典型配置</th></tr></thead>
+            <tbody>
+              <tr><td>中等空域作业</td><td>10,000 ft（气压高度）或 FL100</td><td>起落架收上、襟翼收上、速度 250 KCAS、高度 10,000 ft / FL100、航道居中、平飞、距参考跑道 30 NM</td></tr>
+              <tr><td>高空作业</td><td>FL350</td><td>起落架收上、襟翼收上、速度 Mach 0.78、高度 FL350、航道居中、平飞、距参考跑道 100 NM</td></tr>
+              <tr><td>左侧 1 NM、3 NM</td><td>左侧顺风、正切 3 NM、距接地点前 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
+              <tr><td>右侧 1 NM、3 NM</td><td>右侧顺风、正切 3 NM、距接地点前 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
+              <tr><td>起飞（T/O）</td><td>当前参考跑道起飞位置</td><td>起落架放下、襟翼 1+F、静止、地面、舱门关闭</td></tr>
+              <tr><td>3 NM 短五边</td><td>距参考跑道 3 NM</td><td>起落架放下、全襟翼、速度 Vref+5、航道居中、下滑道居中、下降、距离 3 NM</td></tr>
+              <tr><td>6 NM</td><td>距参考跑道 6 NM</td><td>起落架放下、襟翼 3、速度 F Speed、航道居中、下滑道居中、下降、距离 6 NM</td></tr>
+              <tr><td>8 NM</td><td>距参考跑道 8 NM</td><td>起落架收上、襟翼 2、速度 F Speed、航道居中、高度 2,000 ft AGL、平飞、距离 8 NM</td></tr>
+              <tr><td>12 NM，左 1 NM</td><td>距参考跑道 12 NM、左侧 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
+              <tr><td>12 NM</td><td>距参考跑道 12 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道居中、高度 3,000 ft AGL、平飞、距离 12 NM</td></tr>
+              <tr><td>12 NM，右 1 NM</td><td>距参考跑道 12 NM、右侧 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>注意：</strong>所有重定位预设结束时均设置飞行冻结。预设值可能因机型不同而有所变化。（*）AGL 相对于参考跑道入口高度。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>跑道照明部分（Runway Lighting）</h4>
+        <span class="badge">多控件</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>控件</th><th>功能说明</th><th>范围/边界</th></tr></thead>
+            <tbody>
+              <tr><td>跑道（Runway）</td><td>显示活动跑道，点击下拉可显示其他跑道</td><td>—</td></tr>
+              <tr><td>跑道灯（Runway Lights）</td><td>系统自动根据时段和天气设置最佳强度，用户可覆盖</td><td>最小值 = 0，最大值 = 5；"*" 表示特定跑道灯光强度不同</td></tr>
+              <tr><td>高级照明（Advanced Lighting）</td><td>点击展开「跑道照明」滑动面板</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h4>跑道照明滑动面板</h4>
+        <div class="img-block">
+          <img src="./images/ch1_2_5_runway_lighting_panel.jpg" alt="跑道照明滑动面板">
+          <p class="img-caption">图：跑道照明滑动面板（典型）</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>控件</th><th>功能说明</th><th>范围</th></tr></thead>
+            <tbody>
+              <tr><td>跑道列表</td><td>点击选择需要调整照明的跑道</td><td>—</td></tr>
+              <tr><td>所有跑道灯</td><td>下拉选择活动目视跑道所有照明类别强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>中心线（Centerline）</td><td>下拉选择中心线照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>随机强度（Random Intensity）</td><td>切换启用/禁用跑道照明系统随机强度（影响边灯、末端灯、中心线、接地区）</td><td>—</td></tr>
+              <tr><td>接地区（TD Zone）</td><td>下拉选择接地区照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>目视着陆辅助灯（VLA）</td><td>下拉选择 VLA 照明亮度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>边灯和末端灯（Edge & Ends）</td><td>下拉选择边灯和末端灯强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>进近灯（Reils）</td><td>下拉选择进近灯亮度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>进近（Approach）</td><td>下拉选择活动参考跑道进近照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>频闪灯（Strobe）</td><td>下拉选择频闪灯照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>所有跑道默认照明</td><td>点击展开「跑道默认灯光」滑动面板</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="img-block">
+          <img src="./images/ch1_2_5_runway_default_lighting.jpg" alt="跑道默认灯光滑动面板">
+          <p class="img-caption">图：跑道默认灯光滑动面板</p>
+        </div>
+        <p><strong>航向信标（Localizer）：</strong>正常状态下点击触发参考跑道航向信标发射机故障；激活状态下点击清除故障。<br>
+        <strong>下滑信标（Glideslope）：</strong>正常状态下点击触发参考跑道下滑信标发射机故障；激活状态下点击清除故障。</p>
+      </div>
+    </div>
+
+    <h4>2.2.3 地面操作选项卡（GROUND OPERATIONS Tab）</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_ground_operations_tab.jpg" alt="地面操作选项卡">
+      <p class="img-caption">图：地面操作选项卡</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>交互方式</th><th>边界行为/互斥关系</th></tr></thead>
+        <tbody>
+          <tr><td>引导员（Marshaller）</td><td>切换按钮</td><td>飞机离地或推出过程中禁用；正常态显示引导员，激活态移除</td></tr>
+          <tr><td>飞机推出 — 尾部向左</td><td>操作按钮</td><td>飞机移动时禁用；执行推出并随后向左转弯</td></tr>
+          <tr><td>飞机推出 — 直线</td><td>操作按钮</td><td>飞机移动时禁用；执行直线推出</td></tr>
+          <tr><td>飞机推出 — 尾部向右</td><td>操作按钮</td><td>飞机移动时禁用；执行推出并随后向右转弯</td></tr>
+          <tr><td>飞机轮挡（A/C on Chocks）</td><td>切换按钮</td><td>飞机移动时禁用；与「飞机在千斤顶上」互斥；激活态放置轮挡（飞机不可移动）</td></tr>
+          <tr><td>跑道状况</td><td>可展开按钮</td><td>显示「跑道状况」滑动面板（详见 2.10）</td></tr>
+          <tr><td>录制交通</td><td>可展开按钮</td><td>若登机口交通或 TCAS/随机交通激活则禁用；显示「录制交通」滑动面板</td></tr>
+          <tr><td>场景交通</td><td>可展开按钮</td><td>若登机口交通或 TCAS/随机交通激活则禁用；显示「场景交通」滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>录制交通与场景交通滑动面板</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="img-block">
+          <img src="./images/ch1_2_5_recorded_traffic_panel.jpg" alt="录制交通滑动面板">
+          <p class="img-caption">图：录制交通滑动面板</p>
+        </div>
+        <div class="img-block">
+          <img src="./images/ch1_2_5_scenario_traffic_panel.jpg" alt="场景交通滑动面板">
+          <p class="img-caption">图：场景交通滑动面板</p>
+        </div>
+        <p><strong>播放（Play）：</strong>点击场景旁的切换按钮播放选定的录制交通场景；再次点击暂停。<br>
+        <strong>场景交通滑动面板：</strong>允许教员通过播放预录交通场景将交通效果添加到视觉场景中，提供「筛选」选项卡按类别筛选可用录制场景。</p>
+      </div>
+    </div>
+
+    <h4>2.2.4 FMS 快速设置选项卡（FMS QUICKSET Tab）</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_fms_quickset_tab.jpg" alt="FMS 快速设置选项卡">
+      <p class="img-caption">图：FMS 快速设置选项卡</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>FMS 保存（FMS Save）</td><td>点击激活保存所选 FMS 内存飞行计划的过程</td></tr>
+          <tr><td>FMS 召回（FMS Recall）</td><td>点击召回所选 FMS 内存飞行计划</td></tr>
+          <tr><td>FMS 内存（FMS Memory）</td><td>点击显示「FMS 内存保存/召回」滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.2.5 FMS 内存保存/召回滑动面板（FMS MEMORY SAVE/RECALL Sliding Panel）</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_fms_memory_panel.jpg" alt="FMS 内存保存/召回滑动面板">
+      <p class="img-caption">图：FMS 内存保存/召回滑动面板</p>
+    </div>
+    <p>此滑动面板允许教员保存当前 FMS 飞行计划或将先前保存的飞行计划加载到 FMS 内存中。包含三个选项卡：消息、密码保护、未受保护。以及 SIMSOFT CONTROLS 选项卡（特定机型专用）。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>描述（Description）</td><td>点击输入文本字段，显示键盘输入待保存飞行计划的描述</td></tr>
+          <tr><td>密码（Password）</td><td>点击输入文本字段，显示键盘输入最多 10 个字符的有效密码</td></tr>
+          <tr><td>保存（Save）</td><td>点击启动保存所选 FMS 内存飞行计划的过程</td></tr>
+          <tr><td>召回（Recall）</td><td>点击调取所选 FMS 内存飞行计划</td></tr>
+          <tr><td>取消（Cancel）</td><td>点击取消当前输入</td></tr>
+          <tr><td>删除所选（Delete Selected）</td><td>点击删除所选 FMS 内存飞行计划</td></tr>
+          <tr><td>清除所有未受保护（Clear all Unprotected）</td><td>点击清除「未受保护」选项卡下列出的所有 FMS 内存飞行计划</td></tr>
+          <tr><td>密码保护选项卡</td><td>列出所有可保存/调取的密码保护飞行计划编号，显示 FMC 飞行计划描述</td></tr>
+          <tr><td>未受保护选项卡</td><td>列出所有可保存/调取的未受保护飞行计划编号，显示 FMC 飞行计划描述</td></tr>
+          <tr><td>SIMSOFT CONTROLS — 保存</td><td>向 FMS 发送命令，将输入的飞行计划副本保存至 FMS 内部存储器（每次只能保存一个，不保存在模拟主机中）</td></tr>
+          <tr><td>SIMSOFT CONTROLS — 召回</td><td>召回存储在 FMS 存储器中的飞行计划</td></tr>
+          <tr><td>禁止自动召回（Inhibit Auto Recall）</td><td>激活时，在特定机场/跑道保存的飞行计划在重新定位至同一位置后不会自动被召回</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>警告：</strong>导航数据库每 28 天更新一次。更新后，所有基于旧导航数据库创建的飞行计划将不再可用，必须重新创建。</p>
+
+    <h4>2.2.6 重新定位与放弃按钮</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能</th><th>边界行为</th></tr></thead>
+        <tbody>
+          <tr><td>重新定位（Reposition）</td><td>执行选定的重新定位</td><td>执行时进入飞行冻结模式，直至重新定位完成</td></tr>
+          <tr><td>放弃（Discard）</td><td>取消选定的重新定位</td><td>同时关闭滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.2.7 机场与重新定位操作流程</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([打开滑动面板]) --> A[选择选项卡]
+    A --> B[参考位置]
+    A --> C[机场重新定位]
+    A --> D[地面操作]
+    A --> E[FMS快速设置]
+
+    B --> B1[更改参考/目的地机场] --> B2[选择ICAO及跑道] --> B3[确认]
+    C --> C1[选择重定位预设] --> C2[点击重新定位按钮] --> C3[飞行冻结直至完成]
+    D --> D1[选择地面操作] --> D2[执行推出/轮挡/跑道状况] --> D3[确认生效]
+    E --> E1[选择保存/召回/内存] --> E2[输入描述/密码] --> E3[确认操作]
+
+    B3 --> End([完成])
+    C3 --> End
+    D3 --> End
+    E3 --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <h3>2.3 时刻键盘与时刻滑动面板</h3>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_time_keypad.jpg" alt="时刻键盘">
+      <p class="img-caption">图：时刻键盘</p>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_time_sliding_panel.jpg" alt="时刻滑动面板">
+      <p class="img-caption">图：时刻滑动面板</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>显示并更改当前时刻</td></tr>
+          <tr><td>交互方式</td><td>时刻键盘：使用键盘或滑块输入新时刻（0~23 小时），绿勾确认，红叉取消。时刻滑动面板：快速选择黎明/白天/黄昏/夜间</td></tr>
+          <tr><td>时间加速因子</td><td>变化范围从正常速度（1 秒）的 1 倍到 500 倍</td></tr>
+          <tr><td>显示月亮和太阳</td><td>复选框启用/禁用在模拟中显示月亮和太阳</td></tr>
+          <tr><td>边界行为</td><td>滑块控件可将时刻在 0~23 小时之间变化</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.4 地面风滑动面板（SURFACE WIND Sliding Panel）</h3>
+    <p>触发方式：点击主界面「地面风（磁）」参数字段弹出。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_surface_wind_panel.jpg" alt="地面风滑动面板">
+      <p class="img-caption">图：地面风滑动面板</p>
+    </div>
+    <p>此滑动面板包含两个选项卡：快速选择、风向罗盘。</p>
+
+    <h4>2.4.1 快速选择选项卡</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_wind_quick_select.jpg" alt="快速选择选项卡">
+      <p class="img-caption">图：快速选择选项卡</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能</th><th>数值</th></tr></thead>
+        <tbody>
+          <tr><td>H10</td><td>跑道表面顶风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
+          <tr><td>H20</td><td>跑道表面顶风</td><td>20 节 / 10.29 米/秒（显示为 10）</td></tr>
+          <tr><td>H30</td><td>跑道表面顶风</td><td>30 节 / 15.43 米/秒（显示为 15）</td></tr>
+          <tr><td>T5</td><td>跑道表面顺风</td><td>5 节 / 2.57 米/秒（显示为 3）</td></tr>
+          <tr><td>T10</td><td>跑道表面顺风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
+          <tr><td>T15</td><td>跑道表面顺风</td><td>15 节 / 7.71 米/秒（显示为 8）</td></tr>
+          <tr><td>L10</td><td>跑道表面左侧风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
+          <tr><td>L20</td><td>跑道表面左侧风</td><td>20 节 / 10.28 米/秒（显示为 10）</td></tr>
+          <tr><td>L38</td><td>跑道表面左侧风</td><td>38 节 / 19.54 米/秒（显示为 20）</td></tr>
+          <tr><td>R10</td><td>跑道表面右侧风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
+          <tr><td>R20</td><td>跑道表面右侧风</td><td>20 节 / 10.28 米/秒（显示为 10）</td></tr>
+          <tr><td>R38</td><td>跑道表面右侧风</td><td>38 节 / 19.54 米/秒（显示为 20）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>点击后整个风廓线将根据机场风的变化进行偏移。</p>
+
+    <h4>2.4.2 风向罗盘选项卡</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_wind_compass.jpg" alt="风向罗盘选项卡">
+      <p class="img-caption">图：风向罗盘选项卡</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>风向罗盘指示器</td><td>由跑道和矢量组成，矢量长度表示风速，方向表示风向。具有交互性，可触摸矢量箭头并在罗盘上移动以快速调整风向</td></tr>
+          <tr><td>跑道风分量</td><td>只读文本字段，显示风罗盘上的新跑道风分量（顺/逆风或侧风）；值为零时空白</td></tr>
+          <tr><td>跑道朝上（Runway Up）</td><td>复选框，确保跑道始终在屏幕上朝上显示</td></tr>
+          <tr><td>FAA 逆偏阵风</td><td>复选框，左侧侧风时启用逆偏（逆时针）阵风；无侧风时禁用</td></tr>
+          <tr><td>FAA 顺偏阵风</td><td>复选框，右侧侧风时启用顺偏（顺时针）阵风；无侧风时禁用</td></tr>
+          <tr><td>参考机场</td><td>只读字段，显示参考机场 ICAO 代码和活动跑道编号</td></tr>
+          <tr><td>风（Wind）</td><td>输入文本字段，显示当前风向风速。点击显示键盘输入机场磁风向和风速。风向范围 1°~360°，风速最小值 = 0，最大值 = 动态</td></tr>
+          <tr><td>阵风至（Gust To）</td><td>输入文本字段，显示当前风阵风值。点击显示阵风速度键盘输入绝对阵风值。若阵风值等于地面风值，显示「无阵风」。地面风为静风时，绝对阵风重置且「阵风至」按钮禁用</td></tr>
+          <tr><td>FAA 阵风（FAA Gust）</td><td>复选框，启用 FAA 阵风功能（左侧逆偏、右侧顺偏）；无侧风时禁用</td></tr>
+          <tr><td>静地面风（Calm Surface Wind）</td><td>操作按钮，点击消除地面风（风速 0 节、风向 0°、阵风 0 节）</td></tr>
+          <tr><td>静所有风（Calm All Wind）</td><td>点击重置风廓线，将所有高度上的风重置为 0 节</td></tr>
+          <tr><td>激活（Activate）</td><td>点击将新的风选择设置为当前地面风</td></tr>
+          <tr><td>取消（Cancel）</td><td>点击取消风向选择</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.4.3 地面风操作流程</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([打开地面风面板]) --> A[选择快速选择或风向罗盘]
+    A --> B[快速选择预设]
+    A --> C[风向罗盘交互]
+    C --> C1[拖拽矢量调整风向] --> C2[输入风速/阵风]
+    B --> D[确认风参数]
+    C2 --> D
+    D --> E[点击激活]
+    E --> F{检查侧风}
+    F -->|有侧风| G[可选启用FAA阵风]
+    F -->|无侧风| H[FAA阵风禁用]
+    G --> End([完成])
+    H --> End
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <h3>2.5 能见度键盘与能见度/RVR滑动面板</h3>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_visibility_keypad.jpg" alt="能见度键盘">
+      <p class="img-caption">图：能见度键盘</p>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_visibility_rvr_panel.jpg" alt="能见度/RVR滑动面板">
+      <p class="img-caption">图：能见度/RVR滑动面板</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>能见度键盘</td><td>显示当前云下能见度。使用键盘或滑块更改，绿勾确认，红叉取消</td></tr>
+          <tr><td>能见度（Visibility）</td><td>输入文本字段，显示当前云层下方能见度。点击显示能见度键盘</td></tr>
+          <tr><td>雾选项卡</td><td>包含互斥雾单选按钮：无 / 零星雾 / 浓雾</td></tr>
+          <tr><td>零星雾</td><td>激活时设置默认最小/最大 RVR 值</td></tr>
+          <tr><td>RVR 最小值/最大值</td><td>输入文本字段，仅在零星雾下可用。RVR 最小值：最小值 = 0，最大值 = RVR 最大值。RVR 最大值：最小值 = RVR 最小值，最大值 = 3,045 米 / 9,990 英尺</td></tr>
+          <tr><td>RVR</td><td>输入文本字段。RVR 仅适用于雾层内部，能见度是雾层顶部上方的普遍能见度。对于 TROPOS 视觉系统，仅在零星雾未激活时可用。最小值 = 0，最大值 = 3,045 米 / 9,990 英尺</td></tr>
+          <tr><td>雾顶（Fog Top）</td><td>输入文本字段，以几何英尺输入高于地面的雾顶值（动态最小值/最大值）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.6 降水滑动面板（PRECIPITATION Sliding Panel）</h3>
+    <p>触发方式：点击主界面「降水」参数字段弹出。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_precipitation_panel.jpg" alt="降水滑动面板">
+      <p class="img-caption">图：降水滑动面板</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能</th><th>边界行为/禁用条件</th></tr></thead>
+        <tbody>
+          <tr><td>小雨（Light Rain）</td><td>降雨量 33%，能见度设为 15 海里（若云下能见度未更严格限制）。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>中雨（Medium Rain）</td><td>降雨量 66%，能见度设为 5 海里。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>大雨（Heavy Rain）</td><td>降雨量 100%，能见度设为 1 海里。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>雪（Snow）</td><td>设置预设降雪量。再次点击取消</td><td>温度高于 5°C 时禁用</td></tr>
+          <tr><td>冰雹（Hail）</td><td>冰雹量 33%（轻雹）。未定义云层时自动插入云层。再次点击移除</td><td>温度低于 -5°C 时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.6.1 效果选项卡</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能</th><th>边界行为/禁用条件</th></tr></thead>
+        <tbody>
+          <tr><td>冬季场景（Winter Scene）</td><td>在视觉场景中显示冬季场景。再次点击移除</td><td>温度高于 20°C 或发生显著经纬度变化且视觉系统未就绪时禁用</td></tr>
+          <tr><td>吹雪（Blowing Snow）</td><td>启用吹雪效果。仅当冬季场景激活且风速非零时出现，激活时能见度降低</td><td>冬季场景未激活时禁用</td></tr>
+          <tr><td>吹沙（Blowing Sand）</td><td>激活吹沙效果。再次点击停用。地面风速为零时无效果</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>闪电与雷声（Lightning & Thunder）</td><td>激活模拟中的闪电与雷声效果。再次点击关闭</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.7 云层滑动面板（CLOUDS Sliding Panel）</h3>
+    <p>触发方式：点击主界面「云层」参数字段弹出。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>修改参考机场区域的云层和能见度参数。控件与当前条件选项卡中的云层滑动面板相同（参见 1.2.3 节 2.2）</td></tr>
+          <tr><td>参考机场标识</td><td>参考机场代码和跑道号显示在云层滑动面板顶部</td></tr>
+          <tr><td>互斥关系</td><td>高云/中云/低云类型选择各自为下拉按钮；雾区无雾/零星雾/浓雾互斥</td></tr>
+          <tr><td>天气预设</td><td>CAVOK、1000/5km、800/2km、CAT I~IIIC、0/0、最小起飞 RVR 等</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.8 参考温度/ISA偏差/QNH键盘</h3>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_temp_keypad.jpg" alt="参考温度键盘">
+      <p class="img-caption">图：参考温度键盘</p>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_isa_keypad.jpg" alt="ISA偏差键盘">
+      <p class="img-caption">图：ISA 偏差键盘</p>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_qnh_keypad.jpg" alt="QNH键盘">
+      <p class="img-caption">图：QNH 键盘</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>键盘</th><th>功能</th><th>输入范围/单位</th><th>联动效果</th></tr></thead>
+        <tbody>
+          <tr><td>参考温度键盘（Ref Temp Keypad）</td><td>显示并更改参考机场当前温度</td><td>动态最小值/最大值</td><td>整个温度曲线根据地温变化进行偏移</td></tr>
+          <tr><td>ISA 偏差键盘（ISA Dev Keypad）</td><td>显示并更改机场当前 ISA 温度偏差</td><td>摄氏度，动态最小值/最大值</td><td>对应高度层与 ISA 的温差</td></tr>
+          <tr><td>QNH 键盘（QNH Keypad）</td><td>显示并更改当前机场海平面气压</td><td>百帕（hPa）/ 英寸汞柱（inHg）</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>交互方式统一为：使用键盘或滑块输入新值，绿勾确认，红叉取消。</p>
+
+    <h3>2.9 风切变与微暴流滑动面板（WINDSHEAR & MICROBURST Sliding Panel）</h3>
+    <p>触发方式：点击主界面「微暴流/风切变」参数字段弹出。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_windshear_microburst_panel.jpg" alt="风切变与微暴流滑动面板">
+      <p class="img-caption">图：风切变与微暴流滑动面板</p>
+    </div>
+    <p>此滑动面板允许教员在模拟中引入多种起飞和着陆阶段的风切变及微暴流场景。包含三个选项卡：微暴流、预测性风切变、非预测性风切变。以及弹跳着陆功能。</p>
+
+    <h4>2.9.1 微暴流选项卡（Microburst Tab）</h4>
+    <p>起飞剖面和着陆剖面单选按钮互斥，每次只能选择一个微暴流剖面。提供微暴流地图可视化。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>剖面</th><th>类型</th><th>描述</th><th>最大风变化</th></tr></thead>
+        <tbody>
+          <tr><td>新奥尔良事故</td><td>起飞</td><td>模拟新奥尔良事故起飞切变，核心中心逆风变化 50 节</td><td>50 节</td></tr>
+          <tr><td>1977年图森/1984年丹佛</td><td>起飞</td><td>两个核心：跑道入口外 3,700 英尺、中心线右侧 800 英尺及 200 英尺处</td><td>70 节</td></tr>
+          <tr><td>1975年肯尼迪切变事故</td><td>着陆</td><td>核心中心位于跑道入口前 5,000 英尺、中心线右侧 400 英尺处</td><td>50 节</td></tr>
+          <tr><td>最终进近时的逆风与侧风</td><td>着陆</td><td>核心中心位于跑道入口前 4,000 英尺、中心线右侧 1,800 英尺处</td><td>25 节</td></tr>
+          <tr><td>基于8月5日JAWS数据的风模型</td><td>着陆</td><td>四个核心，位置分布于跑道入口前方 8,000/7,000/5,750/1,500 英尺处</td><td>JAWS 定义</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>功能</th><th>范围/边界</th></tr></thead>
+        <tbody>
+          <tr><td>描述按钮（Description）</td><td>点击获取每个剖面的完整描述（核心半径、核心高度、最大速度、纵向/横向距离）</td><td>—</td></tr>
+          <tr><td>X 位置</td><td>微暴流相对于接地点位置的 X 位置</td><td>最小值 = -5，最大值 = 8 海里</td></tr>
+          <tr><td>Y 位置</td><td>微暴流相对于接地点位置的 Y 位置</td><td>最小值 = -3，最大值 = 3 海里</td></tr>
+          <tr><td>强度按钮（轻度/中度/重度）</td><td>互斥选择微暴流强度</td><td>—</td></tr>
+          <tr><td>湍流</td><td>只读字段，显示已启用湍流的标称强度</td><td>—</td></tr>
+          <tr><td>激活微暴流</td><td>点击激活选定剖面。已激活时禁用</td><td>—</td></tr>
+          <tr><td>清除微暴流</td><td>点击停用当前激活剖面。未激活时禁用</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.9.2 预测性风切变选项卡（Predictive Windshear Tab）</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_predictive_ws_tab.jpg" alt="预测性风切变选项卡">
+      <p class="img-caption">图：预测性风切变选项卡</p>
+    </div>
+    <p>起飞剖面和着陆剖面单选按钮互斥。选定的风切变剖面显示在地图上。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>剖面</th><th>类型</th><th>描述</th></tr></thead>
+        <tbody>
+          <tr><td>顺风增至 XX 节</td><td>起飞</td><td>风切变位置初始化于距跑道入口 3,000 英尺处</td></tr>
+          <tr><td>顺风增至 XX 节，并伴有变化的上升气流、下降气流和侧风</td><td>起飞</td><td>风切变位置初始化于距跑道入口 6,000 英尺处</td></tr>
+          <tr><td>顺风增至 XX 节，伴有下冲气流</td><td>起飞</td><td>风切变位置初始化于距跑道入口 6,000 英尺处</td></tr>
+          <tr><td>逆风增至 XX 节，转为 XXX 节顺风，伴有变化的上冲气流、下冲气流和侧风</td><td>着陆</td><td>风切变位置初始化于距跑道入口 12,000 英尺（2 海里）处</td></tr>
+          <tr><td>顺风增至 XX 节</td><td>着陆</td><td>风切变位置初始化于距跑道入口 6,000 英尺处</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>功能</th><th>范围/边界</th></tr></thead>
+        <tbody>
+          <tr><td>X 位置</td><td>固定风切变 X 位置（相对于跑道接地点）</td><td>最小值 = -8，最大值 = 5 海里</td></tr>
+          <tr><td>Y 位置</td><td>固定风切变 Y 位置（相对于跑道接地点）</td><td>最小值 = -3，最大值 = 3 海里</td></tr>
+          <tr><td>强度按钮（轻度/中度/重度）</td><td>互斥选择</td><td>—</td></tr>
+          <tr><td>湍流</td><td>只读字段</td><td>—</td></tr>
+          <tr><td>激活风切变</td><td>已激活时禁用</td><td>—</td></tr>
+          <tr><td>清除风切变</td><td>未激活时禁用</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.9.3 非预测性风切变选项卡（Non-Predictive Windshear Tab）</h4>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_nonpredictive_ws_tab.jpg" alt="非预测性风切变选项卡">
+      <p class="img-caption">图：非预测性风切变选项卡</p>
+    </div>
+    <p>起飞场景按最大起飞重量（MTOW）调整，着陆场景按最大着陆重量（MLW）调整。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>剖面</th><th>类型</th><th>描述</th></tr></thead>
+        <tbody>
+          <tr><td>顺风增至 XX 节，在飞机达到 Vr 减 X 节时触发</td><td>起飞</td><td>FAA 风切变训练辅助参考风模型 #1</td></tr>
+          <tr><td>顺风增至 XX 节，在起飞抬轮时触发</td><td>起飞</td><td>FAA 风切变训练辅助参考风模型 #1</td></tr>
+          <tr><td>顺风增至 XX 节，伴有变化的上冲气流、下冲气流和侧风，在飞机起飞爬升至离地 100 英尺时触发</td><td>起飞</td><td>FAA 风切变训练辅助参考风模型 #3</td></tr>
+          <tr><td>顺风增至 XX 节，伴有下冲气流，在飞机起飞爬升至离地 200 英尺时触发</td><td>起飞</td><td>FAA 风切变训练辅助参考风模型 #2</td></tr>
+          <tr><td>逆风增至 XX 节，转为 XXX 节顺风，在飞机进近下降至离地 1,200 英尺时触发</td><td>着陆</td><td>FAA 风切变训练辅助参考风模型 #4</td></tr>
+          <tr><td>逆风增至 XX 节，在飞机进近下降通过 300 英尺 AGL 时触发</td><td>着陆</td><td>FAA 风切变训练辅助参考风模型 #1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>功能</th></tr></thead>
+        <tbody>
+          <tr><td>强度按钮（轻度/中度/重度）</td><td>互斥选择</td></tr>
+          <tr><td>QTG</td><td>点击表示当所选风切变激活时将使用 QTG 风切变；仅在选择了 QTG 风切变时可用</td></tr>
+          <tr><td>QTG 标志</td><td>剖面旁的绿色 QTG 标志表示该剖面曾用于 QTG 测试</td></tr>
+          <tr><td>激活非预测性风切变</td><td>已激活时禁用</td></tr>
+          <tr><td>清除风切变</td><td>未激活时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>QTG 强度按钮说明：</strong>选择 QTG 风切变剖面时启用 QTG 强度按钮，将模拟器环境（飞机总重、燃油重量、重心、温度、气压、风切变强度）设置为相关 QTG 风切变案例对应的值。</p>
+
+    <h4>2.9.4 弹跳着陆（Bounce Landing）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>产生强烈垂直风将飞机向下推，导致起落架压缩程度高于正常水平，使飞机在起落架伸展时发生弹跳</td></tr>
+          <tr><td>交互方式</td><td>当飞机即将着陆时，点击切换按钮触发弹跳着陆效果</td></tr>
+          <tr><td>自动关闭条件</td><td>离地高度超过 50 英尺 / 地速低于 10 节 / 飞机正在重新定位</td></tr>
+          <tr><td>边界行为</td><td>效果持续期间按钮保持点亮；弹跳着陆后飞机试图复飞（复飞为推荐操作程序）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.9.5 风切变与微暴流操作流程</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([打开风切变面板]) --> A[选择选项卡]
+    A --> B[微暴流]
+    A --> C[预测性风切变]
+    A --> D[非预测性风切变]
+    B --> B1[选择起飞/着陆剖面] --> B2[设置X-Y位置] --> B3[选择强度] --> B4[点击激活]
+    C --> C1[选择剖面] --> C2[设置X-Y位置] --> C3[选择强度] --> C4[点击激活]
+    D --> D1[选择剖面] --> D2[选择强度] --> D3[可选QTG] --> D4[点击激活]
+    B4 --> End([完成])
+    C4 --> End
+    D4 --> End
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style B fill:#fee2e2,stroke:#dc2626
+    style C fill:#fef3c7,stroke:#d97706
+    style D fill:#dbeafe,stroke:#2563eb
+    </div>
+
+    <h3>2.10 跑道状况滑动面板（RUNWAY CONDITION Sliding Panel）</h3>
+    <p>触发方式：点击主界面「跑道状况」参数字段弹出。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_5_runway_condition_panel.jpg" alt="跑道状况滑动面板">
+      <p class="img-caption">图：跑道状况滑动面板</p>
+    </div>
+    <p>允许教员通过修改跑道条件影响飞机刹车性能。包含两个选项卡：污染、粗糙度。</p>
+
+    <h4>2.10.1 污染选项卡</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能</th><th>禁用条件</th></tr></thead>
+        <tbody>
+          <tr><td>干燥（Dry）</td><td>设置干燥跑道条件。着陆飞机在正常接地带留下的橡胶残留物会改变橡胶可见区域的摩擦系数</td><td>因跑道上有雨而强制设置为湿跑道时禁用</td></tr>
+          <tr><td>橡胶（Rubber）</td><td>设置跑道上有橡胶。仅与湿跑道结合选择时才产生摩擦效果</td><td>—</td></tr>
+          <tr><td>水 — 片状（Water – Film）</td><td>添加片状湿条件</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>水 — 湿（Water – Wet）</td><td>添加湿条件</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>水 — 积水 &gt; 1/8 英寸（3 毫米）</td><td>添加 1/8 英寸积水</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>冰 — 片状（Ice – Film）</td><td>添加片状冰条件</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>冰（Ice）</td><td>添加预定义量的冰</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪 — 片状（Snow – Film）</td><td>添加片状雪条件（仅视觉目的）</td><td>因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪（Snow）</td><td>添加预定义量的雪</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪泥 — 1/4 英寸（6 毫米）</td><td>添加 1/4 英寸雪泥</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪泥 — 1/2 英寸（13 毫米）</td><td>添加 1/2 英寸雪泥</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.10.2 粗糙度选项卡</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>粗糙度滑块</td><td>将跑道粗糙度调整至 1 到 5 之间（1 = 光滑，5 = 粗糙）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>跑道污染和粗糙度可以纳入自动终端信息服务（ATIS）消息中。</p>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 参考机场选项卡教员核心操作流程</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入REFERENCE AIRPORT Tab]) --> A[选择机场与跑道]
+    A --> B[设置环境条件]
+    A --> C[配置重定位预设]
+    A --> D[设置风切变/微暴流]
+
+    B --> B1[地面风] --> B2[能见度/RVR] --> B3[降水] --> B4[云层] --> B5[温度/ISA/QNH]
+    C --> C1[选择重定位预设] --> C2[点击重新定位] --> C3[飞行冻结直至完成]
+    D --> D1[选择微暴流/风切变剖面] --> D2[设置强度与位置] --> D3[激活]
+
+    B5 --> End([训练环境就绪])
+    C3 --> End
+    D3 --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    </div>
+
+    <h3>3.2 关联依赖与异常边界</h3>
+
+    <h4>3.2.1 关联依赖表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能A</th><th>功能B</th><th>依赖关系</th></tr></thead>
+        <tbody>
+          <tr><td>机场/跑道字段</td><td>机场与重新定位滑动面板</td><td>点击机场或跑道字段均弹出同一滑动面板</td></tr>
+          <tr><td>重新定位预设</td><td>飞行冻结</td><td>任何重新定位结束时自动设置飞行冻结</td></tr>
+          <tr><td>重新定位预设</td><td>加速功能</td><td>等待/滑行/登机口重新定位结束时停用加速</td></tr>
+          <tr><td>降水 — 雨</td><td>能见度</td><td>选择雨时自动限制最大能见度（小雨 15 NM / 中雨 5 NM / 大雨 1 NM）</td></tr>
+          <tr><td>降水 — 雨</td><td>云层</td><td>未预先定义云层时，选择雨自动在视觉场景中插入云层</td></tr>
+          <tr><td>降水</td><td>温度</td><td>温度低于 -5°C 时雨/冰雹禁用；高于 5°C 时雪禁用</td></tr>
+          <tr><td>冬季场景</td><td>吹雪</td><td>冬季场景未激活时吹雪禁用</td></tr>
+          <tr><td>地面风</td><td>FAA 阵风</td><td>无侧风时 FAA 阵风按钮禁用</td></tr>
+          <tr><td>地面风</td><td>阵风至</td><td>静风时阵风至按钮禁用</td></tr>
+          <tr><td>跑道状况</td><td>温度</td><td>多项污染物受温度范围限制（-5°C ~ 5°C）</td></tr>
+          <tr><td>跑道状况</td><td>降雨</td><td>跑道有雨强制湿跑道时，干燥/片状水/片状冰/雪等禁用</td></tr>
+          <tr><td>录制/场景交通</td><td>登机口交通/TCAS</td><td>登机口交通或 TCAS/随机交通激活时，录制/场景交通按钮禁用</td></tr>
+          <tr><td>飞机推出</td><td>轮挡</td><td>飞机移动时推出按钮和轮挡按钮均被禁用</td></tr>
+          <tr><td>轮挡</td><td>千斤顶</td><td>「飞机在轮挡上」与「飞机在千斤顶上」互斥</td></tr>
+          <tr><td>FMS 飞行计划</td><td>导航数据库</td><td>导航数据库每 28 天更新，旧数据库创建的飞行计划不可用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.2.2 异常边界表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>异常场景</th><th>系统行为</th></tr></thead>
+        <tbody>
+          <tr><td>重定位预设</td><td>飞机正在重新定位</td><td>相关按钮禁用，重新定位结束时设置飞行冻结</td></tr>
+          <tr><td>引导员</td><td>飞机离地或推出过程中</td><td>引导员按钮禁用</td></tr>
+          <tr><td>飞机推出</td><td>飞机正在移动</td><td>推出按钮禁用</td></tr>
+          <tr><td>降水 — 冰雹</td><td>温度低于 -5°C</td><td>冰雹按钮禁用</td></tr>
+          <tr><td>冬季场景</td><td>温度高于 20°C 或显著经纬度变化且视觉系统未就绪</td><td>冬季场景按钮禁用</td></tr>
+          <tr><td>跑道照明</td><td>所选跑道灯光强度不一致</td><td>显示 "*" 标记</td></tr>
+          <tr><td>微暴流/风切变</td><td>已激活剖面</td><td>激活按钮禁用，仅清除按钮可用</td></tr>
+          <tr><td>弹跳着陆</td><td>离地高度超过 50 英尺 / 地速低于 10 节 / 正在重新定位</td><td>效果自动关闭，按钮恢复常态</td></tr>
+          <tr><td>能见度/RVR</td><td>TROPOS 视觉系统 + 零星雾激活</td><td>RVR 输入字段不可用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 数据流与开发流程推导</h3>
+
+    <h4>3.3.1 数据流</h4>
+    <pre><code>教员操作 → UI 事件 → 状态变更 → 模拟器指令 → 反馈呈现
+
+【参考机场变更】
+教员点击「机场」字段 → 弹出机场与重新定位面板
+  → 选择新 ICAO 代码和跑道 → 更新参考机场状态
+    → 向模拟器发送 AIRPORT_CHANGE 指令
+      → 更新地图、FMS、跑道照明、风切变位置等关联模块
+
+【环境条件变更】
+教员修改地面风/能见度/降水/云层/温度等
+  → 校验边界条件（温度范围、互斥关系）
+    → 更新环境状态对象
+      → 向视觉系统发送 ENV_UPDATE 指令
+        → 更新视景渲染、仪表显示、ATIS 消息
+
+【重定位执行】
+教员选择重定位预设 → 点击「重新定位」
+  → 设置 FLIGHT_FREEZE = true
+    → 向模拟器发送 REPOSITION 指令（含预设 ID、目标坐标、飞机配置参数）
+      → 模拟器执行位置/姿态/速度瞬移
+        → 完成后 FLIGHT_FREEZE = false
+
+【风切变/微暴流激活】
+教员选择剖面 + 强度 + 位置 → 点击「激活」
+  → 更新 WINDSHEAR_PROFILE 状态
+    → 向大气模型注入风切变数据（核心位置、半径、风速变化曲线）
+      → 飞机飞越核心区域时动态计算局部风速矢量</code></pre>
+
+    <h4>3.3.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
+        <tbody>
+          <tr><td><code>POST /api/v1/airport/reference</code></td><td>icao_code, runway_id, auto_mode</td><td>airport, runway, valid_runways[]</td><td>400 INVALID_ICAO, 404 RUNWAY_NOT_FOUND</td></tr>
+          <tr><td><code>POST /api/v1/airport/reposition</code></td><td>preset_id, freeze_on_complete=true</td><td>status, estimated_duration_ms</td><td>409 REPOSITION_IN_PROGRESS, 403 AIRCRAFT_MOVING</td></tr>
+          <tr><td><code>POST /api/v1/environment/wind/surface</code></td><td>direction_deg, speed_kts, gust_kts</td><td>wind_profile, crosswind_component</td><td>400 INVALID_DIRECTION, 422 GUST_BELOW_SURFACE</td></tr>
+          <tr><td><code>POST /api/v1/environment/visibility</code></td><td>visibility_m, fog_mode, rvr_min_m, rvr_max_m, fog_top_ft</td><td>visibility_state</td><td>400 INVALID_RVR_RANGE</td></tr>
+          <tr><td><code>POST /api/v1/environment/precipitation</code></td><td>type, intensity_pct</td><td>precipitation_state, auto_cloud_inserted</td><td>403 TEMPERATURE_OUT_OF_RANGE</td></tr>
+          <tr><td><code>POST /api/v1/windshear/microburst</code></td><td>profile_id, intensity, x_nm, y_nm</td><td>activation_status, map_overlay</td><td>409 ALREADY_ACTIVE, 400 INVALID_POSITION</td></tr>
+          <tr><td><code>POST /api/v1/runway/condition</code></td><td>contamination_type, roughness_level</td><td>runway_state, braking_effect</td><td>403 TEMPERATURE_OUT_OF_RANGE, 409 FORCED_WET_BY_RAIN</td></tr>
+          <tr><td><code>POST /api/v1/fms/flightplan/save</code></td><td>slot_id, description, password(可选)</td><td>save_status, timestamp</td><td>409 SLOT_OCCUPIED, 400 INVALID_PASSWORD_LENGTH</td></tr>
+          <tr><td><code>POST /api/v1/fms/flightplan/recall</code></td><td>slot_id, password(可选)</td><td>flightplan_data, load_status</td><td>404 FLIGHTPLAN_NOT_FOUND, 401 PASSWORD_MISMATCH</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>测试类型</th><th>测试场景</th><th>验收标准</th></tr></thead>
+        <tbody>
+          <tr><td>正向路径</td><td>更改参考机场和跑道</td><td>ICAO 和跑道号正确更新，地图、FMS、风切变位置等关联模块同步更新</td></tr>
+          <tr><td>正向路径</td><td>执行等待/滑行/登机口重定位</td><td>飞机瞬移至正确位置，配置参数符合预设表，结束时飞行冻结激活、加速停用</td></tr>
+          <tr><td>正向路径</td><td>设置地面风快速选择预设</td><td>风廓线正确偏移，跑道风分量显示正确</td></tr>
+          <tr><td>正向路径</td><td>激活微暴流剖面</td><td>剖面在地图上正确显示，飞机飞越核心时风速变化符合模型定义</td></tr>
+          <tr><td>正向路径</td><td>保存/召回 FMS 飞行计划</td><td>密码保护与未受保护计划均正确保存和加载，描述显示正确</td></tr>
+          <tr><td>异常路径</td><td>温度低于 -5°C 时点击小雨</td><td>小雨按钮禁用，无法点击</td></tr>
+          <tr><td>异常路径</td><td>飞机正在移动时点击推出</td><td>推出按钮禁用</td></tr>
+          <tr><td>异常路径</td><td>已激活风切变时再次点击激活</td><td>激活按钮禁用，界面状态正确反映</td></tr>
+          <tr><td>异常路径</td><td>导航数据库更新后召回旧飞行计划</td><td>系统提示飞行计划不可用，不崩溃</td></tr>
+          <tr><td>边界条件</td><td>RVR 最小值 &gt; RVR 最大值</td><td>输入校验失败，提示有效范围</td></tr>
+          <tr><td>边界条件</td><td>静地面风时设置阵风</td><td>阵风至按钮禁用，无法输入</td></tr>
+          <tr><td>边界条件</td><td>跑道灯光强度不一致</td><td>显示 "*" 标记</td></tr>
+          <tr><td>联动测试</td><td>选择大雨后检查云层自动插入</td><td>未定义云层时视觉场景自动插入云层，能见度限制为 1 NM</td></tr>
+          <tr><td>联动测试</td><td>更改参考机场后检查跑道照明</td><td>跑道列表自动更新为新机场的可用跑道</td></tr>
+          <tr><td>性能测试</td><td>快速连续切换重定位预设</td><td>系统不卡顿，最终状态与最后一次选择一致</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-03</td><td>V1.0</td><td>初始生成 1.2.5 参考机场选项卡 HTML，包含完整功能层级、14 组参数字段、机场与重新定位滑动面板（4 选项卡）、时刻/地面风/能见度/降水/云层/温度/ISA/QNH/风切变/跑道状况等全部子面板，配套 25 张截图，含 Redline Review</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_2_4_aircraft_tab.html">← 上一小节：1.2.4 飞机/航空器选项卡</a>
+      <a class="next" href="#">下一小节：1.2.6 教员台滑动面板 →</a>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// Navigation toggle
+function toggleNav(el) {
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if (children && children.classList.contains('nav-children')) {
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Collapsible toggle
+function toggleCollapsible(el) {
+  const parent = el.parentElement;
+  parent.classList.toggle('collapsed');
+}
+
+// Default: collapse all collapsibles except first level
+// (none collapsed by default for this chapter due to complexity)
+
+// Mermaid init
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+// Image zoom
+document.addEventListener('click', function(e) {
+  if (e.target.tagName === 'IMG' && e.target.closest('.img-block')) {
+    const overlay = document.createElement('div');
+    overlay.className = 'img-zoom-overlay';
+    const img = document.createElement('img');
+    img.src = e.target.src;
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function() { overlay.remove(); });
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.querySelector('.img-zoom-overlay');
+    if (overlay) overlay.remove();
+  }
+});
+
+// Mermaid zoom + pan + wheel
+(function() {
+  let zoomedEl = null;
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function updateTransform() {
+    if (!zoomedEl) return;
+    const svg = zoomedEl.querySelector('svg');
+    if (svg) svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  }
+
+  document.addEventListener('click', function(e) {
+    const mermaidEl = e.target.closest('.mermaid');
+    if (!mermaidEl) {
+      if (zoomedEl && (e.target.classList.contains('mermaid-zoom-overlay') || e.target.closest('.mermaid-zoom-overlay'))) {
+        zoomedEl.classList.remove('is-zoomed');
+        const svg = zoomedEl.querySelector('svg');
+        if (svg) svg.style.transform = '';
+        zoomedEl = null;
+        document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+      }
+      return;
+    }
+    if (zoomedEl) return;
+    zoomedEl = mermaidEl;
+    zoomedEl.classList.add('is-zoomed');
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateTransform();
+    const overlay = document.createElement('div');
+    overlay.className = 'mermaid-zoom-overlay';
+    document.body.appendChild(overlay);
+  });
+
+  document.addEventListener('wheel', function(e) {
+    if (!zoomedEl) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.max(0.3, Math.min(5, scale + delta));
+    updateTransform();
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e) {
+    if (!zoomedEl) return;
+    if (e.target.closest('.mermaid.is-zoomed')) {
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging || !zoomedEl) return;
+    translateX += e.clientX - lastX;
+    translateY += e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateTransform();
+  });
+
+  document.addEventListener('mouseup', function() { isDragging = false; });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && zoomedEl) {
+      zoomedEl.classList.remove('is-zoomed');
+      const svg = zoomedEl.querySelector('svg');
+      if (svg) svg.style.transform = '';
+      zoomedEl = null;
+      document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+    }
+  });
+})();
+</script>
+</body>
+</html>

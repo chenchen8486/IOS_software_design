@@ -137,13 +137,13 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
           </div>
         </div>
         <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
-          <div class="nav-children collapsed">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
             <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
             <a class="nav-link active" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
             <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
-            <a class="nav-link" href="#">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
-            <a class="nav-link" href="#">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
             <a class="nav-link" href="#">1.2.6 教员台滑动面板（IOS Slide Panels）</a>
             <a class="nav-link" href="#">1.2.7 控制面板底部（Control Panel Bottom）</a>
           </div>
@@ -786,7 +786,7 @@ function toggleCollapsible(header){
       document.body.appendChild(overlay);
       return;
     }
-    if(e.target.classList.contains('img-zoom-overlay')){
+    if(e.target.closest('.img-zoom-overlay')){
       closeImgZoom();
     }
   });
