@@ -231,6 +231,7 @@ graph TD
           <tr><td>功能定义</td><td>设置各参数的计量单位制（UOM）</td></tr>
           <tr><td>呈现方式</td><td>滑动面板顶部选项卡，内含 3 个下拉按钮和 1 个复选框</td></tr>
           <tr><td>交互方式</td><td>点击下拉按钮展开选项 → 点击目标选项即时切换</td></tr>
+          <tr><td>互斥关系</td><td>Metric（公制）与 Imperial（英制）两个选项<strong>互斥</strong>，下拉按钮只能激活其一</td></tr>
           <tr><td>边界行为</td><td>下拉选择后立即生效，无需额外确认；切换环境单位时所有相关参数显示同步更新</td></tr>
           <tr><td>与其他功能关系</td><td>环境单位与参考机场选项卡（1.2.5）的环境参数显示单位联动；自动匹配参考机场与 Airport 字段关联</td></tr>
         </tbody>
@@ -244,8 +245,7 @@ graph TD
         <tbody>
           <tr><td>力单位</td><td>下拉选择：Lbf（磅力）/ daN（十牛顿）</td></tr>
           <tr><td>飞机重量单位</td><td>下拉选择：Kg（千克，液体体积使用升）/ lb（磅，液体体积使用加仑、夸脱、品脱）</td></tr>
-          <tr><td>环境单位-公制</td><td>QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft</td></tr>
-          <tr><td>环境单位-英制</td><td>QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft</td></tr>
+          <tr><td>环境单位</td><td>下拉选择：Metric（公制：QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft）/ Imperial（英制：QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft）</td></tr>
           <tr><td>自动匹配参考机场</td><td>复选框：勾选后自动将单位制参数设置为与所选参考机场匹配</td></tr>
         </tbody>
       </table>
@@ -430,6 +430,8 @@ stateDiagram-v2
         <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
         <tbody>
           <tr><td>2026-06-04</td><td>V1.0</td><td>初始生成 ch1_2_6 教员台滑动面板 HTML，含功能层级图、属性表格、全局操作流程、状态机及测试要点</td></tr>
+          <tr><td>2026-06-04</td><td>V1.1</td><td>补充控制面板总览图（含 INSTRUCTOR STATION 红色指示框）并调整为左/右并排布局；删除重复的展开按钮特写图；图片重新编号</td></tr>
+          <tr><td>2026-06-04</td><td>V1.2</td><td>拆分 2.1 PREFERENCES Tab 表格为面板属性与参数设置项两层；合并环境单位公制/英制为单行并补充互斥关系说明</td></tr>
         </tbody>
       </table>
     </div>
