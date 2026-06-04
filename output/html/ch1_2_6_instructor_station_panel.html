@@ -59,6 +59,11 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
+.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
 /* Image zoom overlay */
 .img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
 .img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
@@ -159,11 +164,6 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
 
-    <div class="img-block">
-      <img src="./images/ch1_2_6_control_board_overview.png" alt="控制面板总览与教员台滑动面板入口">
-      <p class="img-caption">图 1：控制面板总览，红色指示框标注 INSTRUCTOR STATION 展开按钮位置</p>
-    </div>
-
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
@@ -206,14 +206,15 @@ graph TD
       </table>
     </div>
 
-    <div class="img-block">
-      <img src="./images/ch1_2_6_instructor_station_panel.jpg" alt="教员台滑动面板总览">
-      <p class="img-caption">图 2：教员台滑动面板总览</p>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch1_2_6_expand_button.jpg" alt="控制面板展开按钮">
-      <p class="img-caption">图 3：控制面板展开按钮</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_6_control_board_overview.png" alt="控制面板总览与教员台滑动面板入口">
+        <p class="img-caption">图 1：控制面板总览，红色指示框标注 INSTRUCTOR STATION 展开按钮位置</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_6_instructor_station_panel.jpg" alt="教员台滑动面板总览">
+        <p class="img-caption">图 2：教员台滑动面板总览（点击展开按钮后弹出）</p>
+      </div>
     </div>
 
     <!-- 二、核心功能详解 -->
@@ -258,7 +259,7 @@ graph TD
 
     <div class="img-block">
       <img src="./images/ch1_2_6_configurations_page.jpg" alt="IOS 配置选择页面">
-      <p class="img-caption">图 4：IOS 配置选择页面</p>
+      <p class="img-caption">图 3：IOS 配置选择页面</p>
     </div>
 
     <h3>2.3 End Session（结束会话）</h3>
@@ -279,7 +280,7 @@ graph TD
 
     <div class="img-block">
       <img src="./images/ch1_2_6_ios_main_page.jpg" alt="IOS 主页">
-      <p class="img-caption">图 5：IOS 主页</p>
+      <p class="img-caption">图 4：IOS 主页</p>
     </div>
 
     <!-- 三、全局操作流程与推导 -->
