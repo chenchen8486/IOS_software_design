@@ -557,6 +557,8 @@ flowchart LR
     </div>
 
     <h3>2.3 时刻键盘与时刻滑动面板</h3>
+    <p>功能定义：显示并更改当前时刻。交互方式：时刻键盘使用键盘或滑块输入新时刻（0~23 小时），绿勾确认，红叉取消；时刻滑动面板可快速选择黎明/白天/黄昏/夜间。</p>
+
     <div class="img-block">
       <img src="./images/ch1_2_5_time_keypad.jpg" alt="时刻键盘">
       <p class="img-caption">图 13：时刻键盘</p>
@@ -565,15 +567,23 @@ flowchart LR
       <img src="./images/ch1_2_5_time_sliding_panel.jpg" alt="时刻滑动面板">
       <p class="img-caption">图 14：时刻滑动面板</p>
     </div>
+
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>功能定义</td><td>显示并更改当前时刻</td></tr>
-          <tr><td>交互方式</td><td>时刻键盘：使用键盘或滑块输入新时刻（0~23 小时），绿勾确认，红叉取消。时刻滑动面板：快速选择黎明/白天/黄昏/夜间</td></tr>
+          <tr><td>边界行为</td><td>滑块控件可将时刻在 0~23 小时之间变化</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-secondary);margin:12px 0 6px;font-weight:500">参数设置项</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数项</th><th>说明</th></tr></thead>
+        <tbody>
           <tr><td>时间加速因子</td><td>变化范围从正常速度（1 秒）的 1 倍到 500 倍</td></tr>
           <tr><td>显示月亮和太阳</td><td>复选框启用/禁用在模拟中显示月亮和太阳</td></tr>
-          <tr><td>边界行为</td><td>滑块控件可将时刻在 0~23 小时之间变化</td></tr>
         </tbody>
       </table>
     </div>

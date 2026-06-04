@@ -386,10 +386,10 @@ graph TD
     </div>
 
     <h4>2.12.1 能见度部分（Visibility Section）</h4>
+    <p>显示并调整云层之间的能见度。</p>
     <div class="table-wrap">
       <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并调整云层之间的能见度</td></tr>
+        <tr><th>参数项</th><th>说明</th></tr>
         <tr><td>降雨限制</td><td>小雨最大 15 nm；中雨最大 5 nm；大雨最大 1 nm</td></tr>
         <tr><td>输入范围</td><td>Min = 0，Max = 动态值；也可使用法定英里（sm）显示</td></tr>
       </table>
@@ -580,10 +580,10 @@ flowchart LR
     </div>
 
     <h4>2.14.3 积冰量部分（ICE ACCUMULATION Section）</h4>
+    <p>只读文本字段，显示各飞机部件的积冰重量和百分比。</p>
     <div class="table-wrap">
       <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>只读文本字段，显示各飞机部件的积冰重量和百分比</td></tr>
+        <tr><th>参数项</th><th>说明</th></tr>
         <tr><td>显示组件</td><td>机身、发动机 #1、发动机 #2、左机翼、右机翼、尾翼、总质量</td></tr>
         <tr><td>单位</td><td>重量：千克/磅；百分比：%</td></tr>
       </table>
@@ -726,15 +726,22 @@ flowchart LR
 
     <!-- 2.16-2.18 Keypads -->
     <h3>2.16 飞机风键盘（A/C Wind Keypad）</h3>
+    <p>触发方式：点击主界面"A/C Wind"参数字段弹出。功能定义：显示当前飞机位置的风向和风速，并支持修改。</p>
+
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>触发方式</td><td>点击主界面"A/C Wind"参数字段弹出</td></tr>
-        <tr><td>功能定义</td><td>显示当前飞机位置的风向和风速，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
+        <tr><td>边界行为</td><td>飞行冻结未激活时立即以预定速率渐变至请求值；飞行冻结激活时延迟至冻结解除</td></tr>
+      </table>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-secondary);margin:12px 0 6px;font-weight:500">参数设置项</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数项</th><th>说明</th></tr>
         <tr><td>风向范围</td><td>1° ~ 360°</td></tr>
         <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
-        <tr><td>边界行为</td><td>飞行冻结未激活时立即以预定速率渐变至请求值；飞行冻结激活时延迟至冻结解除</td></tr>
       </table>
     </div>
 
@@ -744,16 +751,23 @@ flowchart LR
     </div>
 
     <h3>2.17 飞机 OAT 键盘（A/C OAT Keypad）</h3>
+    <p>触发方式：点击主界面"A/C OAT"参数字段弹出；或通过滚轮选择器触发。功能定义：显示当前飞机位置的外界大气温度，并支持修改。</p>
+
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>触发方式</td><td>点击主界面"A/C OAT"参数字段弹出；或通过滚轮选择器触发</td></tr>
-        <tr><td>功能定义</td><td>显示当前飞机位置的外界大气温度，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入或滑块控件</td></tr>
-        <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
-        <tr><td>联动</td><td>整个温度剖面根据 OAT 变化偏移（动态最小/最大值）</td></tr>
         <tr><td>边界行为</td><td>飞机在地面时立即生效；在空中且飞行冻结未激活时渐变；在空中且飞行冻结激活时延迟至解除</td></tr>
         <tr><td>状态反馈</td><td>更改过程中 IOS 警告页脚显示"温度正在变化"；达到新值前 OAT 读数逐渐变化</td></tr>
+      </table>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-secondary);margin:12px 0 6px;font-weight:500">参数设置项</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数项</th><th>说明</th></tr>
+        <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
+        <tr><td>联动</td><td>整个温度剖面根据 OAT 变化偏移（动态最小/最大值）</td></tr>
       </table>
     </div>
 
@@ -763,12 +777,20 @@ flowchart LR
     </div>
 
     <h3>2.18 飞机 ISA 偏差键盘（A/C ISA Dev Keypad）</h3>
+    <p>触发方式：点击主界面"A/C ISA Dev"参数字段弹出；或通过滚轮选择器触发。功能定义：显示当前飞机位置的 ISA 温度偏差，并支持修改。</p>
+
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>触发方式</td><td>点击主界面"A/C ISA Dev"参数字段弹出；或通过滚轮选择器触发</td></tr>
-        <tr><td>功能定义</td><td>显示当前飞机位置的 ISA 温度偏差，并支持修改</td></tr>
         <tr><td>输入方式</td><td>键盘输入</td></tr>
+        <tr><td>边界行为</td><td>飞机在地面时立即生效；在空中且飞行冻结未激活时渐变；在空中且飞行冻结激活时延迟至解除</td></tr>
+      </table>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-secondary);margin:12px 0 6px;font-weight:500">参数设置项</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数项</th><th>说明</th></tr>
         <tr><td>确认/取消</td><td>绿色勾号确认 / 红色 X 取消</td></tr>
         <tr><td>联动</td><td>整个温度剖面将根据 ISA 偏差的变化进行偏移</td></tr>
       </table>
