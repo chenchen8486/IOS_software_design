@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.2.7 控制面板底部（Control Board Footer）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
+.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link active" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="#">1.3 维护页面</a>
+        <a class="nav-link" href="#">1.4 仪表复示器</a>
+        <a class="nav-link" href="#">1.5 课程计划剖面</a>
+        <a class="nav-link" href="#">1.6 地图工作区</a>
+        <a class="nav-link" href="#">1.7 高级</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><a href="#">1.2 控制面板工作区</a><span class="breadcrumb-sep">/</span><span>1.2.7 控制面板底部</span>
+  </div>
+
+  <div class="content">
+    <h1>1.2.7 控制面板底部（Control Board Footer）</h1>
+    <p class="subtitle">对应原始手册：## 11. Control Board Footer</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    subgraph Main["Control Board Footer / 控制面板底部"]
+        A[Flight Freeze<br>飞行冻结]
+        B[Resets<br>重置]
+        C[Freezes<br>冻结]
+        D[Sim Controls<br>模拟控制]
+        E[Volume<br>音量]
+        F[Reposition<br>重新定位]
+        G[Weather Presets<br>天气预设]
+        H[Capture Flight<br>捕获飞行]
+        I[Print<br>打印]
+        J[Speed Up<br>加速]
+        K[Clear All Malf.<br>清除所有故障]
+        L[Notifications<br>通知]
+        M[Help<br>帮助]
+        N[Workspace<br>工作区]
+    end
+
+    B --> B1[Environment<br>环境重置]
+    B --> B2[ISA & Winds<br>ISA与风重置]
+    B --> B3[Systems<br>系统重置]
+    B --> B4[Total<br>全部重置]
+    B --> B5[Session<br>课程重置]
+    B --> B6[More…<br>更多重置]
+
+    C --> C1[Total<br>总冻结]
+    C --> C2[Position<br>位置冻结]
+    C --> C3[Fuel<br>燃油冻结]
+    C --> C4[More…<br>更多冻结]
+
+    D --> D1[Visual<br>视觉]
+    D --> D2[Motion<br>运动]
+    D --> D3[Control Loading<br>操纵载荷]
+    D --> D4[Prime Smoke<br>烟雾预注]
+    D --> D5[Ceiling Lights<br>天花板灯]
+    D --> D6[More…<br>更多模拟控制]
+
+    M --> M1[Help Panel<br>帮助面板]
+    M --> M2[Send Feedback<br>发送反馈]
+
+    N --> N1[Maintenance<br>维护]
+    N --> N2[Instr. Repeaters<br>仪表复示器]
+    N --> N3[Lesson Profile<br>课程计划剖面]
+    N --> N4[Map<br>地图]
+    N --> N5[Control Board<br>控制面板]
+    N --> N6[Advanced<br>高级]
+
+    subgraph Popups["点击后弹出 / Pop-up Panels"]
+        P1[RESETS Sliding Panel<br>重置滑动面板]
+        P2[FREEZES Sliding Panel<br>冻结滑动面板]
+        P3[SIMULATOR CONTROLS<br>模拟器控制滑动面板]
+        P4[PRINT OPTIONS<br>打印选项滑动面板]
+    end
+
+    B6 -.->|点击弹出| P1
+    C4 -.->|点击弹出| P2
+    D6 -.->|点击弹出| P3
+    I -.->|点击更多| P4
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
+        <tbody>
+          <tr><td>第一功能组<br>Flight Freeze / Resets / Freezes / Sim Controls / Volume</td><td>底部栏左侧</td><td>飞行冻结、重置、冻结、模拟控制、音量调节等核心控制功能</td><td>详见 2.1~2.5</td></tr>
+          <tr><td>第二功能组<br>Reposition / Weather Presets / Capture Flight / Print / Speed Up</td><td>底部栏中部</td><td>重新定位、天气预设、捕获飞行、打印、时间加速等辅助功能</td><td>详见 2.6~2.10</td></tr>
+          <tr><td>第三功能组<br>Clear All Malf. / Notifications / Help / Workspace</td><td>底部栏右侧</td><td>清除故障、通知查看、帮助、工作区切换等系统功能</td><td>详见 2.11~2.14</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
+      <p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
+    </div>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 Flight Freeze（飞行冻结）</h3>
+    <p>切换型按钮，允许教员激活/停用飞行冻结模式。激活后冻结所有飞行参数（俯仰、坡度、航向、空速、高度和位置）、运动系统（洗出效应除外），并降低声音水平。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>激活/停用飞行冻结模式</td></tr>
+          <tr><td>冻结范围</td><td>俯仰、坡度、航向、空速、高度、位置、运动系统（洗出除外）、声音水平降低</td></tr>
+          <tr><td>边界行为</td><td>重新定位期间按钮禁用，显示"Reposition in Progress"；温度/压力/风/云高渐变等参数修改在冻结解除后才生效；解冻时不会导致剧烈控制或运动变化</td></tr>
+          <tr><td>与其他功能关系</td><td>与 Freezes 滑动面板中的 Flight Freeze 为同一功能的不同入口</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.2 Resets（重置）</h3>
+    <p>重置按钮允许教员执行多种重置操作。点击后显示重置卷展菜单，然后点击所需重置项激活。</p>
+
+    <h4>2.2.1 重置卷展菜单按钮</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能说明</th><th>边界行为</th></tr></thead>
+        <tbody>
+          <tr><td>Environment<br>环境重置</td><td>重置跑道、能见度、RVR、云、雾、雨、冰雹、雪、冬季场景、沙尘、闪电、结冰等环境参数至默认值</td><td>当所有条件已满足时禁用；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>ISA & Winds<br>ISA与风重置</td><td>设置标准大气条件：海平面气压 1013.2 mb、中间高度 18,000 ft、上层高度 36,089 ft、温度递减率 -1.98°C/1000ft、海平面温度 15°C、机场/中间/上层风 360/0° 磁/kt、无阵风、基础湍流、无风切变/微暴流</td><td>当所有条件已满足时禁用；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Systems<br>系统重置</td><td>重置所有可重置系统（具体数量和类型取决于 IOS 配置），并将温度重置为正常运行值</td><td>若存在活跃故障或特定系统被有意排除则温度不重置；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Total<br>全部重置</td><td>执行坠机重置（若已坠机）、清除故障、清除失效站位、发动机超限重置、燃油使用指示器重置；自动执行系统重置</td><td>点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Session<br>课程重置</td><td>结束课程、碰撞抑制、刹车温度重置抑制未激活、环境重置、标准大气与风、湍流/地面摩擦恢复默认、结束讲评记录、无 TCAS 交通、无登机口/地面交通、时间设为白天、清除地图航迹、声音 100%、清除所有飞行状态捕获和快照；自动执行全部重置（含系统重置）</td><td>弹出确认菜单；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>More…<br>更多</td><td>显示 RESETS 滑动面板，提供 25 个独立系统重置按钮</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_resets_menu.jpg" alt="重置卷展菜单">
+      <p class="img-caption">图 2：重置卷展菜单（Resets Roll up Menu）</p>
+    </div>
+
+    <h4>2.2.2 RESETS 滑动面板</h4>
+    <p>点击"更多…"按钮后显示 RESETS 滑动面板，允许教员执行 25 个独立系统的重置操作。每个按钮的通用行为：点击后亮起 2 秒；当目标系统已处于正常状态时该按钮禁用。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能定义</th><th>禁用条件</th></tr></thead>
+        <tbody>
+          <tr><td>End Lesson</td><td>结束当前正在进行的课程计划，显示主索引面板</td><td>无活跃课程计划时禁用</td></tr>
+          <tr><td>Crash Inhibit</br>碰撞抑制</td><td>防止超出碰撞限制时发生碰撞，模拟在碰撞情况下继续运行（着陆时下降率过大和地面侧向力过大不可抑制）</td><td>飞机已坠毁时禁用</td></tr>
+          <tr><td>Brake Temp Reset Inhibit<br>刹车温度重置抑制</td><td>抑制重新定位时重置刹车和轮胎温度</td><td>—</td></tr>
+          <tr><td>Environment<br>环境</td><td>同 2.2.1 环境重置</td><td>同 2.2.1</td></tr>
+          <tr><td>Standard Atmos & Winds<br>标准大气与风</td><td>同 2.2.1 ISA 与风重置</td><td>同 2.2.1</td></tr>
+          <tr><td>Crash<br>碰撞</td><td>重置模拟器碰撞状态，清除碰撞/咨询/超限面板，解除飞行冻结，坠机重置后 30 秒内不监控碰撞</td><td>飞机未坠毁时禁用</td></tr>
+          <tr><td>Clear Malfunctions<br>清除故障</td><td>清除所有激活和预位的故障</td><td>无激活或预位故障时禁用</td></tr>
+          <tr><td>Clear Failed Stations<br>清除失效站位</td><td>清除所有由教员设置的失效站位</td><td>无失效站位时禁用</td></tr>
+          <tr><td>Engine Exceedance<br>发动机超限</td><td>清除发动机超限（N1、N2、EGT 红色框显示移至下一个 DEU 飞行航段），需空速超过 80 节并保持 2 秒</td><td>未发生发动机超限时禁用</td></tr>
+          <tr><td>Fuel Used Indicator<br>燃油使用指示器</td><td>重置燃油使用指示器</td><td>—</td></tr>
+          <tr><td>Air Conditioning<br>空调</td><td>将空调温度重置为正常</td><td>空调温度正常时禁用</td></tr>
+          <tr><td>Hydraulics<br>液压</td><td>将液压油量和油温重置为正常运行值</td><td>液压油量和油温正常时禁用</td></tr>
+          <tr><td>Fuel Temp.<br>燃油温度</td><td>将燃油温度重置为环境温度</td><td>燃油温度处于环境温度时禁用</td></tr>
+          <tr><td>Engine EGT/ITT<br>发动机 EGT/ITT</td><td>将发动机排气温度或级间涡轮温度重置为正常运行值</td><td>EGT 或 ITT 处于稳定状态时禁用</td></tr>
+          <tr><td>Oxygen<br>氧气</td><td>重新填充氧气瓶</td><td>氧气瓶已满时禁用</td></tr>
+          <tr><td>Tire Pressure<br>轮胎压力</td><td>将轮胎压力重置为正常，刹车温度重置为环境温度</td><td>轮胎压力正常且刹车温度处于环境温度时禁用</td></tr>
+          <tr><td>Brake Temp<br>刹车温度</td><td>将刹车温度重置为环境温度</td><td>刹车温度处于环境温度时禁用</td></tr>
+          <tr><td>Electrics<br>电气</td><td>重置电池充电、IDG 连接、IDG 滑油、收起 RAT 至正常状态</td><td>所有项目均已正常时禁用</td></tr>
+          <tr><td>Recharge Batteries<br>电池充电</td><td>为电池充电</td><td>所有电池均已充满时禁用</td></tr>
+          <tr><td>IDG Connect<br>IDG 连接</td><td>重置已断开的 IDG</td><td>IDG 已连接时禁用</td></tr>
+          <tr><td>IDG Oil<br>IDG 滑油</td><td>将 IDG 滑油量和温度重置为正常运行值</td><td>IDG 滑油量和温度正常时禁用</td></tr>
+          <tr><td>Stow RAT<br>收起 RAT</td><td>收起冲压空气涡轮（RAT）</td><td>RAT 已收起时禁用</td></tr>
+          <tr><td>Engine Oil<br>发动机滑油</td><td>将发动机滑油量和温度重置为正常运行值</td><td>发动机滑油量和温度正常时禁用</td></tr>
+          <tr><td>Fire Bottles<br>灭火瓶</td><td>重新填充所有灭火瓶</td><td>灭火瓶已充满时禁用</td></tr>
+          <tr><td>WTB<br>翼尖刹车</td><td>将翼尖刹车（WTB）重置为正常状态</td><td>WTB 处于正常状态时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_systems_reset.jpg" alt="系统重置">
+        <p class="img-caption">图 3：系统重置</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_total_reset.jpg" alt="全部重置">
+        <p class="img-caption">图 4：全部重置</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_session_reset.jpg" alt="课程重置">
+        <p class="img-caption">图 5：课程重置</p>
+      </div>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_resets_panel.jpg" alt="RESETS 滑动面板">
+      <p class="img-caption">图 6：RESETS 滑动面板</p>
+    </div>
+
+    <h3>2.3 Freezes（冻结）</h3>
+    <p>冻结按钮允许教员执行总冻结、位置冻结和燃油冻结。点击后显示冻结卷展菜单，已激活的冻结项以红色显示。点击"更多…"显示 FREEZES 滑动面板。</p>
+
+    <h4>2.3.1 冻结卷展菜单按钮</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能说明</th><th>边界行为</th></tr></thead>
+        <tbody>
+          <tr><td>Total<br>总冻结</td><td>冻结所有飞行参数（俯仰、坡度、航向、空速、高度、位置）、飞行控制、运动系统（洗出除外）、所有飞机系统；通信系统继续运行，声音降低</td><td>重新定位期间禁用；解冻不会导致剧烈控制或运动变化</td></tr>
+          <tr><td>Position<br>位置冻结</td><td>冻结/解冻飞机在当前地理位置；冻结期间飞机正常飞行</td><td>重新定位期间禁用</td></tr>
+          <tr><td>Fuel<br>燃油冻结</td><td>激活/停用燃油冻结；所有仪表正常指示，燃油量指示器保持不活动（不消耗燃油），加油仍可进行</td><td>重新定位期间禁用</td></tr>
+          <tr><td>More…<br>更多</td><td>显示 FREEZES 滑动面板</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_freezes_menu.jpg" alt="冻结卷展菜单">
+      <p class="img-caption">图 7：冻结卷展菜单（Freezes Roll up Menu）</p>
+    </div>
+
+    <h4>2.4.2 FREEZES 滑动面板</h4>
+    <p>提供 10 种冻结控制选项。各冻结项的通用行为：重新定位期间禁用；特定参数冻结时其他参数不受影响。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>冻结类型</th><th>冻结范围</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>Total Freeze<br>总冻结</td><td>同 2.3.1 总冻结</td><td>—</td></tr>
+          <tr><td>Flight Freeze<br>飞行冻结</td><td>同 2.1 Flight Freeze</td><td>与底部栏 Flight Freeze 按钮为同一功能</td></tr>
+          <tr><td>Altitude Freeze<br>高度冻结</td><td>仅冻结高度</td><td>重新定位期间禁用</td></tr>
+          <tr><td>Position Freeze<br>位置冻结</td><td>同 2.3.1 位置冻结</td><td>—</td></tr>
+          <tr><td>Heading Freeze<br>航向冻结</td><td>仅冻结航向</td><td>重新定位期间禁用</td></tr>
+          <tr><td>Fuel Freeze<br>燃油冻结</td><td>同 2.3.1 燃油冻结</td><td>—</td></tr>
+          <tr><td>Attitude Freeze<br>姿态冻结</td><td>仅冻结飞机姿态</td><td>重新定位期间禁用</td></tr>
+          <tr><td>Airspeed Freeze<br>空速冻结</td><td>仅冻结空速</td><td>重新定位期间禁用</td></tr>
+          <tr><td>Link FLT FRZ to Rain Repellent<br>链接飞行冻结至防雨剂</td><td>允许驾驶舱防雨剂按钮用作飞行冻结控制</td><td>根据 IOS 配置可链接至驾驶舱门或其他按钮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_freezes_panel.jpg" alt="FREEZES 滑动面板">
+      <p class="img-caption">图 8：FREEZES 滑动面板</p>
+    </div>
+
+    <h3>2.4 Sim Controls（模拟控制）</h3>
+    <p>模拟控制按钮允许教员控制和监控各种模拟器系统状态，包括视觉、运动、操纵载荷、烟雾预注和天花板灯。</p>
+
+    <h4>2.4.1 模拟控制卷展菜单按钮</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能说明</th><th>状态指示灯</th></tr></thead>
+        <tbody>
+          <tr><td>Visual<br>视觉</td><td>激活/停用视觉系统</td><td>两种状态：视觉系统开启 / 关闭</td></tr>
+          <tr><td>Motion<br>运动</td><td>启动/停用运动系统</td><td>Failed(红)/Not ready(白)/Ready(蓝)/On(绿)/Starting(闪烁绿)/Stopping(闪烁蓝)；运动系统未运行时按钮禁用</td></tr>
+          <tr><td>Control Loading<br>操纵载荷</td><td>启动/停用操纵载荷系统</td><td>同 Motion 状态指示灯</td></tr>
+          <tr><td>Prime Smoke<br>烟雾预注</td><td>启动/停用烟雾发生器系统；预注时指示灯闪烁绿色，就绪后常亮</td><td>两种状态：烟雾发生器系统开启 / 关闭</td></tr>
+          <tr><td>Ceiling Lights<br>天花板灯</td><td>点亮/熄灭驾驶舱天花板灯</td><td>两种状态：天花板灯开启 / 关闭</td></tr>
+          <tr><td>More…<br>更多</td><td>显示 SIMULATOR CONTROLS 滑动面板</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_simcontrols_menu.jpg" alt="模拟控制卷展菜单">
+      <p class="img-caption">图 9：模拟控制卷展菜单（Sim Controls Roll up Menu）</p>
+    </div>
+
+    <h4>2.4.2 SIMULATOR CONTROLS 滑动面板</h4>
+    <p>包含两个选项卡：运动与操纵载荷（MOTION & CONTROL LOADING）、消息日志（MESSAGE LOG）。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>选项卡/按钮</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>MOTION & CONTROL LOADING</td><td>显示运动和操纵载荷系统状态指示灯（同 2.4.1），以及故障重置和互锁重置按钮</td></tr>
+          <tr><td>Failure Reset<br>故障重置</td><td>尝试重置所有运动和操纵载荷系统的警告和故障信息；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Interlock Reset<br>互锁重置</td><td>尝试重置所有运动和操纵载荷系统的互锁信息；互锁信息代表防止运动系统激活的安全装置状态；点击后按钮保持激活 2 秒</td></tr>
+          <tr><td>MESSAGE LOG</td><td>显示有限的运动与操纵载荷错误、警告及互锁信息</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_simcontrols_panel.jpg" alt="SIMULATOR CONTROLS 滑动面板">
+      <p class="img-caption">图 10：SIMULATOR CONTROLS 滑动面板</p>
+    </div>
+
+    <h3>2.5 Volume（音量）</h3>
+    <p>音量按钮允许教员控制模拟声音的音量。调节方式：输入文本字段或滑块控件。静音按钮可静音模拟声音。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>控制模拟声音的音量</td></tr>
+          <tr><td>交互方式</td><td>点击输入文本字段显示键盘手动输入，或使用滑块控件调节至最小值</td></tr>
+          <tr><td>边界行为</td><td>音量调节即时生效；静音按钮可一键静音</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_volume_menu.jpg" alt="音量卷展菜单">
+      <p class="img-caption">图 11：音量卷展菜单（Volume Roll up Menu）</p>
+    </div>
+
+    <h3>2.6 Reposition（重新定位）</h3>
+    <p>允许教员将飞机重新定位到相对于参考跑道的预设位置。操作步骤：1) 点击按钮显示重新定位卷展菜单；2) 点击所需预设位置；3) 点击重新定位按钮激活。所有预设位置在 AIRPORT REPOSITION 选项卡（9.2）中定义。点击"更多…"显示机场重新定位滑动面板。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>将飞机重新定位到预设位置</td></tr>
+          <tr><td>禁用条件</td><td>捕获、召回、重新定位或位移操作处于活动状态，或飞机在地面移动且速度超过 VR 速度时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_reposition_menu.jpg" alt="重新定位卷展菜单">
+      <p class="img-caption">图 12：重新定位卷展菜单（Reposition Roll up Menu）</p>
+    </div>
+
+    <h3>2.7 Weather Presets（天气预设）</h3>
+    <p>允许教员根据 EASA/FAA 标准更改参考机场的云层和能见度条件。操作步骤：1) 点击按钮显示天气预设卷展菜单；2) 点击所需预设按钮。所有天气预设在 CLOUDS 滑动面板的天气预设区（7.2.4）中定义。卷展菜单名称随当前预设选择而变化。点击"更多…"显示高级天气区域页面。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_weather_presets_menu.jpg" alt="天气预设卷展菜单">
+      <p class="img-caption">图 13：天气预设卷展菜单（WX Presets Roll up Menu）</p>
+    </div>
+
+    <h3>2.8 Capture Flight（捕获飞行）</h3>
+    <p>允许教员将飞行状态捕获到指定的捕获槽中。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>将当前飞行状态捕获到指定槽位</td></tr>
+          <tr><td>禁用条件</td><td>捕获、召回、重新定位或位移操作处于活动状态，或飞机在地面移动且速度超过 VR 速度时禁用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.9 Print（打印）</h3>
+    <p>允许教员打印当前屏幕显示的页面或查看打印选项。点击"更多…"显示 PRINT OPTIONS 滑动面板。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>打印当前屏幕页面或查看打印选项</td></tr>
+          <tr><td>打印选项</td><td>PRINT OPTIONS 滑动面板包含复选框选择要打印的屏幕，然后点击打印按钮打印</td></tr>
+          <tr><td>反转模式</td><td>选中为黑白打印模式，未选中为彩色打印模式</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_print_menu.jpg" alt="打印卷展菜单">
+        <p class="img-caption">图 14：打印卷展菜单</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_print_options_panel.jpg" alt="打印选项滑动面板">
+        <p class="img-caption">图 15：打印选项滑动面板</p>
+      </div>
+    </div>
+
+    <h3>2.10 Speed Up（加速）</h3>
+    <p>允许教员加速或减慢模拟时间。点击按钮显示加速菜单，然后点击所需加速倍率。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_speedup_menu.jpg" alt="加速卷展菜单">
+      <p class="img-caption">图 16：加速卷展菜单（Speed Up Roll Up Menu）</p>
+    </div>
+
+    <h3>2.11 Clear All Malf.（清除所有故障）</h3>
+    <p>允许教员清除所有已激活或待处理的故障。按钮上红色标记指示已激活和待处理的故障数量。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>一键清除所有激活或预位的故障</td></tr>
+          <tr><td>交互方式</td><td>点击按钮 → 显示确认弹窗 → 点击"确认"清除或"取消"保留</td></tr>
+          <tr><td>禁用条件</td><td>无激活或预位故障时禁用</td></tr>
+          <tr><td>边界行为</td><td>点击后按钮保持激活状态 2 秒</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.12 Notifications（通知）</h3>
+    <p>允许教员查看模拟过程中发生的事件通知。每条通知消息带有颜色编码的图标，取决于消息的严重程度。新事件发生时通知显示 5 秒，后续通知堆叠显示。不再相关的通知自动移除。按钮上的红色徽章显示活动消息数量。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_notifications.jpg" alt="通知">
+      <p class="img-caption">图 17：通知（Notifications）</p>
+    </div>
+
+    <h3>2.13 Help Rollup Menu（帮助卷展菜单）</h3>
+    <p>允许教员显示或隐藏与当前活动滑动面板关联的帮助，或创建可发送给 CAE 人员的帮助压缩文件。</p>
+
+    <h4>2.13.1 Help（帮助）</h4>
+    <p>点击帮助按钮显示当前活动面板的帮助。可用帮助以带有数字的气泡形式显示在工作区上。点击气泡可查看对应帮助。如果在帮助模式激活后 2-3 秒内未进行选择，将弹出描述当前面板功能的弹窗。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_help_panel.jpg" alt="帮助面板">
+      <p class="img-caption">图 18：帮助面板（HELP Panel）</p>
+    </div>
+
+    <h4>2.13.2 Send Feedback（发送反馈）</h4>
+    <p>允许教员在操作服务器上创建帮助压缩文件，然后发送给 CAE 人员。点击后：创建包含 IOS 屏幕截图和日志文件的帮助压缩文件；显示"Send Us Feedback"弹窗；提供基本图像编辑工具（铅笔、橡皮擦、颜色选择），允许教员对每张图像进行标注。点击发送按钮启动创建过程。</p>
+
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_feedback_popup.jpg" alt="发送反馈弹窗">
+        <p class="img-caption">图 19：发送反馈弹窗</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_sending_feedback.jpg" alt="发送反馈中">
+        <p class="img-caption">图 20：发送反馈中</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_view_feedback.jpg" alt="查看反馈数据文件">
+        <p class="img-caption">图 21：查看反馈数据文件</p>
+      </div>
+    </div>
+
+    <h4>2.13.3 Help Zip File（帮助压缩文件）</h4>
+    <p>帮助压缩文件内容包括 IOS 屏幕截图、日志文件和配置布局文件。</p>
+
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_help_zip.jpg" alt="帮助压缩文件">
+        <p class="img-caption">图 22：帮助压缩文件</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_help_zip_content.jpg" alt="帮助压缩文件内容示例">
+        <p class="img-caption">图 23：帮助压缩文件内容示例</p>
+      </div>
+    </div>
+
+    <h3>2.14 Workspace（工作区）</h3>
+    <p>允许教员选择在当前显示器上显示的应用程序工作区。主要工作区包括：控制面板、地图、课程计划。附加按钮：维护（切换至维护模式）、关闭工作区管理器。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>Maintenance<br>维护</td><td>在当前显示器上显示维护页面</td></tr>
+          <tr><td>Instr. Repeaters<br>仪表复示器</td><td>显示仪表复示器工作区</td></tr>
+          <tr><td>Lesson Profile<br>课程计划剖面</td><td>显示课程计划配置文件工作区</td></tr>
+          <tr><td>Map<br>地图</td><td>显示地图工作区</td></tr>
+          <tr><td>Control Board<br>控制面板</td><td>显示控制面板工作区</td></tr>
+          <tr><td>Advanced<br>高级</td><td>在当前显示器左侧显示高级工具栏，可快速访问飞机、位置、环境参数以及入侵者和通信页面</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
+      <p class="img-caption">图 24：工作区卷展菜单（Workspace Roll Up Menu）</p>
+    </div>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 Control Board Footer 教员核心操作流程全景图</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 Control Board Footer]) --> OP_TYPE{选择操作类型}
+
+    OP_TYPE -->|飞行控制| CTRL_ENTRY[点击 Flight Freeze / Freezes]
+    OP_TYPE -->|系统重置| RESET_ENTRY[点击 Resets]
+    OP_TYPE -->|模拟器控制| SIM_ENTRY[点击 Sim Controls]
+    OP_TYPE -->|环境/定位| ENV_ENTRY[点击 Reposition / Weather Presets]
+    OP_TYPE -->|系统功能| SYS_ENTRY[点击 Volume / Print / Speed Up / Clear Malf. / Help / Workspace]
+
+    subgraph CTRL_FLOW["飞行控制流程 — 2.1 / 2.3"]
+        CTRL_ENTRY --> C1{冻结 / 解冻?}
+        C1 -->|冻结| C2[冻结目标参数]
+        C1 -->|解冻| C3[恢复目标参数]
+    end
+
+    subgraph RESET_FLOW["重置流程 — 2.2"]
+        RESET_ENTRY --> R1{选择重置级别}
+        R1 -->|快速| R2[Environment / ISA / Systems]
+        R1 -->|完整| R3[Total / Session]
+        R1 -->|单个系统| R4[RESETS Panel → 选择具体系统]
+    end
+
+    subgraph SIM_FLOW["模拟控制流程 — 2.4"]
+        SIM_ENTRY --> S1[选择目标系统]
+        S1 --> S2{开启 / 关闭?}
+        S2 -->|开启| S3[系统启动中]
+        S2 -->|关闭| S4[系统停止中]
+    end
+
+    subgraph ENV_FLOW["环境与定位流程 — 2.6 / 2.7"]
+        ENV_ENTRY --> E1[选择预设参数]
+        E1 --> E2[确认生效]
+    end
+
+    subgraph SYS_FLOW["系统功能流程 — 2.5 / 2.8~2.14"]
+        SYS_ENTRY --> F1[执行具体操作]
+        F1 --> F2[确认结果]
+    end
+
+    C2 --> End([操作完成])
+    C3 --> End
+    R2 --> End
+    R3 --> End
+    R4 --> End
+    S3 --> End
+    S4 --> End
+    E2 --> End
+    F2 --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style OP_TYPE fill:#fef3c7,stroke:#d97706
+    </div>
+
+    <h3>3.2 操作通用状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 空闲状态
+    空闲状态 --> 卷展菜单打开中 : 点击按钮
+    卷展菜单打开中 --> 操作执行中 : 点击选项
+    卷展菜单打开中 --> 滑动面板打开中 : 点击更多…
+    滑动面板打开中 --> 操作执行中 : 点击面板选项
+    操作执行中 --> 生效完成 : 操作成功
+    生效完成 --> 空闲状态
+    卷展菜单打开中 --> 空闲状态 : 点击关闭/其他区域
+    滑动面板打开中 --> 空闲状态 : 点击关闭/其他区域
+    操作执行中 --> 空闲状态 : 取消操作
+    </div>
+
+    <h4>状态说明</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>说明</th><th>触发条件</th></tr></thead>
+        <tbody>
+          <tr><td>空闲状态</td><td>教员在控制面板操作，底部栏无活动菜单</td><td>初始状态 / 菜单关闭后</td></tr>
+          <tr><td>卷展菜单打开中</td><td>底部按钮的卷展菜单已展开</td><td>点击底部栏任一按钮</td></tr>
+          <tr><td>滑动面板打开中</td><td>复杂功能的滑动面板已展开</td><td>点击"更多…"按钮</td></tr>
+          <tr><td>操作执行中</td><td>教员已选择具体操作，系统正在处理</td><td>点击卷展菜单或滑动面板中的选项</td></tr>
+          <tr><td>生效完成</td><td>操作已成功生效</td><td>操作处理完成后</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
+        <tbody>
+          <tr><td>重新定位</td><td>参考机场选项卡（1.2.5）AIRPORT REPOSITION</td><td>预设位置在 9.2 中定义</td></tr>
+          <tr><td>天气预设</td><td>CLOUDS 滑动面板（7.2.4）</td><td>天气预设在云层滑动面板中定义</td></tr>
+          <tr><td>Flight Freeze</td><td>Freezes 滑动面板（11.3.4.3）</td><td>与滑动面板中的 Flight Freeze 为同一功能</td></tr>
+          <tr><td>重置 - Systems</td><td>IOS 配置</td><td>可重置系统的数量和类型取决于 IOS 配置</td></tr>
+          <tr><td>Workspace - Advanced</td><td>控制面板各选项卡</td><td>高级工具栏提供对控制面板参数的快速访问</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>异常场景</th><th>现象</th><th>处理方式</th></tr></thead>
+        <tbody>
+          <tr><td>重新定位期间按钮禁用</td><td>Flight Freeze / Freezes 等按钮显示禁用状态</td><td>等待重新定位或飞行配平完成</td></tr>
+          <tr><td>冻结激活时修改环境参数</td><td>温度/压力/风/云高等修改不生效</td><td>修改将在冻结解除后生效</td></tr>
+          <tr><td>运动系统未运行</td><td>Motion 按钮禁用</td><td>检查运动系统状态指示灯，必要时联系维护人员</td></tr>
+          <tr><td>重置按钮亮起 2 秒后恢复</td><td>操作已完成，按钮恢复常态</td><td>正常行为，无需处理</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>测试场景</th><th>测试步骤</th><th>期望结果</th></tr></thead>
+        <tbody>
+          <tr><td>正向路径：飞行冻结</td><td>1. 点击 Flight Freeze 激活冻结 2. 观察飞行参数是否冻结 3. 再次点击解除冻结</td><td>参数冻结/解冻正常，解冻时无剧烈控制或运动变化</td></tr>
+          <tr><td>正向路径：环境重置</td><td>1. 点击 Resets → Environment 2. 观察环境参数是否恢复默认</td><td>跑道、能见度、RVR、云、雾等恢复默认值；按钮亮起 2 秒后禁用</td></tr>
+          <tr><td>正向路径：全部重置</td><td>1. 点击 Resets → Total 2. 观察是否执行系统重置</td><td>坠机重置、清除故障、清除失效站位等生效；按钮亮起 2 秒</td></tr>
+          <tr><td>正向路径：模拟控制</td><td>1. 点击 Sim Controls → Visual 切换开关 2. 观察视觉系统状态变化</td><td>视觉系统正确开启/关闭</td></tr>
+          <tr><td>边界条件：重新定位期间禁用</td><td>1. 执行重新定位 2. 尝试点击 Flight Freeze / Freezes 按钮</td><td>按钮显示禁用状态，重新定位完成后恢复可用</td></tr>
+          <tr><td>边界条件：冻结时参数修改</td><td>1. 激活飞行冻结 2. 修改温度/风等参数 3. 解除冻结</td><td>参数修改在冻结解除后才生效</td></tr>
+          <tr><td>联动测试：清除所有故障</td><td>1. 插入一个故障 2. 点击 Clear All Malf. 3. 确认清除</td><td>故障被清除，按钮红色标记消失</td></tr>
+          <tr><td>联动测试：工作区切换</td><td>1. 点击 Workspace → Map 2. 确认地图工作区显示</td><td>当前显示器切换至地图工作区</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-04</td><td>V1.0</td><td>初始生成 ch1_2_7 控制面板底部 HTML，含 14 个核心功能详解、25 张配图、全局操作流程、状态机及测试要点</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_2_6_instructor_station_panel.html">← 上一小节：1.2.6 教员台滑动面板</a>
+      <a class="next" href="#">下一小节：1.3 维护页面 →</a>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// Navigation toggle
+function toggleNav(el) {
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if (children && children.classList.contains('nav-children')) {
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Collapsible toggle
+function toggleCollapsible(el) {
+  const parent = el.parentElement;
+  parent.classList.toggle('collapsed');
+}
+
+// Mermaid init
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+// Image zoom
+document.addEventListener('click', function(e) {
+  if (e.target.tagName === 'IMG' && e.target.closest('.img-block')) {
+    const overlay = document.createElement('div');
+    overlay.className = 'img-zoom-overlay';
+    const img = document.createElement('img');
+    img.src = e.target.src;
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function() { overlay.remove(); });
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.querySelector('.img-zoom-overlay');
+    if (overlay) overlay.remove();
+  }
+});
+
+// Mermaid zoom + pan + wheel
+(function() {
+  let zoomedEl = null;
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function updateTransform() {
+    if (!zoomedEl) return;
+    const svg = zoomedEl.querySelector('svg');
+    if (svg) svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  }
+
+  document.addEventListener('click', function(e) {
+    const mermaidEl = e.target.closest('.mermaid');
+    if (!mermaidEl) {
+      if (zoomedEl && (e.target.classList.contains('mermaid-zoom-overlay') || e.target.closest('.mermaid-zoom-overlay'))) {
+        zoomedEl.classList.remove('is-zoomed');
+        const svg = zoomedEl.querySelector('svg');
+        if (svg) svg.style.transform = '';
+        zoomedEl = null;
+        document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+      }
+      return;
+    }
+    if (zoomedEl) return;
+    zoomedEl = mermaidEl;
+    zoomedEl.classList.add('is-zoomed');
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateTransform();
+    const overlay = document.createElement('div');
+    overlay.className = 'mermaid-zoom-overlay';
+    document.body.appendChild(overlay);
+  });
+
+  document.addEventListener('wheel', function(e) {
+    if (!zoomedEl) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.max(0.3, Math.min(5, scale + delta));
+    updateTransform();
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e) {
+    if (!zoomedEl) return;
+    if (e.target.closest('.mermaid.is-zoomed')) {
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging || !zoomedEl) return;
+    translateX += e.clientX - lastX;
+    translateY += e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateTransform();
+  });
+
+  document.addEventListener('mouseup', function() { isDragging = false; });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && zoomedEl) {
+      zoomedEl.classList.remove('is-zoomed');
+      const svg = zoomedEl.querySelector('svg');
+      if (svg) svg.style.transform = '';
+      zoomedEl = null;
+      document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+    }
+  });
+})();
+</script>
+</body>
+</html>
