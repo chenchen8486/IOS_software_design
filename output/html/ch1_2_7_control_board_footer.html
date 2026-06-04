@@ -447,7 +447,7 @@ graph TD
     </div>
 
     <h3>2.6 Reposition（重新定位）</h3>
-    <p>允许教员将飞机重新定位到相对于参考跑道的预设位置。操作步骤：1) 点击按钮显示重新定位卷展菜单；2) 点击所需预设位置；3) 点击重新定位按钮激活。所有预设位置在 AIRPORT REPOSITION 选项卡（9.2）中定义。点击"更多…"显示机场重新定位滑动面板。</p>
+    <p>允许教员将飞机重新定位到相对于参考跑道的预设位置。操作步骤：1) 点击按钮显示重新定位卷展菜单；2) 点击所需预设位置；3) 点击重新定位按钮激活。所有预设位置在 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> 的 2.2.2 AIRPORT REPOSITION 选项卡中定义（原始文档 9.2.2）。点击"更多…"显示机场重新定位滑动面板。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
@@ -458,13 +458,73 @@ graph TD
       </table>
     </div>
 
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>📎 引用章节 1.2.5 — 2.2.2 AIRPORT REPOSITION 选项卡：预设位置一览</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <p>以下预设位置均在 <strong><a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> — 2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</strong> 的"重新定位预设部分"中定义（原始文档 9.2.2），教员可一键将飞机定位至参考跑道的相对位置。重新定位结束时将设置飞行冻结，并停用加速功能。</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>预设名称</th><th>位置描述</th><th>典型飞机配置摘要</th></tr></thead>
+            <tbody>
+              <tr><td>等待（HOLD）</td><td>跑道等待位置</td><td>起落架放下，襟翼5（若当前位置对起飞无效），舱门关闭</td></tr>
+              <tr><td>滑行（TAXI）</td><td>跑道滑行位置</td><td>起落架放下，襟翼5（若当前位置对起飞无效），舱门关闭</td></tr>
+              <tr><td>登机口/停机位</td><td>机场登机口或停机位</td><td>起落架放下，襟翼收上，减速板收起，1L舱门、右前和右后货舱门打开</td></tr>
+              <tr><td>中等空域作业</td><td>距参考跑道30海里，10,000英尺或FL100</td><td>起落架收上，襟翼收上，250 KCAS，航向道居中，平飞</td></tr>
+              <tr><td>高空作业</td><td>距参考跑道100海里，FL350</td><td>起落架收起，襟翼收起，马赫数0.78，航向道居中，平飞</td></tr>
+              <tr><td>左侧1海里、3海里</td><td>左侧顺风、正切3海里、距接地点前1海里</td><td>起落架收起，襟翼1，200 KCAS，1500英尺AGL，平飞</td></tr>
+              <tr><td>右侧1海里、3海里</td><td>右侧顺风、正切3海里、距接地点前1海里</td><td>同上，航向道偏差右侧3海里</td></tr>
+              <tr><td>起飞</td><td>参考跑道起飞位置</td><td>起落架放下，襟翼1+F，静止，地面</td></tr>
+              <tr><td>3海里短五边</td><td>参考跑道3海里五边位置</td><td>起落架放下，全襟翼，Vref+5，航向道/下滑道居中，下降</td></tr>
+              <tr><td>6海里</td><td>参考跑道6海里五边位置</td><td>起落架放下，襟翼3，F速度，航向道/下滑道居中，下降</td></tr>
+              <tr><td>8海里</td><td>参考跑道8海里位置</td><td>起落架收起，襟翼2，F速度，2000英尺AGL，航向道居中，平飞</td></tr>
+              <tr><td>12海里，左1海里</td><td>参考跑道12海里、左侧1海里</td><td>起落架收起，襟翼1，200 KCAS，3000英尺AGL，左1海里，30度切入角，平飞</td></tr>
+              <tr><td>12海里</td><td>参考跑道12海里正中</td><td>同上，航向道居中</td></tr>
+              <tr><td>12海里，右1海里</td><td>参考跑道12海里、右侧1海里</td><td>同上，右1海里，30度切入角，平飞</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><em>注：预设值可能因机型不同而有所变化；AGL 为相对于参考跑道入口高度。</em></p>
+      </div>
+    </div>
+
     <div class="img-block">
       <img src="./images/ch1_2_7_reposition_menu.jpg" alt="重新定位卷展菜单">
       <p class="img-caption">图 12：重新定位卷展菜单（Reposition Roll up Menu）</p>
     </div>
 
     <h3>2.7 Weather Presets（天气预设）</h3>
-    <p>允许教员根据 EASA/FAA 标准更改参考机场的云层和能见度条件。操作步骤：1) 点击按钮显示天气预设卷展菜单；2) 点击所需预设按钮。所有天气预设在 CLOUDS 滑动面板的天气预设区（7.2.4）中定义。卷展菜单名称随当前预设选择而变化。点击"更多…"显示高级天气区域页面。</p>
+    <p>允许教员根据 EASA/FAA 标准更改参考机场的云层和能见度条件。操作步骤：1) 点击按钮显示天气预设卷展菜单；2) 点击所需预设按钮。所有天气预设在 <a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> 的 CLOUDS 滑动面板 — 2.12.4 天气预设区中定义（原始文档 7.2.4）。卷展菜单名称随当前预设选择而变化。点击"更多…"显示高级天气区域页面。</p>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>📎 引用章节 1.2.3 — 2.12.4 CLOUDS 天气预设区：标准预设一览</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <p>以下天气预设按钮均在 <strong><a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> — 2.12.4 天气预设区（Weather Presets Section）</strong> 中定义（原始文档 7.2.4），教员可一键根据 FAA、EASA、TCA 或 EUR 标准更改云层和能见度条件。</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>预设按钮</th><th>适用标准</th><th>条件说明</th></tr></thead>
+            <tbody>
+              <tr><td>CAVOK</td><td>FAA / EASA / TCA / EUR</td><td>无云底低于5000英尺；无积雨云；能见度≥6法定英里/10公里；无降水、雷暴、浅雾或低吹雪</td></tr>
+              <tr><td>1000/5km</td><td>—</td><td>1000英尺云高/5公里能见度条件下的盘旋</td></tr>
+              <tr><td>800/2km</td><td>—</td><td>800英尺云高/2公里能见度条件下的盘旋</td></tr>
+              <tr><td>CAT I</td><td>—</td><td>CAT I 仪表进近条件</td></tr>
+              <tr><td>CAT II</td><td>—</td><td>CAT II 仪表进近条件</td></tr>
+              <tr><td>CAT IIIA</td><td>—</td><td>CAT IIIA 仪表进近条件</td></tr>
+              <tr><td>CAT IIIB</td><td>—</td><td>CAT IIIB 仪表进近条件</td></tr>
+              <tr><td>CAT IIIC</td><td>—</td><td>CAT IIIC 仪表进近条件</td></tr>
+              <tr><td>0/0</td><td>—</td><td>零能见度/零云高条件</td></tr>
+              <tr><td>最小起飞RVR</td><td>—</td><td>最小起飞跑道视程条件</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><em>注：点击对应预设按钮后，视觉显示将立即激活相应天气条件。上述标准按适用机型配置可能有所差异。</em></p>
+      </div>
+    </div>
 
     <div class="img-block">
       <img src="./images/ch1_2_7_weather_presets_menu.jpg" alt="天气预设卷展菜单">
@@ -696,9 +756,9 @@ stateDiagram-v2
       <table>
         <thead><tr><th>功能</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
         <tbody>
-          <tr><td>重新定位</td><td>参考机场选项卡（1.2.5）AIRPORT REPOSITION</td><td>预设位置在 9.2 中定义</td></tr>
-          <tr><td>天气预设</td><td>CLOUDS 滑动面板（7.2.4）</td><td>天气预设在云层滑动面板中定义</td></tr>
-          <tr><td>Flight Freeze</td><td>Freezes 滑动面板（11.3.4.3）</td><td>与滑动面板中的 Flight Freeze 为同一功能</td></tr>
+          <tr><td>重新定位</td><td>参考机场选项卡（<a href="ch1_2_5_reference_airport_tab.html">1.2.5</a>）AIRPORT REPOSITION</td><td>预设位置在 1.2.5 — 2.2.2 AIRPORT REPOSITION 选项卡中定义（原始文档 9.2.2；含等待/滑行、登机口、各距离五边/起始进近等14个预设）</td></tr>
+          <tr><td>天气预设</td><td>CLOUDS 滑动面板（<a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> — 2.12.4）</td><td>天气预设在 1.2.3 — 2.12.4 天气预设区中定义（原始文档 7.2.4；含 CAVOK、1000/5km、800/2km、CAT I~IIIC、0/0、最小起飞RVR 共10项）</td></tr>
+          <tr><td>Flight Freeze</td><td>Freezes 滑动面板（1.2.7 — 2.1）</td><td>与 2.1 Flight Freeze 为同一功能；原始文档 11.3.4.3 节原文为"请参阅 11.1 节飞行冻结"</td></tr>
           <tr><td>重置 - Systems</td><td>IOS 配置</td><td>可重置系统的数量和类型取决于 IOS 配置</td></tr>
           <tr><td>Workspace - Advanced</td><td>控制面板各选项卡</td><td>高级工具栏提供对控制面板参数的快速访问</td></tr>
         </tbody>
@@ -743,6 +803,8 @@ stateDiagram-v2
         <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
         <tbody>
           <tr><td>2026-06-04</td><td>V1.0</td><td>初始生成 ch1_2_7 控制面板底部 HTML，含 14 个核心功能详解、25 张配图、全局操作流程、状态机及测试要点</td></tr>
+          <tr><td>2026-06-04</td><td>V1.1</td><td>补充外部引用章节内容：在 2.6 Reposition 处嵌入 9.2.2 AIRPORT REPOSITION 预设位置一览（14个预设），在 2.7 Weather Presets 处嵌入 7.2.4 天气预设区（10项标准），在 3.3.1 关联依赖表格中补全 11.3.4.3 飞行冻结说明</td></tr>
+          <tr><td>2026-06-04</td><td>V1.2</td><td>将原始文档章节号全面映射为自生HTML章节：9.2.2 → 1.2.5—2.2.2、7.2.4 → 1.2.3—2.12.4、11.3.4.3 → 1.2.7—2.1；正文与折叠面板中增加相对超链接，原始章节号以括号备注保留</td></tr>
         </tbody>
       </table>
     </div>
