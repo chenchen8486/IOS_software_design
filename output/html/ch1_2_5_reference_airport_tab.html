@@ -246,20 +246,18 @@ graph TD
     <h3>1.2 界面结构</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
         <tbody>
-          <tr><td>参考机场选项卡标签<br>REFERENCE AIRPORT Tab</td><td>控制面板顶部选项卡栏（第 5 个选项卡）</td><td>监控和更改参考机场、跑道、环境条件、微暴流/风切变</td></tr>
-          <tr><td>参数输入文本字段区域<br>Parameter Input Text Fields</td><td>选项卡主区域上半部分</td><td>14 组可点击参数字段，点击后弹出对应滑动面板或键盘</td></tr>
-          <tr><td>交互式机场部分<br>Interactive Airport Section</td><td>选项卡主区域中部</td><td>点击跑道图形即可直接切换参考跑道</td></tr>
-          <tr><td>重新定位按钮<br>Reposition Button</td><td>选项卡底部区域</td><td>执行选定的重新定位操作</td></tr>
-          <tr><td>放弃按钮<br>Discard Button</td><td>重新定位按钮旁</td><td>取消选定的重新定位并关闭滑动面板</td></tr>
+          <tr><td>参考机场选项卡标签<br>REFERENCE AIRPORT Tab</td><td>控制面板顶部选项卡栏（第 5 个选项卡）</td><td>监控和更改参考机场、跑道、环境条件、微暴流/风切变</td><td>—</td></tr>
+          <tr><td>参数输入文本字段区域<br>Parameter Input Text Fields</td><td>选项卡主区域上半部分</td><td>14 组可点击参数字段，点击后弹出对应滑动面板或键盘</td><td>详见 2.1 / 2.2~2.10</td></tr>
+          <tr><td>交互式机场部分<br>Interactive Airport Section</td><td>选项卡主区域右中部</td><td>点击跑道图形即可直接切换参考跑道</td><td>详见 2.2</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="img-block">
       <img src="./images/ch1_2_5_overview.jpg" alt="参考机场选项卡总览">
-      <p class="img-caption">图：参考机场选项卡总览</p>
+      <p class="img-caption">图 1：参考机场选项卡总览</p>
     </div>
 
     <!-- 二、核心功能详解 -->
@@ -273,7 +271,7 @@ graph TD
         <tbody>
           <tr><td>机场（Airport）</td><td>当前参考机场 ICAO 代码</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
           <tr><td>跑道（Runway）</td><td>参考机场当前跑道号</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
-          <tr><td>时间（Time）</td><td>当前时刻</td><td>点击 / Wheel Picker</td><td>时刻键盘 / Wheel Picker 选择黎明/白天/黄昏/夜间</td></tr>
+          <tr><td>时间（Time）</td><td>当前时刻</td><td>点击 / Wheel Picker</td><td>时刻键盘 / Wheel Picker 选择黎明/白天/黄昏/夜间（详见 2.3）</td></tr>
           <tr><td>地面风（磁）（Surface Wind）</td><td>参考机场和跑道当前风况</td><td>点击 / 长按风向/风速字段 + Wheel Picker</td><td>地面风滑动面板（详见 2.4）</td></tr>
           <tr><td>能见度（Visibility）</td><td>当前云下能见度</td><td>点击 / Wheel Picker</td><td>能见度键盘（详见 2.5）</td></tr>
           <tr><td>RVR</td><td>当前跑道视程</td><td>点击 / Wheel Picker</td><td>能见度/RVR 滑动面板（详见 2.5）</td></tr>
@@ -293,7 +291,7 @@ graph TD
     <p>触发方式：点击主界面「机场」或「跑道」参数字段弹出。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_airport_reposition_panel.jpg" alt="机场与重新定位滑动面板">
-      <p class="img-caption">图：机场与重新定位滑动面板</p>
+      <p class="img-caption">图 2：机场与重新定位滑动面板</p>
     </div>
     <p>此滑动面板允许教员查看并选择参考/目的地机场和跑道、将飞机重新定位到预设位置、执行地面操作、调整跑道灯光强度。包含四个选项卡：参考位置、机场重新定位、地面操作、FMS 快速设置。</p>
 
@@ -312,18 +310,18 @@ graph TD
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_reference_location_tab.jpg" alt="参考位置选项卡">
-      <p class="img-caption">图：参考位置选项卡（典型）</p>
+      <p class="img-caption">图 3：参考位置选项卡（典型）</p>
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_airport_list.jpg" alt="参考机场列表">
-      <p class="img-caption">图：参考机场列表（典型）</p>
+      <p class="img-caption">图 4：参考机场列表（典型）</p>
     </div>
 
     <h4>2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</h4>
     <p>包含四个部分：等待/滑行、登机口/停机位、重定位预设、跑道照明。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_reposition_tab.jpg" alt="机场重新定位选项卡">
-      <p class="img-caption">图：机场重新定位选项卡（典型）</p>
+      <p class="img-caption">图 5：机场重新定位选项卡（典型）</p>
     </div>
 
     <div class="collapsible">
@@ -365,19 +363,19 @@ graph TD
       <div class="collapsible-body">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>预设</th><th>位置描述</th><th>典型配置</th></tr></thead>
+            <thead><tr><th>预设（Preset）</th><th>位置描述/操作说明（Position Description / Operation）</th><th>典型配置（Typical Configuration）</th></tr></thead>
             <tbody>
-              <tr><td>中等空域作业</td><td>10,000 ft（气压高度）或 FL100</td><td>起落架收上、襟翼收上、速度 250 KCAS、高度 10,000 ft / FL100、航道居中、平飞、距参考跑道 30 NM</td></tr>
-              <tr><td>高空作业</td><td>FL350</td><td>起落架收上、襟翼收上、速度 Mach 0.78、高度 FL350、航道居中、平飞、距参考跑道 100 NM</td></tr>
-              <tr><td>左侧 1 NM、3 NM</td><td>左侧顺风、正切 3 NM、距接地点前 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
-              <tr><td>右侧 1 NM、3 NM</td><td>右侧顺风、正切 3 NM、距接地点前 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
-              <tr><td>起飞（T/O）</td><td>当前参考跑道起飞位置</td><td>起落架放下、襟翼 1+F、静止、地面、舱门关闭</td></tr>
-              <tr><td>3 NM 短五边</td><td>距参考跑道 3 NM</td><td>起落架放下、全襟翼、速度 Vref+5、航道居中、下滑道居中、下降、距离 3 NM</td></tr>
-              <tr><td>6 NM</td><td>距参考跑道 6 NM</td><td>起落架放下、襟翼 3、速度 F Speed、航道居中、下滑道居中、下降、距离 6 NM</td></tr>
-              <tr><td>8 NM</td><td>距参考跑道 8 NM</td><td>起落架收上、襟翼 2、速度 F Speed、航道居中、高度 2,000 ft AGL、平飞、距离 8 NM</td></tr>
-              <tr><td>12 NM，左 1 NM</td><td>距参考跑道 12 NM、左侧 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
-              <tr><td>12 NM</td><td>距参考跑道 12 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道居中、高度 3,000 ft AGL、平飞、距离 12 NM</td></tr>
-              <tr><td>12 NM，右 1 NM</td><td>距参考跑道 12 NM、右侧 1 NM</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
+              <tr><td>中等空域作业（Medium Airwork）</td><td>点击此单选按钮，将飞机重新定位到相对于当前参考跑道的 10,000 ft（气压高度），前提是当前位置的过渡高度高于 10,000 ft；若过渡高度小于或等于 10,000 ft，则重新定位至 FL100</td><td>起落架收上、襟翼收上、速度 250 KCAS、高度 10,000 ft / FL100、航道居中、平飞、距参考跑道 30 NM</td></tr>
+              <tr><td>高空作业（High Airwork）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道对应的 FL350 高度</td><td>起落架收上、襟翼收上、速度 Mach 0.78、高度 FL350、航道居中、平飞、距参考跑道 100 NM</td></tr>
+              <tr><td>左侧 1 NM、3 NM（Left 1 NM, 3 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道对应的左侧顺风、正切 3 NM、距接地点前 1 NM 的位置</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
+              <tr><td>右侧 1 NM、3 NM（Right 1 NM, 3 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道对应的右侧顺风、正切 3 NM、距接地点前 1 NM 的位置</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 3 NM、高度 1,500 ft AGL、平飞、距离 1 NM</td></tr>
+              <tr><td>起飞（T/O）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道的起飞位置</td><td>起落架放下、襟翼 1+F、静止、地面、舱门关闭</td></tr>
+              <tr><td>3 NM 短五边（3 NM Short Final）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道对应的 3 NM 位置</td><td>起落架放下、全襟翼、速度 Vref+5、航道居中、下滑道居中、下降、距离 3 NM</td></tr>
+              <tr><td>6 NM（6 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道 6 NM 处</td><td>起落架放下、襟翼 3、速度 F Speed、航道居中、下滑道居中、下降、距离 6 NM</td></tr>
+              <tr><td>8 NM（8 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道 8 NM 处</td><td>起落架收上、襟翼 2、速度 F Speed、航道居中、高度 2,000 ft AGL、平飞、距离 8 NM</td></tr>
+              <tr><td>12 NM，左 1 NM（12 NM, Left 1 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道 12 NM、左侧 1 NM 处</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏左 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
+              <tr><td>12 NM（12 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道 12 NM 处</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道居中、高度 3,000 ft AGL、平飞、距离 12 NM</td></tr>
+              <tr><td>12 NM，右 1 NM（12 NM, Right 1 NM）</td><td>点击此单选按钮，将飞机重新定位至当前参考跑道 12 NM、右侧 1 NM 处</td><td>起落架收上、襟翼 1、速度 200 KCAS、航道偏右 1 NM、高度 3,000 ft AGL、平飞、距离 12 NM、切入角 30°</td></tr>
             </tbody>
           </table>
         </div>
@@ -405,14 +403,14 @@ graph TD
         <h4>跑道照明滑动面板</h4>
         <div class="img-block">
           <img src="./images/ch1_2_5_runway_lighting_panel.jpg" alt="跑道照明滑动面板">
-          <p class="img-caption">图：跑道照明滑动面板（典型）</p>
+          <p class="img-caption">图 6：跑道照明滑动面板（典型）</p>
         </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>控件</th><th>功能说明</th><th>范围</th></tr></thead>
             <tbody>
-              <tr><td>跑道列表</td><td>点击选择需要调整照明的跑道</td><td>—</td></tr>
-              <tr><td>所有跑道灯</td><td>下拉选择活动目视跑道所有照明类别强度</td><td>最小值 = 0，最大值 = 5</td></tr>
+              <tr><td>跑道列表（Runway List）</td><td>点击选择需要调整照明的跑道</td><td>—</td></tr>
+              <tr><td>所有跑道灯（All Runway Lights）</td><td>下拉选择活动目视跑道所有照明类别强度</td><td>最小值 = 0，最大值 = 5</td></tr>
               <tr><td>中心线（Centerline）</td><td>下拉选择中心线照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
               <tr><td>随机强度（Random Intensity）</td><td>切换启用/禁用跑道照明系统随机强度（影响边灯、末端灯、中心线、接地区）</td><td>—</td></tr>
               <tr><td>接地区（TD Zone）</td><td>下拉选择接地区照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
@@ -421,13 +419,13 @@ graph TD
               <tr><td>进近灯（Reils）</td><td>下拉选择进近灯亮度</td><td>最小值 = 0，最大值 = 5</td></tr>
               <tr><td>进近（Approach）</td><td>下拉选择活动参考跑道进近照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
               <tr><td>频闪灯（Strobe）</td><td>下拉选择频闪灯照明强度</td><td>最小值 = 0，最大值 = 5</td></tr>
-              <tr><td>所有跑道默认照明</td><td>点击展开「跑道默认灯光」滑动面板</td><td>—</td></tr>
+              <tr><td>所有跑道默认照明（All Runway Default Lighting）</td><td>点击展开「跑道默认灯光」滑动面板</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
         <div class="img-block">
           <img src="./images/ch1_2_5_runway_default_lighting.jpg" alt="跑道默认灯光滑动面板">
-          <p class="img-caption">图：跑道默认灯光滑动面板</p>
+          <p class="img-caption">图 7：跑道默认灯光滑动面板</p>
         </div>
         <p><strong>航向信标（Localizer）：</strong>正常状态下点击触发参考跑道航向信标发射机故障；激活状态下点击清除故障。<br>
         <strong>下滑信标（Glideslope）：</strong>正常状态下点击触发参考跑道下滑信标发射机故障；激活状态下点击清除故障。</p>
@@ -437,7 +435,7 @@ graph TD
     <h4>2.2.3 地面操作选项卡（GROUND OPERATIONS Tab）</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_ground_operations_tab.jpg" alt="地面操作选项卡">
-      <p class="img-caption">图：地面操作选项卡</p>
+      <p class="img-caption">图 8：地面操作选项卡</p>
     </div>
     <div class="table-wrap">
       <table>
@@ -463,11 +461,11 @@ graph TD
       <div class="collapsible-body">
         <div class="img-block">
           <img src="./images/ch1_2_5_recorded_traffic_panel.jpg" alt="录制交通滑动面板">
-          <p class="img-caption">图：录制交通滑动面板</p>
+          <p class="img-caption">图 9：录制交通滑动面板</p>
         </div>
         <div class="img-block">
           <img src="./images/ch1_2_5_scenario_traffic_panel.jpg" alt="场景交通滑动面板">
-          <p class="img-caption">图：场景交通滑动面板</p>
+          <p class="img-caption">图 10：场景交通滑动面板</p>
         </div>
         <p><strong>播放（Play）：</strong>点击场景旁的切换按钮播放选定的录制交通场景；再次点击暂停。<br>
         <strong>场景交通滑动面板：</strong>允许教员通过播放预录交通场景将交通效果添加到视觉场景中，提供「筛选」选项卡按类别筛选可用录制场景。</p>
@@ -477,7 +475,7 @@ graph TD
     <h4>2.2.4 FMS 快速设置选项卡（FMS QUICKSET Tab）</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_fms_quickset_tab.jpg" alt="FMS 快速设置选项卡">
-      <p class="img-caption">图：FMS 快速设置选项卡</p>
+      <p class="img-caption">图 11：FMS 快速设置选项卡</p>
     </div>
     <div class="table-wrap">
       <table>
@@ -490,10 +488,10 @@ graph TD
       </table>
     </div>
 
-    <h4>2.2.5 FMS 内存保存/召回滑动面板（FMS MEMORY SAVE/RECALL Sliding Panel）</h4>
+    <h4>2.2.4.1 FMS 内存保存/召回滑动面板（FMS MEMORY SAVE/RECALL Sliding Panel）</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_fms_memory_panel.jpg" alt="FMS 内存保存/召回滑动面板">
-      <p class="img-caption">图：FMS 内存保存/召回滑动面板</p>
+      <p class="img-caption">图 12：FMS 内存保存/召回滑动面板</p>
     </div>
     <p>此滑动面板允许教员保存当前 FMS 飞行计划或将先前保存的飞行计划加载到 FMS 内存中。包含三个选项卡：消息、密码保护、未受保护。以及 SIMSOFT CONTROLS 选项卡（特定机型专用）。</p>
     <div class="table-wrap">
@@ -517,18 +515,19 @@ graph TD
     </div>
     <p><strong>警告：</strong>导航数据库每 28 天更新一次。更新后，所有基于旧导航数据库创建的飞行计划将不再可用，必须重新创建。</p>
 
-    <h4>2.2.6 重新定位与放弃按钮</h4>
+    <h4>2.2.5 重新定位与放弃按钮</h4>
+    <p>位于<strong>机场与重新定位滑动面板底部右下角</strong>，不在参考机场选项卡主界面。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>按钮</th><th>功能</th><th>边界行为</th></tr></thead>
+        <thead><tr><th>按钮</th><th>位置</th><th>功能</th><th>边界行为</th></tr></thead>
         <tbody>
-          <tr><td>重新定位（Reposition）</td><td>执行选定的重新定位</td><td>执行时进入飞行冻结模式，直至重新定位完成</td></tr>
-          <tr><td>放弃（Discard）</td><td>取消选定的重新定位</td><td>同时关闭滑动面板</td></tr>
+          <tr><td>重新定位（Reposition）</td><td>滑动面板底部右侧</td><td>执行选定的重新定位</td><td>执行时进入飞行冻结模式，直至重新定位完成</td></tr>
+          <tr><td>放弃（Discard）</td><td>重新定位按钮左侧</td><td>取消选定的重新定位</td><td>同时关闭滑动面板</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h4>2.2.7 机场与重新定位操作流程</h4>
+    <h4>2.2.6 机场与重新定位操作流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([打开滑动面板]) --> A[选择选项卡]
@@ -537,28 +536,34 @@ flowchart LR
     A --> D[地面操作]
     A --> E[FMS快速设置]
 
-    B --> B1[更改参考/目的地机场] --> B2[选择ICAO及跑道] --> B3[确认]
-    C --> C1[选择重定位预设] --> C2[点击重新定位按钮] --> C3[飞行冻结直至完成]
-    D --> D1[选择地面操作] --> D2[执行推出/轮挡/跑道状况] --> D3[确认生效]
-    E --> E1[选择保存/召回/内存] --> E2[输入描述/密码] --> E3[确认操作]
+    B --> B1[更改参考或目的地机场] --> B2[选择ICAO及跑道] --> B3[确认]
+    C --> C1[选择重定位预设] --> C2[点击重新定位按钮] --> C3[设置飞行冻结] --> C4[执行重新定位] --> C5[解除飞行冻结]
+    D --> D1[选择地面操作] --> D2[执行推出或轮挡或跑道状况] --> D3[确认生效]
+    E --> E1[选择保存或召回或内存] --> E2[打开FMS内存面板<br>2.2.4.1] --> E3[输入描述或密码] --> E4[确认操作]
 
     B3 --> End([完成])
-    C3 --> End
+    C5 --> End
     D3 --> End
-    E3 --> End
+    E4 --> End
+
+    A -.->|点击放弃| Discard[关闭滑动面板]
+    Discard --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
+    style Discard fill:#fee2e2,stroke:#dc2626
+    style C3 fill:#fef3c7,stroke:#d97706
+    style C5 fill:#fef3c7,stroke:#d97706
     </div>
 
     <h3>2.3 时刻键盘与时刻滑动面板</h3>
     <div class="img-block">
       <img src="./images/ch1_2_5_time_keypad.jpg" alt="时刻键盘">
-      <p class="img-caption">图：时刻键盘</p>
+      <p class="img-caption">图 13：时刻键盘</p>
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_time_sliding_panel.jpg" alt="时刻滑动面板">
-      <p class="img-caption">图：时刻滑动面板</p>
+      <p class="img-caption">图 14：时刻滑动面板</p>
     </div>
     <div class="table-wrap">
       <table>
@@ -577,101 +582,127 @@ flowchart LR
     <p>触发方式：点击主界面「地面风（磁）」参数字段弹出。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_surface_wind_panel.jpg" alt="地面风滑动面板">
-      <p class="img-caption">图：地面风滑动面板</p>
+      <p class="img-caption">图 15：地面风滑动面板</p>
     </div>
     <p>此滑动面板包含两个选项卡：快速选择、风向罗盘。</p>
 
     <h4>2.4.1 快速选择选项卡</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_wind_quick_select.jpg" alt="快速选择选项卡">
-      <p class="img-caption">图：快速选择选项卡</p>
+      <p class="img-caption">图 16：快速选择选项卡</p>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>按钮</th><th>功能</th><th>数值</th></tr></thead>
+        <thead><tr><th>按钮</th><th>功能</th><th>数值</th><th>物理含义/操作效果</th></tr></thead>
         <tbody>
-          <tr><td>H10</td><td>跑道表面顶风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
-          <tr><td>H20</td><td>跑道表面顶风</td><td>20 节 / 10.29 米/秒（显示为 10）</td></tr>
-          <tr><td>H30</td><td>跑道表面顶风</td><td>30 节 / 15.43 米/秒（显示为 15）</td></tr>
-          <tr><td>T5</td><td>跑道表面顺风</td><td>5 节 / 2.57 米/秒（显示为 3）</td></tr>
-          <tr><td>T10</td><td>跑道表面顺风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
-          <tr><td>T15</td><td>跑道表面顺风</td><td>15 节 / 7.71 米/秒（显示为 8）</td></tr>
-          <tr><td>L10</td><td>跑道表面左侧风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
-          <tr><td>L20</td><td>跑道表面左侧风</td><td>20 节 / 10.28 米/秒（显示为 10）</td></tr>
-          <tr><td>L38</td><td>跑道表面左侧风</td><td>38 节 / 19.54 米/秒（显示为 20）</td></tr>
-          <tr><td>R10</td><td>跑道表面右侧风</td><td>10 节 / 5.14 米/秒（显示为 5）</td></tr>
-          <tr><td>R20</td><td>跑道表面右侧风</td><td>20 节 / 10.28 米/秒（显示为 10）</td></tr>
-          <tr><td>R38</td><td>跑道表面右侧风</td><td>38 节 / 19.54 米/秒（显示为 20）</td></tr>
+          <tr><td>H10</td><td>跑道表面顶风<br>Headwind</td><td>10 节 / 5.14 米/秒（显示为 5）</td><td>风从跑道入口方向迎面吹来，增加飞机相对气流速度；缩短起飞与着陆滑跑距离，提高爬升率。整个风廓线沿顶风方向偏移</td></tr>
+          <tr><td>H20</td><td>跑道表面顶风<br>Headwind</td><td>20 节 / 10.29 米/秒（显示为 10）</td><td>同 H10，顶风强度加倍，起飞/着陆滑跑距离进一步缩短，爬升率显著提高</td></tr>
+          <tr><td>H30</td><td>跑道表面顶风<br>Headwind</td><td>30 节 / 15.43 米/秒（显示为 15）</td><td>同 H10，顶风强度三倍，起飞/着陆滑跑距离大幅缩短，爬升率最高</td></tr>
+          <tr><td>T5</td><td>跑道表面顺风<br>Tailwind</td><td>5 节 / 2.57 米/秒（显示为 3）</td><td>风从飞机后方吹来，减少飞机相对气流速度；增加起飞与着陆滑跑距离，降低爬升率。整个风廓线沿顺风方向偏移</td></tr>
+          <tr><td>T10</td><td>跑道表面顺风<br>Tailwind</td><td>10 节 / 5.14 米/秒（显示为 5）</td><td>同 T5，顺风强度加倍，起飞/着陆滑跑距离进一步增加，爬升率显著降低</td></tr>
+          <tr><td>T15</td><td>跑道表面顺风<br>Tailwind</td><td>15 节 / 7.71 米/秒（显示为 8）</td><td>同 T5，顺风强度三倍，起飞/着陆滑跑距离大幅增加，爬升率最低</td></tr>
+          <tr><td>L10</td><td>跑道表面左侧风<br>Left Crosswind</td><td>10 节 / 5.14 米/秒（显示为 5）</td><td>风从跑道左侧吹来（相对于飞机面向跑道方向）；飞机需向右偏航或压右坡补偿，产生向右的侧滑力矩与偏航力矩。整个风廓线沿左侧风方向偏移</td></tr>
+          <tr><td>L20</td><td>跑道表面左侧风<br>Left Crosswind</td><td>20 节 / 10.28 米/秒（显示为 10）</td><td>同 L10，左侧风强度加倍，侧滑与偏航力矩显著增大，飞行员需更大的修正输入</td></tr>
+          <tr><td>L38</td><td>跑道表面左侧风<br>Left Crosswind</td><td>38 节 / 19.54 米/秒（显示为 20）</td><td>同 L10，左侧风强度近四倍，产生极强的侧滑与偏航力矩，接近或超过机型侧风运行极限</td></tr>
+          <tr><td>R10</td><td>跑道表面右侧风<br>Right Crosswind</td><td>10 节 / 5.14 米/秒（显示为 5）</td><td>风从跑道右侧吹来（相对于飞机面向跑道方向）；飞机需向左偏航或压左坡补偿，产生向左的侧滑力矩与偏航力矩。整个风廓线沿右侧风方向偏移</td></tr>
+          <tr><td>R20</td><td>跑道表面右侧风<br>Right Crosswind</td><td>20 节 / 10.28 米/秒（显示为 10）</td><td>同 R10，右侧风强度加倍，侧滑与偏航力矩显著增大，飞行员需更大的修正输入</td></tr>
+          <tr><td>R38</td><td>跑道表面右侧风<br>Right Crosswind</td><td>38 节 / 19.54 米/秒（显示为 20）</td><td>同 R10，右侧风强度近四倍，产生极强的侧滑与偏航力矩，接近或超过机型侧风运行极限</td></tr>
         </tbody>
       </table>
     </div>
-    <p>点击后整个风廓线将根据机场风的变化进行偏移。</p>
+    <p><strong>共同效果：</strong>点击任一快速选择按钮后，<strong>整个风廓线（Wind Profile）</strong>将根据机场风的变化进行偏移。即不仅改变地面风，所有高度层上的风矢量都会按预设方向与强度同步调整。</p>
 
     <h4>2.4.2 风向罗盘选项卡</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_wind_compass.jpg" alt="风向罗盘选项卡">
-      <p class="img-caption">图：风向罗盘选项卡</p>
+      <p class="img-caption">图 17：风向罗盘选项卡（WIND COMPASS）— 仅含风向罗盘指示器、跑道风分量与 Runway up 复选框</p>
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>风向罗盘指示器</td><td>由跑道和矢量组成，矢量长度表示风速，方向表示风向。具有交互性，可触摸矢量箭头并在罗盘上移动以快速调整风向</td></tr>
-          <tr><td>跑道风分量</td><td>只读文本字段，显示风罗盘上的新跑道风分量（顺/逆风或侧风）；值为零时空白</td></tr>
-          <tr><td>跑道朝上（Runway Up）</td><td>复选框，确保跑道始终在屏幕上朝上显示</td></tr>
-          <tr><td>FAA 逆偏阵风</td><td>复选框，左侧侧风时启用逆偏（逆时针）阵风；无侧风时禁用</td></tr>
-          <tr><td>FAA 顺偏阵风</td><td>复选框，右侧侧风时启用顺偏（顺时针）阵风；无侧风时禁用</td></tr>
-          <tr><td>参考机场</td><td>只读字段，显示参考机场 ICAO 代码和活动跑道编号</td></tr>
-          <tr><td>风（Wind）</td><td>输入文本字段，显示当前风向风速。点击显示键盘输入机场磁风向和风速。风向范围 1°~360°，风速最小值 = 0，最大值 = 动态</td></tr>
-          <tr><td>阵风至（Gust To）</td><td>输入文本字段，显示当前风阵风值。点击显示阵风速度键盘输入绝对阵风值。若阵风值等于地面风值，显示「无阵风」。地面风为静风时，绝对阵风重置且「阵风至」按钮禁用</td></tr>
-          <tr><td>FAA 阵风（FAA Gust）</td><td>复选框，启用 FAA 阵风功能（左侧逆偏、右侧顺偏）；无侧风时禁用</td></tr>
-          <tr><td>静地面风（Calm Surface Wind）</td><td>操作按钮，点击消除地面风（风速 0 节、风向 0°、阵风 0 节）</td></tr>
-          <tr><td>静所有风（Calm All Wind）</td><td>点击重置风廓线，将所有高度上的风重置为 0 节</td></tr>
-          <tr><td>激活（Activate）</td><td>点击将新的风选择设置为当前地面风</td></tr>
-          <tr><td>取消（Cancel）</td><td>点击取消风向选择</td></tr>
+          <tr><td>风向罗盘指示器<br>Wind Compass Indicator</td><td>由跑道和矢量组成，矢量长度表示风速，方向表示风向。具有交互性，可触摸矢量箭头并在罗盘上移动以快速调整风向</td></tr>
+          <tr><td>跑道风分量<br>Runway Wind Components</td><td>只读文本字段，显示风罗盘上的新跑道风分量（顺/逆风 H 或侧风 R）；值为零时空白</td></tr>
+          <tr><td>跑道朝上<br>Runway Up</td><td>复选框，确保跑道始终在屏幕上朝上显示</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h4>2.4.3 地面风操作流程</h4>
+    <h4>2.4.3 面板公共控件（Panel Common Controls）</h4>
+    <p>以下控件位于地面风滑动面板的<strong>顶部与底部公共区域</strong>，不属于任一选项卡内部，在切换快速选择/风向罗盘选项卡时始终可见。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>位置</th><th>功能说明</th><th>边界行为</th></tr></thead>
+        <tbody>
+          <tr><td>参考机场<br>Reference Airport</td><td>面板顶部左侧</td><td>只读字段，显示参考机场 ICAO 代码和活动跑道编号</td><td>—</td></tr>
+          <tr><td>风<br>Wind</td><td>面板顶部</td><td>输入文本字段，显示当前风向风速。点击显示键盘输入机场磁风向和风速</td><td>风向范围 1°~360°，风速最小值 = 0，最大值 = 动态</td></tr>
+          <tr><td>阵风至<br>Gust To</td><td>面板顶部（Wind 右侧）</td><td>输入文本字段，显示当前风阵风值。点击显示阵风速度键盘输入绝对阵风值</td><td>若阵风值等于地面风值，显示「无阵风」；地面风为静风时，该字段禁用</td></tr>
+          <tr><td>FAA 阵风<br>FAA Gust</td><td>面板顶部右侧</td><td>复选框，启用 FAA 阵风功能。左侧侧风时启用逆偏（逆时针）阵风，右侧侧风时启用顺偏（顺时针）阵风</td><td>无侧风时禁用</td></tr>
+          <tr><td>静地面风<br>Calm Surface Wind</td><td>面板顶部右侧</td><td>操作按钮，点击消除地面风（风速 0 节、风向 0°、阵风 0 节）</td><td>—</td></tr>
+          <tr><td>静所有风<br>Calm All Wind</td><td>面板顶部右侧</td><td>操作按钮，点击重置风廓线，将所有高度上的风重置为 0 节</td><td>—</td></tr>
+          <tr><td>激活<br>Activate</td><td>面板底部右侧</td><td>点击将新的风选择设置为当前地面风</td><td>—</td></tr>
+          <tr><td>取消<br>Cancel</td><td>面板底部右侧（Activate 左侧）</td><td>点击取消风向选择并关闭滑动面板</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.4.4 地面风操作流程</h4>
     <div class="mermaid">
 flowchart LR
-    Start([打开地面风面板]) --> A[选择快速选择或风向罗盘]
+    Start([打开地面风面板]) --> A[选择风参数设定方式]
     A --> B[快速选择预设]
-    A --> C[风向罗盘交互]
-    C --> C1[拖拽矢量调整风向] --> C2[输入风速/阵风]
-    B --> D[确认风参数]
-    C2 --> D
-    D --> E[点击激活]
-    E --> F{检查侧风}
-    F -->|有侧风| G[可选启用FAA阵风]
-    F -->|无侧风| H[FAA阵风禁用]
-    G --> End([完成])
-    H --> End
+    A --> C[风向罗盘拖拽矢量]
+    A --> D[键盘输入风向风速]
+
+    B --> E[风参数设定完成]
+    C --> E
+    D --> E
+
+    E --> F[可选启用FAA阵风]
+    E --> G[可选输入阵风值]
+    E --> H[可选点击静地面风或静所有风]
+
+    F --> I[点击激活]
+    G --> I
+    H --> I
+    I --> J[应用为当前地面风] --> End([完成])
+
+    E -.->|点击取消| Discard[放弃修改并关闭面板]
+    F -.->|点击取消| Discard
+    G -.->|点击取消| Discard
+    H -.->|点击取消| Discard
+    Discard --> End
+
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
+    style Discard fill:#fee2e2,stroke:#dc2626
+    style F fill:#fef3c7,stroke:#d97706
+    style G fill:#fef3c7,stroke:#d97706
+    style H fill:#fef3c7,stroke:#d97706
     </div>
 
     <h3>2.5 能见度键盘与能见度/RVR滑动面板</h3>
+    <p>触发方式：点击主界面「能见度」参数字段弹出能见度键盘；点击主界面「RVR」参数字段弹出能见度/RVR 滑动面板。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_visibility_keypad.jpg" alt="能见度键盘">
-      <p class="img-caption">图：能见度键盘</p>
+      <p class="img-caption">图 18：能见度键盘 — 数字键盘 + 滑块 + 绿勾确认/红叉取消</p>
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_visibility_rvr_panel.jpg" alt="能见度/RVR滑动面板">
-      <p class="img-caption">图：能见度/RVR滑动面板</p>
+      <p class="img-caption">图 19：能见度/RVR滑动面板 — 顶部为 Visibility 输入字段，中部为 FOG 雾区（None/Patchy/Solid 互斥单选），底部为 RVR 与 Fog Top 输入字段</p>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <thead><tr><th>控件</th><th>位置/交互方式</th><th>功能说明</th><th>物理含义/操作场景</th></tr></thead>
         <tbody>
-          <tr><td>能见度键盘</td><td>显示当前云下能见度。使用键盘或滑块更改，绿勾确认，红叉取消</td></tr>
-          <tr><td>能见度（Visibility）</td><td>输入文本字段，显示当前云层下方能见度。点击显示能见度键盘</td></tr>
-          <tr><td>雾选项卡</td><td>包含互斥雾单选按钮：无 / 零星雾 / 浓雾</td></tr>
-          <tr><td>零星雾</td><td>激活时设置默认最小/最大 RVR 值</td></tr>
-          <tr><td>RVR 最小值/最大值</td><td>输入文本字段，仅在零星雾下可用。RVR 最小值：最小值 = 0，最大值 = RVR 最大值。RVR 最大值：最小值 = RVR 最小值，最大值 = 3,045 米 / 9,990 英尺</td></tr>
-          <tr><td>RVR</td><td>输入文本字段。RVR 仅适用于雾层内部，能见度是雾层顶部上方的普遍能见度。对于 TROPOS 视觉系统，仅在零星雾未激活时可用。最小值 = 0，最大值 = 3,045 米 / 9,990 英尺</td></tr>
-          <tr><td>雾顶（Fog Top）</td><td>输入文本字段，以几何英尺输入高于地面的雾顶值（动态最小值/最大值）</td></tr>
+          <tr><td>能见度键盘<br>Visibility Keypad</td><td>点击 Visibility 字段弹出</td><td>数字键盘（0-9、小数点、+/-、00、000、0000）+ 右侧垂直滑块。绿勾确认，红叉取消</td><td><strong>物理含义</strong>：决定飞行员在进近/起飞过程中识别跑道、地面标志或前方障碍物的最大水平距离，是 VFR/IFR 运行的核心环境参数。数值越低，建立目视参考（Visual Reference）越困难，仪表进近最低标准（DA/DH/MDA）越高</td></tr>
+          <tr><td>能见度<br>Visibility</td><td>滑动面板顶部左侧</td><td>输入文本字段，显示当前云层下方的普遍能见度（如 250.00 sm）。点击弹出能见度键盘</td><td><strong>物理含义</strong>：指雾层<strong>顶部上方</strong>的普遍能见度，不受雾层内部 RVR 限制。飞机爬升到雾顶以上后，能见度即恢复为此值。在 METAR/SPECI 报文中对应 prevailing visibility</td></tr>
+          <tr><td>无雾<br>None</td><td>FOG 区域第一行</td><td>互斥单选按钮。点击移除所有雾效，RVR 字段禁用，能见度恢复为纯粹的大气透明度</td><td><strong>操作场景</strong>：CAVOK 或良好天气条件下使用。移除雾层后，飞行员在任意高度均可获得 Visibility 设定的视距，不受跑道方向限制</td></tr>
+          <tr><td>零星雾<br>Patchy</td><td>FOG 区域第二行</td><td>互斥单选按钮。激活后雾层分布不均匀，能见度在 RVR 最小/最大范围内随机波动</td><td><strong>物理含义</strong>：模拟真实机场中常见的局部雾区（patchy fog）。飞行员在进近过程中会经历能见度忽好忽坏的变化，某些区段可能短暂建立目视参考，下一秒又丢失。RVR MIN/MAX 字段随之启用</td></tr>
+          <tr><td>浓雾<br>Solid</td><td>FOG 区域第三行</td><td>互斥单选按钮。激活后形成连续均匀的浓雾层，能见度稳定限制在 RVR 设定值以内</td><td><strong>物理含义</strong>：模拟大范围均匀的辐射雾或平流雾。整个跑道范围内的能见度基本一致，飞行员一旦进入雾层，RVR 保持恒定，直至穿越雾顶或接地。RVR 输入字段随之启用</td></tr>
+          <tr><td>RVR 最小值/最大值<br>RVR MIN/MAX</td><td>Patchy 选项右侧</td><td>输入文本字段，以米或英尺为单位。RVR MIN：0 ~ RVR MAX；RVR MAX：RVR MIN ~ 3,045 米 / 9,990 英尺</td><td><strong>物理含义</strong>：RVR（Runway Visual Range，跑道视程）是沿跑道方向飞行员能够看清跑道标志、中线灯或进近灯的最大距离，是 CAT I/II/III 仪表进近的核心决断参数。Patchy 模式下 RVR 在 MIN~MAX 间随机波动，直接影响飞行员在决断高度（DA/DH）是否能看到跑道入口</td></tr>
+          <tr><td>RVR</td><td>Solid 选项右侧</td><td>输入文本字段，以米或英尺为单位设定固定跑道视程。范围：0 ~ 3,045 米 / 0 ~ 9,990 英尺</td><td><strong>物理含义</strong>：RVR 仅适用于<strong>雾层内部</strong>，表示飞行员在雾中沿跑道方向能看清跑道标志的距离；而 Visibility 是雾层顶部上方的普遍能见度，两者处于不同高度层。对于 TROPOS 视觉系统，仅在零星雾未激活时可用。RVR ≤ 550 米对应 CAT I 以下标准，RVR ≤ 200 米对应 CAT II</td></tr>
+          <tr><td>雾顶<br>Fog Top</td><td>Solid 选项最右侧</td><td>输入文本字段，以几何英尺为单位输入高于地面的雾层顶部高度（动态最小值/最大值）</td><td><strong>物理含义</strong>：决定雾层的垂直厚度。飞机高度低于雾顶时处于雾中（能见度受 RVR 限制）；爬升到雾顶以上后进入清晰空气（能见度恢复为 Visibility 值）。雾顶越低，飞行员需要在更低高度才能建立目视参考，复飞决策窗口越窄</td></tr>
         </tbody>
       </table>
     </div>
@@ -680,17 +711,17 @@ flowchart LR
     <p>触发方式：点击主界面「降水」参数字段弹出。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_precipitation_panel.jpg" alt="降水滑动面板">
-      <p class="img-caption">图：降水滑动面板</p>
+      <p class="img-caption">图 20：降水滑动面板</p>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>按钮</th><th>功能</th><th>边界行为/禁用条件</th></tr></thead>
+        <thead><tr><th>按钮</th><th>功能</th><th>物理含义/飞行影响</th><th>边界行为/禁用条件</th></tr></thead>
         <tbody>
-          <tr><td>小雨（Light Rain）</td><td>降雨量 33%，能见度设为 15 海里（若云下能见度未更严格限制）。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
-          <tr><td>中雨（Medium Rain）</td><td>降雨量 66%，能见度设为 5 海里。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
-          <tr><td>大雨（Heavy Rain）</td><td>降雨量 100%，能见度设为 1 海里。未定义云层时自动插入云层。再次点击取消</td><td>温度低于 -5°C 时禁用</td></tr>
-          <tr><td>雪（Snow）</td><td>设置预设降雪量。再次点击取消</td><td>温度高于 5°C 时禁用</td></tr>
-          <tr><td>冰雹（Hail）</td><td>冰雹量 33%（轻雹）。未定义云层时自动插入云层。再次点击移除</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>小雨（Light Rain）</td><td>降雨量 33%，能见度设为 15 海里（若云下能见度未更严格限制）。未定义云层时自动插入云层。再次点击取消</td><td>轻微降低轮胎与跑道间摩擦系数（约降低 10~15%），增加着陆滑跑距离。雨刷低速即可保持风挡清晰</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>中雨（Medium Rain）</td><td>降雨量 66%，能见度设为 5 海里。未定义云层时自动插入云层。再次点击取消</td><td>显著降低摩擦系数（约降低 25~35%），着陆滑跑距离明显增加。存在轻度滑水（Hydroplaning）风险，尤其是高速阶段。发动机进气口可能吸入雨水，高推力设置下需关注喘振裕度</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>大雨（Heavy Rain）</td><td>降雨量 100%，能见度设为 1 海里。未定义云层时自动插入云层。再次点击取消</td><td>严重降低摩擦系数（降低 40% 以上），高滑水风险显著增加，可能导致轮胎与跑道间水膜隔离，刹车效率急剧下降。大量雨水进入发动机进气口，增加喘振/熄火风险。雨刷即使高速也难以保持清晰视野</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>雪（Snow）</td><td>设置预设降雪量。再次点击取消</td><td>积雪覆盖跑道表面，摩擦系数降至 0.2~0.3（干燥跑道的 1/3 左右）。积雪可能被发动机进气口吸入，导致喘振或熄火。机翼和操纵面积雪会改变气动外形，增加失速速度</td><td>温度高于 5°C 时禁用</td></tr>
+          <tr><td>冰雹（Hail）</td><td>冰雹量 33%（轻雹）。未定义云层时自动插入云层。再次点击移除</td><td>冰雹撞击机体表面，可能造成机翼前缘、发动机进气口、风挡和雷达罩损伤。大量冰雹进入发动机可能导致压气机叶片损坏或熄火。落地时冰雹会进一步降低摩擦系数并增加跳弹风险</td><td>温度低于 -5°C 时禁用</td></tr>
         </tbody>
       </table>
     </div>
@@ -698,26 +729,36 @@ flowchart LR
     <h4>2.6.1 效果选项卡</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>按钮</th><th>功能</th><th>边界行为/禁用条件</th></tr></thead>
+        <thead><tr><th>按钮</th><th>功能</th><th>物理含义/飞行影响</th><th>边界行为/禁用条件</th></tr></thead>
         <tbody>
-          <tr><td>冬季场景（Winter Scene）</td><td>在视觉场景中显示冬季场景。再次点击移除</td><td>温度高于 20°C 或发生显著经纬度变化且视觉系统未就绪时禁用</td></tr>
-          <tr><td>吹雪（Blowing Snow）</td><td>启用吹雪效果。仅当冬季场景激活且风速非零时出现，激活时能见度降低</td><td>冬季场景未激活时禁用</td></tr>
-          <tr><td>吹沙（Blowing Sand）</td><td>激活吹沙效果。再次点击停用。地面风速为零时无效果</td><td>温度低于 -5°C 时禁用</td></tr>
-          <tr><td>闪电与雷声（Lightning & Thunder）</td><td>激活模拟中的闪电与雷声效果。再次点击关闭</td><td>—</td></tr>
+          <tr><td>冬季场景（Winter Scene）</td><td>在视觉场景中显示冬季场景。再次点击移除</td><td>改变机场地面纹理为积雪覆盖，跑道和滑行道表面呈现白色。不仅影响视觉效果，更暗示教员即将进行结冰/低摩擦系数科目的训练设置</td><td>温度高于 20°C 或发生显著经纬度变化且视觉系统未就绪时禁用</td></tr>
+          <tr><td>吹雪（Blowing Snow）</td><td>启用吹雪效果。仅当冬季场景激活且风速非零时出现，激活时能见度降低</td><td>强风将地面积雪卷起，造成近地面能见度骤降（类似于沙尘暴）。吹雪颗粒可能堵塞发动机进气口和空速管，导致发动机性能下降和仪表误差</td><td>冬季场景未激活时禁用</td></tr>
+          <tr><td>吹沙（Blowing Sand）</td><td>激活吹沙效果。再次点击停用。地面风速为零时无效果</td><td>强风卷起沙尘，降低能见度并磨损机体表面（尤其是风挡和机翼前缘）。沙尘进入发动机进气口会侵蚀压气机叶片，降低发动机效率和寿命</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>闪电与雷声（Lightning & Thunder）</td><td>激活模拟中的闪电与雷声效果。再次点击关闭</td><td>闪电产生的强电磁脉冲可能干扰机载导航和通信设备（如 VHF、HF、GPS）。在真实飞行中，雷暴区域伴随强烈湍流、结冰和微下击暴流，是教员训练危险天气规避的核心场景</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>2.7 云层滑动面板（CLOUDS Sliding Panel）</h3>
-    <p>触发方式：点击主界面「云层」参数字段弹出。</p>
+    <p>触发方式：点击主界面「云层」参数字段弹出。参考机场代码和跑道号显示在面板顶部。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <thead><tr><th>控件</th><th>功能说明</th><th>物理含义/飞行影响</th></tr></thead>
         <tbody>
-          <tr><td>功能定义</td><td>修改参考机场区域的云层和能见度参数。控件与当前条件选项卡中的云层滑动面板相同（参见 1.2.3 节 2.2）</td></tr>
-          <tr><td>参考机场标识</td><td>参考机场代码和跑道号显示在云层滑动面板顶部</td></tr>
-          <tr><td>互斥关系</td><td>高云/中云/低云类型选择各自为下拉按钮；雾区无雾/零星雾/浓雾互斥</td></tr>
-          <tr><td>天气预设</td><td>CAVOK、1000/5km、800/2km、CAT I~IIIC、0/0、最小起飞 RVR 等</td></tr>
+          <tr><td colspan="3" style="background:#f8fafc;font-weight:600">高云（High Clouds）— 通常位于 20,000 ft 以上</td></tr>
+          <tr><td>卷积云/卷云/卷层云<br>Cc/Ci/Cs</td><td>下拉选择高云类型</td><td>对飞行影响较小，通常不产生结冰或湍流。但卷积云（Cc）密集出现可能预示天气系统（锋面或低压）正在接近，提示教员后续可能需要设置降水或低云</td></tr>
+          <tr><td colspan="3" style="background:#f8fafc;font-weight:600">中云（Medium Clouds）— 通常位于 6,500~20,000 ft</td></tr>
+          <tr><td>高积云/高层云<br>Ac/As</td><td>下拉选择中云类型；通过 Top ASL / Base ASL 输入字段设定云层厚度上下限（英尺）</td><td>高层云（As）可能产生轻度结冰和颠簸，长时间在云中飞行可能导致机翼积冰。高积云（Ac）通常由冰晶组成，轻度穿越时结冰风险较低。厚度取决于覆盖类型，教员需关注飞机巡航高度是否位于此层内</td></tr>
+          <tr><td colspan="3" style="background:#f8fafc;font-weight:600">低云（Low Clouds）— 通常位于地面~6,500 ft</td></tr>
+          <tr><td>层云/层积云/积雨云<br>St/Sc/Cb</td><td>下拉选择低云类型；通过 Top ASL / Base AGL 输入字段设定云层厚度上下限（英尺）</td><td><strong>层云（St）</strong>：均匀的灰色云层，导致低能见度和仪表进近。高度低时直接影响复飞决策。<br><strong>层积云（Sc）</strong>：块状低云，内部通常有轻度颠簸，结冰风险中等。<br><strong>积雨云（Cb）</strong>：<span style="color:#dc2626">极端危险</span>，产生严重结冰、强烈湍流、闪电和微下击暴流。民航飞行严禁进入积雨云，是教员训练危险天气规避的核心场景</td></tr>
+          <tr><td colspan="3" style="background:#f8fafc;font-weight:600">雾区（Fog）— 地面附近的低云</td></tr>
+          <tr><td>无雾<br>None</td><td>单选按钮，移除雾效</td><td>跑道视程恢复为纯能见度限制，无额外雾层遮挡</td></tr>
+          <tr><td>零星雾<br>Patchy</td><td>单选按钮，RVR 在 MIN~MAX 间随机波动</td><td>模拟真实机场中不均匀雾区，飞行员在进近过程中可能忽而看到跑道、忽而丢失目视参考，训练复飞决策的及时性</td></tr>
+          <tr><td>浓雾<br>Solid</td><td>单选按钮，能见度稳定限制在 RVR 设定值</td><td>形成连续均匀雾层，模拟辐射雾或平流雾。整个跑道范围能见度一致，飞行员必须在决断高度前建立稳定目视参考，否则执行复飞</td></tr>
+          <tr><td colspan="3" style="background:#f8fafc;font-weight:600">天气预设（Weather Presets）</td></tr>
+          <tr><td>CAVOK</td><td>无云底低于 5,000 ft；无积雨云；能见度 ≥ 6 sm/10 km；无降水</td><td>良好天气条件，适合目视飞行规则（VFR）运行。是训练正常起降和目视机动的基础环境</td></tr>
+          <tr><td>CAT I / II / IIIA / IIIB / IIIC</td><td>按对应仪表着陆等级自动设置云底高和能见度</td><td>CAT I：DH ≥ 200 ft，RVR ≥ 550 m；CAT II：DH 100~200 ft，RVR 300~550 m；CAT IIIA：DH < 100 ft 或无，RVR ≥ 200 m；CAT IIIB：无 DH，RVR 50~200 m；CAT IIIC：无 DH，无 RVR 限制。用于训练自动着陆系统和机组在低能见度条件下的操作程序</td></tr>
+          <tr><td>0/0</td><td>零能见度/零云底高</td><td>极端低能见度条件，仅适用于 CAT IIIC 自动着陆训练。飞行员完全依赖仪表，外界无任何目视参考</td></tr>
         </tbody>
       </table>
     </div>
@@ -725,15 +766,15 @@ flowchart LR
     <h3>2.8 参考温度/ISA偏差/QNH键盘</h3>
     <div class="img-block">
       <img src="./images/ch1_2_5_temp_keypad.jpg" alt="参考温度键盘">
-      <p class="img-caption">图：参考温度键盘</p>
+      <p class="img-caption">图 21：参考温度键盘</p>
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_isa_keypad.jpg" alt="ISA偏差键盘">
-      <p class="img-caption">图：ISA 偏差键盘</p>
+      <p class="img-caption">图 22：ISA 偏差键盘</p>
     </div>
     <div class="img-block">
       <img src="./images/ch1_2_5_qnh_keypad.jpg" alt="QNH键盘">
-      <p class="img-caption">图：QNH 键盘</p>
+      <p class="img-caption">图 23：QNH 键盘</p>
     </div>
     <div class="table-wrap">
       <table>
@@ -751,7 +792,7 @@ flowchart LR
     <p>触发方式：点击主界面「微暴流/风切变」参数字段弹出。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_windshear_microburst_panel.jpg" alt="风切变与微暴流滑动面板">
-      <p class="img-caption">图：风切变与微暴流滑动面板</p>
+      <p class="img-caption">图 24：风切变与微暴流滑动面板</p>
     </div>
     <p>此滑动面板允许教员在模拟中引入多种起飞和着陆阶段的风切变及微暴流场景。包含三个选项卡：微暴流、预测性风切变、非预测性风切变。以及弹跳着陆功能。</p>
 
@@ -787,7 +828,7 @@ flowchart LR
     <h4>2.9.2 预测性风切变选项卡（Predictive Windshear Tab）</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_predictive_ws_tab.jpg" alt="预测性风切变选项卡">
-      <p class="img-caption">图：预测性风切变选项卡</p>
+      <p class="img-caption">图 25：预测性风切变选项卡</p>
     </div>
     <p>起飞剖面和着陆剖面单选按钮互斥。选定的风切变剖面显示在地图上。</p>
     <div class="table-wrap">
@@ -819,7 +860,7 @@ flowchart LR
     <h4>2.9.3 非预测性风切变选项卡（Non-Predictive Windshear Tab）</h4>
     <div class="img-block">
       <img src="./images/ch1_2_5_nonpredictive_ws_tab.jpg" alt="非预测性风切变选项卡">
-      <p class="img-caption">图：非预测性风切变选项卡</p>
+      <p class="img-caption">图 26：非预测性风切变选项卡</p>
     </div>
     <p>起飞场景按最大起飞重量（MTOW）调整，着陆场景按最大着陆重量（MLW）调整。</p>
     <div class="table-wrap">
@@ -886,26 +927,26 @@ flowchart LR
     <p>触发方式：点击主界面「跑道状况」参数字段弹出。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_runway_condition_panel.jpg" alt="跑道状况滑动面板">
-      <p class="img-caption">图：跑道状况滑动面板</p>
+      <p class="img-caption">图 27：跑道状况滑动面板</p>
     </div>
     <p>允许教员通过修改跑道条件影响飞机刹车性能。包含两个选项卡：污染、粗糙度。</p>
 
     <h4>2.10.1 污染选项卡</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>按钮</th><th>功能</th><th>禁用条件</th></tr></thead>
+        <thead><tr><th>按钮</th><th>功能</th><th>物理含义/摩擦影响</th><th>禁用条件</th></tr></thead>
         <tbody>
-          <tr><td>干燥（Dry）</td><td>设置干燥跑道条件。着陆飞机在正常接地带留下的橡胶残留物会改变橡胶可见区域的摩擦系数</td><td>因跑道上有雨而强制设置为湿跑道时禁用</td></tr>
-          <tr><td>橡胶（Rubber）</td><td>设置跑道上有橡胶。仅与湿跑道结合选择时才产生摩擦效果</td><td>—</td></tr>
-          <tr><td>水 — 片状（Water – Film）</td><td>添加片状湿条件</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>水 — 湿（Water – Wet）</td><td>添加湿条件</td><td>温度低于 -5°C 时禁用</td></tr>
-          <tr><td>水 — 积水 &gt; 1/8 英寸（3 毫米）</td><td>添加 1/8 英寸积水</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>冰 — 片状（Ice – Film）</td><td>添加片状冰条件</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>冰（Ice）</td><td>添加预定义量的冰</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>雪 — 片状（Snow – Film）</td><td>添加片状雪条件（仅视觉目的）</td><td>因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>雪（Snow）</td><td>添加预定义量的雪</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>雪泥 — 1/4 英寸（6 毫米）</td><td>添加 1/4 英寸雪泥</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
-          <tr><td>雪泥 — 1/2 英寸（13 毫米）</td><td>添加 1/2 英寸雪泥</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>干燥（Dry）</td><td>设置干燥跑道条件。着陆飞机在正常接地带留下的橡胶残留物会改变橡胶可见区域的摩擦系数</td><td>摩擦系数 μ ≈ 0.7~0.8，正常刹车性能。但接地带累积的橡胶沉积会降低局部摩擦系数（尤其湿滑时），教员可叠加"橡胶"选项模拟此效应</td><td>因跑道上有雨而强制设置为湿跑道时禁用</td></tr>
+          <tr><td>橡胶（Rubber）</td><td>设置跑道上有橡胶。仅与湿跑道结合选择时才产生摩擦效果</td><td>橡胶沉积本身不降低干燥摩擦，但与水结合后形成滑腻表面，摩擦系数可降至 0.3 以下。模拟真实机场接地带因长期起降累积橡胶而导致的湿跑道性能衰减</td><td>—</td></tr>
+          <tr><td>水 — 片状（Water – Film）</td><td>添加片状湿条件</td><td>薄水膜（&lt; 3 mm）覆盖跑道，摩擦系数降至 0.4~0.5。轮胎与水膜接触产生部分滑水效应，刹车效率下降，方向控制难度增加</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>水 — 湿（Water – Wet）</td><td>添加湿条件</td><td>跑道表面均匀湿润，摩擦系数约 0.4~0.5。相当于小雨后跑道状态，轮胎与跑道间存在薄水膜但不足以形成完全滑水</td><td>温度低于 -5°C 时禁用</td></tr>
+          <tr><td>水 — 积水 &gt; 1/8 英寸（3 毫米）</td><td>添加 1/8 英寸积水</td><td>积水深度超过 3 mm 时，高速滑跑阶段极易发生<strong>动态滑水（Dynamic Hydroplaning）</strong>——轮胎与跑道间形成稳定水膜隔离，摩擦系数骤降至 0.1 以下，刹车和方向舵几乎失效。速度公式：V ≈ 9√P（P 为轮胎压力 psi）</td><td>温度低于 -5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>冰 — 片状（Ice – Film）</td><td>添加片状冰条件</td><td>极薄冰层覆盖跑道，摩擦系数降至 0.05~0.1。冰面比积水更危险，因为即使在低速下也几乎没有抓地力，飞机极易侧滑偏离跑道中线</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>冰（Ice）</td><td>添加预定义量的冰</td><td>厚积冰层，摩擦系数约 0.05~0.1。除极低摩擦外，冰层还可能导致起落架结冰卡滞、空速管堵塞。起飞前必须进行除冰（De-icing）程序</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪 — 片状（Snow – Film）</td><td>添加片状雪条件（仅视觉目的）</td><td>视觉层面模拟不均匀雪覆盖，对摩擦系数影响较小。主要用于训练飞行员识别跑道雪况和判断是否需要除雪</td><td>因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪（Snow）</td><td>添加预定义量的雪</td><td>积雪覆盖跑道，摩擦系数降至 0.2~0.3。积雪深度增加会导致滚动阻力增大、加速距离延长。深雪可能导致发动机吸入雪花或起落架堵塞</td><td>温度高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪泥 — 1/4 英寸（6 毫米）</td><td>添加 1/4 英寸雪泥</td><td>雪泥（Slush）是半融化的雪水混合物，密度大、粘性高。摩擦系数约 0.2~0.3，但更大的危险是<strong>雪泥被抛起堵塞起落架舱门和襟翼机构</strong>，导致起飞后无法收轮或收襟翼</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
+          <tr><td>雪泥 — 1/2 英寸（13 毫米）</td><td>添加 1/2 英寸雪泥</td><td>深厚雪泥层，摩擦系数进一步降低至 0.15~0.25。厚雪泥在高速滑跑时会产生显著的抛溅效应（Spray），严重影响发动机进气。多数机型运行手册限制雪泥深度不得超过 13 mm</td><td>温度低于 -5°C 或高于 5°C 时禁用；因降雨强制湿跑道时禁用</td></tr>
         </tbody>
       </table>
     </div>
@@ -913,9 +954,9 @@ flowchart LR
     <h4>2.10.2 粗糙度选项卡</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <thead><tr><th>属性</th><th>功能说明</th><th>物理含义/飞行影响</th></tr></thead>
         <tbody>
-          <tr><td>粗糙度滑块</td><td>将跑道粗糙度调整至 1 到 5 之间（1 = 光滑，5 = 粗糙）</td></tr>
+          <tr><td>粗糙度滑块<br>Roughness Slider</td><td>将跑道粗糙度调整至 1 到 5 之间（1 = 光滑，5 = 粗糙）</td><td>模拟跑道表面因长期使用、修补或损坏导致的平整度变化。<br><strong>1-2（光滑）</strong>：正常跑道状态，着陆载荷均匀分布，乘客舒适度高。<br><strong>3（中等）</strong>：轻微颠簸感，轮胎磨损增加。<br><strong>4-5（粗糙）</strong>：明显颠簸和振动，可能导致起落架结构承受额外疲劳载荷，高速度滑跑时方向稳定性下降。模拟老旧跑道或战损机场的训练场景</td></tr>
         </tbody>
       </table>
     </div>
@@ -927,26 +968,84 @@ flowchart LR
     <h3>3.1 参考机场选项卡教员核心操作流程</h3>
     <div class="mermaid">
 flowchart LR
-    Start([进入REFERENCE AIRPORT Tab]) --> A[选择机场与跑道]
-    A --> B[设置环境条件]
-    A --> C[配置重定位预设]
-    A --> D[设置风切变/微暴流]
+    Start([进入REFERENCE AIRPORT Tab]) --> A{选择操作类型}
+    A --> B[更改机场/跑道]
+    A --> C[设置环境条件]
+    A --> D[配置重定位]
+    A --> E[设置风切变/微暴流]
+    A --> F[设置跑道状况]
 
-    B --> B1[地面风] --> B2[能见度/RVR] --> B3[降水] --> B4[云层] --> B5[温度/ISA/QNH]
-    C --> C1[选择重定位预设] --> C2[点击重新定位] --> C3[飞行冻结直至完成]
-    D --> D1[选择微暴流/风切变剖面] --> D2[设置强度与位置] --> D3[激活]
+    B --> B1[点击机场/跑道字段] --> B2[打开机场与重新定位面板] --> B3[选择ICAO及跑道] --> B4[确认或执行重新定位]
+    C --> C1[地面风]
+    C --> C2[能见度/RVR]
+    C --> C3[降水]
+    C --> C4[云层]
+    C --> C5[温度/ISA/QNH]
+    C1 --> C6[环境参数设定完成]
+    C2 --> C6
+    C3 --> C6
+    C4 --> C6
+    C5 --> C6
+    F --> F1[选择污染物] --> F2[设置粗糙度] --> F3[跑道状况设定完成]
 
-    B5 --> End([训练环境就绪])
-    C3 --> End
-    D3 --> End
+    D --> D1[选择重定位预设] --> D2[点击重新定位] --> D3[设置飞行冻结] --> D4[执行重新定位] --> D5[解除飞行冻结]
+    E --> E1[选择剖面] --> E2[设置强度与位置] --> E3[激活]
+
+    B4 --> End([训练环境就绪])
+    C6 --> End
+    D5 --> End
+    E3 --> End
+    F3 --> End
+
+    A -.->|离开选项卡或点击放弃| Discard[放弃当前操作]
+    Discard --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
+    style Discard fill:#fee2e2,stroke:#dc2626
+    style D3 fill:#fef3c7,stroke:#d97706
+    style D5 fill:#fef3c7,stroke:#d97706
     </div>
 
-    <h3>3.2 关联依赖与异常边界</h3>
+    <h3>3.2 参数修改通用状态机</h3>
+    <p>参考机场选项卡中所有参数字段的修改均遵循统一的生命周期：从点击字段打开面板，到输入新值，再到确认生效或取消回退。部分参数（如天气预设）会触发联动覆盖，重新定位则涉及飞行冻结的自动管理。</p>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 空闲状态 : 进入 REFERENCE AIRPORT Tab
+    空闲状态 --> 面板打开中 : 点击参数字段
+    面板打开中 --> 空闲状态 : 点击取消/关闭/Discard
+    面板打开中 --> 值已修改 : 输入新值或选择选项
+    值已修改 --> 参数生效中 : 点击确认或Apply
+    参数生效中 --> 生效完成 : 立即生效
+    生效完成 --> [*]
+    值已修改 --> 空闲状态 : 点击取消或Discard
 
-    <h4>3.2.1 关联依赖表格</h4>
+    面板打开中 --> 联动覆盖中 : 选择天气预设
+    联动覆盖中 --> 参数生效中 : 自动覆盖并应用
+
+    面板打开中 --> 重新定位执行中 : 点击Reposition
+    重新定位执行中 --> 飞行冻结中 : 自动设置飞行冻结
+    飞行冻结中 --> 生效完成 : 重新定位完成并解除冻结
+    </div>
+
+    <h4>3.2.1 状态说明</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>状态</th><th>说明</th><th>流转条件</th></tr>
+        <tr><td><strong>空闲状态</strong></td><td>教员已打开 REFERENCE AIRPORT Tab，尚未触发任何面板</td><td>点击任意参数字段后进入面板打开中</td></tr>
+        <tr><td><strong>面板打开中</strong></td><td>滑动面板或键盘已弹出，教员可修改参数</td><td>输入新值后进入值已修改；点击取消后返回空闲状态</td></tr>
+        <tr><td><strong>值已修改</strong></td><td>教员已输入新值或选择新选项，等待确认</td><td>点击确认后进入参数生效中；点击取消后返回空闲状态</td></tr>
+        <tr><td><strong>联动覆盖中</strong></td><td>选择天气预设（CAVOK/CAT I~III等）时自动覆盖关联参数</td><td>自动覆盖云层、能见度、RVR后直接跳转参数生效中</td></tr>
+        <tr><td><strong>重新定位执行中</strong></td><td>教员点击Reposition后，系统执行飞机位置重置</td><td>自动设置飞行冻结后进入飞行冻结中</td></tr>
+        <tr><td><strong>飞行冻结中</strong></td><td>重新定位期间飞行冻结激活，模拟暂停</td><td>重新定位完成后自动解除冻结，进入生效完成</td></tr>
+        <tr><td><strong>参数生效中</strong></td><td>系统已将新参数下发至模拟器</td><td>模拟器确认后立即进入生效完成</td></tr>
+        <tr><td><strong>生效完成</strong></td><td>参数已更新，教员台显示同步刷新</td><td>终端状态，可再次触发新面板</td></tr>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖表格</h4>
     <div class="table-wrap">
       <table>
         <thead><tr><th>功能A</th><th>功能B</th><th>依赖关系</th></tr></thead>
@@ -966,11 +1065,16 @@ flowchart LR
           <tr><td>飞机推出</td><td>轮挡</td><td>飞机移动时推出按钮和轮挡按钮均被禁用</td></tr>
           <tr><td>轮挡</td><td>千斤顶</td><td>「飞机在轮挡上」与「飞机在千斤顶上」互斥</td></tr>
           <tr><td>FMS 飞行计划</td><td>导航数据库</td><td>导航数据库每 28 天更新，旧数据库创建的飞行计划不可用</td></tr>
+          <tr><td>零星雾</td><td>RVR MIN/MAX</td><td>零星雾激活时 RVR MIN/MAX 输入字段才可用；切换为浓雾或无时，字段禁用</td></tr>
+          <tr><td>天气预设</td><td>云层/能见度</td><td>选择天气预设（CAVOK/CAT I~III 等）自动覆盖当前云层类型、云底高、能见度和 RVR 设置</td></tr>
+          <tr><td>静地面风/静所有风</td><td>风廓线</td><td>点击后整个风廓线重置为 0 节，所有高度层风速归零，阵风值同步清零</td></tr>
+          <tr><td>跑道粗糙度</td><td>刹车性能</td><td>粗糙度值（1~5）直接影响模拟器摩擦系数模型，粗糙度越高刹车效率越低，着陆滑跑距离越长</td></tr>
+          <tr><td>参考位置更改</td><td>机场重新定位</td><td>更改参考机场后，机场重新定位选项卡的跑道列表、跑道照明控件、风切变 X-Y 坐标基准自动更新</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h4>3.2.2 异常边界表格</h4>
+    <h4>3.3.2 异常边界表格</h4>
     <div class="table-wrap">
       <table>
         <thead><tr><th>功能</th><th>异常场景</th><th>系统行为</th></tr></thead>
@@ -982,15 +1086,21 @@ flowchart LR
           <tr><td>冬季场景</td><td>温度高于 20°C 或显著经纬度变化且视觉系统未就绪</td><td>冬季场景按钮禁用</td></tr>
           <tr><td>跑道照明</td><td>所选跑道灯光强度不一致</td><td>显示 "*" 标记</td></tr>
           <tr><td>微暴流/风切变</td><td>已激活剖面</td><td>激活按钮禁用，仅清除按钮可用</td></tr>
+          <tr><td>微暴流/风切变</td><td>未激活剖面</td><td>清除按钮禁用，仅激活按钮可用</td></tr>
           <tr><td>弹跳着陆</td><td>离地高度超过 50 英尺 / 地速低于 10 节 / 正在重新定位</td><td>效果自动关闭，按钮恢复常态</td></tr>
           <tr><td>能见度/RVR</td><td>TROPOS 视觉系统 + 零星雾激活</td><td>RVR 输入字段不可用</td></tr>
+          <tr><td>地面风</td><td>无侧风存在</td><td>FAA 阵风复选框禁用</td></tr>
+          <tr><td>地面风</td><td>静风条件</td><td>阵风至输入字段禁用，绝对阵风值重置为 0</td></tr>
+          <tr><td>跑道状况</td><td>温度高于 5°C</td><td>冰、雪、雪泥类污染物按钮禁用</td></tr>
+          <tr><td>跑道状况</td><td>温度低于 -5°C</td><td>水类污染物按钮禁用</td></tr>
+          <tr><td>跑道状况</td><td>因降雨强制湿跑道</td><td>干燥、片状水、片状冰、片状雪、雪、雪泥按钮禁用</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3>3.3 数据流与开发流程推导</h3>
+    <h3>3.4 数据流与开发流程推导</h3>
 
-    <h4>3.3.1 数据流</h4>
+    <h4>3.4.1 数据流</h4>
     <pre><code>教员操作 → UI 事件 → 状态变更 → 模拟器指令 → 反馈呈现
 
 【参考机场变更】
@@ -1013,13 +1123,30 @@ flowchart LR
       → 模拟器执行位置/姿态/速度瞬移
         → 完成后 FLIGHT_FREEZE = false
 
-【风切变/微暴流激活】
-教员选择剖面 + 强度 + 位置 → 点击「激活」
-  → 更新 WINDSHEAR_PROFILE 状态
-    → 向大气模型注入风切变数据（核心位置、半径、风速变化曲线）
-      → 飞机飞越核心区域时动态计算局部风速矢量</code></pre>
+【跑道状况变更】
+教员选择污染物（冰/雪/积水等）+ 粗糙度
+  → 校验温度范围与降雨状态（互斥条件）
+    → 更新 RUNWAY_CONDITION 状态
+      → 向模拟器发送 RUNWAY_FRICTION_UPDATE 指令
+        → 模拟器调整轮胎-跑道摩擦系数模型
+          → 影响刹车距离计算、侧滑风险判定、ATIS 消息生成
 
-    <h4>3.3.2 API 接口契约建议</h4>
+【FMS 飞行计划保存/召回】
+教员输入描述/密码 → 校验密码长度（≤10 字符）
+  → 向 FMS 发送 FLIGHTPLAN_SAVE/RECALL 指令
+    → FMS 校验导航数据库版本兼容性
+      → 保存/加载飞行计划至 FMS 内部存储器
+        → 返回 save_status / load_status
+          → 更新 FMS 内存列表显示
+
+【地面操作执行】
+教员选择推出/轮挡/引导员/跑道状况
+  → 校验飞机状态（是否移动/离地/已放置轮挡）
+    → 发送 GROUND_OPS 指令
+      → 模拟器执行相应动画与状态变更
+        → 更新飞机位置/舱门状态/地面服务设备状态</code></pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
     <div class="table-wrap">
       <table>
         <thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
@@ -1057,6 +1184,20 @@ flowchart LR
           <tr><td>边界条件</td><td>跑道灯光强度不一致</td><td>显示 "*" 标记</td></tr>
           <tr><td>联动测试</td><td>选择大雨后检查云层自动插入</td><td>未定义云层时视觉场景自动插入云层，能见度限制为 1 NM</td></tr>
           <tr><td>联动测试</td><td>更改参考机场后检查跑道照明</td><td>跑道列表自动更新为新机场的可用跑道</td></tr>
+          <tr><td>正向路径</td><td>选择 CAT I 天气预设</td><td>云底高、能见度、RVR 自动设置为 CAT I 标准值（DH 200 ft / RVR 550 m）</td></tr>
+          <tr><td>正向路径</td><td>执行地面推出操作</td><td>飞机沿设定方向推出，动画同步，轮挡自动移除</td></tr>
+          <tr><td>正向路径</td><td>设置跑道状况为冰 + 粗糙度 5</td><td>摩擦系数降至 0.05~0.1，着陆滑跑距离显著增加，方向稳定性下降</td></tr>
+          <tr><td>异常路径</td><td>无侧风时尝试启用 FAA 阵风</td><td>FAA 阵风复选框禁用，无法勾选</td></tr>
+          <tr><td>异常路径</td><td>静地面风后尝试输入阵风值</td><td>阵风至输入字段禁用，绝对阵风值显示为 0</td></tr>
+          <tr><td>异常路径</td><td>已激活微暴流时点击清除</td><td>清除按钮可用，点击后剖面停用，地图 overlay 移除</td></tr>
+          <tr><td>异常路径</td><td>未激活微暴流时点击清除</td><td>清除按钮禁用，界面状态正确反映</td></tr>
+          <tr><td>异常路径</td><td>温度 10°C 时点击冰/雪/雪泥</td><td>对应污染物按钮禁用</td></tr>
+          <tr><td>异常路径</td><td>温度 -10°C 时点击水类污染物</td><td>水/湿/积水按钮禁用</td></tr>
+          <tr><td>边界条件</td><td>零星雾模式下 RVR 随机波动</td><td>RVR 读数在 MIN~MAX 范围内随机变化，非固定值</td></tr>
+          <tr><td>边界条件</td><td>选择大雨后检查温度限制</td><td>温度低于 -5°C 时大雨按钮禁用，高于时正常可用</td></tr>
+          <tr><td>联动测试</td><td>更改参考机场后检查跑道照明列表</td><td>跑道照明下拉列表自动更新为新机场的可用跑道及默认灯光配置</td></tr>
+          <tr><td>联动测试</td><td>选择冬季场景后启用吹雪</td><td>吹雪按钮从禁用变为可用，点击后视景出现吹雪效果且能见度降低</td></tr>
+          <tr><td>联动测试</td><td>静所有风后检查地面风和飞机风</td><td>地面风、飞机风、所有高度层风同步归零，阵风值清零</td></tr>
           <tr><td>性能测试</td><td>快速连续切换重定位预设</td><td>系统不卡顿，最终状态与最后一次选择一致</td></tr>
         </tbody>
       </table>

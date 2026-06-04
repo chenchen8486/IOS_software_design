@@ -245,10 +245,6 @@ graph TD
     B2a -.->|选中显示| C
     B2b -.->|选中显示| C
 
-    D5 -.->|点击执行| B1b
-    D5 -.->|点击执行| B1c
-    D6 -.->|点击结束| A
-
     style A fill:#2563eb,stroke:#1e40af,stroke-width:3px,color:#fff
     style LeftPanel fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style RightPanel fill:#f0fdf4,stroke:#059669,stroke-width:2px
@@ -518,47 +514,40 @@ flowchart LR
 flowchart LR
     Start([进入 LESSON PLAN Tab])
 
-    subgraph 入口区 [主界面入口]
-        LoadBtn[课程自动加载]
-        PhaseBtn[训练阶段大纲]
-        StepBtn[课程步骤列表]
-        DetailBtn[步骤详情区]
-        AutoBtn[Autorun按钮]
-        StepByBtn[Step-by-Step按钮]
-        ExecBtn[Execute按钮]
-        EndBtn[End Lesson按钮]
-    end
-
-    Start --> 入口区
-
-    subgraph PHASE_FLOW [训练阶段浏览流程]
+    subgraph PHASE_FLOW [训练阶段浏览 — 2.1]
         direction TB
-        P1[加载课程]
-        P2[浏览训练阶段大纲]
-        P3[选择训练阶段]
-        P4[展开查看阶段内步骤]
+        P1[加载课程] --> P2[浏览训练阶段大纲] --> P3[选择训练阶段] --> P4[展开查看阶段内步骤]
     end
 
-    subgraph STEP_FLOW [课程步骤执行流程]
+    Start --> PHASE_FLOW
+
+    subgraph STEP_FLOW [课程步骤执行 — 2.2]
         direction TB
         S1[识别步骤类型]
-        S1 -->|NOTE| S_NOTE[只读查看]
-        S1 -->|SIM| S_SIM[执行模拟条件]
-        S1 -->|MALF| S_MALF[触发故障]
-        S1 -->|Freeplay| S_FREE[触发预编程操作]
-        S1 -->|Nested| S_NEST[跳转子课程]
+        S1 -->|NOTE| S_NOTE[NOTE 只读查看]
+        S1 -->|SIM| S_SIM[SIM 执行模拟条件]
+        S1 -->|MALF| S_MALF[MALF 触发故障]
+        S1 -->|Freeplay| S_FREE[Freeplay 触发预编程操作]
+        S1 -->|Nested| S_NEST[Nested 跳转子课程]
     end
 
-    subgraph DETAIL_FLOW [步骤详情查看流程]
+    P4 --> S1
+
+    subgraph DETAIL_FLOW [步骤详情查看 — 2.3]
         direction TB
-        D1[右侧显示详细参数]
-        D2[上下滚动查看]
-        D3[与左侧大纲联动]
+        D1[右侧显示详细参数] --> D2[上下滚动查看] --> D3[与左侧大纲联动]
     end
 
-    subgraph CONTROL_FLOW [控制按钮栏操作流程]
+    S_NOTE --> D1
+    S_SIM --> D1
+    S_MALF --> D1
+    S_FREE --> D1
+    S_NEST --> D1
+
+    D3 --> C_MODE{选择运行模式}
+
+    subgraph CONTROL_FLOW [控制按钮栏 — 2.4]
         direction TB
-        C_MODE{选择运行模式}
         C_MODE -->|Autorun| C_AUTO[系统自动执行自动步骤]
         C_MODE -->|Step-by-Step| C_STEP[逐一点击Execute执行]
         C_MODE -->|End Lesson| C_ABORT[中止课程]
@@ -568,27 +557,14 @@ flowchart LR
         C_CHK2 -->|否| C_STEP
     end
 
-    LoadBtn --> PHASE_FLOW
-    PhaseBtn --> PHASE_FLOW
-    StepBtn --> STEP_FLOW
-    DetailBtn --> DETAIL_FLOW
-    AutoBtn --> CONTROL_FLOW
-    StepByBtn --> CONTROL_FLOW
-    ExecBtn --> CONTROL_FLOW
-    EndBtn --> CONTROL_FLOW
-
-    PHASE_FLOW --> End([课程结束/完成])
-    STEP_FLOW --> End
-    DETAIL_FLOW --> End
-    CONTROL_FLOW --> End
-
-    C_CHK1 -->|是| End
+    C_CHK1 -->|是| End([课程结束/完成])
     C_CHK2 -->|是| End
+    C_ABORT --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
-    style S_MALF fill:#fee2e2,stroke:#dc2626
     style C_ABORT fill:#fee2e2,stroke:#dc2626
+    style S_MALF fill:#fee2e2,stroke:#dc2626
     </div>
 
     <h3>3.2 课程执行通用状态机</h3>

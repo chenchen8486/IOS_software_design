@@ -243,14 +243,14 @@ graph TD
 
     <div class="table-wrap">
       <table>
-        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
-        <tr><td><strong>顶部工具栏</strong><br>Toolbar</td><td>顶部（单行）</td><td>集中放置所有控制按钮：视图切换、上下滚动、页码、搜索、视图扩展、缩放</td></tr>
-        <tr><td><strong>文档主内容区</strong><br>Document Viewport</td><td>右侧主区域</td><td>显示当前选中页面的文档内容，支持缩放和滚动</td></tr>
-        <tr><td><strong>缩略图/列表区</strong><br>Thumbnail / List Panel</td><td>左侧边栏</td><td>以缩略图或列表形式展示文档所有页面，点击切换页面；缩略图与列表两种视图<strong>互斥</strong>，只能激活其一</td></tr>
-        <tr><td><strong>上下滚动</strong><br>Scroll Up and Down</td><td>顶部工具栏（中部）</td><td>向上 ▲ / 向下 ▼ 按钮，中间显示当前页码 / 总页数</td></tr>
-        <tr><td><strong>搜索</strong><br>Search</td><td>顶部工具栏（中右部）</td><td>放大镜图标，点击后输入关键词搜索文档内容</td></tr>
-        <tr><td><strong>视图扩展</strong><br>View Expansion</td><td>顶部工具栏（右部）</td><td>扩展图标，点击后放大文档可视区域</td></tr>
-        <tr><td><strong>缩放</strong><br>Zoom</td><td>顶部工具栏（最右侧）</td><td>缩小(−) / 放大(+) 按钮</td></tr>
+        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr>
+        <tr><td><strong>顶部工具栏</strong><br>Toolbar</td><td>顶部（单行）</td><td>集中放置所有控制按钮：视图切换、上下滚动、页码、搜索、视图扩展、缩放</td><td>详见 2.1~2.6</td></tr>
+        <tr><td><strong>文档主内容区</strong><br>Document Viewport</td><td>右侧主区域</td><td>显示当前选中页面的文档内容，支持缩放和滚动</td><td>详见 2.1/2.2（视图内容）</td></tr>
+        <tr><td><strong>缩略图/列表区</strong><br>Thumbnail / List Panel</td><td>左侧边栏</td><td>以缩略图或列表形式展示文档所有页面，点击切换页面；缩略图与列表两种视图<strong>互斥</strong>，只能激活其一</td><td>详见 2.1（缩略图）、2.2（列表）</td></tr>
+        <tr><td><strong>上下滚动</strong><br>Scroll Up and Down</td><td>顶部工具栏（中部）</td><td>向上 ▲ / 向下 ▼ 按钮，中间显示当前页码 / 总页数</td><td>详见 2.3</td></tr>
+        <tr><td><strong>搜索</strong><br>Search</td><td>顶部工具栏（中右部）</td><td>放大镜图标，点击后输入关键词搜索文档内容</td><td>详见 2.4</td></tr>
+        <tr><td><strong>视图扩展</strong><br>View Expansion</td><td>顶部工具栏（右部）</td><td>扩展图标，点击后放大文档可视区域</td><td>详见 2.5</td></tr>
+        <tr><td><strong>缩放</strong><br>Zoom</td><td>顶部工具栏（最右侧）</td><td>缩小(−) / 放大(+) 按钮</td><td>详见 2.6</td></tr>
       </table>
     </div>
 
@@ -478,70 +478,56 @@ stateDiagram-v2
 flowchart LR
     Start([打开 DOCS Tab])
 
-    subgraph 入口区 [主界面入口]
-        ThumbBtn[缩略图按钮]
-        ListBtn[列表按钮]
-        PrevBtn[上一页按钮]
-        NextBtn[下一页按钮]
-        SearchBtn[搜索按钮]
-        ExpandBtn[扩展视图按钮]
-        ZoomInBtn[放大按钮]
-        ZoomOutBtn[缩小按钮]
-    end
+    Start --> VIEW_MODE{选择浏览方式}
 
-    Start --> 入口区
+    VIEW_MODE -->|缩略图| THUMB_ENTRY[点击缩略图按钮]
+    VIEW_MODE -->|列表| LIST_ENTRY[点击列表按钮]
+    VIEW_MODE -->|翻页| SCROLL_ENTRY[点击上一页/下一页]
+    VIEW_MODE -->|搜索| SEARCH_ENTRY[点击搜索按钮]
+    VIEW_MODE -->|扩展| EXPAND_ENTRY[点击扩展视图按钮]
+    VIEW_MODE -->|缩放| ZOOM_ENTRY[点击放大/缩小按钮]
 
-    subgraph THUMB_FLOW [缩略图视图流程]
+    subgraph THUMB_FLOW [缩略图视图流程 — 2.1]
         direction TB
-        T1[浏览页面缩略图]
-        T2[点击目标缩略图]
-        T3[主内容区切换页面]
+        T1[浏览页面缩略图] --> T2[点击目标缩略图] --> T3[主内容区切换页面]
     end
 
-    subgraph LIST_FLOW [列表视图流程]
+    subgraph LIST_FLOW [列表视图流程 — 2.2]
         direction TB
-        L1[浏览页面标题列表]
-        L2[点击目标列表项]
-        L3[主内容区切换页面]
+        L1[浏览页面标题列表] --> L2[点击目标列表项] --> L3[主内容区切换页面]
     end
 
-    subgraph SCROLL_FLOW [上下滚动流程]
+    subgraph SCROLL_FLOW [上下滚动流程 — 2.3]
         direction TB
-        S1[点击上一页或下一页]
-        S2[边界检查]
-        S3[页面切换或按钮禁用]
+        S1[点击上一页或下一页] --> S2[边界检查] --> S3[页面切换或按钮禁用]
     end
 
-    subgraph SEARCH_FLOW [搜索流程]
+    subgraph SEARCH_FLOW [搜索流程 — 2.4]
         direction TB
-        SE1[输入关键词并执行]
-        SE2{匹配结果?}
-        SE3[高亮文本并跳转页面]
-        SE4[提示无结果]
+        SE1[输入关键词并执行] --> SE2{匹配结果?}
+        SE2 -->|是| SE3[高亮文本并跳转页面]
+        SE2 -->|否| SE4[提示无结果]
+        SE4 --> SE1
     end
 
-    subgraph EXPAND_FLOW [视图扩展流程]
+    subgraph EXPAND_FLOW [视图扩展流程 — 2.5]
         direction TB
-        EX1[进入扩展视图模式]
-        EX2[继续缩放或滚动浏览]
-        EX3[退出扩展视图]
+        EX1[进入扩展视图模式] --> EX2[继续缩放或滚动浏览] --> EX3[退出扩展视图]
     end
 
-    subgraph ZOOM_FLOW [缩放流程]
+    subgraph ZOOM_FLOW [缩放流程 — 2.6]
         direction TB
-        Z1[点击放大或缩小按钮]
-        Z2{达到边界?}
-        Z3[应用新比例或禁用按钮]
+        Z1[点击放大或缩小按钮] --> Z2{达到边界?}
+        Z2 -->|否| Z3[应用新比例]
+        Z2 -->|是| Z4[禁用按钮]
     end
 
-    ThumbBtn --> THUMB_FLOW
-    ListBtn --> LIST_FLOW
-    PrevBtn --> SCROLL_FLOW
-    NextBtn --> SCROLL_FLOW
-    SearchBtn --> SEARCH_FLOW
-    ExpandBtn --> EXPAND_FLOW
-    ZoomInBtn --> ZOOM_FLOW
-    ZoomOutBtn --> ZOOM_FLOW
+    THUMB_ENTRY --> THUMB_FLOW
+    LIST_ENTRY --> LIST_FLOW
+    SCROLL_ENTRY --> SCROLL_FLOW
+    SEARCH_ENTRY --> SEARCH_FLOW
+    EXPAND_ENTRY --> EXPAND_FLOW
+    ZOOM_ENTRY --> ZOOM_FLOW
 
     THUMB_FLOW --> End([继续浏览/完成])
     LIST_FLOW --> End
@@ -549,8 +535,6 @@ flowchart LR
     SEARCH_FLOW --> End
     EXPAND_FLOW --> End
     ZOOM_FLOW --> End
-
-    SE4 -.->|修改关键词| SE1
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669

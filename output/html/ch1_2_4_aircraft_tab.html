@@ -238,15 +238,15 @@ graph TD
     <p>下方表格中的位置描述基于图 1（AIRCRAFT Tab 整体界面）实际截图分析得出。</p>
     <div class="table-wrap">
       <table>
-        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
-        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（上半部分）</td><td>集中显示飞机重量与平衡相关参数，每个字段可点击弹出对应键盘或使用滚轮选择器</td></tr>
-        <tr><td><strong>总重 GW</strong><br>Gross Weight</td><td>参数区第一行</td><td>显示飞机总重，点击弹出总重键盘；支持滚轮选择器</td></tr>
-        <tr><td><strong>总重重心 GW CG</strong><br>GW Center of Gravity</td><td>参数区第二行</td><td>显示总重重心（% MAC），点击弹出总重重心键盘；支持滚轮选择器</td></tr>
-        <tr><td><strong>零燃油重量 ZFW</strong><br>Zero Fuel Weight</td><td>参数区第三行</td><td>显示零燃油重量，点击弹出 ZFW 键盘；支持滚轮选择器</td></tr>
-        <tr><td><strong>ZFW CG</strong><br>ZFW Center of Gravity</td><td>参数区第四行</td><td>显示零燃油重量重心（% MAC），点击弹出 ZFW CG 键盘；支持滚轮选择器</td></tr>
-        <tr><td><strong>燃油 FUEL</strong><br>Fuel Weight</td><td>参数区第五行</td><td>显示总燃油量，点击弹出燃油键盘；支持滚轮选择器</td></tr>
-        <tr><td><strong>快速访问按钮区</strong><br>Quick Access Buttons</td><td>主区域（中部）</td><td>一排快捷按钮，点击后弹出对应滑动面板，部分按钮显示状态指示灯或红色标记</td></tr>
-        <tr><td><strong>故障部分</strong><br>Malfunction Section</td><td>主区域（底部）</td><td>显示激活和预位故障摘要，提供清除和激活操作</td></tr>
+        <tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr>
+        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（上半部分）</td><td>集中显示飞机重量与平衡相关参数，每个字段可点击弹出对应键盘或使用滚轮选择器</td><td>详见 2.1</td></tr>
+        <tr><td><strong>总重 GW</strong><br>Gross Weight</td><td>参数区第一行</td><td>显示飞机总重，点击弹出总重键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
+        <tr><td><strong>总重重心 GW CG</strong><br>GW Center of Gravity</td><td>参数区第二行</td><td>显示总重重心（% MAC），点击弹出总重重心键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
+        <tr><td><strong>零燃油重量 ZFW</strong><br>Zero Fuel Weight</td><td>参数区第三行</td><td>显示零燃油重量，点击弹出 ZFW 键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
+        <tr><td><strong>ZFW CG</strong><br>ZFW Center of Gravity</td><td>参数区第四行</td><td>显示零燃油重量重心（% MAC），点击弹出 ZFW CG 键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
+        <tr><td><strong>燃油 FUEL</strong><br>Fuel Weight</td><td>参数区第五行</td><td>显示总燃油量，点击弹出燃油键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
+        <tr><td><strong>快速访问按钮区</strong><br>Quick Access Buttons</td><td>主区域（中部）</td><td>一排快捷按钮，点击后弹出对应滑动面板，部分按钮显示状态指示灯或红色标记</td><td>详见 2.2~2.9</td></tr>
+        <tr><td><strong>故障部分</strong><br>Malfunction Section</td><td>主区域（底部）</td><td>显示激活和预位故障摘要，提供清除和激活操作</td><td>详见 2.10</td></tr>
       </table>
     </div>
 
@@ -1144,31 +1144,20 @@ flowchart LR
 flowchart LR
     Start([进入 AIRCRAFT Tab])
 
-    subgraph 重量参数区 [重量参数区 点击弹出Weight & Balance]
-        GW[GW]
-        GW_CG[GW CG]
-        FUEL[FUEL]
-        ZFW[ZFW]
-        ZFW_CG[ZFW CG]
-    end
+    Start --> OP_TYPE{选择操作类型}
 
-    subgraph 快速访问按钮 [快速访问按钮]
-        DL[DL]
-        UL[UL]
-        VHF1[VHF1]
-        WNB_BTN[WEIGHT & CG]
-        SVC_BTN[SERVICES & DOORS]
-        MALF_BTN[MALF]
-        CB_BTN[CIRCUIT BREAKERS]
-        FAIL_SUM[FAIL SUMMARY]
-    end
-
-    Start --> 重量参数区
-    Start --> 快速访问按钮
+    OP_TYPE -->|重量与平衡| WNB_ENTRY[点击GW/CG/ZFW/Fuel或WEIGHT&CG按钮]
+    OP_TYPE -->|数据链| DL_ENTRY[点击DL/UL按钮]
+    OP_TYPE -->|通信| COMM_ENTRY[点击VHF按钮]
+    OP_TYPE -->|地面服务| SVC_ENTRY[点击SERVICES&DOORS按钮]
+    OP_TYPE -->|故障管理| MALF_ENTRY[点击MALF按钮]
+    OP_TYPE -->|断路器| CB_ENTRY[点击CIRCUIT BREAKERS按钮]
+    OP_TYPE -->|故障总结| MSUM_ENTRY[点击FAIL SUMMARY按钮]
+    OP_TYPE -->|底部故障区| MSEC_ENTRY[查看底部故障摘要]
 
     %% ========== 各面板子流程展开（汇总 2.3~2.10）==========
 
-    subgraph DL_FLOW [Data Link 面板流程]
+    subgraph DL_FLOW [Data Link 面板流程 — 2.3]
         direction TB
         DL_TAB{选择选项卡}
         DL_TAB -->|Log| DL_LOG[查看上行记录]
@@ -1179,7 +1168,7 @@ flowchart LR
         DL_CONN --> DL_CAPP[应用连接设置]
     end
 
-    subgraph COMM_FLOW [VHF Comm 面板流程]
+    subgraph COMM_FLOW [VHF Comm 面板流程 — 2.4]
         direction TB
         COMM_MAIN[设置频率与静噪]
         COMM_MAIN -->|Special Features| COMM_SF[特殊功能面板]
@@ -1187,7 +1176,7 @@ flowchart LR
         COMM_SF --> COMM_B[EVAC/Mask/ACP/VHF LOS OVRD]
     end
 
-    subgraph WNB_FLOW [Weight & Balance 面板流程]
+    subgraph WNB_FLOW [Weight & Balance 面板流程 — 2.5]
         direction TB
         WNB_TAB{选择选项卡}
         WNB_TAB -->|Quick Set| WNB_QS[轻/中/重快速设置]
@@ -1205,7 +1194,7 @@ flowchart LR
         WNB_ACT -->|否| WNB_CAN[取消]
     end
 
-    subgraph SVC_FLOW [Services & Doors 面板流程]
+    subgraph SVC_FLOW [Services & Doors 面板流程 — 2.6]
         direction TB
         SVC_TAB{选择选项卡}
         SVC_TAB -->|Service| SVC_S[Quick Align/Engine Start/Diff]
@@ -1214,7 +1203,7 @@ flowchart LR
         SVC_D --> SVC_D1[Cabin Ready 自动或手动]
     end
 
-    subgraph MALF_FLOW [Malfunction 面板流程]
+    subgraph MALF_FLOW [Malfunction 面板流程 — 2.7]
         direction TB
         MALF_SYS{选择系统方式}
         MALF_SYS -->|ATA/Alpha/FP| MALF_SEL[选择具体故障]
@@ -1225,7 +1214,7 @@ flowchart LR
         MALF_PAN -->|Edit Value| MALF_EDIT[键盘修改判据数值]
     end
 
-    subgraph CB_FLOW [Circuit Breakers 面板流程]
+    subgraph CB_FLOW [Circuit Breakers 面板流程 — 2.8]
         direction TB
         CB_TAB{选择选项卡}
         CB_TAB -->|ATA/Alpha/CB| CB_SEL[选择具体断路器]
@@ -1234,7 +1223,7 @@ flowchart LR
         CB_TRIP -->|Type 2| CB_T2[机组不可复位]
     end
 
-    subgraph MSUM_FLOW [Fail Summary 面板流程]
+    subgraph MSUM_FLOW [Fail Summary 面板流程 — 2.9]
         direction TB
         MSUM_TAB{选择选项卡}
         MSUM_TAB -->|Malfunctions| MSUM_M[查看激活或预位故障]
@@ -1248,7 +1237,7 @@ flowchart LR
         MSUM_RS -->|重置所有| MSUM_RSTALL2[重置所有电台]
     end
 
-    subgraph MSEC_FLOW [Malfunction Section 底部流程]
+    subgraph MSEC_FLOW [Malfunction Section 底部流程 — 2.10]
         direction TB
         MSEC_VIEW[查看激活或预位故障摘要]
         MSEC_VIEW -->|Activate| MSEC_ACT[激活预位故障]
@@ -1258,16 +1247,14 @@ flowchart LR
     end
 
     %% ========== 入口到子流程连接 ==========
-    重量参数区 --> WNB_FLOW
-    DL --> DL_FLOW
-    UL --> DL_FLOW
-    VHF1 --> COMM_FLOW
-    WNB_BTN --> WNB_FLOW
-    SVC_BTN --> SVC_FLOW
-    MALF_BTN --> MALF_FLOW
-    CB_BTN --> CB_FLOW
-    FAIL_SUM --> MSUM_FLOW
-    Start -.->|主界面底部区域| MSEC_FLOW
+    WNB_ENTRY --> WNB_FLOW
+    DL_ENTRY --> DL_FLOW
+    COMM_ENTRY --> COMM_FLOW
+    SVC_ENTRY --> SVC_FLOW
+    MALF_ENTRY --> MALF_FLOW
+    CB_ENTRY --> CB_FLOW
+    MSUM_ENTRY --> MSUM_FLOW
+    MSEC_ENTRY --> MSEC_FLOW
 
     %% ========== 子流程汇聚到 Apply ==========
     DL_SEND --> Apply[应用/激活设置]
