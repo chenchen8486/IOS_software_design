@@ -223,6 +223,7 @@ graph TD
     <h3>2.1 PREFERENCES Tab（偏好设置选项卡）</h3>
     <p>偏好设置选项卡包含多个下拉按钮，允许教员设置力单位、飞机重量单位、环境单位。所有设置均为即时生效，无需额外确认。点击主界面控制面板右侧的<strong>展开按钮</strong>即可弹出该滑动面板（详见 1.2 界面结构）。</p>
 
+    <h4>2.1.1 面板属性</h4>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
@@ -230,13 +231,22 @@ graph TD
           <tr><td>功能定义</td><td>设置各参数的计量单位制（UOM）</td></tr>
           <tr><td>呈现方式</td><td>滑动面板顶部选项卡，内含 3 个下拉按钮和 1 个复选框</td></tr>
           <tr><td>交互方式</td><td>点击下拉按钮展开选项 → 点击目标选项即时切换</td></tr>
+          <tr><td>边界行为</td><td>下拉选择后立即生效，无需额外确认；切换环境单位时所有相关参数显示同步更新</td></tr>
+          <tr><td>与其他功能关系</td><td>环境单位与参考机场选项卡（1.2.5）的环境参数显示单位联动；自动匹配参考机场与 Airport 字段关联</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.1.2 参数设置项</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数项</th><th>可选值 / 说明</th></tr></thead>
+        <tbody>
           <tr><td>力单位</td><td>下拉选择：Lbf（磅力）/ daN（十牛顿）</td></tr>
           <tr><td>飞机重量单位</td><td>下拉选择：Kg（千克，液体体积使用升）/ lb（磅，液体体积使用加仑、夸脱、品脱）</td></tr>
           <tr><td>环境单位-公制</td><td>QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft</td></tr>
           <tr><td>环境单位-英制</td><td>QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft</td></tr>
           <tr><td>自动匹配参考机场</td><td>复选框：勾选后自动将单位制参数设置为与所选参考机场匹配</td></tr>
-          <tr><td>边界行为</td><td>下拉选择后立即生效，无需额外确认；切换环境单位时所有相关参数显示同步更新</td></tr>
-          <tr><td>与其他功能关系</td><td>环境单位与参考机场选项卡（1.2.5）的环境参数显示单位联动；自动匹配参考机场与 Airport 字段关联</td></tr>
         </tbody>
       </table>
     </div>
