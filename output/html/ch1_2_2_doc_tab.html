@@ -152,7 +152,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-        <a class="nav-link" href=\"ch1_7_advanced.html\">1.7 高级</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
       </div>
     </div>
   </nav>
@@ -701,6 +701,7 @@ function toggleCollapsible(header){
 (function(){
   let currentScale=1;
   let isDragging=false;
+  let dragStartX=0,dragStartY=0;
   let startX,startY,translateX=0,translateY=0;
 
   function closeZoom(el){
@@ -719,6 +720,12 @@ function toggleCollapsible(header){
     const zoomed=document.querySelector('.mermaid.is-zoomed');
     if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
       closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
       return;
     }
     const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
@@ -757,6 +764,8 @@ function toggleCollapsible(header){
     const zoomed=document.querySelector('.mermaid.is-zoomed');
     if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
       isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
       startX=e.clientX-translateX;
       startY=e.clientY-translateY;
     }

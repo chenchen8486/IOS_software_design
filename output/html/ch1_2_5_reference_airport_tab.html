@@ -140,7 +140,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-        <a class="nav-link" href=\"ch1_7_advanced.html\">1.7 高级</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
       </div>
     </div>
   </nav>
@@ -1282,6 +1282,8 @@ document.addEventListener('keydown', function(e) {
   let translateX = 0;
   let translateY = 0;
   let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
   let lastX = 0;
   let lastY = 0;
 
@@ -1303,7 +1305,20 @@ document.addEventListener('keydown', function(e) {
       }
       return;
     }
-    if (zoomedEl) return;
+    if (zoomedEl) {
+      if (mermaidEl.classList.contains('is-zoomed')) {
+        const dx = Math.abs(e.clientX - dragStartX);
+        const dy = Math.abs(e.clientY - dragStartY);
+        if (dx < 5 && dy < 5) {
+          zoomedEl.classList.remove('is-zoomed');
+          const svg = zoomedEl.querySelector('svg');
+          if (svg) svg.style.transform = '';
+          zoomedEl = null;
+          document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+        }
+      }
+      return;
+    }
     zoomedEl = mermaidEl;
     zoomedEl.classList.add('is-zoomed');
     scale = 1;
@@ -1327,6 +1342,8 @@ document.addEventListener('keydown', function(e) {
     if (!zoomedEl) return;
     if (e.target.closest('.mermaid.is-zoomed')) {
       isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
       lastX = e.clientX;
       lastY = e.clientY;
     }
