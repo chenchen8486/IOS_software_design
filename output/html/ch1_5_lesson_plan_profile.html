@@ -167,6 +167,23 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
 
+    <blockquote>
+      <strong>工作区入口说明：</strong>Lesson Plan Profile Workspace（课程计划配置工作区）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Lesson Plan Profile」进入本界面。因此图 1 界面底部显示的控制栏与 1.2.7 完全一致——所有 IOS 工作区均共享同一套底部控制栏。
+    </blockquote>
+
+    <p>课程计划配置工作区以图形化方式展示所选课程中包含的所有训练元素。训练阶段及其关联步骤等训练元素，以覆盖在飞行剖面（琥珀色线）之上的形式呈现，该飞行剖面由基于 Web 的 CAE Slick 课程计划编辑器定义。</p>
+
+    <p>与控制面板中的 LESSON PLAN 选项卡不同（后者以两个可滚动区域分别展示训练阶段和步骤），课程计划配置工作区提供了<strong>另一种展示相同课程元素的方式</strong>，便于教员在更大视野下掌控课程全局。</p>
+
+    <p>课程计划配置工作区使教员能够快速浏览课程计划中包含的大部分（甚至全部）训练元素，当然具体可见数量取决于课程的规模大小。</p>
+
+    <p>课程计划配置工作区包含以下组成部分：</p>
+    <ul>
+      <li><strong>地图标题栏（Map Header）</strong>：与地图工作区标题栏完全相同，显示重量与平衡、性能数据、高度/航向/IAS、通信、故障、当前时间、课程信息等；</li>
+      <li><strong>主区域（Main Section）</strong>：分为两种视图模式——画布视图（Canvas）与列表视图（List），并包含时间区域、时间线和按钮区；</li>
+      <li><strong>地图页脚（Map Footer）</strong>：与控制面板底部（1.2.7）完全相同，包含工作区切换、冻结/重置、模拟控制、音量等快捷按钮。</li>
+    </ul>
+
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
@@ -201,9 +218,9 @@ graph TD
       <table>
         <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>地图标题栏<br>Map Header</td><td>工作区顶部</td><td>与地图工作区标题栏相同，显示重量与平衡、性能数据、高度/航向/IAS、通信、故障、当前时间、课程信息</td></tr>
+          <tr><td>地图标题栏<br>Map Header</td><td>工作区顶部</td><td>与地图工作区标题栏相同，显示一系列与航空器相关的信息页签，包括：重量与平衡（Weight and Balance）、性能数据（Performance Data）、高度/航向/IAS（Altitude Heading IAS）、通信（Communications）、故障（Malfunctions）、当前时间（Current Time）、课程与练习信息（Lesson and exercise information）（参考 1.6 地图工作区标题栏，内容一致）</td></tr>
           <tr><td>主区域<br>Main Section</td><td>工作区中部核心区域</td><td>包含画布视图、列表视图、时间区域、时间线、按钮区</td></tr>
-          <tr><td>地图页脚<br>Map Footer</td><td>工作区底部</td><td>与控制面板页脚相同，包含工作区切换、冻结/重置、模拟控制、音量等快捷按钮</td></tr>
+          <tr><td>地图页脚<br>Map Footer</td><td>工作区底部</td><td>与控制面板页脚相同，包含工作区切换、冻结/重置、模拟控制、音量等快捷按钮（参考 1.2.7 控制面板底部，内容一致）</td></tr>
         </tbody>
       </table>
     </div>
@@ -211,10 +228,11 @@ graph TD
     <div class="img-block">
       <img src="./images/ch1_5_overview.jpg" alt="课程计划配置工作区总览">
       <p class="img-caption">图 1：课程计划配置工作区总览（Figure 110）</p>
+      <p class="img-caption" style="font-size:12px;color:#94a3b8;margin-top:4px">（参考控制面板底部右侧的 Workspace 按钮进入本工作区）</p>
     </div>
 
     <!-- 二、核心功能详解 -->
-    <h2>二、核心功能详解</h2>
+    <h2>二、核心功能详解（以下介绍主区域 Main Section 各功能模块）</h2>
 
     <h3>2.1 画布视图模式（Canvas View Mode）</h3>
     <div class="table-wrap">
@@ -249,19 +267,19 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_5_step_not_selected.jpg" alt="步骤未选择">
-        <p class="img-caption">步骤未选择</p>
+        <p class="img-caption">图 2：步骤未选择</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_selected.jpg" alt="步骤已选择">
-        <p class="img-caption">步骤已选择</p>
+        <p class="img-caption">图 3：步骤已选择</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_executing.jpg" alt="步骤执行中">
-        <p class="img-caption">步骤正在执行指令</p>
+        <p class="img-caption">图 4：步骤正在执行指令</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_completed.jpg" alt="步骤已完成">
-        <p class="img-caption">步骤已完成</p>
+        <p class="img-caption">图 5：步骤已完成</p>
       </div>
     </div>
     <div class="table-wrap">
@@ -331,7 +349,7 @@ graph TD
     </div>
     <div class="img-block">
       <img src="./images/ch1_5_lesson_list.jpg" alt="教案列表图标">
-      <p class="img-caption">图 2：教案列表图标</p>
+      <p class="img-caption">图 6：教案列表图标</p>
     </div>
 
     <h4>2.7.2 列表视图模式显示/隐藏（List View Mode Show/Hide）</h4>
@@ -349,11 +367,11 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_5_list_hide.jpg" alt="隐藏列表视图">
-        <p class="img-caption">点击隐藏列表视图</p>
+        <p class="img-caption">图 7：点击隐藏列表视图</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_list_show.jpg" alt="显示列表视图">
-        <p class="img-caption">点击显示列表视图</p>
+        <p class="img-caption">图 8：点击显示列表视图</p>
       </div>
     </div>
 
@@ -371,11 +389,11 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_5_list_expand.jpg" alt="展开列表视图">
-        <p class="img-caption">展开列表视图（增加信息详细程度）</p>
+        <p class="img-caption">图 9：展开列表视图（增加信息详细程度）</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_list_collapse.jpg" alt="折叠列表视图">
-        <p class="img-caption">折叠列表视图（减少信息详细程度）</p>
+        <p class="img-caption">图 10：折叠列表视图（减少信息详细程度）</p>
       </div>
     </div>
 

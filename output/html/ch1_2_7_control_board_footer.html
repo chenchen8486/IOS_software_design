@@ -257,7 +257,8 @@ graph TD
         <tbody>
           <tr><td>功能定义</td><td>激活/停用飞行冻结模式</td></tr>
           <tr><td>冻结范围</td><td>俯仰、坡度、航向、空速、高度、位置、运动系统（洗出除外）、声音水平降低</td></tr>
-          <tr><td>边界行为</td><td>重新定位期间按钮禁用，显示"Reposition in Progress"；温度/压力/风/云高渐变等参数修改在冻结解除后才生效；解冻时不会导致剧烈控制或运动变化</td></tr>
+          <tr><td>系统行为注意</td><td>冻结期间大多数模拟飞机系统不受影响，仍继续响应机组操作和故障插入（冻结的高度和位置参数影响除外）</td></tr>
+          <tr><td>边界行为</td><td>重新定位期间按钮禁用，显示"Reposition in Progress"；温度/压力/风/云高渐变等参数修改在冻结解除后才生效；<strong>无论自动驾驶是否激活，且与解冻时的操纵位置无关</strong>，解冻时均不会导致剧烈控制或运动变化</td></tr>
           <tr><td>与其他功能关系</td><td>与 Freezes 滑动面板中的 Flight Freeze 为同一功能的不同入口</td></tr>
         </tbody>
       </table>
@@ -271,11 +272,11 @@ graph TD
       <table>
         <thead><tr><th>按钮</th><th>功能说明</th><th>边界行为</th></tr></thead>
         <tbody>
-          <tr><td>Environment<br>环境重置</td><td>重置跑道、能见度、RVR、云、雾、雨、冰雹、雪、冬季场景、沙尘、闪电、结冰等环境参数至默认值</td><td>当所有条件已满足时禁用；点击后按钮亮起 2 秒</td></tr>
-          <tr><td>ISA & Winds<br>ISA与风重置</td><td>设置标准大气条件：海平面气压 1013.2 mb、中间高度 18,000 ft、上层高度 36,089 ft、温度递减率 -1.98°C/1000ft、海平面温度 15°C、机场/中间/上层风 360/0° 磁/kt、无阵风、基础湍流、无风切变/微暴流</td><td>当所有条件已满足时禁用；点击后按钮亮起 2 秒</td></tr>
-          <tr><td>Systems<br>系统重置</td><td>重置所有可重置系统（具体数量和类型取决于 IOS 配置），并将温度重置为正常运行值</td><td>若存在活跃故障或特定系统被有意排除则温度不重置；点击后按钮亮起 2 秒</td></tr>
-          <tr><td>Total<br>全部重置</td><td>执行坠机重置（若已坠机）、清除故障、清除失效站位、发动机超限重置、燃油使用指示器重置；自动执行系统重置</td><td>点击后按钮亮起 2 秒</td></tr>
-          <tr><td>Session<br>课程重置</td><td>结束课程、碰撞抑制、刹车温度重置抑制未激活、环境重置、标准大气与风、湍流/地面摩擦恢复默认、结束讲评记录、无 TCAS 交通、无登机口/地面交通、时间设为白天、清除地图航迹、声音 100%、清除所有飞行状态捕获和快照；自动执行全部重置（含系统重置）</td><td>弹出确认菜单；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Environment<br>环境重置</td><td>将环境重置为：干燥跑道、跑道上有橡胶、跑道粗糙度 2、能见度 40 海里、RVR 9900 英尺、无云、无雾、无雨、无冰雹、无降雪、无冬季场景、无沙尘、无闪电、无雷声、无风暴云、无结冰、时间加速因子重置</td><td>当以上所有条件均已满足时禁用；点击后按钮亮起 2 秒。<strong>注意：</strong>当上述任一条件不满足时，警告窗口中将显示"非标准环境"信息；关于 CAVOK 条件，当实际条件低于 CAVOK 定义标准时，将触发该信息</td></tr>
+          <tr><td>ISA & Winds<br>ISA与风重置</td><td>设置标准大气条件：海平面气压 1013.2 mb、中间高度 18,000 ft、上层高度 36,089 ft、温度递减率 -1.98°C/1000ft、海平面温度 15°C、<strong>中间温度 -21.0°C（在 18,000 ft 处）、上层温度 -56.5°C（在 36,089 ft 处）</strong>、机场风 360/0° 磁/kt、中间风 360/0° 磁/kt、上层风 360/0° 磁/kt、无阵风、基础湍流、无风切变、无微暴流</td><td>当上述所有条件均已满足时禁用；点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Systems<br>系统重置</td><td>重置"重置系统"分支下的所有可重置系统（具体数量和类型取决于 IOS 配置），并将温度重置为正常运行值</td><td>点击后按钮亮起 2 秒。<strong>例外：</strong>若存在活跃故障，或特定系统被有意排除，则温度不重置</td></tr>
+          <tr><td>Total<br>全部重置</td><td>执行全部重置：坠机重置（若已坠机）开启、清除故障开启、清除失效站点开启、发动机超限开启、燃油使用指示器开启；自动执行系统重置</td><td>点击后按钮亮起 2 秒</td></tr>
+          <tr><td>Session<br>课程重置</td><td>执行课程重置：结束课程、碰撞抑制、刹车温度重置抑制未激活、<strong>RAAS 抑制未激活（可选）</strong>、环境重置、标准大气与风、<strong>湍流启用按钮恢复默认设置、地面摩擦按钮恢复默认设置</strong>、结束讲评记录、无 TCAS 交通、<strong>无 GATES</strong>、无地面交通、时间设为白天、<strong>清除地图和航迹的轨迹</strong>、声音 100%、<strong>清除所有飞行情景捕获</strong>、<strong>清除所有快照（快照/设置选项）</strong>；自动执行全部重置（包括系统重置）</td><td>点击后弹出"重置课程"确认菜单；点击确认后按钮亮起 2 秒</td></tr>
           <tr><td>More…<br>更多</td><td>显示 RESETS 滑动面板，提供 25 个独立系统重置按钮</td><td>—</td></tr>
         </tbody>
       </table>
@@ -286,6 +287,21 @@ graph TD
       <p class="img-caption">图 2：重置卷展菜单（Resets Roll up Menu）</p>
     </div>
 
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_systems_reset.jpg" alt="系统重置">
+        <p class="img-caption">图 3：系统重置</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_total_reset.jpg" alt="全部重置">
+        <p class="img-caption">图 4：全部重置</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_session_reset.jpg" alt="课程重置">
+        <p class="img-caption">图 5：课程重置</p>
+      </div>
+    </div>
+
     <h4>2.2.2 RESETS 滑动面板</h4>
     <p>点击"更多…"按钮后显示 RESETS 滑动面板，允许教员执行 25 个独立系统的重置操作。每个按钮的通用行为：点击后亮起 2 秒；当目标系统已处于正常状态时该按钮禁用。</p>
     <div class="table-wrap">
@@ -293,11 +309,11 @@ graph TD
         <thead><tr><th>按钮</th><th>功能定义</th><th>禁用条件</th></tr></thead>
         <tbody>
           <tr><td>End Lesson</td><td>结束当前正在进行的课程计划，显示主索引面板</td><td>无活跃课程计划时禁用</td></tr>
-          <tr><td>Crash Inhibit</br>碰撞抑制</td><td>防止超出碰撞限制时发生碰撞，模拟在碰撞情况下继续运行（着陆时下降率过大和地面侧向力过大不可抑制）</td><td>飞机已坠毁时禁用</td></tr>
+          <tr><td>Crash Inhibit</br>碰撞抑制</td><td>防止超出碰撞限制时发生碰撞，模拟在碰撞情况下继续运行。<br><br><strong>未选择此按钮时：</strong>发生碰撞则模拟冻结，但以下情况除外——咨询性碰撞或超限咨询（仅显示碰撞/咨询/超限面板，但模拟不会冻结）。<br><br><strong>抑制范围：</strong>除着陆时下降率过大和地面侧向力过大外的所有碰撞检测；上述两项不可抑制（防止训练过程中可能造成人员受伤的过大运动冲击和剧烈碰撞）。<br><strong>激活时效果：</strong>着陆时下降率过大的触发阈值会提高，以允许更硬的着陆，同时仍保持上述保护功能。<br><br><em>（检测参数清单共 21 项，详见下方折叠面板）</em></td><td>飞机已坠毁时禁用</td></tr>
           <tr><td>Brake Temp Reset Inhibit<br>刹车温度重置抑制</td><td>抑制重新定位时重置刹车和轮胎温度</td><td>—</td></tr>
           <tr><td>Environment<br>环境</td><td>同 2.2.1 环境重置</td><td>同 2.2.1</td></tr>
           <tr><td>Standard Atmos & Winds<br>标准大气与风</td><td>同 2.2.1 ISA 与风重置</td><td>同 2.2.1</td></tr>
-          <tr><td>Crash<br>碰撞</td><td>重置模拟器碰撞状态，清除碰撞/咨询/超限面板，解除飞行冻结，坠机重置后 30 秒内不监控碰撞</td><td>飞机未坠毁时禁用</td></tr>
+          <tr><td>Crash<br>碰撞</td><td><strong>咨询性碰撞和超限咨询：</strong><br>• 碰撞重置按钮不显示<br>• 碰撞/咨询/超限页面在 30 秒后自动清除<br><br><strong>常规碰撞：</strong><br>• 飞行冻结按钮保持暗色，直到执行碰撞重置或重新定位<br>• 碰撞重置清除碰撞/咨询/超限页面并执行起飞重新定位<br><br><strong>特殊重置行为（速度过大 / 过载过大 / 马赫数过大 / 空中相撞）：</strong><br>• 清除坠毁/警告/超限面板<br>• 解除飞行冻结<br>• 坠毁重置后 30 秒内不监控坠毁状态<br><br><em>（常规碰撞类型共 21 项，详见下方折叠面板）</em></td><td>飞机未坠毁时禁用；选择后按钮保持激活 2 秒</td></tr>
           <tr><td>Clear Malfunctions<br>清除故障</td><td>清除所有激活和预位的故障</td><td>无激活或预位故障时禁用</td></tr>
           <tr><td>Clear Failed Stations<br>清除失效站位</td><td>清除所有由教员设置的失效站位</td><td>无失效站位时禁用</td></tr>
           <tr><td>Engine Exceedance<br>发动机超限</td><td>清除发动机超限（N1、N2、EGT 红色框显示移至下一个 DEU 飞行航段），需空速超过 80 节并保持 2 秒</td><td>未发生发动机超限时禁用</td></tr>
@@ -321,18 +337,69 @@ graph TD
       </table>
     </div>
 
-    <div class="img-row">
-      <div class="img-block">
-        <img src="./images/ch1_2_7_systems_reset.jpg" alt="系统重置">
-        <p class="img-caption">图 3：系统重置</p>
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>📎 Crash Inhibit 检测参数清单（21 项）</h4>
+        <span class="toggle-icon">▼</span>
       </div>
-      <div class="img-block">
-        <img src="./images/ch1_2_7_total_reset.jpg" alt="全部重置">
-        <p class="img-caption">图 4：全部重置</p>
+      <div class="collapsible-body">
+        <p>以下参数用于检测飞机碰撞状态：</p>
+        <ul>
+          <li>着陆时下降率过大</li>
+          <li>机翼触地（咨询）</li>
+          <li>尾撬触地（咨询）</li>
+          <li>着陆时起落架未放下并锁定（咨询）</li>
+          <li>地面侧向力过大</li>
+          <li>速度过大</li>
+          <li>过载过大</li>
+          <li>马赫数过大</li>
+          <li>跑道外接地（咨询）</li>
+          <li>空中相撞</li>
+          <li>地形/障碍物撞击</li>
+          <li>跑道外结构撞击</li>
+          <li>跑道外速度过大（&gt;75 节）</li>
+          <li>空中飞行加速度过大（超限）</li>
+          <li>空中急动度（加速度变化率）过大（超限）</li>
+          <li>空中飞行加速度不稳定（超限）</li>
+          <li>地面飞行加速度过大（超限）</li>
+          <li>地面急动度（加速度变化率）过大（超限）</li>
+          <li>地面飞行加速度不稳定（超限）</li>
+          <li>推回时发动机推力过大</li>
+          <li>推回时发动机推力或刹车使用过大（选项）</li>
+        </ul>
       </div>
-      <div class="img-block">
-        <img src="./images/ch1_2_7_session_reset.jpg" alt="课程重置">
-        <p class="img-caption">图 5：课程重置</p>
+    </div>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <h4>📎 Crash 常规碰撞类型清单（21 项）</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <p>常规碰撞类型及重置行为如下（速度过大 / 过载过大 / 马赫数过大 / 空中相撞四类还会触发「清除面板 + 解除飞行冻结 + 30 秒不监控」）：</p>
+        <ul>
+          <li>着陆时下降率过大</li>
+          <li>机翼触地（警告）</li>
+          <li>尾撬触地（警告）</li>
+          <li>起落架未放下并锁定着陆（警告）</li>
+          <li>地面侧向力过大</li>
+          <li>速度过大</li>
+          <li>过载过大</li>
+          <li>马赫数过大</li>
+          <li>跑道外接地（警告）</li>
+          <li>空中相撞</li>
+          <li>地形/障碍物撞击</li>
+          <li>跑道外结构撞击</li>
+          <li>跑道外速度过大（&gt;75 节）</li>
+          <li>空中飞行加速度过大（超限）</li>
+          <li>空中加加速度（加速度变化率）过大（超限）</li>
+          <li>空中飞行加速度不稳定（超限）</li>
+          <li>地面飞行加速度过大（超限）</li>
+          <li>地面加加速度（加速度变化率）过大（超限）</li>
+          <li>地面飞行加速度不稳定（超限）</li>
+          <li>推回期间发动机推力过大</li>
+          <li>推回期间发动机推力或刹车使用过大（选项）</li>
+        </ul>
       </div>
     </div>
 
@@ -447,7 +514,7 @@ graph TD
     </div>
 
     <h3>2.6 Reposition（重新定位）</h3>
-    <p>允许教员将飞机重新定位到相对于参考跑道的预设位置。操作步骤：1) 点击按钮显示重新定位卷展菜单；2) 点击所需预设位置；3) 点击重新定位按钮激活。所有预设位置在 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> 的 2.2.2 AIRPORT REPOSITION 选项卡中定义（原始文档 9.2.2）。点击"更多…"显示机场重新定位滑动面板。</p>
+    <p>允许教员将飞机重新定位到相对于参考跑道的预设位置。操作步骤：1) 点击按钮显示重新定位卷展菜单；2) 点击所需预设位置；3) 点击重新定位按钮激活。所有预设位置在 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> 的 2.2.2 AIRPORT REPOSITION 选项卡中定义。点击"更多…"显示机场重新定位滑动面板。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
@@ -464,7 +531,7 @@ graph TD
         <span class="toggle-icon">▼</span>
       </div>
       <div class="collapsible-body">
-        <p>以下预设位置均在 <strong><a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> — 2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</strong> 的"重新定位预设部分"中定义（原始文档 9.2.2），教员可一键将飞机定位至参考跑道的相对位置。重新定位结束时将设置飞行冻结，并停用加速功能。</p>
+        <p>以下预设位置均在 <strong><a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> — 2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</strong> 的"重新定位预设部分"中定义，教员可一键将飞机定位至参考跑道的相对位置。重新定位结束时将设置飞行冻结，并停用加速功能。</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>预设名称</th><th>位置描述</th><th>典型飞机配置摘要</th></tr></thead>
@@ -496,7 +563,7 @@ graph TD
     </div>
 
     <h3>2.7 Weather Presets（天气预设）</h3>
-    <p>允许教员根据 EASA/FAA 标准更改参考机场的云层和能见度条件。操作步骤：1) 点击按钮显示天气预设卷展菜单；2) 点击所需预设按钮。所有天气预设在 <a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> 的 CLOUDS 滑动面板 — 2.12.4 天气预设区中定义（原始文档 7.2.4）。卷展菜单名称随当前预设选择而变化。点击"更多…"显示高级天气区域页面。</p>
+    <p>允许教员根据 EASA/FAA 标准更改参考机场的云层和能见度条件。操作步骤：1) 点击按钮显示天气预设卷展菜单；2) 点击所需预设按钮。所有天气预设在 <a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> 的 CLOUDS 滑动面板 — 2.12.4 天气预设区中定义。卷展菜单名称随当前预设选择而变化。点击"更多…"显示高级天气区域页面。</p>
 
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
@@ -504,7 +571,7 @@ graph TD
         <span class="toggle-icon">▼</span>
       </div>
       <div class="collapsible-body">
-        <p>以下天气预设按钮均在 <strong><a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> — 2.12.4 天气预设区（Weather Presets Section）</strong> 中定义（原始文档 7.2.4），教员可一键根据 FAA、EASA、TCA 或 EUR 标准更改云层和能见度条件。</p>
+        <p>以下天气预设按钮均在 <strong><a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a> — 2.12.4 天气预设区（Weather Presets Section）</strong> 中定义，教员可一键根据 FAA、EASA、TCA 或 EUR 标准更改云层和能见度条件。</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>预设按钮</th><th>适用标准</th><th>条件说明</th></tr></thead>
@@ -600,13 +667,19 @@ graph TD
     <h3>2.13 Help Rollup Menu（帮助卷展菜单）</h3>
     <p>允许教员显示或隐藏与当前活动滑动面板关联的帮助，或创建可发送给 CAE 人员的帮助压缩文件。</p>
 
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_help_menu.png" alt="帮助卷展菜单">
+        <p class="img-caption">图 18：帮助卷展菜单（Help Rollup Menu）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_help_panel.jpg" alt="帮助面板">
+        <p class="img-caption">图 19：帮助面板（HELP Panel）</p>
+      </div>
+    </div>
+
     <h4>2.13.1 Help（帮助）</h4>
     <p>点击帮助按钮显示当前活动面板的帮助。可用帮助以带有数字的气泡形式显示在工作区上。点击气泡可查看对应帮助。如果在帮助模式激活后 2-3 秒内未进行选择，将弹出描述当前面板功能的弹窗。</p>
-
-    <div class="img-block">
-      <img src="./images/ch1_2_7_help_panel.jpg" alt="帮助面板">
-      <p class="img-caption">图 18：帮助面板（HELP Panel）</p>
-    </div>
 
     <h4>2.13.2 Send Feedback（发送反馈）</h4>
     <p>允许教员在操作服务器上创建帮助压缩文件，然后发送给 CAE 人员。点击后：创建包含 IOS 屏幕截图和日志文件的帮助压缩文件；显示"Send Us Feedback"弹窗；提供基本图像编辑工具（铅笔、橡皮擦、颜色选择），允许教员对每张图像进行标注。点击发送按钮启动创建过程。</p>
@@ -614,15 +687,15 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_2_7_feedback_popup.jpg" alt="发送反馈弹窗">
-        <p class="img-caption">图 19：发送反馈弹窗</p>
+        <p class="img-caption">图 20：发送反馈弹窗</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_2_7_sending_feedback.jpg" alt="发送反馈中">
-        <p class="img-caption">图 20：发送反馈中</p>
+        <p class="img-caption">图 21：发送反馈中</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_2_7_view_feedback.jpg" alt="查看反馈数据文件">
-        <p class="img-caption">图 21：查看反馈数据文件</p>
+        <p class="img-caption">图 22：查看反馈数据文件</p>
       </div>
     </div>
 
@@ -632,11 +705,11 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_2_7_help_zip.jpg" alt="帮助压缩文件">
-        <p class="img-caption">图 22：帮助压缩文件</p>
+        <p class="img-caption">图 23：帮助压缩文件</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_2_7_help_zip_content.jpg" alt="帮助压缩文件内容示例">
-        <p class="img-caption">图 23：帮助压缩文件内容示例</p>
+        <p class="img-caption">图 24：帮助压缩文件内容示例</p>
       </div>
     </div>
 
@@ -656,9 +729,13 @@ graph TD
       </table>
     </div>
 
+    <blockquote>
+      <strong>扩展阅读：</strong>高级工具栏的 9 大功能模块（飞机、位置、环境、入侵者、通信、故障、UPRT、重置/冻结、录制）及其详细操作说明，请参阅 <a href="ch1_7_advanced.html">1.7 高级（Advanced）</a>。
+    </blockquote>
+
     <div class="img-block">
       <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
-      <p class="img-caption">图 24：工作区卷展菜单（Workspace Roll Up Menu）</p>
+      <p class="img-caption">图 25：工作区卷展菜单（Workspace Roll Up Menu）</p>
     </div>
 
     <!-- 三、全局操作流程与推导 -->
@@ -756,9 +833,9 @@ stateDiagram-v2
       <table>
         <thead><tr><th>功能</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
         <tbody>
-          <tr><td>重新定位</td><td>参考机场选项卡（<a href="ch1_2_5_reference_airport_tab.html">1.2.5</a>）AIRPORT REPOSITION</td><td>预设位置在 1.2.5 — 2.2.2 AIRPORT REPOSITION 选项卡中定义（原始文档 9.2.2；含等待/滑行、登机口、各距离五边/起始进近等14个预设）</td></tr>
-          <tr><td>天气预设</td><td>CLOUDS 滑动面板（<a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> — 2.12.4）</td><td>天气预设在 1.2.3 — 2.12.4 天气预设区中定义（原始文档 7.2.4；含 CAVOK、1000/5km、800/2km、CAT I~IIIC、0/0、最小起飞RVR 共10项）</td></tr>
-          <tr><td>Flight Freeze</td><td>Freezes 滑动面板（1.2.7 — 2.1）</td><td>与 2.1 Flight Freeze 为同一功能；原始文档 11.3.4.3 节原文为"请参阅 11.1 节飞行冻结"</td></tr>
+          <tr><td>重新定位</td><td>参考机场选项卡（<a href="ch1_2_5_reference_airport_tab.html">1.2.5</a>）AIRPORT REPOSITION</td><td>预设位置在 1.2.5 — 2.2.2 AIRPORT REPOSITION 选项卡中定义（含等待/滑行、登机口、各距离五边/起始进近等14个预设）</td></tr>
+          <tr><td>天气预设</td><td>CLOUDS 滑动面板（<a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> — 2.12.4）</td><td>天气预设在 1.2.3 — 2.12.4 天气预设区中定义（含 CAVOK、1000/5km、800/2km、CAT I~IIIC、0/0、最小起飞RVR 共10项）</td></tr>
+          <tr><td>Flight Freeze</td><td>Freezes 滑动面板（1.2.7 — 2.1）</td><td>与 2.1 Flight Freeze 为同一功能</td></tr>
           <tr><td>重置 - Systems</td><td>IOS 配置</td><td>可重置系统的数量和类型取决于 IOS 配置</td></tr>
           <tr><td>Workspace - Advanced</td><td>控制面板各选项卡</td><td>高级工具栏提供对控制面板参数的快速访问</td></tr>
         </tbody>
