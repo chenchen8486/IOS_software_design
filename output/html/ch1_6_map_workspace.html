@@ -1,0 +1,1055 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.6 地图工作区（Map Workspace）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content h5{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0;min-width:240px}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER）</a>
+        <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划剖面（Lesson Plan Profile）</a>
+        <a class="nav-link active" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.6 地图工作区（Map Workspace）</span>
+  </div>
+
+  <div class="content">
+    <h1>1.6 地图工作区（Map Workspace）</h1>
+    <p class="subtitle">对应原始手册：## 15. Map Workspace</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    subgraph Map["Map Workspace / 地图工作区"]
+        A[Map Header<br>地图标题栏]
+        B[Main Section<br>主区域]
+        C[Right Toolbar<br>右侧工具栏]
+        D[Map Footer<br>地图页脚]
+    end
+
+    A --> A1[Weight & Balance<br>重量与平衡]
+    A --> A2[Performance Data<br>性能数据]
+    A --> A3[Altitude/Heading/IAS<br>高度航向空速]
+    A --> A4[Communications<br>通信]
+    A --> A5[Malfunctions<br>故障]
+    A --> A6[Time / Lesson Info<br>时间/课程信息]
+
+    B --> B1[Wind Barb / Compass<br>风向标/罗盘]
+    B --> B2[Radial Menus<br>径向菜单]
+    B2 --> B2a[Cursor<br>光标]
+    B2 --> B2b[Aircraft<br>飞机]
+    B2 --> B2c[Navaid<br>导航台]
+    B2 --> B2d[Airport<br>机场]
+    B2 --> B2e[Storm<br>风暴]
+
+    C --> C1[Zoom +/-<br>缩放]
+    C --> C2[Auto Range<br>自动范围]
+    C --> C3[Scales<br>比例尺]
+    C --> C4[Perspective<br>透视]
+    C --> C5[Map To<br>地图定位]
+    C --> C6[Symbols<br>符号]
+    C --> C7[Indicators<br>指示器]
+
+    D --> D1[Left Footer<br>左侧页脚]
+    D --> D2[Middle Footer<br>中间页脚]
+    D --> D3[Right Footer<br>右侧页脚]
+
+    D1 --> D1a[Events<br>事件]
+    D1 --> D1b[Plots<br>绘图]
+    D1b --> D1b1[Precision Approach<br>精密进近]
+    D1b --> D1b2[Non-Precision Approach<br>非精密进近]
+    D1b --> D1b3[Takeoff<br>起飞]
+    D1b --> D1b4[Tail Clearance<br>尾部间隙]
+    D1b --> D1b5[Runway<br>跑道]
+    D1 --> D1c[Clear<br>清除]
+
+    D2 --> D2a[Marker<br>标记]
+    D2 --> D2b[Storm<br>风暴]
+    D2b -.->|点击弹出| E[Storm Properties Sliding Panel<br>风暴属性滑动面板]
+    D2 --> D2c[Recording<br>录制]
+    D2 --> D2d[Print<br>打印]
+
+    D3 --> D3a[Latch<br>锁定]
+    D3 --> D3b[2D/3D<br>2D/3D切换]
+    D3 --> D3c[Help<br>帮助]
+    D3 --> D3d[Workspace<br>工作区]
+
+    E --> E1[List of Storms<br>风暴列表]
+    E --> E2[TYPE<br>类型]
+    E --> E3[Rotation & Effects<br>旋转与效果]
+
+    style Map fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style E fill:#fef3c7,stroke:#d97706,stroke-width:2px,stroke-dasharray: 5 5
+    style D2b fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>地图标题栏<br>Map Header</td>
+            <td>页面顶部</td>
+            <td>分组显示飞机重量与平衡、性能数据、高度/航向/空速、通信、故障、时间、课程信息</td>
+          </tr>
+          <tr>
+            <td>主区域<br>Main Section</td>
+            <td>页面中央</td>
+            <td>2D/3D 虚拟空间表示，显示飞机位置、飞行路径、导航台、机场、天气要素（风暴）</td>
+          </tr>
+          <tr>
+            <td>右侧工具栏<br>Right Toolbar</td>
+            <td>主区域右侧</td>
+            <td>控制地图显示内容，包括缩放、自动范围、比例尺、透视、地图定位、符号与指示器</td>
+          </tr>
+          <tr>
+            <td>地图页脚<br>Map Footer</td>
+            <td>页面底部</td>
+            <td>分为左/中/右三段，提供事件/绘图/清除、标记/风暴/录制/打印、锁定/2D3D/帮助/工作区</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_6_map_overview.jpg" alt="地图工作区整体界面">
+      <div class="img-caption">图 1.6-1 地图工作区整体界面（Map Workspace）</div>
+    </div>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 地图标题栏（Map Header）</h3>
+    <p>地图标题栏位于页面顶部，通过一系列选项卡分组显示与飞机相关的各类信息。教员可以快速监控训练中的关键参数。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>选项卡/信息组</th><th>内容说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>重量与平衡<br>Weight & Balance</td><td>显示当前飞机重量与重心相关参数（同 8.10 重量与平衡滑动面板）</td></tr>
+          <tr><td>性能数据<br>Performance Data</td><td>显示起飞/进近性能数据，如 Stab Trim、Flaps、V1/VR/V2/VREF 等</td></tr>
+          <tr><td>高度、航向、指示空速<br>Altitude / Heading / IAS</td><td>显示飞机当前高度、航向和指示空速</td></tr>
+          <tr><td>通信<br>Communications</td><td>显示无线电通信状态和频率信息</td></tr>
+          <tr><td>已激活和待处理的故障<br>Armed & Active Malfunctions</td><td>显示当前预位或已激活的故障列表</td></tr>
+          <tr><td>当前时间<br>Current Time</td><td>显示模拟器当前时间</td></tr>
+          <tr><td>课程与练习信息<br>Lesson & Exercise Info</td><td>显示当前课程计划和训练阶段信息</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_map_header.jpg" alt="地图标题栏"><div class="img-caption">图 1.6-2 地图标题栏</div></div>
+      <div class="img-block"><img src="./images/ch1_6_header_weight_balance.jpg" alt="重量与平衡"><div class="img-caption">重量与平衡</div></div>
+      <div class="img-block"><img src="./images/ch1_6_header_performance.jpg" alt="性能数据"><div class="img-caption">性能数据</div></div>
+    </div>
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_header_alt_heading_ias.jpg" alt="高度、航向与指示空速"><div class="img-caption">高度、航向与指示空速</div></div>
+      <div class="img-block"><img src="./images/ch1_6_header_communications.jpg" alt="通信"><div class="img-caption">通信</div></div>
+      <div class="img-block"><img src="./images/ch1_6_header_malfunctions.jpg" alt="故障"><div class="img-caption">故障</div></div>
+    </div>
+
+    <h3>2.2 主区域（Main Section）</h3>
+    <p>主区域是虚拟空间的 2D/3D 表示，显示飞机位置、飞行路径及环境组件（其他活动实体、导航台、机场、风暴等天气要素）。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_6_main_section.jpg" alt="地图主区域">
+      <div class="img-caption">图 1.6-3 地图主区域</div>
+    </div>
+
+    <h4>2.2.1 图标（Icons）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>图标</th><th>功能</th><th>交互说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>风向标<br>Wind Barb</td><td>指示飞机所在位置的风向</td><td>只读显示，随环境风参数实时更新</td></tr>
+          <tr><td>罗盘<br>Compass</td><td>显示罗盘方向</td><td>点击罗盘图标可在「北向上（North Up）」与「航向向上（Heading Up）」之间切换</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_6_main_icons.jpg" alt="主界面图标">
+      <div class="img-caption">图 1.6-4 主界面图标（风向标与罗盘）</div>
+    </div>
+
+    <h4>2.2.2 径向菜单（Radial Menus）</h4>
+    <p>主界面上使用多种径向菜单，可通过点击地图主界面区域或特定对象访问。</p>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)"><h4>光标径向菜单（Cursor Radial Menu）</h4><span class="badge">点击地图空白处</span><span class="toggle-icon">▼</span></div>
+      <div class="collapsible-body">
+        <p>允许教员执行以下操作：</p>
+        <ul>
+          <li>在光标位置放置一个蜘蛛网（Spider Web）</li>
+          <li>将飞机重新定位到地图上的特定位置</li>
+          <li>在地图上的特定位置添加风暴</li>
+          <li>在地图上的特定位置添加实体</li>
+        </ul>
+        <p><strong>操作步骤：</strong>点击地图区域上的所需位置 → 光标放置于点击位置 → 光标径向菜单按钮显示。</p>
+        <div class="img-block"><img src="./images/ch1_6_radial_cursor.jpg" alt="光标径向菜单"><div class="img-caption">图 1.6-5 光标径向菜单</div></div>
+      </div>
+    </div>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)"><h4>飞机径向菜单（Aircraft Radial Menu）</h4><span class="badge">点击飞机</span><span class="toggle-icon">▼</span></div>
+      <div class="collapsible-body">
+        <p>允许教员在飞机周围放置一个蜘蛛网。</p>
+        <p><strong>操作步骤：</strong>在地图主界面上点击飞机 → 点击「附加蜘蛛网（Attach Spiderweb）」按钮 → 飞机周围显示蜘蛛网。</p>
+        <div class="img-block"><img src="./images/ch1_6_radial_aircraft.jpg" alt="飞机径向菜单"><div class="img-caption">图 1.6-6 飞机径向菜单</div></div>
+      </div>
+    </div>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)"><h4>导航台径向菜单（Navaid Radial Menu）</h4><span class="badge">点击导航台图标</span><span class="toggle-icon">▼</span></div>
+      <div class="collapsible-body">
+        <p>允许教员执行以下操作：</p>
+        <ul>
+          <li>将飞机重新定位到导航台上方，同时保持其高度和航向，并显示故障导航台</li>
+          <li>对于 VOR-DME 等多组件导航台，可以仅使一个系统失效</li>
+          <li>重置故障导航台：当故障激活时，「故障导航台」按钮变为「重置导航台」；地图上的导航台图标指示其正常或故障状态</li>
+        </ul>
+        <div class="img-block"><img src="./images/ch1_6_radial_navaid.jpg" alt="导航台径向菜单"><div class="img-caption">图 1.6-7 导航台径向菜单</div></div>
+      </div>
+    </div>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)"><h4>机场径向菜单（Airport Radial Menu）</h4><span class="badge">点击机场图标</span><span class="toggle-icon">▼</span></div>
+      <div class="collapsible-body">
+        <p>允许教员在机场周围放置一个蜘蛛网。</p>
+      </div>
+    </div>
+
+    <div class="collapsible collapsed">
+      <div class="collapsible-header" onclick="toggleCollapsible(this)"><h4>风暴径向菜单（Storm Radial Menu）</h4><span class="badge">点击风暴图标</span><span class="toggle-icon">▼</span></div>
+      <div class="collapsible-body">
+        <p>允许教员执行以下操作：</p>
+        <ul>
+          <li>激活一个风暴</li>
+          <li>删除一个活跃的风暴</li>
+          <li>编辑/更改风暴参数或属性</li>
+          <li>在钩子位置添加一个风暴</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>2.3 右侧工具栏（Right Toolbar）</h3>
+    <p>右侧工具栏控制地图主界面上显示的信息，位于主区域右侧。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_6_right_toolbar.jpg" alt="右侧工具栏">
+      <div class="img-caption">图 1.6-8 右侧工具栏</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>功能</th><th>交互方式</th><th>边界行为/说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>缩放 +/-<br>Zoom +/-</td>
+            <td>点击 + 或 - 按钮</td>
+            <td>逐级放大或缩小地图视图</td>
+          </tr>
+          <tr>
+            <td>自动范围<br>Auto Range</td>
+            <td>点击按钮</td>
+            <td>确保飞机和参考跑道始终同时显示在地图上</td>
+          </tr>
+          <tr>
+            <td>比例尺<br>Scales</td>
+            <td>点击按钮后选择</td>
+            <td>地图比例尺范围 5 海里 ~ 350 海里；范围表示显示器 x 轴距离</td>
+          </tr>
+          <tr>
+            <td>透视<br>Perspective</td>
+            <td>点击按钮</td>
+            <td>将地图设置为三维模式；提供多种飞机视角和两个刻度盘用于改变视角</td>
+          </tr>
+          <tr>
+            <td>地图定位<br>Map To</td>
+            <td>点击按钮后选择元素</td>
+            <td>将地图中心定位到所选元素（机场、飞机、风暴）</td>
+          </tr>
+          <tr>
+            <td>符号<br>Symbols</td>
+            <td>点击按钮，切换 T / 眼睛可见性图标</td>
+            <td>控制机场、导航台、风暴、玩家（入侵者）及其文本标签的显示/隐藏</td>
+          </tr>
+          <tr>
+            <td>指示器<br>Indicators</td>
+            <td>点击按钮，切换眼睛可见性图标</td>
+            <td>控制蜘蛛网、FMS 航线、时间线、航迹、罗盘、比例尺、风羽的显示/隐藏</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_toolbar_scales.jpg" alt="比例尺"><div class="img-caption">比例尺</div></div>
+      <div class="img-block"><img src="./images/ch1_6_toolbar_perspective.jpg" alt="透视"><div class="img-caption">透视</div></div>
+      <div class="img-block"><img src="./images/ch1_6_toolbar_map_to.jpg" alt="地图定位"><div class="img-caption">地图定位</div></div>
+    </div>
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_toolbar_symbols.jpg" alt="符号"><div class="img-caption">符号</div></div>
+      <div class="img-block"><img src="./images/ch1_6_toolbar_indicators.jpg" alt="指示器"><div class="img-caption">指示器</div></div>
+    </div>
+
+    <h3>2.4 地图页脚（Map Footer）</h3>
+    <p>地图页脚位于页面底部，分为左、中、右三段控件。</p>
+
+    <h4>2.4.1 左侧页脚（Left Side Footer）</h4>
+    <p>左侧页脚提供关于学员表现的补充信息（如图表），包括事件、绘图、清除三个切换/卷起菜单。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_left.jpg" alt="左侧页脚">
+      <div class="img-caption">图 1.6-9 左侧页脚</div>
+    </div>
+
+    <h5>事件（Events）</h5>
+    <p>「事件」切换菜单显示/隐藏系统识别的超限和异常情况信息。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_events.jpg" alt="左侧事件切换菜单">
+      <div class="img-caption">图 1.6-10 左侧事件切换菜单</div>
+    </div>
+
+    <h5>绘图（Plots）</h5>
+    <p>「绘图」卷起菜单显示以下五类图表，用于评估机组表现：</p>
+    <ul>
+      <li><strong>精密进近</strong>：下滑道偏差、航向道偏差、速度偏差</li>
+      <li><strong>非精密进近</strong>：HAT 与距接地点距离、中心线偏差、速度偏差</li>
+      <li><strong>起飞</strong>：HAT 与距起飞点距离、中心线偏差、速度偏差</li>
+      <li><strong>尾部间隙</strong>：空速、雷达高度、尾部间隙（英寸）、俯仰姿态、俯仰速率</li>
+      <li><strong>跑道</strong>：飞机在跑道上的实际位置</li>
+    </ul>
+    <p>上述进近和起飞选项选择后，会在地图上显示其关联图表。「清除绘图」按钮可清除当前显示的绘图。「范围（海里）」滑块可调整图表比例。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_plots.jpg" alt="左侧绘图切换菜单">
+      <div class="img-caption">图 1.6-11 左侧绘图切换菜单</div>
+    </div>
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_plot_precision_approach.jpg" alt="精密进近图表"><div class="img-caption">精密进近图表（典型）</div></div>
+      <div class="img-block"><img src="./images/ch1_6_plot_non_precision.jpg" alt="非精密进近图表"><div class="img-caption">非精密进近图表（典型）</div></div>
+      <div class="img-block"><img src="./images/ch1_6_plot_takeoff.jpg" alt="起飞图表"><div class="img-caption">起飞图表（典型）</div></div>
+    </div>
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_plot_tail_clearance.jpg" alt="尾部间隙图表"><div class="img-caption">尾部间隙图表（典型）</div></div>
+      <div class="img-block"><img src="./images/ch1_6_plot_runway.jpg" alt="跑道图表"><div class="img-caption">跑道图表（典型）</div></div>
+    </div>
+
+    <h5>清除（Clear）</h5>
+    <p>「清除」卷起菜单可清除虚拟环境中的项目，包括：时间线、风暴、事件列表、航迹。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_clear.jpg" alt="左侧清除切换菜单">
+      <div class="img-caption">图 1.6-12 左侧清除切换菜单</div>
+    </div>
+
+    <h4>2.4.2 中间页脚（Middle Footer）</h4>
+    <p>中间页脚允许用户添加事件标记、添加和编辑模拟中的风暴、录制训练课程，以及打印当前页面或其他页面。包含标记、风暴、录制、打印四个按钮。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_middle.jpg" alt="中间页脚">
+      <div class="img-caption">图 1.6-13 中间页脚</div>
+    </div>
+
+    <h5>标记（Marker）</h5>
+    <p>点击「标记」按钮显示标记卷起菜单。该菜单包含各种类型的彩色标记，可用于在飞机飞行路径上以及训练课程视频录制中标记事件，便于后续讲评时快速定位特定片段。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_marker.jpg" alt="标记卷起菜单">
+      <div class="img-caption">图 1.6-14 标记卷起菜单</div>
+    </div>
+
+    <h5>风暴（Storm）与风暴属性滑动面板</h5>
+    <p>点击「风暴」按钮显示<strong>风暴属性滑动面板</strong>，允许教员在地图环境中添加、旋转和配置多种类型的风暴。</p>
+
+    <div class="img-block">
+      <img src="./images/ch1_6_storm_properties.jpg" alt="风暴属性滑动面板">
+      <div class="img-caption">图 1.6-15 风暴属性滑动面板</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>区域/控件</th><th>功能说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>风暴列表</td><td>显示模拟中已激活或未激活的风暴列表；激活的风暴由红色「激活（ACTIVE）」标志指示；选中后可修改风暴属性</td></tr>
+          <tr><td>类型（TYPE）</td><td>显示所有可插入模拟的风暴；选中后高亮为浅蓝色，并在地图环境中显示为浅灰色（尚未激活）</td></tr>
+          <tr><td>风暴旋转图</td><td>交互式图表，浅蓝色光标允许教员在 0~360 度之间旋转风暴；触摸并按住光标在刻度盘上移动即可旋转</td></tr>
+          <tr><td>重新定位到光标</td><td>将所选风暴的中心重新定位到地图上的光标位置</td></tr>
+          <tr><td>随风移动</td><td>复选框，使所选风暴根据风环境参数移动</td></tr>
+          <tr><td>风暴效果</td><td>复选框，在视觉场景中激活闪电效果（仅在风暴物理边界内显示）</td></tr>
+          <tr><td>激活</td><td>激活所选风暴；激活后地图上浅灰色显示的风暴将变为彩色</td></tr>
+          <tr><td>删除</td><td>从地图上移除所选风暴</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_storm_selected.jpg" alt="风暴已选中"><div class="img-caption">风暴属性 – 风暴已选中</div></div>
+      <div class="img-block"><img src="./images/ch1_6_storm_rotation_effects.jpg" alt="旋转与效果"><div class="img-caption">风暴属性 – 旋转与效果</div></div>
+    </div>
+
+    <p><strong>添加风暴的两种方式：</strong></p>
+    <ol>
+      <li><strong>通过光标径向菜单：</strong>点击地图目标位置 → 光标径向菜单 → 添加风暴 → 选择类型 → 编辑属性 → 激活。</li>
+      <li><strong>通过风暴按钮：</strong>点击中间页脚「风暴」按钮 → 选择类型 → 风暴将放置在飞机前方约 20 海里处 → 编辑属性 → 激活。</li>
+    </ol>
+    <blockquote>
+      <strong>状态提示：</strong>所选风暴旁边的红色「激活」标志表示该风暴在模拟中已激活；中间页脚「风暴」按钮上覆盖的红色徽章表示当前已激活的风暴数量。
+    </blockquote>
+
+    <h5>录制（Recording）</h5>
+    <p>录制按钮是开始/停止切换按钮，用于控制训练课程的视频录制。<strong>仅在配备简报/讲评系统的 IOS 设备上可用。</strong></p>
+    <p>录制按钮状态：</p>
+    <ul>
+      <li>准备录制 / 按下开始录制</li>
+      <li>录制中 / 按下停止录制</li>
+    </ul>
+    <p>在训练课程视频录制期间，可使用地图页脚中的事件标记来标识课程中的特殊事件，便于事后回顾和评估机组资源管理（CRM）。</p>
+    <div class="img-row">
+      <div class="img-block"><img src="./images/ch1_6_recording_ready.jpg" alt="准备录制"><div class="img-caption">准备录制 / 按下开始录制</div></div>
+      <div class="img-block"><img src="./images/ch1_6_recording_active.jpg" alt="录制中"><div class="img-caption">录制中 / 按下停止录制</div></div>
+    </div>
+
+    <h5>打印（Print）</h5>
+    <p>打印按钮的功能与控制板页脚上的打印按钮相同（详见 1.2.7 控制面板底部）。</p>
+
+    <h4>2.4.3 右侧页脚（Right Side Footer）</h4>
+    <p>右侧页脚包含锁定、2D/3D、帮助、工作区四个按钮。</p>
+    <div class="img-block">
+      <img src="./images/ch1_6_footer_right.jpg" alt="右侧页脚">
+      <div class="img-caption">图 1.6-16 右侧页脚</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>按钮</th><th>功能</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>锁定<br>Latch</td><td>将地图锁定到本机，使本机始终保持在地图中央</td></tr>
+          <tr><td>2D/3D</td><td>在主区域 2D 和 3D 显示模式之间切换</td></tr>
+          <tr><td>帮助<br>Help</td><td>功能同控制板页脚帮助按钮（详见 1.2.7）</td></tr>
+          <tr><td>工作区<br>Workspace</td><td>功能同控制板页脚工作区按钮（详见 1.2.7），用于切换 IOS 工作区</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.5 风暴管理子流程图</h3>
+    <p>风暴属性滑动面板涉及「选择 → 编辑 → 激活/删除」的多步骤操作，按规范要求绘制独立的横向操作流程图。</p>
+    <div class="mermaid">
+flowchart LR
+    Start([打开风暴属性面板]) --> SelectType{选择风暴类型}
+    SelectType --> Place[放置风暴<br>光标位置/飞机前20NM]
+    Place --> Edit[编辑属性<br>旋转/随风移动/风暴效果]
+    Edit --> Decide{操作决策}
+    Decide -->|激活| Activate[点击激活<br>浅灰变彩色]
+    Decide -->|删除| Delete[点击删除<br>从地图移除]
+    Decide -->|重新定位| Reposition[重新定位到光标]
+    Activate --> End([风暴激活完成])
+    Delete --> End2([风暴移除完成])
+    Reposition --> Edit
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End2 fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style Activate fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Delete fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    </div>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 地图工作区教员核心操作流程全景图</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 IOS 系统]) --> OpenMap[点击 Workspace<br>选择 Map]
+    OpenMap --> ViewMap[地图工作区加载]
+
+    ViewMap --> Decision{选择操作类型}
+    Decision -->|监控信息| Monitor[查看标题栏<br>重量/性能/故障/通信]
+    Decision -->|浏览地图| Navigate[平移/缩放/切换2D3D<br>使用右侧工具栏]
+    Decision -->|添加风暴| StormFlow[风暴管理子流程 — 2.4.2]
+    Decision -->|标记事件| MarkerFlow[点击 Marker<br>选择彩色标记]
+    Decision -->|性能评估| PlotFlow[左侧页脚绘图<br>精密/非精密/起飞/尾部间隙/跑道]
+    Decision -->|录制课程| RecordFlow[点击录制<br>开始/停止]
+
+    Monitor --> End([训练监控完成])
+    Navigate --> End
+    StormFlow --> End
+    MarkerFlow --> End
+    PlotFlow --> End
+    RecordFlow --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style StormFlow fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style PlotFlow fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    </div>
+
+    <h3>3.2 地图工作区通用状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 地图未加载
+    地图未加载 --> 地图显示中 : 选择Map工作区
+    地图显示中 --> 信息监控中 : 查看标题栏信息
+    地图显示中 --> 地图浏览中 : 缩放/平移/切换视角
+    地图显示中 --> 风暴面板打开中 : 点击Storm按钮
+    地图显示中 --> 绘图显示中 : 选择Plots图表
+    地图显示中 --> 录制中 : 点击Recording开始
+
+    风暴面板打开中 --> 风暴编辑中 : 选择风暴类型并编辑属性
+    风暴编辑中 --> 风暴激活中 : 点击激活
+    风暴激活中 --> 地图显示中 : 风暴生效完成
+    风暴编辑中 --> 地图显示中 : 点击删除或取消
+
+    录制中 --> 录制暂停中 : 点击停止/飞行冻结
+    录制暂停中 --> 录制中 : 继续录制
+    录制中 --> 地图显示中 : 录制完成/达到300秒上限
+
+    地图浏览中 --> 地图显示中 : 完成浏览
+    信息监控中 --> 地图显示中 : 完成监控
+    绘图显示中 --> 地图显示中 : 清除绘图
+
+    地图显示中 --> 地图未加载 : 切换至其他工作区
+    地图未加载 --> [*]
+    </div>
+
+    <h4>状态说明</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>状态</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>地图未加载</td><td>当前未显示地图工作区，处于其他 IOS 工作区</td></tr>
+          <tr><td>地图显示中</td><td>地图工作区已加载，教员可进行各类操作</td></tr>
+          <tr><td>信息监控中</td><td>教员正在查看标题栏的飞机/性能/故障/通信信息</td></tr>
+          <tr><td>地图浏览中</td><td>教员正在缩放、平移、切换 2D/3D 或调整视角</td></tr>
+          <tr><td>风暴面板打开中</td><td>风暴属性滑动面板已打开，等待选择风暴类型</td></tr>
+          <tr><td>风暴编辑中</td><td>已选择风暴，正在编辑旋转、效果、位置等属性</td></tr>
+          <tr><td>风暴激活中</td><td>点击激活后，风暴从浅灰色变为彩色并生效</td></tr>
+          <tr><td>绘图显示中</td><td>左侧页脚选择了某类图表并在地图上显示</td></tr>
+          <tr><td>录制中</td><td>训练课程视频录制正在进行，最长 300 秒</td></tr>
+          <tr><td>录制暂停中</td><td>录制因点击停止或飞行冻结而暂停</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>关联项</th><th>依赖关系</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Control Board Footer / 控制面板底部</td>
+            <td><strong>强依赖</strong>：地图工作区通过页脚 Workspace 按钮进入</td>
+          </tr>
+          <tr>
+            <td>Weather / 天气系统</td>
+            <td><strong>强依赖</strong>：风暴的显示和移动依赖当前环境风参数</td>
+          </tr>
+          <tr>
+            <td>Reference Airport / 参考机场</td>
+            <td><strong>中依赖</strong>：自动范围功能需要参考跑道位置；地图定位支持机场元素</td>
+          </tr>
+          <tr>
+            <td>Flight Freeze / 飞行冻结</td>
+            <td><strong>中依赖</strong>：飞行冻结会暂停录制模式；风暴效果仍可在冻结状态下显示</td>
+          </tr>
+          <tr>
+            <td>Brief/Debrief System / 简报讲评系统</td>
+            <td><strong>弱依赖</strong>：录制按钮和事件标记仅在配备该系统的 IOS 设备上可用</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>场景</th><th>行为</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>未配备简报/讲评系统</td>
+            <td>录制按钮不可用或被隐藏；事件标记功能受限</td>
+          </tr>
+          <tr>
+            <td>风暴已选中但未激活</td>
+            <td>地图上的风暴显示为浅灰色，未对模拟环境产生实际影响</td>
+          </tr>
+          <tr>
+            <td>飞行冻结激活时启动录制</td>
+            <td>录制模式被暂停，解冻后可继续</td>
+          </tr>
+          <tr>
+            <td>录制达到最大时长 300 秒</td>
+            <td>自动停止录制，需重新开始新的录制片段</td>
+          </tr>
+          <tr>
+            <td>自动范围开启但无参考跑道</td>
+            <td>自动范围逻辑可能仅围绕本机保持居中，具体行为取决于 IOS 配置</td>
+          </tr>
+          <tr>
+            <td>点击罗盘切换 North Up / Heading Up</td>
+            <td>切换即时生效，不影响地图缩放级别或中心点</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <pre>教员点击 Workspace → 选择 Map
+        ↓
+IOS 工作区管理器加载地图工作区上下文
+        ↓
+渲染地图标题栏（从飞机/环境/课程状态订阅）
+        ↓
+渲染主区域（2D/3D 地图引擎加载地形、飞机位置、导航台、机场、风暴）
+        ↓
+右侧工具栏与地图页脚渲染完成
+        ↓
+教员操作触发 UI 事件 → 地图引擎更新视图 → 模拟器状态同步（如风暴激活、飞机重新定位）</pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>接口</th><th>方法</th><th>请求/响应</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>切换工作区</td>
+            <td>POST /api/v1/workspace/switch</td>
+            <td>{ workspace: "map" } / { success, currentWorkspace }</td>
+            <td>切换到地图工作区</td>
+          </tr>
+          <tr>
+            <td>获取地图状态</td>
+            <td>GET /api/v1/map/state</td>
+            <td>{ center, zoom, mode, locked, overlays[] }</td>
+            <td>获取当前地图中心、缩放、2D/3D 模式、锁定状态</td>
+          </tr>
+          <tr>
+            <td>设置地图视图</td>
+            <td>POST /api/v1/map/view</td>
+            <td>{ center?, zoom?, mode?, locked? }</td>
+            <td>更新地图中心、缩放级别、2D/3D 模式、锁定状态</td>
+          </tr>
+          <tr>
+            <td>获取风暴列表</td>
+            <td>GET /api/v1/map/storms</td>
+            <td>[{ id, type, position, rotation, active, effects }]</td>
+            <td>获取地图上所有风暴状态</td>
+          </tr>
+          <tr>
+            <td>创建/更新风暴</td>
+            <td>POST /api/v1/map/storms</td>
+            <td>{ id?, type, position, rotation, moveWithWind, effects, active }</td>
+            <td>创建或更新风暴属性</td>
+          </tr>
+          <tr>
+            <td>删除风暴</td>
+            <td>DELETE /api/v1/map/storms/:id</td>
+            <td>{ success }</td>
+            <td>从地图和模拟中移除风暴</td>
+          </tr>
+          <tr>
+            <td>控制录制</td>
+            <td>POST /api/v1/recording/control</td>
+            <td>{ action: "start" | "stop" | "pause" }</td>
+            <td>控制训练课程视频录制；受简报/讲评系统配置限制</td>
+          </tr>
+          <tr>
+            <td>添加事件标记</td>
+            <td>POST /api/v1/recording/markers</td>
+            <td>{ type, timestamp, position }</td>
+            <td>在录制时间轴上添加事件标记</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>正向路径</td>
+            <td>从控制面板点击 Workspace → 选择 Map</td>
+            <td>成功切换到地图工作区，标题栏、主区域、工具栏、页脚全部加载</td>
+          </tr>
+          <tr>
+            <td>正向路径</td>
+            <td>点击罗盘图标切换 North Up / Heading Up</td>
+            <td>地图方向即时切换，飞机/地图相对关系正确</td>
+          </tr>
+          <tr>
+            <td>正向路径</td>
+            <td>通过光标径向菜单添加并激活风暴</td>
+            <td>风暴放置于光标位置，激活后从浅灰变为彩色，模拟环境生效</td>
+          </tr>
+          <tr>
+            <td>正向路径</td>
+            <td>通过风暴按钮添加风暴</td>
+            <td>风暴放置于飞机前方约 20 海里处，属性面板可正常编辑</td>
+          </tr>
+          <tr>
+            <td>正向路径</td>
+            <td>选择左侧页脚「精密进近」绘图</td>
+            <td>地图上显示下滑道/航向道/速度偏差图表，数据与飞机实际位置一致</td>
+          </tr>
+          <tr>
+            <td>异常路径</td>
+            <td>未配备简报/讲评系统时访问录制按钮</td>
+            <td>录制按钮隐藏或禁用，事件标记功能不可用</td>
+          </tr>
+          <tr>
+            <td>异常路径</td>
+            <td>飞行冻结期间点击开始录制</td>
+            <td>录制进入暂停状态，解冻后自动恢复或需手动恢复（按配置）</td>
+          </tr>
+          <tr>
+            <td>边界条件</td>
+            <td>连续录制达到 300 秒上限</td>
+            <td>录制自动停止，系统提示达到最大时长</td>
+          </tr>
+          <tr>
+            <td>边界条件</td>
+            <td>比例尺在 5~350 海里范围边界切换</td>
+            <td>最小/最大缩放级别限制正确，不越界</td>
+          </tr>
+          <tr>
+            <td>联动测试</td>
+            <td>修改环境风参数时观察风向标和风暴移动</td>
+            <td>风向标方向更新；已勾选「随风移动」的风暴位置按风向风速漂移</td>
+          </tr>
+          <tr>
+            <td>性能测试</td>
+            <td>同时激活多个风暴并切换 2D/3D 模式</td>
+            <td>地图渲染帧率稳定，无卡顿或内存泄漏</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-06-05</td>
+            <td>V1.0</td>
+            <td>初始生成 1.6 地图工作区 HTML，完整覆盖地图标题栏、主区域（图标/径向菜单）、右侧工具栏（7 项功能）、地图页脚（左/中/右三段）；包含风暴属性滑动面板详述、子流程图、状态机、测试要点；配套原始手册 Figure 111~143 共 35 张截图</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_5_lesson_plan_profile.html">← 1.5 课程计划配置工作区（Lesson Plan Profile）</a>
+      <a class="next" href="ch1_7_advanced.html">1.7 高级（Advanced） →</a>
+    </div>
+  </div>
+</main>
+
+</div>
+
+<script>
+// Sidebar toggle
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Collapsible toggle
+function toggleCollapsible(el){
+  const parent = el.parentElement;
+  parent.classList.toggle('collapsed');
+}
+
+// Image zoom
+document.addEventListener('click', function(e){
+  const img = e.target.closest('.img-block img');
+  if(img){
+    e.preventDefault();
+    const overlay = document.createElement('div');
+    overlay.className = 'img-zoom-overlay';
+    const zoomed = document.createElement('img');
+    zoomed.src = img.src;
+    zoomed.alt = img.alt;
+    overlay.appendChild(zoomed);
+    document.body.appendChild(overlay);
+    return;
+  }
+  const overlay = e.target.closest('.img-zoom-overlay');
+  if(overlay){
+    overlay.remove();
+  }
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+  }
+});
+
+// Mermaid init
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+// Mermaid zoom/pan
+(function(){
+  let zoomedEl = null;
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function updateTransform(){
+    if(!zoomedEl) return;
+    const svg = zoomedEl.querySelector('svg');
+    if(svg) svg.style.transform = 'translate(' + translateX + 'px,' + translateY + 'px) scale(' + scale + ')';
+  }
+
+  document.addEventListener('click', function(e){
+    const mermaid = e.target.closest('.mermaid');
+    if(!mermaid){
+      if(zoomedEl && !e.target.closest('.mermaid.is-zoomed')){
+        zoomedEl.classList.remove('is-zoomed');
+        const svg = zoomedEl.querySelector('svg');
+        if(svg) svg.style.transform = '';
+        zoomedEl = null;
+        document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+      }
+      return;
+    }
+    if(zoomedEl) return;
+    zoomedEl = mermaid;
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    mermaid.classList.add('is-zoomed');
+    const overlay = document.createElement('div');
+    overlay.className = 'mermaid-zoom-overlay';
+    document.body.appendChild(overlay);
+  });
+
+  document.addEventListener('wheel', function(e){
+    if(!zoomedEl) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.max(0.3, Math.min(5, scale + delta));
+    updateTransform();
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e){
+    if(!zoomedEl) return;
+    if(e.target.closest('.mermaid.is-zoomed')){
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!isDragging || !zoomedEl) return;
+    translateX += e.clientX - lastX;
+    translateY += e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateTransform();
+  });
+
+  document.addEventListener('mouseup', function(){ isDragging = false; });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && zoomedEl){
+      zoomedEl.classList.remove('is-zoomed');
+      const svg = zoomedEl.querySelector('svg');
+      if(svg) svg.style.transform = '';
+      zoomedEl = null;
+      document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+    }
+  });
+})();
+</script>
+</body>
+</html>

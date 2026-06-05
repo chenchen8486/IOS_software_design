@@ -1,0 +1,620 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.3 维护页面（Maintenance Pages）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
+.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link active" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER）</a>
+        <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
+        <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.3 维护页面（Maintenance Pages）</span>
+  </div>
+
+  <div class="content">
+    <h1>1.3 维护页面（Maintenance Pages）</h1>
+    <p class="subtitle">对应原始手册：## 12. Maintenance Pages</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    subgraph Workspaces["IOS Workspaces / IOS 工作区"]
+        A[Control Board<br>控制面板]
+        B[Map<br>地图]
+        C[Lesson Plan Profile<br>课程计划剖面]
+        D[Instrument Repeater<br>仪表复示器]
+        E[Maintenance Pages<br>维护页面]
+        F[Advanced<br>高级]
+    end
+
+    E --> E1[Maintenance-Only Access<br>维护人员专用入口]
+    E --> E2[Simulator Maintenance Tasks<br>模拟器维护任务]
+
+    style E fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style E1 fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>维护页面主视图<br>Maintenance Pages Main View</td>
+            <td>占据整个当前显示器工作区</td>
+            <td>为维护人员提供执行模拟器维护任务的专用界面</td>
+          </tr>
+          <tr>
+            <td>工作区切换按钮<br>Workspace Button</td>
+            <td>控制面板底部页脚右侧</td>
+            <td>教员可通过点击该按钮并选择「维护」进入本工作区（详见 1.2.7）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_3_maintenance_pages.jpg" alt="维护页面主视图">
+      <div class="img-caption">图 1.3-1 维护页面主视图（Maintenance Pages）</div>
+    </div>
+
+    <blockquote>
+      <strong>访问限制说明：</strong>维护页面仅供维护人员使用，教员在日常训练场景中通常不需要进入该工作区。页面内容取决于 IOS 配置和模拟器型号。
+    </blockquote>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 维护页面属性总览</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>属性</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>功能定义</td>
+            <td>为维护人员提供的专用工作区，用于执行各类模拟器维护任务</td>
+          </tr>
+          <tr>
+            <td>触发方式</td>
+            <td>点击控制面板底部「Workspace / 工作区」按钮 → 在弹出的工作区菜单中选择「Maintenance / 维护」</td>
+          </tr>
+          <tr>
+            <td>呈现方式</td>
+            <td>全屏工作区页面，替换当前显示器中的控制面板视图</td>
+          </tr>
+          <tr>
+            <td>用户权限</td>
+            <td>仅供维护人员使用，教员日常训练中无需访问</td>
+          </tr>
+          <tr>
+            <td>配置依赖</td>
+            <td>页面具体内容和可用维护任务取决于 IOS 配置及模拟器硬件型号</td>
+          </tr>
+          <tr>
+            <td>边界行为</td>
+            <td>进入维护页面后，常规训练控制功能被隐藏；完成维护后需手动切换回训练工作区</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.2 访问路径说明</h3>
+    <p>教员台系统提供六个工作区，维护页面是其中之一。进入维护页面的标准路径如下：</p>
+    <ol>
+      <li>在控制面板底部页脚（Control Board Footer）中找到「Workspace / 工作区」按钮；</li>
+      <li>点击后弹出工作区选择菜单；</li>
+      <li>在菜单中选择「Maintenance / 维护」；</li>
+      <li>当前显示器切换为维护页面主视图。</li>
+    </ol>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 维护页面访问操作流程全景图</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 IOS 训练系统]) --> NeedMaint{需要执行<br>维护任务?}
+    NeedMaint -->|是| OpenFooter[点击 Workspace<br>工作区按钮]
+    NeedMaint -->|否| ContinueTraining[继续训练]
+    ContinueTraining --> EndTrain([训练继续])
+
+    OpenFooter --> SelectMaint{选择<br>Maintenance}
+    SelectMaint -->|维护| EnterMaint[切换至<br>维护页面]
+    SelectMaint -->|其他工作区| SwitchOther[进入其他<br>工作区]
+    SwitchOther --> EndSwitch([工作区切换完成])
+
+    EnterMaint --> PerformTask[执行维护任务]
+    PerformTask --> Complete{维护完成?}
+    Complete -->|是| ReturnWorkspace[切换回<br>训练工作区]
+    Complete -->|否| PerformTask
+
+    ReturnWorkspace --> EndMaint([维护流程结束])
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style EndTrain fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style EndMaint fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style EndSwitch fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style EnterMaint fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    </div>
+
+    <h3>3.2 工作区切换通用状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 训练工作区
+    训练工作区 --> 工作区菜单打开中 : 点击Workspace按钮
+    工作区菜单打开中 --> 维护页面 : 选择Maintenance
+    工作区菜单打开中 --> 训练工作区 : 点击外部取消
+    工作区菜单打开中 --> 其他工作区 : 选择其他选项
+
+    维护页面 --> 维护任务执行中 : 开始维护操作
+    维护任务执行中 --> 维护页面 : 完成或取消当前任务
+
+    维护页面 --> 训练工作区 : 切换回训练工作区
+    其他工作区 --> 训练工作区 : 切换回训练工作区
+
+    训练工作区 --> [*]
+    </div>
+
+    <h4>状态说明</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>状态</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>训练工作区</td><td>教员进行训练控制的常规状态，显示控制面板、地图等工作区之一</td></tr>
+          <tr><td>工作区菜单打开中</td><td>点击 Workspace 按钮后，弹出工作区选择菜单的临时状态</td></tr>
+          <tr><td>维护页面</td><td>当前显示器显示维护页面的专用界面</td></tr>
+          <tr><td>维护任务执行中</td><td>维护人员正在使用维护页面执行具体维护操作</td></tr>
+          <tr><td>其他工作区</td><td>教员切换到地图、课程计划剖面、仪表复示器或高级等工作区</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>关联项</th><th>依赖关系</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Control Board Footer / 控制面板底部</td>
+            <td><strong>强依赖</strong>：维护页面通过页脚的 Workspace 按钮进入，无独立入口</td>
+          </tr>
+          <tr>
+            <td>IOS 配置</td>
+            <td><strong>强依赖</strong>：维护页面的具体内容和可用任务由 IOS 配置文件决定</td>
+          </tr>
+          <tr>
+            <td>模拟器硬件</td>
+            <td><strong>弱依赖</strong>：不同模拟器型号的维护任务可能不同</td>
+          </tr>
+          <tr>
+            <td>Lesson Plan / 课程计划</td>
+            <td><strong>互斥</strong>：进入维护页面会中断当前训练会话的交互界面</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>场景</th><th>行为</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>训练过程中误进入维护页面</td>
+            <td>当前训练控制界面被替换，但模拟器运行状态通常不会自动终止；需手动切回控制面板继续训练</td>
+          </tr>
+          <tr>
+            <td>维护页面未在当前 IOS 配置中启用</td>
+            <td>Workspace 菜单中可能不显示 Maintenance 选项，或显示为禁用状态</td>
+          </tr>
+          <tr>
+            <td>当前课程正在进行时切换</td>
+            <td>课程计划可能继续在后台运行，但教员无法通过维护页面监控课程状态</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <pre>教员点击 Workspace 按钮
+        ↓
+Workspace 菜单状态变更（UI 事件）
+        ↓
+选择 Maintenance
+        ↓
+IOS 工作区管理器切换当前显示器上下文
+        ↓
+加载维护页面 UI 组件与维护任务接口
+        ↓
+渲染维护页面主视图</pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>接口</th><th>方法</th><th>请求/响应</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>切换工作区</td>
+            <td>POST /api/v1/workspace/switch</td>
+            <td>请求：{ workspace: "maintenance" }<br>响应：{ success: true, currentWorkspace: "maintenance" }</td>
+            <td>切换当前显示器到指定工作区</td>
+          </tr>
+          <tr>
+            <td>获取可用工作区列表</td>
+            <td>GET /api/v1/workspace/list</td>
+            <td>响应：[{ id, name, enabled, icon }]</td>
+            <td>返回当前 IOS 配置下可用的工作区</td>
+          </tr>
+          <tr>
+            <td>获取维护任务列表</td>
+            <td>GET /api/v1/maintenance/tasks</td>
+            <td>响应：[{ id, name, category, requiredRole }]</td>
+            <td>返回当前用户权限下可执行的维护任务</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>正向路径</td>
+            <td>从控制面板点击 Workspace → 选择 Maintenance</td>
+            <td>当前显示器成功切换为维护页面，页面加载无报错</td>
+          </tr>
+          <tr>
+            <td>正向路径</td>
+            <td>从维护页面切换回 Control Board</td>
+            <td>成功返回控制面板，训练状态保持正常</td>
+          </tr>
+          <tr>
+            <td>异常路径</td>
+            <td>IOS 配置未启用维护页面</td>
+            <td>Workspace 菜单中 Maintenance 选项隐藏或禁用</td>
+          </tr>
+          <tr>
+            <td>异常路径</td>
+            <td>课程执行过程中切换至维护页面</td>
+            <td>模拟器不崩溃，课程状态不丢失，切回后可继续</td>
+          </tr>
+          <tr>
+            <td>边界条件</td>
+            <td>所有工作区来回切换</td>
+            <td>状态上下文正确保留，无内存泄漏或 UI 残留</td>
+          </tr>
+          <tr>
+            <td>权限测试</td>
+            <td>非维护人员角色尝试访问维护任务</td>
+            <td>维护任务列表为空或接口返回 403</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-06-05</td>
+            <td>V1.0</td>
+            <td>初始生成 1.3 维护页面 HTML，包含功能层级图、界面结构、操作流程、状态机与测试要点；配图来自原始手册 Figure 108</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_2_7_control_board_footer.html">← 1.2.7 控制面板底部（Control Board Footer）</a>
+      <a class="next" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER） →</a>
+    </div>
+  </div>
+</main>
+
+</div>
+
+<script>
+// Sidebar toggle
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Collapsible sections
+document.addEventListener('click', function(e){
+  const header = e.target.closest('.collapsible-header');
+  if(!header) return;
+  const col = header.parentElement;
+  col.classList.toggle('collapsed');
+});
+
+// Image zoom
+document.addEventListener('click', function(e){
+  const img = e.target.closest('.img-block img');
+  if(img){
+    e.preventDefault();
+    const overlay = document.createElement('div');
+    overlay.className = 'img-zoom-overlay';
+    const zoomed = document.createElement('img');
+    zoomed.src = img.src;
+    zoomed.alt = img.alt;
+    overlay.appendChild(zoomed);
+    document.body.appendChild(overlay);
+    return;
+  }
+  const overlay = e.target.closest('.img-zoom-overlay');
+  if(overlay){
+    overlay.remove();
+  }
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+  }
+});
+
+// Mermaid init
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+// Mermaid zoom/pan
+(function(){
+  let zoomedEl = null;
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function updateTransform(){
+    if(!zoomedEl) return;
+    const svg = zoomedEl.querySelector('svg');
+    if(svg) svg.style.transform = 'translate(' + translateX + 'px,' + translateY + 'px) scale(' + scale + ')';
+  }
+
+  document.addEventListener('click', function(e){
+    const mermaid = e.target.closest('.mermaid');
+    if(!mermaid){
+      if(zoomedEl && !e.target.closest('.mermaid.is-zoomed')){
+        zoomedEl.classList.remove('is-zoomed');
+        const svg = zoomedEl.querySelector('svg');
+        if(svg) svg.style.transform = '';
+        zoomedEl = null;
+        document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+      }
+      return;
+    }
+    if(zoomedEl) return;
+    zoomedEl = mermaid;
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    mermaid.classList.add('is-zoomed');
+    const overlay = document.createElement('div');
+    overlay.className = 'mermaid-zoom-overlay';
+    document.body.appendChild(overlay);
+  });
+
+  document.addEventListener('wheel', function(e){
+    if(!zoomedEl) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.max(0.3, Math.min(5, scale + delta));
+    updateTransform();
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e){
+    if(!zoomedEl) return;
+    if(e.target.closest('.mermaid.is-zoomed')){
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!isDragging || !zoomedEl) return;
+    translateX += e.clientX - lastX;
+    translateY += e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateTransform();
+  });
+
+  document.addEventListener('mouseup', function(){ isDragging = false; });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && zoomedEl){
+      zoomedEl.classList.remove('is-zoomed');
+      const svg = zoomedEl.querySelector('svg');
+      if(svg) svg.style.transform = '';
+      zoomedEl = null;
+      document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
+    }
+  });
+})();
+</script>
+</body>
+</html>

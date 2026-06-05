@@ -1,0 +1,956 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.7 高级（Advanced）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER）</a>
+        <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
+        <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map）</a>
+        <a class="nav-link active" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+        <a class="nav-link" href="#">1.8 参考流程</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.7 高级（Advanced）</span>
+  </div>
+  <div class="content">
+    <h1>1.7 高级（Advanced）</h1>
+    <p class="subtitle">对应原始手册：## 16. Advanced | 对应 A320.md：## 2.7 高级（Advanced）</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    subgraph Main["Advanced Toolbar / 高级工具栏"]
+        A[Aircraft<br>飞机]
+        B[Position<br>位置]
+        C[Environment<br>环境]
+        D[Intruders<br>入侵者]
+        E[Comms<br>通信]
+        F[Failure<br>故障]
+        G[UPRT<br>预防与恢复训练]
+        H[Resets/Freezes<br>重置/冻结]
+        I[Recording<br>录制]
+    end
+
+    C --> C1[Weather Region<br>天气区域]
+    C --> C2[Windshear & Microburst<br>风切变与微暴流]
+    C --> C3[Icing<br>结冰]
+    C --> C4[Time of Day<br>时段]
+    C --> C5[Lighting<br>灯光]
+    C --> C6[Airport Visual FX<br>机场视觉效果]
+
+    C1 --> C1a[Multiple Weather Airports<br>多机场天气]
+    C1 --> C1b[Save/Recall Scenario<br>保存/调用场景]
+
+    C6 --> C6a[Runway Conditions<br>跑道条件]
+    C6 --> C6b[Visual Control<br>视觉控制]
+    C6 --> C6c[Airport Lights<br>机场灯光]
+    C6 --> C6d[Runway Default Lighting<br>跑道默认灯光]
+
+    D --> D1[TCAS<br>TCAS]
+    D --> D2[Random Traffic<br>随机交通]
+    D --> D3[Approach Traffic<br>进近交通]
+    D --> D4[ITP<br>同航迹程序]
+
+    D1 --> D1a[Intruder Position<br>入侵者位置]
+    D1 --> D1b[Vertical Flight Path<br>垂直飞行航径]
+    D1 --> D1c[Scenario<br>场景]
+    D1 --> D1d[Transponder Equipment<br>应答机设备]
+    D1 --> D1e[Ownship Capacity<br>本机容量限制]
+
+    E --> E1[ATIS<br>自动终端信息服务]
+    E --> E2[ATC<br>空中交通管制]
+
+    E2 --> E2a[Clearance Delivery<br>放行许可]
+    E2 --> E2b[Ground Control<br>地面管制]
+    E2 --> E2c[Tower<br>塔台]
+    E2 --> E2d[Departure<br>离场]
+    E2 --> E2e[Control<br>管制]
+    E2 --> E2f[Approach<br>进近]
+
+    G --> G1[Data Summary<br>数据汇总]
+    G --> G2[Controls<br>控制]
+    G --> G3[UPRT Scenarios<br>UPRT 场景]
+
+    G1 --> G1a[Critical Parameters<br>关键参数]
+    G1 --> G1b[Thumbnails<br>缩略图]
+    G1 --> G1c[Exceedances<br>超限]
+
+    G3 --> G3a[Maneuver Based<br>基于机动]
+    G3 --> G3b[Scenario Based<br>基于场景]
+
+    I --> I1[FSC/Recall<br>飞行状态捕捉/调用]
+    I --> I2[FMS Memory Save/Recall<br>FMS 内存保存/召回]
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>高级工具栏<br>Advanced Toolbar</td><td>工作区左侧或顶部快捷栏</td><td>提供 9 组快速访问按钮，可修改飞机/位置/环境参数、触发故障、访问附加页面</td></tr>
+          <tr><td>飞机（Aircraft）</td><td>工具栏第 1 个按钮</td><td>重量与平衡、服务与舱门控制（复用控制面板功能）</td></tr>
+          <tr><td>位置（Position）</td><td>工具栏第 2 个按钮</td><td>机场与重新定位、SLEW 位移（复用控制面板功能）</td></tr>
+          <tr><td>环境（Environment）</td><td>工具栏第 3 个按钮</td><td>多机场天气区域、风切变、结冰、时段、灯光、机场视觉效果</td></tr>
+          <tr><td>入侵者（Intruders）</td><td>工具栏第 4 个按钮</td><td>TCAS、随机交通、进近交通、ITP 场景设置</td></tr>
+          <tr><td>通信（Comms）</td><td>工具栏第 5 个按钮</td><td>ATIS 语音消息监控与编辑、ATC 六类消息模拟</td></tr>
+          <tr><td>故障（Failure）</td><td>工具栏第 6 个按钮</td><td>触发故障、跳闸断路器、无线电台失效/重置</td></tr>
+          <tr><td>UPRT</td><td>工具栏第 7 个按钮</td><td>异常恢复训练：数据监控、记录、回放、MBT/SBT 场景触发</td></tr>
+          <tr><td>重置/冻结（Resets/Freezes）</td><td>工具栏第 8 个按钮</td><td>复用控制面板页脚的重置与冻结选项</td></tr>
+          <tr><td>录制（Recording）</td><td>工具栏第 9 个按钮</td><td>飞行状态捕捉/调用、FMS 内存保存/召回</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_7_toolbar.jpg" alt="图 1：高级工具栏总览（Figure 144）">
+      <p class="img-caption">图 1：高级工具栏总览（Figure 144）</p>
+    </div>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 飞机（Aircraft）</h3>
+    <p>飞机按钮允许教员更改重量与平衡参数、与各种飞机舱门交互以及执行某些地面服务任务。</p>
+    <blockquote>从高级菜单访问的飞机子页面提供的控制与从控制面板访问的<strong>重量与平衡（8.10）</strong>和<strong>服务与舱门（8.11）</strong>滑动面板相同。详见 <a href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡</a>。</blockquote>
+    <div class="img-block">
+      <img src="./images/ch1_7_aircraft.jpg" alt="图 2：高级 — 飞机（Figure 145）">
+      <p class="img-caption">图 2：高级 — 飞机（Figure 145）</p>
+    </div>
+
+    <h3>2.2 位置（Position）</h3>
+    <p>位置按钮允许教员更改参考机场/跑道、重新定位和移动飞机。</p>
+    <blockquote>从高级菜单访问的位置子页面提供的控制与从控制面板访问的<strong>机场与重新定位（9.2）</strong>和<strong>SLEW 位移（7.3）</strong>滑动面板相同。详见 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡</a> 与 <a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡</a>。</blockquote>
+    <div class="img-block">
+      <img src="./images/ch1_7_position.jpg" alt="图 3：高级 — 位置（Figure 146）">
+      <p class="img-caption">图 3：高级 — 位置（Figure 146）</p>
+    </div>
+
+    <h3>2.3 环境（Environment）</h3>
+    <p>环境包括多个子按钮，用于更改特定机场或航路区域的各种环境参数。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_environment.jpg" alt="图 4：高级 — 环境（Figure 147）">
+      <p class="img-caption">图 4：高级 — 环境（Figure 147）</p>
+    </div>
+
+    <h4>2.3.1 天气区域（Weather Region）</h4>
+    <p>天气区域提供所有必要的控制，以更改最多五个不同机场和航路天气条件的环境参数。对于特定区域，教员可以更改风、温度和气压、云和能见度条件、降水、跑道条件、湍流。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_weather_region.jpg" alt="图 5：高级 — 天气区域（典型）（Figure 148）">
+      <p class="img-caption">图 5：高级 — 天气区域（典型）（Figure 148）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>多机场天气条件</td><td>支持两种模式决定何时将多机场天气复制到环境天气：① 按距离（50 海里内）② 按参考机场匹配</td></tr>
+          <tr><td>添加区域</td><td>点击天气区域页面，按屏幕说明添加一个新区域（最多 5 个）</td></tr>
+          <tr><td>保存场景</td><td>保存当前区域天气参数（不包括活跃风暴、微暴流、风切变、结冰）。保存参数包括：海平面温度、中间层和对流层顶温度、QNH、地面/中间层/对流层顶风</td></tr>
+          <tr><td>调用场景</td><td>按日期或字母顺序列出所有已保存场景，支持以新名称保存、加载或删除</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_add_region.jpg" alt="图 6：高级 — 添加区域（Figure 149）">
+        <p class="img-caption">图 6：高级 — 添加区域（Figure 149）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_save_scenario.jpg" alt="图 7：天气区域 — 保存场景（Figure 150）">
+        <p class="img-caption">图 7：天气区域 — 保存场景（Figure 150）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_recall_scenario.jpg" alt="图 8：天气区域 — 调用场景（Figure 151）">
+        <p class="img-caption">图 8：天气区域 — 调用场景（Figure 151）</p>
+      </div>
+    </div>
+
+    <h4>2.3.2 风切变与微暴流（Windshear & Microburst）</h4>
+    <blockquote>点击按钮打开风切变与微暴流滑动面板，功能与参考机场选项卡中的功能完全相同。详见 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡 — 2.9 风切变与微暴流</a>。</blockquote>
+
+    <h4>2.3.3 结冰（Icing）</h4>
+    <blockquote>点击按钮打开结冰滑动面板，功能与当前条件选项卡中的功能完全相同。详见 <a href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 — 2.12 结冰滑动面板</a>。</blockquote>
+
+    <h4>2.3.4 时段（Time of Day）</h4>
+    <blockquote>点击按钮打开时段页面，允许进行一般时段更改（黎明、白天、黄昏、夜晚切换），功能与参考机场选项卡中的功能完全相同。详见 <a href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡 — 2.3 时刻键盘/滑动面板</a>。</blockquote>
+
+    <h4>2.3.5 灯光（Lighting）</h4>
+    <p>灯光页面包含与机场重新定位选项卡中相同的灯光控制功能，外加三个附加按钮：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>类型</th><th>说明</th><th>范围</th></tr></thead>
+        <tbody>
+          <tr><td>停止排灯（Stop Bar）</td><td>Toggle</td><td>正常状态点击点亮，激活状态点击熄灭</td><td>—</td></tr>
+          <tr><td>滑行道灯（Taxi）</td><td>Dropdown</td><td>选择滑行道灯亮度</td><td>Min=0, Max=5</td></tr>
+          <tr><td>城市灯（City）</td><td>Dropdown</td><td>选择城市灯亮度</td><td>Min=0, Max=5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.3.6 机场视觉效果（Airport Visual FX）</h4>
+    <p>允许教员修改跑道条件和灯光、修改机场灯光、向视觉场景添加预录交通效果。包含四个选项卡：</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_airport_visual_fx.jpg" alt="图 9：机场视觉效果（Figure 152）">
+      <p class="img-caption">图 9：机场视觉效果（Figure 152）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>选项卡</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>跑道条件（Runway Conditions）</td><td>显示当前跑道条件只读字段，可展开打开跑道条件滑动面板</td></tr>
+          <tr><td>视觉控制（Visual Control）</td><td>引导员（Marshaller）切换显示/移除；录制交通、场景交通展开滑动面板</td></tr>
+          <tr><td>机场灯光（Airport Lights）</td><td>停止排灯、滑行道灯、城市灯控制</td></tr>
+          <tr><td>跑道默认灯光（Runway Default Lighting）</td><td>可展开显示跑道灯光滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.4 入侵者（Intruders）</h3>
+    <p>入侵者页面允许教员通过在飞机空域周围插入入侵者来设置交通场景。包含四个子页面：TCAS、随机交通、进近交通、ITP。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_intruders.jpg" alt="图 10：高级 — 入侵者（Figure 153）">
+      <p class="img-caption">图 10：高级 — 入侵者（Figure 153）</p>
+    </div>
+
+    <h4>2.4.1 TCAS</h4>
+    <p>TCAS 页面包含必要的控制项，用于在训练课程中自定义入侵者的存在。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_tcas.jpg" alt="图 11：TCAS 页面（Figure 154）">
+      <p class="img-caption">图 11：TCAS 页面（Figure 154）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>入侵者位置</td><td>8 个互斥方位单选按钮：前方左侧(-45°)、前方(0°)、前方右侧(+45°)、正左方(-90°)、正右方(+90°)、后方左侧(-135°)、后方(180°)、后方右侧(+135°)</td></tr>
+          <tr><td>垂直飞行航径</td><td>3 个互斥选项：下降（入侵者置于本机上方后下降）、平飞（同高度后接近）、爬升（本机下方后爬升）</td></tr>
+          <tr><td>场景</td><td>6 种 TCAS 场景：仅交通咨询（单一威胁）、决断咨询（双重威胁）不爬升/不下降、决断咨询（单一威胁）爬升/下降、爬升/下降后增加爬升/下降、双重威胁爬升/下降后改平、反向 RA（FL210 以上执行）</td></tr>
+          <tr><td>应答机设备</td><td>高度报告（Mode C/S vs Mode A）、ADS-B 报告</td></tr>
+          <tr><td>本机容量限制</td><td>未测量方位数据复选框：禁止/允许从 TCAS 天线测量方位</td></tr>
+          <tr><td>启动/停止场景</td><td>点击激活或停止入侵者场景</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.4.2 随机交通（Random Traffic）</h4>
+    <p>允许插入任意数量的入侵者，选择高度间隔模型和应答器设置。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_random_traffic.jpg" alt="图 12：随机交通页面（Figure 155）">
+      <p class="img-caption">图 12：随机交通页面（Figure 155）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>入侵者数量</td><td>滑块或键盘输入任意数量</td></tr>
+          <tr><td>高度间隔模型</td><td>RVSM（航路垂直间隔最小值）、IFR（仪表飞行规则）、VFR（目视飞行规则）</td></tr>
+          <tr><td>应答器设置</td><td>高度报告、无 ADS-B 报告、ADS-B 报告、混合</td></tr>
+          <tr><td>本机容量限制</td><td>同 TCAS 页面</td></tr>
+          <tr><td>清除随机交通</td><td>一键清除所有随机交通</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.4.3 进近交通（Approach Traffic）</h4>
+    <p>允许插入 1~3 个入侵者，选择高度间隔模型和应答器设置，用于评估和训练进近阶段的空中交通场景。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_approach_traffic.jpg" alt="图 13：进近交通页面（Figure 156）">
+      <p class="img-caption">图 13：进近交通页面（Figure 156）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>入侵者数量</td><td>下拉按钮选择 1~3 个</td></tr>
+          <tr><td>高度间隔模型</td><td>下风、等待航线、侧风、五边、混合</td></tr>
+          <tr><td>应答器设置</td><td>同随机交通页面</td></tr>
+          <tr><td>清除进近交通</td><td>一键清除所有进近交通</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.4.4 同航迹程序（ITP）</h4>
+    <p>ITP 页面允许教员查看预定义场景列表、创建/编辑/删除 ITP 场景、将场景激活到训练场景中。包含预定义场景和快速场景两个选项卡。</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_itp.jpg" alt="图 14：ITP（Figure 157）">
+        <p class="img-caption">图 14：ITP（Figure 157）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_itp_page.jpg" alt="图 15：ITP 页面（Figure 158）">
+        <p class="img-caption">图 15：ITP 页面（Figure 158）</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>场景列表</td><td>通常 CAE 提供 12 个预定义场景，名称一目了然</td></tr>
+          <tr><td>ITP 评估</td><td>在激活前评估在期望飞行高度层（FL）上 ITP 机会是否可行</td></tr>
+          <tr><td>ITP 地图</td><td>预览所选场景中所有入侵者与本机的相对位置，显示飞机符号、飞行 ID 和相对高度</td></tr>
+          <tr><td>新场景/编辑场景/删除场景</td><td>创建、修改或删除 ITP 场景，删除前需确认</td></tr>
+          <tr><td>快速场景</td><td>快速设置 ITP 场景，可自定义每个入侵者参数并评估</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_new_scenario.jpg" alt="图 16：新场景页面（Figure 160）">
+        <p class="img-caption">图 16：新场景页面（Figure 160）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_edit_intruder.jpg" alt="图 17：编辑入侵者页面（Figure 161）">
+        <p class="img-caption">图 17：编辑入侵者页面（Figure 161）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_edit_scenario.jpg" alt="图 18：编辑场景页面（Figure 162）">
+        <p class="img-caption">图 18：编辑场景页面（Figure 162）</p>
+      </div>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_quick_scenario.jpg" alt="图 19：快速场景选项卡（Figure 163）">
+        <p class="img-caption">图 19：快速场景选项卡（Figure 163）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_intruder_badge.jpg" alt="入侵者数量红色徽章指示">
+        <p class="img-caption">入侵者数量红色徽章指示</p>
+      </div>
+    </div>
+
+    <h3>2.5 通信（Comms）</h3>
+    <p>通信按钮提供对通信和数据链页面的访问，允许教员更改音频监听、教员发射、机组发射或呼叫控制，以及设置各种类型的数据链参数。同时支持修改 ATIS 消息和 ATC 消息。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_comms.jpg" alt="图 20：高级 — 通信（Figure 164）">
+      <p class="img-caption">图 20：高级 — 通信（Figure 164）</p>
+    </div>
+
+    <h4>2.5.1 ATIS（自动终端信息服务）</h4>
+    <p>ATIS 页面允许教员监控参考机场及环境机场的当前 ATIS 语音消息，支持自动和手动两种模式。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_atis.jpg" alt="图 21：ATIS 页面（Figure 165）">
+      <p class="img-caption">图 21：ATIS 页面（Figure 165）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数/控件</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>模式</td><td>自动模式：ATIS 消息随环境天气变化自动更新，天气输入按钮禁用；手动模式：允许教员覆盖 ATIS 消息，所有按钮启用</td></tr>
+          <tr><td>机场选项卡</td><td>显示所选机场 ICAO 代码，绿色 REF 标志表示参考机场</td></tr>
+          <tr><td>手动（Manual）</td><td>启用 ATIS 手动模式，机场旁显示琥珀色 MANUAL 标志</td></tr>
+          <tr><td>重置（Reset）</td><td>将修改的参数更新为当前实际 ATIS 信息</td></tr>
+          <tr><td>暂停 ATIS 传输</td><td>禁用 ATIS 传输</td></tr>
+          <tr><td>排除刹车作用</td><td>禁用刹车作用语音播报</td></tr>
+          <tr><td>气象报告/风向风速/阵风/能见度/RVR/天气类型/云/云底高/温度/露点/QNH/进近/到达跑道/起飞跑道/跑道状况/刹车效应/备注</td><td>各类 ATIS 消息参数，部分为只读（自动模式），部分可编辑（手动模式）</td></tr>
+          <tr><td>更新广播</td><td>将 ATIS 信息更新为教员设置的最新环境信息，变化时启用，激活后保持 2 秒</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.5.2 ATC（空中交通管制）</h4>
+    <p>ATC 页面包含 ATC UNIT 和 MESSAGE 两个主选项卡。ATC UNIT 包含六类消息页面：</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_atc.jpg" alt="图 22：ATC 页面（Figure 166）">
+      <p class="img-caption">图 22：ATC 页面（Figure 166）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ATC 页面</th><th>核心功能</th></tr></thead>
+        <tbody>
+          <tr><td>放行许可（Clearance Delivery）</td><td>航空公司选择、航班号输入、目的地机场、飞行高度层、播放按钮、频率、背景通信</td></tr>
+          <tr><td>地面管制（Ground Control）</td><td>航空公司、航班号、滑行路线、移交下一管制员、下一频率（Min=118.0, Max=136.97）</td></tr>
+          <tr><td>塔台（Tower）</td><td>塔台消息类型自定义播放</td></tr>
+          <tr><td>离场（Departure）</td><td>离场消息类型自定义播放</td></tr>
+          <tr><td>管制（Control）</td><td>管制消息类型自定义播放</td></tr>
+          <tr><td>进近（Approach）</td><td>进近消息类型自定义播放</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.6 故障（Failure）</h3>
+    <p>故障按钮提供访问页面的途径，允许教员触发故障、跳闸/弹出断路器、触发电台故障，并获取武装且活跃故障、跳闸断路器、失效无线电台的总体状态。</p>
+    <blockquote>从高级菜单进入的故障、断路器和故障汇总子页面，其控制功能与从控制面板访问的对应滑动面板相同。详见 <a href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡</a>。</blockquote>
+    <div class="img-block">
+      <img src="./images/ch1_7_failure.jpg" alt="图 23：高级 — 故障（Figure 167）">
+      <p class="img-caption">图 23：高级 — 故障（Figure 167）</p>
+    </div>
+
+    <h4>2.6.1 无线电台页面（Radio Stations）</h4>
+    <p>允许教员浏览所选区域附近地面无线电台的导航数据库，以便：</p>
+    <ul>
+      <li>使所选地面无线电台的导航组件失效/重置</li>
+      <li>重新定位到所选无线电台</li>
+      <li>显示飞机到电台的距离/方位角及识别码/通信类型</li>
+    </ul>
+    <div class="img-block">
+      <img src="./images/ch1_7_radio_station.jpg" alt="图 24：无线电台页面（Figure 168）">
+      <p class="img-caption">图 24：无线电台页面（Figure 168）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>列表方式</td><td>按电台名称 / 按识别码 / 按终端区域（TMA）</td></tr>
+          <tr><td>列表信息</td><td>电台名称和类型、识别码、频率、跑道编号、状态</td></tr>
+          <tr><td>重置</td><td>重置所选失效无线电台</td></tr>
+          <tr><td>失效</td><td>使所选无线电台失效</td></tr>
+          <tr><td>清除失效电台</td><td>重置所有由教员设为失效的无线电台</td></tr>
+          <tr><td>重新定位到电台</td><td>激活重新定位到所选电台（显著经纬度变化时禁用）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.7 UPRT（预防与恢复训练）</h3>
+    <p>UPRT 按钮可进入异常恢复页面，允许教员触发基于机动的训练（MBT）练习或基于场景的训练（SBT）练习。</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_uprt_button.jpg" alt="图 25：高级 — UPRT 按钮（Figure 169）">
+        <p class="img-caption">图 25：高级 — UPRT 按钮（Figure 169）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_upset_recovery.jpg" alt="图 26：异常恢复页面（Figure 170）">
+        <p class="img-caption">图 26：异常恢复页面（Figure 170）</p>
+      </div>
+    </div>
+
+    <h4>2.7.1 数据汇总选项卡（Data Summary）</h4>
+    <p>在 UPRT 场景进行过程中显示实时飞行数据，并提供最关键的数据参数摘要。包含以下部分：</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_data_summary.jpg" alt="图 27：数据摘要选项卡（Figure 171）">
+      <p class="img-caption">图 27：数据摘要选项卡（Figure 171）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>关键参数列表</td><td>显示载荷因数、迎角（AOA）、指示空速（IAS）、侧滑角、脚蹬力五个参数的当前值、最小值、最大值</td></tr>
+          <tr><td>缩略图</td><td>Alpha-Beta 曲线图、V-n 曲线图、主飞行显示（PFD）、总览页面、时间历程、四视图</td></tr>
+          <tr><td>缩略图查看窗格</td><td>点击缩略图后在窗格中显示对应页面</td></tr>
+          <tr><td>超限</td><td>列出记录阶段发生的超限事件对应的咨询级别信息，按严重程度排序</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_critical_params.jpg" alt="图 28：关键参数（Figure 172）">
+        <p class="img-caption">图 28：关键参数（Figure 172）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_quad_view.jpg" alt="图 29：四视图（Figure 174）">
+        <p class="img-caption">图 29：四视图（Figure 174）</p>
+      </div>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_exceedances.jpg" alt="图 30：超限事件（Figure 176）">
+        <p class="img-caption">图 30：超限事件（Figure 176）</p>
+      </div>
+    </div>
+
+    <h4>2.7.2 控制选项卡（Controls）</h4>
+    <p>包含显示 UPRT 场景页面、记录选定异常状态场景、确定图表上绘制的点数、在记录中插入标记、回放记录以进行座舱内讲评等功能。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>选择场景</td><td>点击可展开按钮显示 UPRT 场景页面，选择 MBT 或 SBT</td></tr>
+          <tr><td>记录/重置</td><td>进入记录模式，最长 5 分钟（300 秒）。可插入标记：开始、G 载荷、失速、机头上仰、机头下俯、滚转 G、其他、结束</td></tr>
+          <tr><td>时间范围</td><td>指定图表上显示的最大数据点数，用于简化图表</td></tr>
+          <tr><td>回放模式</td><td>回放整个场景记录或开始/结束标记定义的部分。飞行冻结暂停记录</td></tr>
+          <tr><td>可选标记</td><td>控制选项卡可包含可选标记</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_7_recording_markers.jpg" alt="图 31：记录标记（Figure 178）">
+        <p class="img-caption">图 31：记录标记（Figure 178）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_review_mode.jpg" alt="图 32：回放模式（Figure 179）">
+        <p class="img-caption">图 32：回放模式（Figure 179）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_7_optional_markers.jpg" alt="图 33：可选标记（Figure 180）">
+        <p class="img-caption">图 33：可选标记（Figure 180）</p>
+      </div>
+    </div>
+
+    <h4>2.7.3 UPRT 场景页面（UPRT Scenarios）</h4>
+    <p>提供所有必要控制，允许教员启动 MBT 或 SBT 练习，持续时间最长 5 分钟（300 秒）。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_uprt_scenarios.jpg" alt="图 34：UPRT 场景页面（Figure 181）">
+      <p class="img-caption">图 34：UPRT 场景页面（Figure 181）</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>类型</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>基于机动（MBT）</td><td>分为机翼水平（40°机头上仰/25°机头下俯/平飞/最大升阻比）、坡度（30°机头上仰+60°坡度/20°机头下俯+65°坡度/20°机头下俯+125°坡度，左/右互斥）、高度（FL100/FL200/FL350）三部分。执行按钮激活所选 MBT 剖面</td></tr>
+          <tr><td>基于场景（SBT）</td><td>左坡度—右坡度、空速减小—空速增加两组互斥单选按钮。强度分为轻度/中度/重度。激活按钮触发所选场景</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.8 重置/冻结（Resets/Freezes）</h3>
+    <p>重置/冻结按钮显示重置与冻结页面，其中包含与控制板工作区页脚相同的重置和冻结选项。</p>
+    <blockquote>功能与控制面板底部完全相同。详见 <a href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部</a>。</blockquote>
+    <div class="img-block">
+      <img src="./images/ch1_7_resets_freezes.jpg" alt="图 35：高级 — 重置/冻结（Figure 182）">
+      <p class="img-caption">图 35：高级 — 重置/冻结（Figure 182）</p>
+    </div>
+
+    <h3>2.9 录制（Recording）</h3>
+    <p>录制按钮允许教员捕捉各种飞行状态，并随后永久保存和/或调用这些状态。</p>
+    <div class="img-block">
+      <img src="./images/ch1_7_recording.jpg" alt="图 36：高级 — 录制（Figure 183）">
+      <p class="img-caption">图 36：高级 — 录制（Figure 183）</p>
+    </div>
+
+    <h4>2.9.1 飞行状态捕捉/调用（FSC/Recall）</h4>
+    <p>允许教员在训练过程中记录最多 10 种预定义参数的不同飞行状态，并在之后恢复这些状态。调用功能以类似于常规飞机重新定位的方式执行。</p>
+    <p>对于空中状态的调用，通过调整飞机配平来实现。对于非反向驱动的飞行控制，将出现「控制不一致（CNIA）」页面，指示控制装置应处于的位置。解除冻结后，飞行员可从捕捉点继续训练课程。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>复制到存储的捕获</td><td>将临时捕获转换为永久存储捕获。若存在捕获、调用、重新定位或扫描操作，按钮禁用</td></tr>
+          <tr><td>清除所有捕获</td><td>显示确认弹出菜单，需确认操作</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.9.2 FMS 内存保存/召回（FMS Memory Save/Recall）</h4>
+    <p>激活保存/召回所选 FMS 内存飞行计划的过程。</p>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 高级工作区教员核心操作流程全景图</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 Advanced 工作区])
+    --> A{选择功能模块}
+
+    A -->|飞机或位置或环境| B1[参数设置]
+    A -->|入侵者| B2[交通场景设置]
+    A -->|通信| B3[ATIS或ATC消息配置]
+    A -->|故障| B4[故障或电台失效]
+    A -->|UPRT| B5[训练场景触发]
+    A -->|录制| B6[飞行状态捕捉]
+
+    B1 --> C1a[选择参数类别]
+    C1a --> C1b[修改数值]
+    C1b --> C1c[确认生效]
+    C1c --> End1([参数生效完成])
+
+    B2 --> C2a[选择入侵者类型]
+    C2a --> C2b[设置位置航径场景]
+    C2b --> C2c[启动场景]
+    C2c --> End2([交通场景激活])
+
+    B3 --> C3a[ATIS 模式切换]
+    C3a --> C3b[编辑消息参数]
+    C3b --> C3c[更新广播]
+    C3c --> End3([ATIS/ATC 消息生效])
+
+    B4 --> C4a[选择故障/电台]
+    C4a --> C4b[触发失效]
+    C4b --> End4([故障生效])
+
+    B5 --> C5a[选择 MBT 或 SBT]
+    C5a --> C5b[设置场景参数]
+    C5b --> C5c[激活场景]
+    C5c --> C5d[记录/回放]
+    C5d --> End5([训练完成])
+
+    B6 --> C6a[捕捉飞行状态]
+    C6a --> C6b[存储或调用]
+    C6b --> End6([状态保存完成])
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End1 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End2 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End3 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End4 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End5 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End6 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style A fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    </div>
+
+    <h3>3.2 参数设置通用状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 空闲状态 : 进入 Advanced
+    空闲状态 --> 模块选择中 : 点击功能按钮
+    模块选择中 --> 参数编辑中 : 选择子功能
+    参数编辑中 --> 值已修改 : 输入新值
+    值已修改 --> 参数生效中 : 确认/更新
+    参数生效中 --> 生效完成 : 模拟器反馈
+    生效完成 --> [*]
+
+    参数编辑中 --> 空闲状态 : 取消/返回
+    值已修改 --> 空闲状态 : 放弃修改
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>说明</th><th>进入条件</th></tr></thead>
+        <tbody>
+          <tr><td>空闲状态</td><td>Advanced 工作区已打开，未选择任何功能模块</td><td>进入工作区或完成操作后</td></tr>
+          <tr><td>模块选择中</td><td>已点击某个高级功能按钮，显示对应子页面</td><td>点击飞机/位置/环境/入侵者等按钮</td></tr>
+          <tr><td>参数编辑中</td><td>在子页面中修改参数或选择选项</td><td>选择子功能后进入编辑界面</td></tr>
+          <tr><td>值已修改</td><td>参数值已被教员修改但尚未确认生效</td><td>输入新值或切换选项</td></tr>
+          <tr><td>参数生效中</td><td>指令正在下发至模拟器</td><td>点击确认/更新/激活按钮</td></tr>
+          <tr><td>生效完成</td><td>参数已生效，模拟器反馈确认</td><td>模拟器返回生效完成信号</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+    <h4>3.3.1 关联依赖表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能模块</th><th>依赖对象</th><th>依赖关系说明</th></tr></thead>
+        <tbody>
+          <tr><td>飞机（Aircraft）</td><td>控制面板 2.2.4</td><td>完全复用 Weight & Balance 和 Services & Doors 滑动面板</td></tr>
+          <tr><td>位置（Position）</td><td>控制面板 2.2.3 / 2.2.5</td><td>完全复用 Airport & Reposition 和 SLEW 滑动面板</td></tr>
+          <tr><td>环境 — 风切变/结冰/时段</td><td>控制面板 2.2.3 / 2.2.5</td><td>功能与参考机场/当前条件选项卡中的对应功能完全相同</td></tr>
+          <tr><td>重置/冻结</td><td>控制面板页脚 2.2.7</td><td>完全复用 Footer 中的重置和冻结选项</td></tr>
+          <tr><td>ATIS 自动模式</td><td>环境页面天气参数</td><td>自动模式下 ATIS 消息随环境天气变化实时同步更新</td></tr>
+          <tr><td>UPRT 记录</td><td>飞行冻结</td><td>飞行冻结或完全冻结会暂停记录模式</td></tr>
+          <tr><td>无线电台重新定位</td><td>视觉系统</td><td>显著经纬度变化时重新定位按钮禁用，直至视觉准备就绪</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>异常场景</th><th>触发条件</th><th>系统行为</th></tr></thead>
+        <tbody>
+          <tr><td>ATIS 自动模式下修改天气按钮</td><td>教员在自动模式下尝试点击天气输入按钮</td><td>按钮禁用/灰显，无法修改；必须先切换至手动模式</td></tr>
+          <tr><td>TCAS 场景训练不稳定飞行</td><td>本机不在稳定飞行状态下进行 TCAS 场景训练</td><td>下降时低于 1000ft AGL / 爬升时低于 1200ft AGL，DESCEND DESCEND 垂直引导被抑制</td></tr>
+          <tr><td>无线电台重新定位时视觉未就绪</td><td>显著经纬度变化后视觉系统尚未准备就绪</td><td>重新定位到电台按钮禁用</td></tr>
+          <tr><td>UPRT 记录超过最大时长</td><td>场景记录达到 5 分钟（300 秒）</td><td>自动停止记录</td></tr>
+          <tr><td>飞行状态调用时控制不一致</td><td>非反向驱动飞行控制的飞机状态调用</td><td>显示 CNIA（Controls Not In Agreement）页面，提示控制装置应处位置</td></tr>
+          <tr><td>FSC 按钮禁用</td><td>存在捕获、调用、重新定位或扫描操作</td><td>复制到存储的捕获按钮禁用/灰显</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+    <h4>3.4.1 数据流</h4>
+    <pre><code>教员操作（选择模块/修改参数/激活场景）
+    |
+    ▼
+UI 事件层 ——→ 模块切换事件 / 参数变更事件 / 场景激活事件
+    |
+    ▼
+状态管理层 ——→ 更新当前模块状态 / 参数草稿状态 / 场景运行状态
+    |
+    ▼
+模拟器指令层 ——→ 下发参数变更至模拟器核心
+              同步 ATIS/ATC 消息至语音系统
+              下发入侵者轨迹至交通模拟系统
+              下发 UPRT 场景至飞行模型
+    |
+    ▼
+反馈呈现层 ——→ 高级工具栏状态更新
+              数据汇总实时刷新
+              超限事件记录
+              录制状态/回放进度更新</code></pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
+        <tbody>
+          <tr><td>/advanced/weather/save</td><td>POST</td><td>regionId, scenarioName, params</td><td>scenarioId, status</td><td>400 参数缺失 / 500 保存失败</td></tr>
+          <tr><td>/advanced/weather/recall</td><td>POST</td><td>scenarioId</td><td>params, status</td><td>404 场景不存在</td></tr>
+          <tr><td>/advanced/intruder/tcas/start</td><td>POST</td><td>position, verticalPath, scenarioType, transponder</td><td>scenarioId, status</td><td>400 无效场景 / 409 场景运行中</td></tr>
+          <tr><td>/advanced/atis/update</td><td>POST</td><td>airportId, mode, params</td><td>broadcastId, status</td><td>403 自动模式禁止修改</td></tr>
+          <tr><td>/advanced/atc/play</td><td>POST</td><td>stationType, messageParams</td><td>audioId, status</td><td>400 频率无效</td></tr>
+          <tr><td>/advanced/uprt/record/start</td><td>POST</td><td>scenarioType, params</td><td>recordId, status</td><td>409 记录中 / 503 系统忙</td></tr>
+          <tr><td>/advanced/uprt/record/stop</td><td>POST</td><td>recordId</td><td>status, summary</td><td>404 记录不存在</td></tr>
+          <tr><td>/advanced/fsc/capture</td><td>POST</td><td>slotIndex</td><td>captureId, status</td><td>409 槽位已占用</td></tr>
+          <tr><td>/advanced/fsc/recall</td><td>POST</td><td>captureId</td><td>status, cniaFlag</td><td>404 捕获不存在</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>测试维度</th><th>测试场景</th><th>验收标准</th></tr></thead>
+        <tbody>
+          <tr><td>正向路径</td><td>高级工具栏各按钮正确打开对应子页面</td><td>每个按钮点击后显示正确的子页面，无 404 或空白</td></tr>
+          <tr><td>正向路径</td><td>环境 — 天气区域保存并调用场景</td><td>保存后场景列表中出现新场景，调用后天气参数正确恢复</td></tr>
+          <tr><td>正向路径</td><td>ATIS 自动模式随天气变化同步更新</td><td>修改环境天气后，ATIS 消息在 1 秒内自动更新</td></tr>
+          <tr><td>正向路径</td><td>ATIS 手动模式覆盖并更新广播</td><td>切换手动模式后所有按钮启用，修改参数后点击更新广播生效</td></tr>
+          <tr><td>正向路径</td><td>TCAS 六种场景正确触发并生成对应音频</td><td>每种场景触发后，在预定时间点听到正确的 TCAS 语音（TRAFFIC/RA/CLEAR OF CONFLICT）</td></tr>
+          <tr><td>正向路径</td><td>UPRT MBT 场景在飞行冻结时正确设置飞机姿态</td><td>飞行冻结开启后，飞机进入所选 MBT 姿态，冻结解除后保持</td></tr>
+          <tr><td>正向路径</td><td>UPRT 记录和回放完整 300 秒数据</td><td>记录满 300 秒后自动停止，回放时所有数据点正确显示</td></tr>
+          <tr><td>异常路径</td><td>ATIS 自动模式下点击禁用按钮</td><td>按钮无响应，无后端请求发出</td></tr>
+          <tr><td>异常路径</td><td>TCAS 场景训练不稳定飞行（低于 AGL 限制）</td><td>DESCEND DESCEND 垂直引导被抑制，不发出下降指令</td></tr>
+          <tr><td>异常路径</td><td>FSC 捕获时尝试第二次捕获</td><td>第二次捕获按钮禁用，提示已有活跃捕获</td></tr>
+          <tr><td>边界条件</td><td>天气区域添加超过 5 个区域</td><td>系统阻止添加第 6 个区域，或最早区域被替换</td></tr>
+          <tr><td>边界条件</td><td>无线电台重新定位时快速切换位置</td><td>按钮在视觉未就绪期间保持禁用，就绪后恢复</td></tr>
+          <tr><td>联动测试</td><td>高级环境参数修改后控制面板同步</td><td>高级中修改天气/灯光后，控制面板对应参数实时同步</td></tr>
+          <tr><td>联动测试</td><td>UPRT 记录期间触发飞行冻结</td><td>记录暂停，解冻后从暂停点继续记录</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-05</td><td>V1.0</td><td>初始版本：基于 A320.md 2.7 章节与原始手册 ## 16 章生成高级工作区 HTML。涵盖飞机、位置、环境（天气区域/灯光/机场视觉效果）、入侵者（TCAS/随机/进近/ITP）、通信（ATIS/ATC）、故障、UPRT、重置/冻结、录制共 10 大子模块，配套 36 张截图，含状态机、数据流与 API 契约推导</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_6_map_workspace.html">← 上一页：1.6 地图工作区（Map）</a>
+      <a class="next" href="#">下一页：1.8 参考流程 →</a>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// Toggle navigation
+document.addEventListener('click',function(e){
+  const overlay=document.querySelector('.img-zoom-overlay');
+  if(overlay && (e.target.closest('.img-zoom-overlay')===overlay)){
+    overlay.remove();
+  }
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const overlay=document.querySelector('.img-zoom-overlay');
+    if(overlay) overlay.remove();
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      zoomed.classList.remove('is-zoomed');
+      zoomed.style.transform='';
+      const o=document.querySelector('.mermaid-zoom-overlay');
+      if(o) o.remove();
+    }
+  }
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children=el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Image zoom (event delegation)
+document.addEventListener('click',function(e){
+  const img=e.target.closest('.img-block img');
+  if(!img) return;
+  const overlay=document.createElement('div');
+  overlay.className='img-zoom-overlay';
+  const zoomedImg=document.createElement('img');
+  zoomedImg.src=img.src;
+  overlay.appendChild(zoomedImg);
+  document.body.appendChild(overlay);
+});
+
+// Mermaid zoom
+document.addEventListener('click',function(e){
+  const mermaidEl=e.target.closest('.mermaid');
+  if(!mermaidEl || mermaidEl.classList.contains('is-zoomed')) return;
+  mermaidEl.classList.add('is-zoomed');
+  const overlay=document.createElement('div');
+  overlay.className='mermaid-zoom-overlay';
+  document.body.appendChild(overlay);
+  let scale=1,panning=false,pointX=0,pointY=0,startX=0,startY=0;
+  const svg=mermaidEl.querySelector('svg');
+  if(!svg) return;
+  function setTransform(){
+    svg.style.transform='translate('+pointX+'px,'+pointY+'px) scale('+scale+')';
+  }
+  mermaidEl.addEventListener('wheel',function(ev){
+    ev.preventDefault();
+    const delta=ev.deltaY>0?0.9:1.1;
+    scale=Math.min(Math.max(0.3,scale*delta),5);
+    setTransform();
+  },{passive:false});
+  mermaidEl.addEventListener('mousedown',function(ev){
+    ev.preventDefault();
+    panning=true;
+    startX=ev.clientX-pointX;
+    startY=ev.clientY-pointY;
+  });
+  window.addEventListener('mousemove',function(ev){
+    if(!panning) return;
+    ev.preventDefault();
+    pointX=ev.clientX-startX;
+    pointY=ev.clientY-startY;
+    setTransform();
+  });
+  window.addEventListener('mouseup',function(){panning=false;});
+  overlay.addEventListener('click',function(){
+    mermaidEl.classList.remove('is-zoomed');
+    svg.style.transform='';
+    overlay.remove();
+  });
+});
+
+mermaid.initialize({startOnLoad:true,theme:'default',flowchart:{useMaxWidth:true,htmlLabels:true}});
+</script>
+</body>
+</html>

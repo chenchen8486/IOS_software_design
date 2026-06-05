@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）— CAE IOS 教员台</title>
+<title>1.4 仪表复示器工作区（INSTRUMENT REPEATER）— CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -85,7 +85,6 @@ th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%)
 tr:hover td{background:#f8fafc}
 tr:last-child td{border-bottom:none}
 td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
-.tag-note{background:#f3f4f6;color:#4b5563}
 
 .mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
 .mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -137,15 +136,15 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
             <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
             <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
             <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
-            <a class="nav-link active" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
             <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
           </div>
         </div>
         <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
-        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
+        <a class="nav-link active" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-        <a class="nav-link" href=\"ch1_7_advanced.html\">1.7 高级</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级</a>
       </div>
     </div>
   </nav>
@@ -154,12 +153,12 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 <!-- Main -->
 <main class="main">
   <div class="breadcrumb">
-    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><a href="#">1.2 控制面板工作区</a><span class="breadcrumb-sep">/</span><span>1.2.6 教员台滑动面板</span>
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.4 仪表复示器工作区</span>
   </div>
 
   <div class="content">
-    <h1>1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</h1>
-    <p class="subtitle">对应原始手册：## 10. INSTRUCTOR STATION Sliding Panel</p>
+    <h1>1.4 仪表复示器工作区（INSTRUMENT REPEATER）</h1>
+    <p class="subtitle">对应原始手册：## 13. INSTRUMENT REPEATER Workspace</p>
 
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
@@ -167,258 +166,209 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    subgraph Main["INSTRUCTOR STATION Sliding Panel / 教员台滑动面板"]
-        A[PREFERENCES Tab<br>偏好设置选项卡]
-        B[CONFIGURATION Tab<br>配置选项卡]
-        C[End Session Button<br>结束会话按钮]
+    subgraph Header["Map Header / 地图标题"]
+        H1[Workspace Switcher<br>工作区切换]
+        H2[IOS Configuration<br>IOS配置]
     end
 
-    A --> A1[Force Units<br>力单位]
-    A --> A2[A/C Weight Units<br>飞机重量单位]
-    A --> A3[Environment Units<br>环境单位]
-    A --> A4[Automatic to Reference Airport<br>自动匹配参考机场]
-
-    A3 --> A3a[Metric<br>公制]
-    A3 --> A3b[Imperial<br>英制]
-
-    B --> B1[Change Configuration Button<br>更改配置按钮]
-
-    subgraph Popups["点击后弹出 / Pop-up Panels"]
-        D[CONFIGURATIONS Page<br>配置选择页面]
+    subgraph Main["Main Section / 主区域"]
+        A[INSTRUMENTS Tab<br>仪表选项卡]
+        B[Instrument View Mode Section<br>仪表视图模式区域]
     end
 
-    B1 -.->|点击弹出| D
+    subgraph Footer["Map Footer / 地图页脚"]
+        F1[Flight Freeze<br>飞行冻结]
+        F2[Resets / Freezes<br>重置/冻结]
+        F3[Sim Controls / Volume<br>模拟控制/音量]
+        F4[Reposition / Weather<br>重新定位/天气]
+        F5[Help / Workspace<br>帮助/工作区]
+    end
 
+    A --> A1[Instrument List<br>可用仪表列表]
+    B --> B1[Selected Instrument Display<br>选中仪表显示区]
+
+    A -.->|选中显示| B
+
+    style Header fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
     style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
+    style Footer fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
     </div>
 
     <h3>1.2 界面结构</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>PREFERENCES Tab<br>偏好设置选项卡</td><td>滑动面板顶部选项卡栏（左侧）</td><td>设置力单位、飞机重量单位、环境单位及自动匹配参考机场</td><td>详见 2.1</td></tr>
-          <tr><td>CONFIGURATION Tab<br>配置选项卡</td><td>滑动面板顶部选项卡栏（中间）</td><td>查看当前 IOS 配置参数并切换至其他配置</td><td>详见 2.2</td></tr>
-          <tr><td>End Session Button<br>结束会话按钮</td><td>滑动面板底部</td><td>结束当前会话、返回 IOS 主页或选择其他配置</td><td>详见 2.3</td></tr>
-          <tr><td>Expand Button<br>展开按钮</td><td>控制面板右侧边缘</td><td>点击展开/收起教员台滑动面板</td><td>—</td></tr>
+          <tr><td>Map Header<br>地图标题栏</td><td>顶部</td><td>与地图工作区标题栏相同，提供工作区切换、IOS 配置等功能入口</td></tr>
+          <tr><td>INSTRUMENTS Tab<br>仪表选项卡</td><td>主区域左侧/上部</td><td>列出驾驶舱中所有可在仪表视图模式下显示的可用仪表，点击进行选择</td></tr>
+          <tr><td>Instrument View Mode Section<br>仪表视图模式区域</td><td>主区域右侧/主体</td><td>显示在"仪表"选项卡中选中的座舱仪表画面，实时复示</td></tr>
+          <tr><td>Map Footer<br>地图页脚</td><td>底部</td><td>与控制面板底部（Control Board Footer）相同，提供飞行冻结、重置、工作区切换等快捷功能</td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="img-row">
-      <div class="img-block">
-        <img src="./images/ch1_2_6_control_board_overview.png" alt="控制面板总览与教员台滑动面板入口">
-        <p class="img-caption">图 1：控制面板总览，红色指示框标注 INSTRUCTOR STATION 展开按钮位置</p>
-      </div>
-      <div class="img-block">
-        <img src="./images/ch1_2_6_instructor_station_panel.jpg" alt="教员台滑动面板总览">
-        <p class="img-caption">图 2：教员台滑动面板总览（点击展开按钮后弹出）</p>
-      </div>
+    <div class="img-block">
+      <img src="./images/ch1_4_instrument_repeater_workspace.jpg" alt="仪表复示器工作区总览">
+      <p class="img-caption">图 1：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
     </div>
 
     <!-- 二、核心功能详解 -->
     <h2>二、核心功能详解</h2>
 
-    <h3>2.1 PREFERENCES Tab（偏好设置选项卡）</h3>
-    <p>偏好设置选项卡包含多个下拉按钮，允许教员设置力单位、飞机重量单位、环境单位。所有设置均为即时生效，无需额外确认。点击主界面控制面板右侧的<strong>展开按钮</strong>即可弹出该滑动面板（详见 1.2 界面结构）。</p>
-
-    <h4>2.1.1 面板属性</h4>
+    <h3>2.1 仪表选项卡（INSTRUMENTS Tab）</h3>
+    <p>该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>功能定义</td><td>设置各参数的计量单位制（UOM）</td></tr>
-          <tr><td>呈现方式</td><td>滑动面板顶部选项卡，内含 3 个下拉按钮和 1 个复选框</td></tr>
-          <tr><td>交互方式</td><td>点击下拉按钮展开选项 → 点击目标选项即时切换</td></tr>
-          <tr><td>互斥关系</td><td>Metric（公制）与 Imperial（英制）两个选项<strong>互斥</strong>，下拉按钮只能激活其一</td></tr>
-          <tr><td>边界行为</td><td>下拉选择后立即生效，无需额外确认；切换环境单位时所有相关参数显示同步更新</td></tr>
-          <tr><td>与其他功能关系</td><td>环境单位与参考机场选项卡（1.2.5）的环境参数显示单位联动；自动匹配参考机场与 Airport 字段关联</td></tr>
+          <tr><td>功能定义</td><td>列出驾驶舱中所有可被复示到 IOS 显示屏上的可用仪表</td></tr>
+          <tr><td>呈现方式/交互方式</td><td>以列表形式呈现，点击仪表名称进行选择；选中后驱动右侧视图区域显示对应仪表</td></tr>
+          <tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（待确认）</td></tr>
+          <tr><td>与其他功能关系</td><td>与 Instrument View Mode Section 为<strong>依赖关系</strong>，选择结果直接决定视图区域显示内容</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h4>2.1.2 参数设置项</h4>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>参数项</th><th>可选值 / 说明</th></tr></thead>
-        <tbody>
-          <tr><td>力单位</td><td>下拉选择：Lbf（磅力）/ daN（十牛顿）</td></tr>
-          <tr><td>飞机重量单位</td><td>下拉选择：Kg（千克，液体体积使用升）/ lb（磅，液体体积使用加仑、夸脱、品脱）</td></tr>
-          <tr><td>环境单位</td><td>下拉选择：Metric（公制：QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft）/ Imperial（英制：QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft）</td></tr>
-          <tr><td>自动匹配参考机场</td><td>复选框：勾选后自动将单位制参数设置为与所选参考机场匹配</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>2.2 CONFIGURATION Tab（配置选项卡）</h3>
-    <p>配置选项卡允许教员查看当前 IOS 配置的参数，并将当前 IOS 更改为其他配置。</p>
-
+    <h3>2.2 仪表视图模式区域（Instrument View Mode Section）</h3>
+    <p>仪表复示器工作区的此区域显示在"仪表"选项卡中选择的仪表。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>功能定义</td><td>查看当前 IOS 配置并切换至其他配置</td></tr>
-          <tr><td>呈现方式</td><td>滑动面板顶部选项卡，显示当前配置信息</td></tr>
-          <tr><td>交互方式</td><td>点击"更改配置"按钮 → 弹出配置选择页面 → 点击目标配置的"加载"按钮</td></tr>
-          <tr><td>边界行为</td><td>加载新配置后 IOS 将重新初始化至所选配置状态；当前训练数据可能丢失</td></tr>
-          <tr><td>与其他功能关系</td><td>与 End Session 中的"选择其他配置"功能共用配置列表；与课程计划状态存在互斥（切换配置将中断当前课程）</td></tr>
+          <tr><td>功能定义</td><td>将驾驶舱中选定的仪表画面实时复示到 IOS 当前监视器上</td></tr>
+          <tr><td>呈现方式/交互方式</td><td>只读显示区域，接收并渲染来自模拟器的仪表画面数据流</td></tr>
+          <tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（待确认）</td></tr>
+          <tr><td>与其他功能关系</td><td>依赖 INSTRUMENTS Tab 的选择结果；与 Map Header / Footer 共享同一套工作区框架</td></tr>
         </tbody>
       </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch1_2_6_configurations_page.jpg" alt="IOS 配置选择页面">
-      <p class="img-caption">图 3：IOS 配置选择页面</p>
-    </div>
-
-    <h3>2.3 End Session（结束会话）</h3>
-    <p>点击结束会话按钮可结束当前 IOS 会话，返回 IOS 主页或选择其他配置。</p>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr><td>功能定义</td><td>结束当前 IOS 训练会话</td></tr>
-          <tr><td>呈现方式</td><td>滑动面板底部按钮</td></tr>
-          <tr><td>交互方式</td><td>点击按钮 → 结束当前会话 → 返回 IOS 主页 → 可选择"更改"按钮加载其他配置</td></tr>
-          <tr><td>边界行为</td><td>结束会话后将清空当前训练状态；若有未保存数据可能丢失；若当前有活跃课程将同时结束课程</td></tr>
-          <tr><td>与其他功能关系</td><td>与 CONFIGURATION Tab 共用配置切换能力；与课程计划选项卡（1.2.1）的 End Lesson 功能语义相近但作用域不同（End Session 为整个 IOS，End Lesson 为当前课程）</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch1_2_6_ios_main_page.jpg" alt="IOS 主页">
-      <p class="img-caption">图 4：IOS 主页</p>
     </div>
 
     <!-- 三、全局操作流程与推导 -->
     <h2>三、全局操作流程与推导</h2>
 
-    <h3>3.1 INSTRUCTOR STATION 教员核心操作流程全景图</h3>
+    <h3>3.1 仪表复示器教员核心操作流程全景图</h3>
     <div class="mermaid">
 flowchart LR
-    Start([进入 INSTRUCTOR STATION<br>Sliding Panel]) --> OP_TYPE{选择操作类型}
+    Start([进入仪表复示器工作区]) --> View[查看 INSTRUMENTS Tab]
+    View --> Select{选择目标仪表}
+    Select --> Load[系统加载仪表数据流]
+    Load --> Display[仪表画面显示在 View Mode]
+    Display --> End([训练就绪/复示完成])
 
-    OP_TYPE -->|设置单位制| UOM_ENTRY[点击 PREFERENCES<br>偏好设置选项卡]
-    OP_TYPE -->|切换配置| CONFIG_ENTRY[点击 CONFIGURATION<br>配置选项卡]
-    OP_TYPE -->|结束会话| END_ENTRY[点击 End Session<br>结束会话按钮]
+    Select --> Cancel[未选择/取消]
+    Cancel --> End
 
-    subgraph UOM_FLOW["单位设置流程 — 2.1"]
-        UOM_ENTRY --> UOM1[选择力单位<br>Lbf / daN]
-        UOM1 --> UOM2[选择飞机重量单位<br>Kg / lb]
-        UOM2 --> UOM3[选择环境单位<br>Metric / Imperial]
-        UOM3 --> UOM4[勾选/取消<br>自动匹配参考机场]
+    subgraph INSTRUMENTS_FLOW["选择流程 — 2.1"]
+        View --> Select
     end
 
-    subgraph CONFIG_FLOW["配置切换流程 — 2.2"]
-        CONFIG_ENTRY --> C1[点击更改配置按钮]
-        C1 --> C2[浏览配置列表]
-        C2 --> C3[点击目标配置<br>加载按钮]
+    subgraph DISPLAY_FLOW["复示流程 — 2.2"]
+        Load --> Display
     end
-
-    subgraph END_FLOW["结束会话流程 — 2.3"]
-        END_ENTRY --> E1[确认结束当前会话]
-        E1 --> E2{是否切换配置?}
-        E2 -->|是| E3[点击更改按钮<br>选择其他配置]
-        E2 -->|否| E4[返回 IOS 主页]
-    end
-
-    UOM4 --> End([设置完成])
-    C3 --> End
-    E3 --> End
-    E4 --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
-    style OP_TYPE fill:#fef3c7,stroke:#d97706
+    style Cancel fill:#fee2e2,stroke:#dc2626
     </div>
 
-    <h3>3.2 参数设置通用状态机</h3>
+    <h3>3.2 仪表复示通用状态机</h3>
     <div class="mermaid">
 stateDiagram-v2
-    [*] --> 空闲状态
-    空闲状态 --> 面板打开中 : 点击Expand按钮
-    面板打开中 --> 单位设置中 : 点击PREFERENCES
-    面板打开中 --> 配置查看中 : 点击CONFIGURATION
-    面板打开中 --> 会话结束中 : 点击End Session
+    [*] --> 空闲态: 进入工作区
+    空闲态 --> 选择中: 点击仪表列表
+    选择中 --> 显示中: 系统加载完成
+    显示中 --> 选择中: 切换其他仪表
+    选择中 --> 空闲态: 取消选择/关闭
+    显示中 --> 空闲态: 关闭工作区/切换工作区
 
-    单位设置中 --> 值已修改 : 选择下拉选项
-    值已修改 --> 生效完成 : 自动生效
-    生效完成 --> 空闲状态
-
-    配置查看中 --> 配置选择中 : 点击更改配置
-    配置选择中 --> 配置加载中 : 点击加载
-    配置加载中 --> 加载完成 : 加载成功
-    加载完成 --> 空闲状态
-
-    会话结束中 --> [*]
-
-    单位设置中 --> 面板打开中 : 切换Tab
-    配置查看中 --> 面板打开中 : 切换Tab
-    面板打开中 --> 空闲状态 : 点击关闭/其他区域
-    值已修改 --> 单位设置中 : 继续修改其他项
+    显示中 --> 冻结中: 飞行冻结激活
+    冻结中 --> 显示中: 飞行冻结解除
     </div>
 
-    <h4>状态说明</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>状态</th><th>说明</th><th>触发条件</th></tr></thead>
+        <thead><tr><th>状态</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>空闲状态</td><td>教员台滑动面板未打开，教员在控制面板操作</td><td>初始状态 / 面板关闭后</td></tr>
-          <tr><td>面板打开中</td><td>滑动面板已展开，显示当前选项卡内容</td><td>点击控制面板右侧 Expand 按钮</td></tr>
-          <tr><td>单位设置中</td><td>教员正在 PREFERENCES Tab 修改单位设置</td><td>点击 PREFERENCES 选项卡</td></tr>
-          <tr><td>值已修改</td><td>教员已选择新的单位选项</td><td>点击下拉菜单中的选项</td></tr>
-          <tr><td>生效完成</td><td>单位设置已自动生效并同步至相关显示</td><td>选择后立即生效</td></tr>
-          <tr><td>配置查看中</td><td>教员正在 CONFIGURATION Tab 查看当前配置</td><td>点击 CONFIGURATION 选项卡</td></tr>
-          <tr><td>配置选择中</td><td>配置选择页面已打开，显示所有可用配置</td><td>点击更改配置按钮</td></tr>
-          <tr><td>配置加载中</td><td>系统正在加载所选 IOS 配置</td><td>点击目标配置的加载按钮</td></tr>
-          <tr><td>加载完成</td><td>新配置已成功加载</td><td>配置加载成功后</td></tr>
-          <tr><td>会话结束中</td><td>当前 IOS 会话正在结束</td><td>点击 End Session 按钮</td></tr>
+          <tr><td>空闲态</td><td>进入仪表复示器工作区，尚未选择任何仪表；View Mode 区域为空或显示默认提示</td></tr>
+          <tr><td>选择中</td><td>教员在 INSTRUMENTS Tab 中点击了某个仪表名称，系统正在加载对应数据流</td></tr>
+          <tr><td>显示中</td><td>选中仪表的画面已成功在 View Mode 区域中实时复示</td></tr>
+          <tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示但数据不再更新（待确认是否暂停更新）</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>3.3 关联依赖与异常边界</h3>
 
-    <h4>3.3.1 关联依赖表格</h4>
+    <h4>3.3.1 关联依赖</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>功能</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
+        <thead><tr><th>功能点</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
         <tbody>
-          <tr><td>自动匹配参考机场</td><td>参考机场选项卡（1.2.5）Airport 字段</td><td>自动同步单位制与所选参考机场的标准单位</td></tr>
-          <tr><td>环境单位切换</td><td>当前条件选项卡（1.2.3）/ 参考机场选项卡（1.2.5）</td><td>切换后所有环境参数显示单位同步更新</td></tr>
-          <tr><td>更改配置</td><td>IOS 配置文件</td><td>需要预先定义的配置文件列表</td></tr>
-          <tr><td>结束会话</td><td>课程计划状态</td><td>若当前有活跃课程，结束会话将同时结束课程</td></tr>
+          <tr><td>Map Header</td><td>地图工作区（Map Workspace）</td><td>与地图工作区共用同一套标题栏组件，包含工作区切换器</td></tr>
+          <tr><td>Map Footer</td><td>控制面板底部（Control Board Footer）</td><td>与 1.2.7 控制面板底部共用同一套页脚组件，功能完全一致</td></tr>
+          <tr><td>仪表列表</td><td>IOS 配置</td><td>可复示的仪表数量和类型由 IOS 配置决定</td></tr>
+          <tr><td>仪表画面</td><td>模拟器数据总线</td><td>需实时订阅对应仪表的渲染数据流</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h4>3.3.2 异常边界表格</h4>
+    <h4>3.3.2 异常边界</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>异常场景</th><th>现象</th><th>处理方式</th></tr></thead>
+        <thead><tr><th>场景</th><th>边界行为</th></tr></thead>
         <tbody>
-          <tr><td>配置加载失败</td><td>点击加载后无响应或报错</td><td>检查配置文件完整性，重试或联系维护人员</td></tr>
-          <tr><td>结束会话时课程进行中</td><td>可能导致课程数据丢失</td><td>系统应提示确认，或自动保存课程状态</td></tr>
-          <tr><td>单位切换后显示异常</td><td>参数值显示为非法值或空白</td><td>检查参数值是否在新单位制下有效，必要时重置为默认值</td></tr>
+          <tr><td>无可复示仪表</td><td>INSTRUMENTS Tab 列表为空，显示默认空状态提示</td></tr>
+          <tr><td>IOS 配置变更</td><td>可复示仪表列表应动态刷新；若当前显示仪表被移除则回退到空闲态</td></tr>
+          <tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（待确认）</td></tr>
+          <tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（待确认）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <pre><code>教员点击仪表名称
+    ↓
+UI 事件：instrument_select(instrument_id)
+    ↓
+前端状态变更：selected_instrument = instrument_id
+    ↓
+API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
+    ↓
+模拟器后端：建立数据通道，推送实时仪表渲染帧
+    ↓
+前端接收：WebSocket / 轮询更新 View Mode 画布
+    ↓
+画面呈现：教员在 IOS 监视器上看到复示仪表画面</code></pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>接口</th><th>方法</th><th>请求</th><th>响应</th><th>错误码</th></tr></thead>
+        <tbody>
+          <tr><td>/api/instruments</td><td>GET</td><td>—</td><td>{ instruments: [{id, name, category}] }</td><td>500: 配置读取失败</td></tr>
+          <tr><td>/api/instrument/{id}/stream</td><td>WS</td><td>instrument_id</td><td>实时二进制/JSON 帧数据</td><td>404: 仪表不存在；403: 无权限</td></tr>
+          <tr><td>/api/instrument/unsubscribe</td><td>POST</td><td>{ instrument_id }</td><td>{ success: true }</td><td>400: 未订阅</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- 四、测试要点 -->
     <h2>四、测试要点</h2>
+
     <div class="table-wrap">
       <table>
-        <thead><tr><th>测试场景</th><th>测试步骤</th><th>期望结果</th></tr></thead>
+        <thead><tr><th>维度</th><th>测试场景</th><th>期望结果</th></tr></thead>
         <tbody>
-          <tr><td>正向路径：设置单位制</td><td>1. 打开教员台滑动面板 2. 进入 PREFERENCES 3. 依次设置力单位/重量单位/环境单位 4. 勾选自动匹配参考机场</td><td>所有设置即时生效，相关参数显示同步更新</td></tr>
-          <tr><td>正向路径：切换配置</td><td>1. 进入 CONFIGURATION 2. 点击更改配置 3. 选择新配置并加载</td><td>IOS 成功切换至新配置，界面刷新</td></tr>
-          <tr><td>正向路径：结束会话</td><td>1. 点击 End Session 2. 确认结束</td><td>返回 IOS 主页，会话状态重置</td></tr>
-          <tr><td>异常路径：配置加载中断</td><td>加载配置过程中关闭面板或断电</td><td>系统应回退至原配置或进入安全模式</td></tr>
-          <tr><td>边界条件：单位制组合</td><td>测试所有单位制组合（公制/英制 × 各参数）</td><td>所有组合下参数显示正确，无溢出或格式错误</td></tr>
-          <tr><td>联动测试：自动匹配参考机场</td><td>更改参考机场后观察自动匹配复选框</td><td>单位制自动同步为参考机场标准单位</td></tr>
+          <tr><td rowspan="2">正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
+          <tr><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
+          <tr><td rowspan="2">异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
+          <tr><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
+          <tr><td rowspan="2">边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
+          <tr><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
+          <tr><td>联动测试</td><td>飞行冻结激活期间仪表复示</td><td>画面保持显示，行为符合模拟器冻结策略</td></tr>
+          <tr><td>性能测试</td><td>多仪表同时复示（若配置支持）</td><td>帧率稳定，无卡顿，带宽占用在合理范围</td></tr>
         </tbody>
       </table>
     </div>
@@ -429,17 +379,15 @@ stateDiagram-v2
       <table>
         <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
         <tbody>
-          <tr><td>2026-06-04</td><td>V1.0</td><td>初始生成 ch1_2_6 教员台滑动面板 HTML，含功能层级图、属性表格、全局操作流程、状态机及测试要点</td></tr>
-          <tr><td>2026-06-04</td><td>V1.1</td><td>补充控制面板总览图（含 INSTRUCTOR STATION 红色指示框）并调整为左/右并排布局；删除重复的展开按钮特写图；图片重新编号</td></tr>
-          <tr><td>2026-06-04</td><td>V1.2</td><td>拆分 2.1 PREFERENCES Tab 表格为面板属性与参数设置项两层；合并环境单位公制/英制为单行并补充互斥关系说明</td></tr>
+          <tr><td>2026-06-05</td><td>V1.0</td><td>初始生成 ch1_4 仪表复示器工作区 HTML，含功能层级图、界面结构、核心功能详解、操作流程、状态机、API 契约建议及测试要点</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- Footer Nav -->
     <div class="footer-nav">
-      <a class="prev" href="ch1_2_5_reference_airport_tab.html">← 上一小节：1.2.5 参考机场选项卡</a>
-      <a class="next" href="ch1_2_7_control_board_footer.html">下一小节：1.2.7 控制面板底部 →</a>
+      <a class="prev" href="ch1_3_maintenance_pages.html">← 上一小节：1.3 维护页面</a>
+      <a class="next" href="ch1_5_lesson_plan_profile.html">下一小节：1.5 课程计划配置工作区 →</a>
     </div>
 
   </div>
@@ -461,9 +409,6 @@ function toggleCollapsible(el) {
   const parent = el.parentElement;
   parent.classList.toggle('collapsed');
 }
-
-// Default: collapse all collapsibles except first level
-// (none collapsed by default for this chapter due to complexity)
 
 // Mermaid init
 mermaid.initialize({ startOnLoad: true, theme: 'default' });
@@ -553,7 +498,9 @@ document.addEventListener('keydown', function(e) {
     updateTransform();
   });
 
-  document.addEventListener('mouseup', function() { isDragging = false; });
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && zoomedEl) {

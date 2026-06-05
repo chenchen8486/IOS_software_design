@@ -15,9 +15,18 @@ IOS_software_design/
 │   └── 需求描述与工作计划.md
 ├── output/              # 最终产物输出目录
 │   └── html/            # HTML 可视化页面与细化 MD
-│       ├── ch2_2_1_lesson_plan_tab.html
-│       ├── ch2_2_2_doc_tab.html
-│       ├── ch2_2_3_current_conditions_tab.html
+│       ├── ch1_2_1_lesson_plan_tab.html
+│       ├── ch1_2_2_doc_tab.html
+│       ├── ch1_2_3_current_conditions_tab.html
+│       ├── ch1_2_4_aircraft_tab.html
+│       ├── ch1_2_5_reference_airport_tab.html
+│       ├── ch1_2_6_instructor_station_panel.html
+│       ├── ch1_2_7_control_board_footer.html
+│       ├── ch1_3_maintenance_pages.html
+│       ├── ch1_4_instrument_repeater.html
+│       ├── ch1_5_lesson_plan_profile.html
+│       ├── ch1_6_map_workspace.html
+│       ├── ch1_7_advanced.html
 │       └── images/      # HTML 配图统一归集目录
 ├── reference/           # 原始参考文档、解析产物与中文主文档
 │   ├── A320.md          # 中文主文档（用户整理，入口文档）
@@ -62,21 +71,21 @@ IOS_software_design/
 | 2.2.1 | 课程计划选项卡（LESSON PLAN） | ## 5. LESSON PLAN Tab | ✅ 已完成 |
 | 2.2.2 | 文档选项卡（DOCS） | ## 6. DOCS Tab | ✅ 已完成 |
 | 2.2.3 | 当前条件选项卡（CURRENT CONDITIONS） | ## 7. CURRENT CONDITIONS Tab | ✅ 已完成 |
+| 2.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ✅ 已完成 |
+| 2.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | ✅ 已完成 |
+| 2.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | ✅ 已完成 |
+| 2.2.7 | 控制面板底部（Footer） | ## 11. Control Board Footer | ✅ 已完成 |
+| 2.3 | 维护页面（Maintenance Pages） | ## 12. Maintenance Pages | ✅ 已完成 |
+| 2.4 | 仪表复示器工作区（INSTRUMENT REPEATER） | ## 13. INSTRUMENT REPEATER Workspace | ✅ 已完成 |
+| 2.5 | 课程计划配置工作区（Lesson Plan Profile） | ## 14. Lesson Plan Profile Workspace | ✅ 已完成 |
 
 ### 待处理
 
 | 章节 | A320.md 标题 | 原始手册对应 | 状态 |
 |------|-------------|-------------|------|
-| 2.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ✅ 已完成 |
-| 2.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | ✅ 已完成 |
-| 2.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | ⏳ 下一章 |
-| 2.2.7 | 控制面板底部（Footer） | ## 11. Control Board Footer | 🔜 待处理 |
-| 2.3 | 维护页面（Maintenance Pages） | ## 12. Maintenance Pages | 🔜 待处理 |
-| 2.4 | 仪表复示器工作区（INSTRUMENT REPEATER） | ## 13. INSTRUMENT REPEATER Workspace | 🔜 待处理 |
-| 2.5 | 课程计划配置工作区（Lesson Plan Profile） | ## 14. Lesson Plan Profile Workspace | 🔜 待处理 |
-| 2.6 | 地图工作区（Map） | ## 15. Map Workspace | 🔜 待处理 |
-| 2.7 | 高级（Advanced） | ## 16. Advanced | 🔜 待处理 |
-| 2.8 | 参考流程 | 无直接对应 | 🔜 待处理 |
+| 2.6 | 地图工作区（Map） | ## 15. Map Workspace | ✅ 已完成 |
+| 2.7 | 高级（Advanced） | ## 16. Advanced | ✅ 已完成 |
+| 2.8 | 参考流程 | 无直接对应 | ⏳ 下一章 |
 | 4~10 | 开发设计章节 | 无直接对应 | 🔜 待填充 |
 
 ---
@@ -112,3 +121,7 @@ Claude 将自动：
 | 2026-06-01 | V0.2 | 完成 2.2.3 章节；重构 Mermaid 图表交互（点击放大 / 滚轮缩放 / 拖拽平移） |
 | 2026-06-01 | V0.3 | 迁移参考文件至 `reference/` 目录；创建根目录 `README.md`；统一文档路径引用 |
 | 2026-06-03 | V0.4 | 完成 2.2.5 章节（参考机场选项卡），涵盖 14 组参数字段、机场与重新定位滑动面板（4 选项卡）、时刻/地面风/能见度/降水/云层/温度/ISA/QNH/风切变/跑道状况等全部子面板，配套 27 张截图，含 Redline Review |
+| 2026-06-05 | V0.5 | 完成 2.3 章节（维护页面），生成 `ch1_3_maintenance_pages.html`，配套原始手册 Figure 108 截图；同步更新 README 进度与所有历史 HTML 的侧边栏导航 |
+| 2026-06-05 | V0.6 | 完成 2.5 章节（课程计划配置工作区），生成 `ch1_5_lesson_plan_profile.html`，配套原始手册 Figure 110~116 共 10 张截图；包含画布视图、列表视图、时间线/时间区域、6 组按钮的完整功能详解；附课程执行通用状态机与数据流推导；Redline Review 修复 Mermaid 语法违规 2 处；回溯更新 9 个历史 HTML 文件的侧边栏导航与页脚链接 |
+| 2026-06-05 | V0.7 | 完成 2.6 章节（地图工作区），生成 `ch1_6_map_workspace.html`，完整覆盖地图标题栏、主区域（图标/径向菜单）、右侧工具栏（7 项功能）、地图页脚（左/中/右三段）；包含风暴属性滑动面板详述、子流程图、状态机、测试要点；配套原始手册 Figure 111~143 共 35 张截图；回溯更新 10 个历史 HTML 文件的侧边栏导航与页脚链接 |
+| 2026-06-05 | V0.8 | 完成 2.7 章节（高级），生成 `ch1_7_advanced.html`。涵盖飞机、位置、环境（天气区域/灯光/机场视觉效果）、入侵者（TCAS/随机/进近/ITP）、通信（ATIS/ATC）、故障、UPRT、重置/冻结、录制共 10 大子模块；复用章节采用引用而非重复详述；配套原始手册 Figure 144~183 共 36 张截图；含参数设置通用状态机、六分支操作流程图、数据流与 API 契约推导；Redline Review 修复 flowchart transition label 斜杠违规；回溯更新 11 个历史 HTML 文件的侧边栏导航 |

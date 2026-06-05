@@ -1,0 +1,695 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.5 课程计划配置工作区（Lesson Plan Profile Workspace）— CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
+.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row .img-block img{max-height:320px}
+@media (max-width:768px){.img-row{flex-direction:column}}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-note{background:#f3f4f6;color:#4b5563}
+.tag-sim{background:#dbeafe;color:#1e40af}
+.tag-malf{background:#fee2e2;color:#991b1b}
+.tag-free{background:#d1fae5;color:#065f46}
+
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
+            <a class="nav-link" href="#">1.1.2 用户交互</a>
+            <a class="nav-link" href="#">1.1.3 参数选择</a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER）</a>
+        <a class="nav-link active" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
+        <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.5 课程计划配置工作区</span>
+  </div>
+
+  <div class="content">
+    <h1>1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</h1>
+    <p class="subtitle">对应原始手册：## 14. Lesson Plan Profile Workspace | 对应 A320.md：## 2.5 课程计划配置工作区</p>
+
+    <!-- 一、功能层级与界面总览 -->
+    <h2>一、功能层级与界面总览</h2>
+
+    <h3>1.1 功能层级结构</h3>
+    <div class="mermaid">
+graph TD
+    subgraph Main["Lesson Plan Profile Workspace / 课程计划配置工作区"]
+        A[Map Header<br>地图标题栏]
+        B[Main Section<br>主区域]
+        C[Map Footer<br>地图页脚]
+    end
+
+    B --> B1[Canvas View Mode<br>画布视图模式]
+    B --> B2[List View Mode<br>列表视图模式]
+    B --> B3[Time Section<br>时间区域]
+    B --> B4[Time Line<br>时间线]
+    B --> B5[Buttons<br>按钮区]
+
+    B1 --> B1a[Training Phases<br>训练阶段]
+    B1 --> B1b[Lesson Steps<br>课程步骤]
+    B1 --> B1c[Runtime Statuses<br>运行时状态]
+
+    B5 --> B5a[Lesson List<br>教案列表]
+    B5 --> B5b[List View Show/Hide<br>列表视图显隐]
+    B5 --> B5c[List View Expand/Collapse<br>列表视图展开折叠]
+    B5 --> B5d[End Lesson<br>结束课程]
+    B5 --> B5e[Step-by-Step<br>逐步执行]
+    B5 --> B5f[Execute<br>执行]
+
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    </div>
+
+    <h3>1.2 界面结构</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>地图标题栏<br>Map Header</td><td>工作区顶部</td><td>与地图工作区标题栏相同，显示重量与平衡、性能数据、高度/航向/IAS、通信、故障、当前时间、课程信息</td></tr>
+          <tr><td>主区域<br>Main Section</td><td>工作区中部核心区域</td><td>包含画布视图、列表视图、时间区域、时间线、按钮区</td></tr>
+          <tr><td>地图页脚<br>Map Footer</td><td>工作区底部</td><td>与控制面板页脚相同，包含工作区切换、冻结/重置、模拟控制、音量等快捷按钮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_5_overview.jpg" alt="课程计划配置工作区总览">
+      <p class="img-caption">图 1：课程计划配置工作区总览（Figure 110）</p>
+    </div>
+
+    <!-- 二、核心功能详解 -->
+    <h2>二、核心功能详解</h2>
+
+    <h3>2.1 画布视图模式（Canvas View Mode）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>以图形化方式显示课程计划中所有训练阶段及关联步骤，覆盖在由 CAE Slick 课程计划编辑器定义的飞行剖面（琥珀色线）上</td></tr>
+          <tr><td>呈现方式</td><td>横向可滚动视图，支持左右滑动浏览全部课程元素；课程规模决定单屏可见元素数量</td></tr>
+          <tr><td>交互方式</td><td>点击步骤一次 → 高亮步骤项并显示勾选标记，同时展开列表视图显示步骤详情；再次点击同一步骤 → 执行该步骤</td></tr>
+          <tr><td>边界行为</td><td>自由练习（Freeplay）和嵌套课程（Nested Lesson）步骤无步骤序列号，可在课程任意时间点触发</td></tr>
+          <tr><td>与其他功能关系</td><td>与 LESSON PLAN Tab 显示相同的课程元素，仅呈现方式不同；与控制面板中的课程计划选项卡互为补充视图</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.2 教案元素（Lesson Elements）</h3>
+    <p>课程计划中的 NOTE、SIM Condition 和 Malfunction 元素具有以下特征：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>步骤序列号</td><td>每个元素均具有步骤序列号，指示其所属的训练阶段</td></tr>
+          <tr><td>颜色编码</td><td>各元素采用颜色编码，画布视图中显示的颜色与控制面板 LESSON PLAN 选项卡中一致</td></tr>
+          <tr><td>元素类型</td><td><span class="tag tag-note">NOTE</span> 注释步骤 / <span class="tag tag-sim">SIM</span> 模拟条件 / <span class="tag tag-malf">MALF</span> 故障</td></tr>
+          <tr><td>特殊元素</td><td><span class="tag tag-free">Freeplay</span> 自由练习与 <span class="tag tag-free">Nested Lesson</span> 嵌套课程步骤无序列号，可随时触发</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.3 运行时状态（Runtime Statuses）</h3>
+    <p>画布视图中每个步骤项具有四种运行时状态，以不同图标直观呈现当前执行进度：</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_5_step_not_selected.jpg" alt="步骤未选择">
+        <p class="img-caption">步骤未选择</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_selected.jpg" alt="步骤已选择">
+        <p class="img-caption">步骤已选择</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_executing.jpg" alt="步骤执行中">
+        <p class="img-caption">步骤正在执行指令</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_completed.jpg" alt="步骤已完成">
+        <p class="img-caption">步骤已完成</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>图标含义</th><th>触发条件</th></tr></thead>
+        <tbody>
+          <tr><td>未选择</td><td>默认空心/灰色状态</td><td>步骤尚未被教员点击选中</td></tr>
+          <tr><td>已选择</td><td>高亮并显示勾选标记</td><td>教员点击步骤一次，等待执行确认</td></tr>
+          <tr><td>执行中</td><td>动态执行指示</td><td>步骤指令正在下发至模拟器</td></tr>
+          <tr><td>已完成</td><td>完成标记</td><td>步骤指令执行完毕，模拟器反馈完成</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.4 时间线（Time Line）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>提供课程计划总时间的可视化指示</td></tr>
+          <tr><td>呈现方式</td><td>横向时间轴，直观展示课程各阶段在时间维度上的分布</td></tr>
+          <tr><td>与其他功能关系</td><td>与时间区域配合使用，时间区域显示具体数值，时间线提供图形化概览</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.5 列表视图模式（List View Mode）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>可垂直滚动的区域，显示与画布视图相同的课程元素</td></tr>
+          <tr><td>呈现方式</td><td>纵向列表，每个步骤按训练阶段分组排列</td></tr>
+          <tr><td>交互方式</td><td>操作方式与控制面板中的 LESSON PLAN 选项卡完全相同</td></tr>
+          <tr><td>显隐控制</td><td>可通过列表视图显隐按钮切换显示/隐藏（详见 2.7.2）</td></tr>
+          <tr><td>信息层级</td><td>可通过展开/折叠按钮调整每个步骤显示的信息详细程度（详见 2.7.3）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.6 时间区域（Time Section）</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>显示课程计划的预估总时间和已用时间，并提供执行进度偏差指示</td></tr>
+          <tr><td>呈现方式</td><td>数值显示区，包含总预估时间、已用时间、偏差指示</td></tr>
+          <tr><td>偏差指示</td><td><code>+</code> 表示执行进度<strong>提前于</strong>计划时间；<code>-</code> 表示执行进度<strong>落后于</strong>计划时间</td></tr>
+          <tr><td>边界行为</td><td>偏差指示为实时计算，随课程执行动态更新</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.7 按钮区（Buttons）</h3>
+    <p>主区域底部包含六个功能按钮，用于课程的选择、显示控制和执行操作。</p>
+
+    <h4>2.7.1 教案列表（Lesson List）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>显示所有可用课程计划的列表入口</td></tr>
+          <tr><td>交互方式</td><td>点击图标展开课程列表，供教员选择并加载目标课程</td></tr>
+          <tr><td>边界行为</td><td>加载新课程将替换当前画布和列表视图中的全部内容</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_5_lesson_list.jpg" alt="教案列表图标">
+      <p class="img-caption">图 2：教案列表图标</p>
+    </div>
+
+    <h4>2.7.2 列表视图模式显示/隐藏（List View Mode Show/Hide）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>切换列表视图模式在主区域中的显示与隐藏</td></tr>
+          <tr><td>交互方式</td><td>点击切换图标：当前为「隐藏」图标时点击隐藏列表视图；当前为「显示」图标时点击显示列表视图</td></tr>
+          <tr><td>呈现方式</td><td>两种图标互斥显示，仅展示当前可操作状态的图标</td></tr>
+          <tr><td>与其他功能关系</td><td>与 2.7.3 展开/折叠独立控制：隐藏列表视图后，展开/折叠状态仍然保留</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_5_list_hide.jpg" alt="隐藏列表视图">
+        <p class="img-caption">点击隐藏列表视图</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_list_show.jpg" alt="显示列表视图">
+        <p class="img-caption">点击显示列表视图</p>
+      </div>
+    </div>
+
+    <h4>2.7.3 列表视图模式展开/折叠（List View Mode Expand/Collapse）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>控制列表视图中每个步骤显示的信息详细程度</td></tr>
+          <tr><td>交互方式</td><td>点击展开按钮增加信息层级；点击折叠按钮减少信息层级</td></tr>
+          <tr><td>边界行为</td><td>两个按钮为独立操作，非互斥状态；展开/折叠仅影响列表视图的显示密度，不影响画布视图</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_5_list_expand.jpg" alt="展开列表视图">
+        <p class="img-caption">展开列表视图（增加信息详细程度）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_list_collapse.jpg" alt="折叠列表视图">
+        <p class="img-caption">折叠列表视图（减少信息详细程度）</p>
+      </div>
+    </div>
+
+    <h4>2.7.4 结束课程（End Lesson）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>结束当前正在运行的课程，并返回课程计划选择界面</td></tr>
+          <tr><td>呈现方式</td><td>仅在课程处于运行状态时显示；课程未运行时该按钮隐藏</td></tr>
+          <tr><td>交互方式</td><td>点击后立即结束课程，返回课程选择界面</td></tr>
+          <tr><td>边界行为</td><td>结束课程将清除当前画布和列表视图中的运行时状态</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.7.5 逐步执行（Step-by-Step）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>按逐步方式运行课程步骤，每个步骤执行前需教员确认</td></tr>
+          <tr><td>交互方式</td><td>点击激活逐步执行模式后，每执行一个步骤前需点击「执行」按钮确认</td></tr>
+          <tr><td>边界行为</td><td>与自动运行（Autorun）模式互斥；激活逐步执行后，画布视图中点击步骤的「一次选择、再次执行」逻辑仍然有效</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>2.7.6 执行（Execute）</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>功能定义</td><td>执行当前已选中的课程步骤</td></tr>
+          <tr><td>交互方式</td><td>点击后触发已选步骤的指令下发；在逐步执行模式下，作为每个步骤的确认触发器</td></tr>
+          <tr><td>边界行为</td><td>未选中任何步骤时点击无效或保持禁用态；执行后步骤状态从「已选择」流转至「执行中」</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 三、全局操作流程与推导 -->
+    <h2>三、全局操作流程与推导</h2>
+
+    <h3>3.1 课程计划配置工作区教员核心操作流程全景图</h3>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 Lesson Plan Profile Workspace])
+    --> A{选择操作类型}
+
+    A -->|浏览课程| B1[加载课程]
+    A -->|查看详情| B2[点击步骤]
+    A -->|执行课程| B3[选择执行模式]
+
+    B1 --> C1[点击 Lesson List]
+    C1 --> C1a[浏览可用课程]
+    C1a --> C1b[选择目标课程]
+    C1b --> C1c[画布与列表刷新]
+    C1c --> End1([浏览就绪])
+
+    B2 --> C2[Canvas 点击一次]
+    C2 --> C2a[高亮步骤]
+    C2a --> C2b[显示勾选标记]
+    C2b --> C2c[列表视图展开详情]
+    C2c --> C2d{再次点击?}
+    C2d -->|是| C2e[直接执行步骤]
+    C2d -->|否| C2f[保持选中等待执行]
+    C2e --> End2([步骤执行完成])
+    C2f --> End2
+
+    B3 --> C3{执行模式}
+    C3 -->|Autorun| C3a[自动顺序执行]
+    C3 -->|Step-by-Step| C3b[逐步骤确认执行]
+    C3b --> C3c[选中步骤]
+    C3c --> C3d[点击 Execute]
+    C3d --> C3e[执行当前步骤]
+    C3e --> C3f{课程完成?}
+    C3f -->|否| C3c
+    C3f -->|是| C3g[结束课程]
+    C3a --> C3f
+    C3g --> End3([训练完成])
+
+    C2e -.->|状态流转| C2e_a[未选择 到 已选择 到 执行中 到 已完成]
+    C3e -.->|状态流转| C3e_a[未选择 到 已选择 到 执行中 到 已完成]
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End1 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End2 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End3 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style C3f fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    </div>
+
+    <h3>3.2 课程执行通用状态机</h3>
+    <div class="mermaid">
+stateDiagram-v2
+    [*] --> 空闲状态 : 进入工作区
+    空闲状态 --> 课程已加载 : 选择课程
+    课程已加载 --> 步骤已选中 : 点击步骤
+    步骤已选中 --> 执行中 : 点击执行或再次点击
+    执行中 --> 已完成 : 模拟器反馈完成
+    已完成 --> 步骤已选中 : 选中下一步骤
+    已完成 --> 课程结束 : 全部步骤完成或点击结束课程
+    课程结束 --> [*]
+
+    步骤已选中 --> 空闲状态 : 取消选择/切换课程
+    执行中 --> 空闲状态 : 点击结束课程
+
+    空闲状态 --> 课程已加载 : 加载新课程
+    课程已加载 --> 空闲状态 : 结束当前课程
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>说明</th><th>进入条件</th></tr></thead>
+        <tbody>
+          <tr><td>空闲状态</td><td>工作区已打开，未加载课程或课程已结束</td><td>进入工作区或结束课程后</td></tr>
+          <tr><td>课程已加载</td><td>课程元素已渲染在画布和列表视图中</td><td>从 Lesson List 选择课程后</td></tr>
+          <tr><td>步骤已选中</td><td>某个步骤处于高亮/勾选状态，等待执行</td><td>点击画布或列表中的步骤一次</td></tr>
+          <tr><td>执行中</td><td>步骤指令正在下发至模拟器</td><td>再次点击步骤或点击 Execute</td></tr>
+          <tr><td>已完成</td><td>步骤指令执行完毕</td><td>模拟器返回执行完成信号</td></tr>
+          <tr><td>课程结束</td><td>全部步骤执行完毕或教员主动结束</td><td>全部步骤完成 / 点击 End Lesson</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.3 关联依赖与异常边界</h3>
+
+    <h4>3.3.1 关联依赖表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能模块</th><th>依赖对象</th><th>依赖关系说明</th></tr></thead>
+        <tbody>
+          <tr><td>画布视图</td><td>LESSON PLAN Tab</td><td>两者显示相同的课程元素数据源，互为补充视图；一方更新课程进度后另一方实时同步</td></tr>
+          <tr><td>列表视图</td><td>LESSON PLAN Tab</td><td>列表视图的操作逻辑与控制面板 LESSON PLAN 选项卡完全相同</td></tr>
+          <tr><td>执行按钮</td><td>步骤选中状态</td><td>未选中步骤时 Execute 按钮无效/禁用</td></tr>
+          <tr><td>结束课程按钮</td><td>课程运行状态</td><td>仅在课程处于运行状态时可见；课程未运行时不渲染</td></tr>
+          <tr><td>地图标题栏</td><td>地图工作区</td><td>复用地图工作区的标题栏组件，显示内容完全一致</td></tr>
+          <tr><td>地图页脚</td><td>控制面板页脚</td><td>复用控制面板底部组件，功能完全一致</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>3.3.2 异常边界表格</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>异常场景</th><th>触发条件</th><th>系统行为</th></tr></thead>
+        <tbody>
+          <tr><td>未选中步骤即点击执行</td><td>教员在未点击任何步骤的情况下点击 Execute</td><td>按钮无响应或保持禁用态，不触发任何指令下发</td></tr>
+          <tr><td>课程运行中切换课程</td><td>当前课程执行中，教员从 Lesson List 选择新课程</td><td>结束当前课程并加载新课程，画布和列表视图全部刷新</td></tr>
+          <tr><td>画布滚动超出边界</td><td>左右滚动至课程最左/最右端后继续滑动</td><td>到达边界后停止滚动，无回弹或循环</td></tr>
+          <tr><td>自由练习/嵌套步骤触发时机</td><td>在课程任意时间点触发 Freeplay/Nested Lesson</td><td>系统允许随时触发，不校验当前阶段是否匹配</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <pre><code>教员操作（点击步骤/执行/结束）
+    │
+    ▼
+UI 事件层 ──→ 步骤选中事件 / 执行触发事件 / 课程结束事件
+    │
+    ▼
+状态管理层 ──→ 更新步骤状态（未选择→已选择→执行中→已完成）
+    │           更新课程全局状态（运行中/已结束）
+    │
+    ▼
+模拟器指令层 ──→ 下发步骤指令至模拟器核心
+    │              同步课程进度至 LESSON PLAN Tab
+    │
+    ▼
+反馈呈现层 ──→ 画布视图状态图标更新
+              列表视图详情更新
+              时间区域已用时间/偏差刷新
+              运行时状态图标切换</code></pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>接口</th><th>方法</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
+        <tbody>
+          <tr><td>/lesson-plan/load</td><td>POST</td><td>lessonId</td><td>lessonData, phases, steps</td><td>404 课程不存在 / 500 加载失败</td></tr>
+          <tr><td>/lesson-plan/step/select</td><td>POST</td><td>stepId, phaseId</td><td>stepDetail, status</td><td>400 步骤不存在 / 409 步骤已完成</td></tr>
+          <tr><td>/lesson-plan/step/execute</td><td>POST</td><td>stepId</td><td>executionId, status</td><td>400 未选中步骤 / 500 执行失败</td></tr>
+          <tr><td>/lesson-plan/end</td><td>POST</td><td>lessonId</td><td>status, summary</td><td>409 课程未运行</td></tr>
+          <tr><td>/lesson-plan/status</td><td>GET</td><td>lessonId</td><td>currentStep, elapsedTime, deviation</td><td>404 课程未加载</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、测试要点 -->
+    <h2>四、测试要点</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>测试维度</th><th>测试场景</th><th>验收标准</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3">正向路径</td><td>加载课程后画布正确渲染所有训练阶段和步骤</td><td>画布中元素数量与 LESSON PLAN Tab 一致，颜色编码正确</td></tr>
+          <tr><td>点击步骤一次选中，再次点击执行</td><td>第一次点击后步骤高亮+勾选标记，列表视图展开详情；第二次点击后状态流转为执行中→已完成</td></tr>
+          <tr><td>逐步执行模式下 Execute 按钮触发步骤执行</td><td>每步执行前必须点击 Execute 确认，自动进入下一步骤选中状态</td></tr>
+          <tr><td rowspan="3">异常路径</td><td>未选中步骤点击 Execute</td><td>按钮无响应或保持禁用，不触发任何执行动作</td></tr>
+          <tr><td>课程运行中加载新课程</td><td>旧课程被正确结束，画布和列表视图完全刷新为新课程数据</td></tr>
+          <tr><td>画布滚动至边界后继续滑动</td><td>滚动停止在边界，无异常跳转或空白显示</td></tr>
+          <tr><td rowspan="2">边界条件</td><td>加载超大课程（超过单屏显示容量）</td><td>画布支持横向滚动，所有元素均可浏览；性能无显著下降</td></tr>
+          <tr><td>课程包含 Freeplay/Nested Lesson 步骤</td><td>画布中正确显示为无序列号，可随时触发</td></tr>
+          <tr><td rowspan="2">联动测试</td><td>课程计划配置工作区与 LESSON PLAN Tab 状态同步</td><td>任一工作区执行步骤后，另一工作区步骤状态实时同步更新</td></tr>
+          <tr><td>结束课程后返回课程选择界面</td><td>画布和列表清空，End Lesson 按钮隐藏，Lesson List 可重新选择</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、变更记录 -->
+    <h2>五、变更记录</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
+        <tbody>
+          <tr><td>2026-06-05</td><td>V1.0</td><td>初始版本：基于 A320.md 2.5 章节与原始手册 ## 14 章生成课程计划配置工作区 HTML，包含功能层级图、核心功能详解、操作流程图、状态机、测试要点</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <a class="prev" href="ch1_4_instrument_repeater.html">← 上一页：1.4 仪表复示器（INSTRUMENT REPEATER）</a>
+      <a class="next" href="ch1_6_map_workspace.html">下一页：1.6 地图工作区（Map Workspace）→</a>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// Toggle navigation
+document.addEventListener('click',function(e){
+  const overlay=document.querySelector('.img-zoom-overlay');
+  if(overlay && (e.target.closest('.img-zoom-overlay')===overlay)){
+    overlay.remove();
+  }
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const overlay=document.querySelector('.img-zoom-overlay');
+    if(overlay) overlay.remove();
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      zoomed.classList.remove('is-zoomed');
+      zoomed.style.transform='';
+      const o=document.querySelector('.mermaid-zoom-overlay');
+      if(o) o.remove();
+    }
+  }
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children=el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+  }
+}
+
+// Image zoom (event delegation)
+document.addEventListener('click',function(e){
+  const img=e.target.closest('.img-block img');
+  if(!img) return;
+  const overlay=document.createElement('div');
+  overlay.className='img-zoom-overlay';
+  const zoomedImg=document.createElement('img');
+  zoomedImg.src=img.src;
+  overlay.appendChild(zoomedImg);
+  document.body.appendChild(overlay);
+});
+
+// Mermaid zoom
+document.addEventListener('click',function(e){
+  const mermaidEl=e.target.closest('.mermaid');
+  if(!mermaidEl || mermaidEl.classList.contains('is-zoomed')) return;
+  mermaidEl.classList.add('is-zoomed');
+  const overlay=document.createElement('div');
+  overlay.className='mermaid-zoom-overlay';
+  document.body.appendChild(overlay);
+  let scale=1,panning=false,pointX=0,pointY=0,startX=0,startY=0;
+  const svg=mermaidEl.querySelector('svg');
+  if(!svg) return;
+  function setTransform(){
+    svg.style.transform='translate('+pointX+'px,'+pointY+'px) scale('+scale+')';
+  }
+  mermaidEl.addEventListener('wheel',function(ev){
+    ev.preventDefault();
+    const delta=ev.deltaY>0?0.9:1.1;
+    scale=Math.min(Math.max(0.3,scale*delta),5);
+    setTransform();
+  },{passive:false});
+  mermaidEl.addEventListener('mousedown',function(ev){
+    ev.preventDefault();
+    panning=true;
+    startX=ev.clientX-pointX;
+    startY=ev.clientY-pointY;
+  });
+  window.addEventListener('mousemove',function(ev){
+    if(!panning) return;
+    ev.preventDefault();
+    pointX=ev.clientX-startX;
+    pointY=ev.clientY-startY;
+    setTransform();
+  });
+  window.addEventListener('mouseup',function(){panning=false;});
+  overlay.addEventListener('click',function(){
+    mermaidEl.classList.remove('is-zoomed');
+    svg.style.transform='';
+    overlay.remove();
+  });
+});
+
+mermaid.initialize({startOnLoad:true,theme:'default',flowchart:{useMaxWidth:true,htmlLabels:true}});
+</script>
+</body>
+</html>
