@@ -170,11 +170,15 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    subgraph Map["Map Workspace / 地图工作区"]
+    subgraph Main["Map Workspace / 地图工作区 — 直接可见"]
         A[Map Header<br>地图标题栏]
         B[Main Section<br>主区域]
         C[Right Toolbar<br>右侧工具栏]
         D[Map Footer<br>地图页脚]
+    end
+
+    subgraph Popups["点击后弹出 / Pop-up Panels"]
+        E[Storm Properties Sliding Panel<br>风暴属性滑动面板]
     end
 
     A --> A1[Weight & Balance<br>重量与平衡]
@@ -215,7 +219,7 @@ graph TD
 
     D2 --> D2a[Marker<br>标记]
     D2 --> D2b[Storm<br>风暴]
-    D2b -.->|点击弹出| E[Storm Properties Sliding Panel<br>风暴属性滑动面板]
+    D2b -.->|点击弹出| E
     D2 --> D2c[Recording<br>录制]
     D2 --> D2d[Print<br>打印]
 
@@ -228,8 +232,8 @@ graph TD
     E --> E2[TYPE<br>类型]
     E --> E3[Rotation & Effects<br>旋转与效果]
 
-    style Map fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style E fill:#fef3c7,stroke:#d97706,stroke-width:2px,stroke-dasharray: 5 5
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Popups fill:#fef3c7,stroke:#d97706,stroke-width:2px,stroke-dasharray: 5 5
     style D2b fill:#fef3c7,stroke:#d97706,stroke-width:2px
     </div>
 
@@ -399,33 +403,38 @@ graph TD
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>功能</th><th>交互方式</th><th>详细说明 / 边界行为</th></tr>
+          <tr><th>功能</th><th>交互方式</th><th>详细说明 / 边界行为</th><th>与其他功能关系</th></tr>
         </thead>
         <tbody>
           <tr>
             <td>缩放 +/-<br>Zoom +/-</td>
             <td>点击 + 或 - 按钮</td>
             <td>逐级放大或缩小地图视图</td>
+            <td>与<strong>自动范围</strong>、<strong>地图定位</strong>联动影响当前视图；缩放级别变化会同步反馈到地图状态 API</td>
           </tr>
           <tr>
             <td>自动范围<br>Auto Range</td>
             <td>点击按钮</td>
             <td>确保飞机和参考跑道始终同时显示在地图上；若未设置参考跑道，则仅围绕本机保持居中</td>
+            <td><strong>中依赖</strong>：需要<strong>参考机场</strong>中已设置参考跑道；无参考跑道时退化为围绕本机居中</td>
           </tr>
           <tr>
             <td>比例尺<br>Scales</td>
             <td>点击按钮后选择</td>
             <td>地图比例尺范围 5 海里 ~ 350 海里；范围表示显示器 x 轴方向的距离（ nautical miles ）</td>
+            <td>与<strong>缩放 +/-</strong>互为等效入口，两者修改同一视图比例参数</td>
           </tr>
           <tr>
             <td>透视<br>Perspective</td>
             <td>点击按钮</td>
             <td>将地图切换为三维模式；提供多种飞机视角，并配有两个带光标的拨盘用于交互式调整视角</td>
+            <td>与右侧页脚<strong>2D/3D 切换</strong>联动：两者控制同一显示模式状态，切换即时同步</td>
           </tr>
           <tr>
             <td>地图定位<br>Map To</td>
             <td>点击按钮后选择元素</td>
             <td>将地图中心定位到所选元素（机场、飞机、风暴）</td>
+            <td><strong>强依赖</strong>：依赖主区域中已渲染的<strong>机场、飞机、风暴</strong>实体；若目标不存在则定位选项不可用</td>
           </tr>
           <tr>
             <td>符号<br>Symbols</td>
@@ -436,6 +445,7 @@ graph TD
               • <strong>眼睛图标</strong>：显示 / 隐藏该符号<strong>本身</strong><br>
               可控符号包括：Airports（机场）、Navaids（导航台）、Storms（风暴）、Players（入侵者）
             </td>
+            <td>与<strong>主区域</strong>渲染层联动：切换可见性直接控制对应符号图层的显示/隐藏</td>
           </tr>
           <tr>
             <td>指示器<br>Indicators</td>
@@ -450,6 +460,7 @@ graph TD
               • Scale（比例尺）<br>
               • Wind barb（风向标 / 风羽）
             </td>
+            <td>与<strong>主区域</strong>对应覆盖层联动；罗盘与风向标的状态同时受<strong>环境系统</strong>实时数据驱动</td>
           </tr>
         </tbody>
       </table>
@@ -669,18 +680,38 @@ graph TD
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>按钮</th><th>功能</th></tr>
+          <tr><th>按钮</th><th>功能定义</th><th>交互方式 / 边界行为</th><th>与其他功能关系</th></tr>
         </thead>
         <tbody>
-          <tr><td>锁定<br>Latch</td><td>将地图锁定到本机，使本机始终保持在地图中央</td></tr>
-          <tr><td>2D/3D</td><td>在主区域 2D 和 3D 显示模式之间切换</td></tr>
-          <tr><td>帮助<br>Help</td><td>功能同控制板页脚帮助按钮（详见 1.2.7）</td></tr>
-          <tr><td>工作区<br>Workspace</td><td>功能同控制板页脚工作区按钮（详见 1.2.7），用于切换 IOS 工作区</td></tr>
+          <tr>
+            <td>锁定<br>Latch</td>
+            <td>将地图锁定到本机，使本机始终保持在地图中央</td>
+            <td>点击切换锁定/解锁状态；锁定后地图自动跟随飞机位置平移，缩放级别保持不变</td>
+            <td>与<strong>自动范围</strong>互斥：锁定本机时自动范围逻辑暂停；与<strong>地图定位</strong>切换使用时互相覆盖当前中心点</td>
+          </tr>
+          <tr>
+            <td>2D/3D</td>
+            <td>在主区域 2D 和 3D 显示模式之间切换</td>
+            <td>点击即时切换；3D 模式下可通过右侧工具栏「透视」拨盘调整视角</td>
+            <td>与右侧工具栏<strong>透视（Perspective）</strong>联动：两者共享同一显示模式状态，从 2D 切到 3D 后透视拨盘才生效</td>
+          </tr>
+          <tr>
+            <td>帮助<br>Help</td>
+            <td>打开帮助说明</td>
+            <td>点击弹出帮助面板；行为与 1.2.7 控制面板底部帮助按钮一致</td>
+            <td><strong>复用</strong>：功能与入口同 1.2.7 控制面板底部，详见该章节</td>
+          </tr>
+          <tr>
+            <td>工作区<br>Workspace</td>
+            <td>切换 IOS 工作区</td>
+            <td>点击弹出工作区选择面板，选择后离开当前地图工作区；当前地图状态在会话中保留</td>
+            <td><strong>复用</strong>：功能与入口同 1.2.7 控制面板底部；切换工作区时会触发 IOS 工作区管理器的上下文切换 API</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <h3>2.5 风暴管理子流程图</h3>
+    <h3>2.5 风暴管理子流程（Storm Management Flow）</h3>
     <p>风暴属性滑动面板涉及「选择 → 编辑 → 激活/删除」的多步骤操作，按规范要求绘制独立的横向操作流程图。</p>
     <div class="mermaid">
 flowchart LR
@@ -697,7 +728,7 @@ flowchart LR
 
     style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style End fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style End2 fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style End2 fill:#d1fae5,stroke:#059669,stroke-width:2px
     style Activate fill:#d1fae5,stroke:#059669,stroke-width:2px
     style Delete fill:#fee2e2,stroke:#dc2626,stroke-width:2px
     </div>
@@ -708,10 +739,7 @@ flowchart LR
     <h3>3.1 地图工作区教员核心操作流程全景图</h3>
     <div class="mermaid">
 flowchart LR
-    Start([进入 IOS 系统]) --> Switch[点击 Workspace<br>选择 Map 工作区]
-    Switch --> Load[地图工作区<br>加载完成]
-
-    Load --> Decision{选择操作域}
+    Start([进入 Map Workspace]) --> Decision{选择操作域}
 
     Decision -->|标题栏监控| Header[查看 Map Header<br>重量与平衡 /<br>性能数据 /<br>高度航向空速 /<br>通信 /<br>故障 /<br>时间课程信息]
     Decision -->|主区域交互| Main[操作 Main Section<br>风向标 & 罗盘 /<br>5 种径向菜单]
@@ -720,26 +748,20 @@ flowchart LR
     Decision -->|中间页脚| MidF[中间页脚操作<br>Marker / Storm /<br>Recording / Print]
     Decision -->|右侧页脚| RightF[右侧页脚操作<br>Latch / 2D3D /<br>Help / Workspace]
 
-    Header --> Continue([继续操作])
-    Main --> Continue
-    Toolbar --> Continue
-    LeftF --> Continue
+    Header --> End([操作完成])
+    Main --> End
+    Toolbar --> End
+    LeftF --> End
     MidF --> StormSub[风暴管理子流程<br>选择类型 → 编辑属性 → 激活 / 删除]
-    StormSub --> Continue
-    MidF --> Continue
-    RightF --> SwitchOut[切换至其他<br>IOS 工作区]
-    RightF --> Continue
-
-    Continue --> Decision
-    SwitchOut --> End([结束地图会话])
+    StormSub --> End
+    RightF --> End
 
     style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style End fill:#fee2e2,stroke:#dc2626,stroke-width:2px
-    style Continue fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
     style StormSub fill:#fef3c7,stroke:#d97706,stroke-width:2px
     </div>
 
-    <p><strong>流程说明：</strong>地图工作区教员核心操作流程展示了教员进入地图工作区后的完整操作闭环。流程以「进入 IOS 系统」为起点，通过 Workspace 按钮切换至 Map 工作区，待地图加载完成后进入核心决策循环「选择操作域」。</p>
+    <p><strong>流程说明：</strong>地图工作区教员核心操作流程展示了教员进入地图工作区后的单次完整操作动线。流程以「进入 Map Workspace」为起点，教员首先选择操作域，完成对应操作后直接汇聚到「操作完成」终点。</p>
     <p>教员可从以下<strong>六大操作域</strong>中选择：</p>
     <ol>
       <li><strong>标题栏监控</strong>：查看飞机重量与平衡、性能数据、高度/航向/空速、通信状态、故障列表、当前时间以及课程与练习信息，快速掌握训练中的关键参数。所有信息均为实时监控，无需额外操作即可获取。</li>
@@ -753,9 +775,9 @@ flowchart LR
       <li><strong>控制地图视图</strong>：使用右侧工具栏调整地图显示，包括缩放（+/-）、自动范围（确保飞机与参考跑道同屏）、比例尺（5 ~ 350 nm）、透视（3D 模式 + 双拨盘调整视角）、地图定位（中心定位至机场/飞机/风暴）、符号（T 图标控制文本标签 / 眼睛图标控制元素显示）以及指示器（眼睛图标控制蜘蛛网、FMS 航线、时间线、航迹、罗盘、比例尺、风羽的显示/隐藏）。</li>
       <li><strong>左侧页脚</strong>：查看 Events（系统识别的超限和异常信息）、Plots（5 类性能评估图表：精密进近、非精密进近、起飞、尾部间隙、跑道）或使用 Clear 清除时间线、风暴、事件列表和航迹。</li>
       <li><strong>中间页脚</strong>：使用 Marker 在飞行路径上标记彩色事件；通过 Storm 打开风暴属性面板执行「选择类型 → 编辑属性（旋转/效果/位置） → 激活/删除」的子流程；控制 Recording 开始/停止录制（需配备简报/讲评系统）；或使用 Print 打印当前页面。</li>
-      <li><strong>右侧页脚</strong>：使用 Latch 将地图锁定到本机保持居中；切换 2D/3D 显示模式；打开 Help 获取帮助；或点击 Workspace 切换至其他 IOS 工作区并结束当前地图会话。</li>
+      <li><strong>右侧页脚</strong>：使用 Latch 将地图锁定到本机保持居中；切换 2D/3D 显示模式；打开 Help 获取帮助；Workspace 按钮可切换至其他 IOS 工作区并结束当前地图会话。</li>
     </ol>
-    <p>除「切换至其他工作区」为终止性操作外，其余所有操作完成后均返回「继续操作」节点，教员可重新进入决策循环执行下一项任务，形成完整的操作闭环。</p>
+    <p>六个操作域最终均汇聚至「操作完成」终点；若教员通过右侧页脚 Workspace 切换至其他 IOS 工作区，则视为结束当前地图会话。如需执行下一项任务，教员可重新从 Map Workspace 入口启动新流程。</p>
 
     <h3>3.2 地图工作区通用状态机</h3>
     <div class="mermaid">
@@ -1029,6 +1051,11 @@ IOS 工作区管理器加载地图工作区上下文
             <td>2026-06-05</td>
             <td>V1.0</td>
             <td>初始生成 1.6 地图工作区 HTML，完整覆盖地图标题栏、主区域（图标/径向菜单）、右侧工具栏（7 项功能）、地图页脚（左/中/右三段）；包含风暴属性滑动面板详述、子流程图、状态机、测试要点；配套原始手册 Figure 111~143 共 35 张截图</td>
+          </tr>
+          <tr>
+            <td>2026-06-08</td>
+            <td>V1.1</td>
+            <td>规范审查修正：1）1.1 功能层级图按规范拆分为 Main / Popups 两个 subgraph；2）3.1 全局操作流程图由循环图重构为单主干 + 统一 End 汇聚；3）2.5 子流程标题补全英文 Flow 名并修正 End2 颜色；4）补全 2.3 / 2.4.3 属性表格的「与其他功能关系」列；5）补充 2.2.2 机场与风暴径向菜单的操作步骤；6）更新图片默认显示宽度与 overlay 滚轮缩放/拖拽平移交互</td>
           </tr>
         </tbody>
       </table>
