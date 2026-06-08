@@ -59,14 +59,17 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
-.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
-.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
 .img-row .img-block img{max-height:320px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
+/* Image zoom overlay */
 .img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
-.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);cursor:grab;transition:transform .1s ease-out;transform-origin:center center}
+.img-zoom-overlay img.is-dragging{cursor:grabbing}
+.img-zoom-overlay::after{content:'滚轮缩放 / 拖拽平移 / 点击关闭';position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;color:#fff;background:rgba(15,23,42,0.7);padding:6px 14px;border-radius:999px;pointer-events:none;white-space:nowrap}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
@@ -167,7 +170,11 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
 graph TD
-    subgraph Main["INSTRUCTOR STATION Sliding Panel / 教员台滑动面板"]
+    subgraph CB["Control Board / 控制面板"]
+        E[Expand Button<br>展开按钮]
+    end
+
+    subgraph Panel["INSTRUCTOR STATION Sliding Panel / 教员台滑动面板"]
         A[PREFERENCES Tab<br>偏好设置选项卡]
         B[CONFIGURATION Tab<br>配置选项卡]
         C[End Session Button<br>结束会话按钮]
@@ -187,9 +194,11 @@ graph TD
         D[CONFIGURATIONS Page<br>配置选择页面]
     end
 
+    E -.->|点击弹出| Panel
     B1 -.->|点击弹出| D
 
-    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style CB fill:#f1f5f9,stroke:#64748b,stroke-width:2px
+    style Panel fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style Popups fill:#fef3c7,stroke:#d97706,stroke-dasharray: 5 5
     </div>
 
@@ -198,10 +207,10 @@ graph TD
       <table>
         <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
         <tbody>
-          <tr><td>PREFERENCES Tab<br>偏好设置选项卡</td><td>滑动面板顶部选项卡栏（左侧）</td><td>设置力单位、飞机重量单位、环境单位及自动匹配参考机场</td><td>详见 2.1</td></tr>
+          <tr><td>Expand Button<br>展开按钮</td><td>控制面板右侧边缘（垂直长条形按钮，含右向箭头图标）</td><td>点击展开/收起教员台滑动面板</td><td>—</td></tr>
+          <tr><td>PREFERENCES Tab<br>偏好设置选项卡</td><td>滑动面板顶部选项卡栏（最左侧）</td><td>设置力单位、飞机重量单位、环境单位及自动匹配参考机场</td><td>详见 2.1</td></tr>
           <tr><td>CONFIGURATION Tab<br>配置选项卡</td><td>滑动面板顶部选项卡栏（中间）</td><td>查看当前 IOS 配置参数并切换至其他配置</td><td>详见 2.2</td></tr>
-          <tr><td>End Session Button<br>结束会话按钮</td><td>滑动面板底部</td><td>结束当前会话、返回 IOS 主页或选择其他配置</td><td>详见 2.3</td></tr>
-          <tr><td>Expand Button<br>展开按钮</td><td>控制面板右侧边缘</td><td>点击展开/收起教员台滑动面板</td><td>—</td></tr>
+          <tr><td>End Session Button<br>结束会话按钮</td><td>滑动面板底部区域（蓝色/高亮按钮）</td><td>结束当前会话并返回 IOS 主页；在主页可通过 Change 按钮选择其他配置</td><td>详见 2.3</td></tr>
         </tbody>
       </table>
     </div>
@@ -212,8 +221,12 @@ graph TD
         <p class="img-caption">图 1：控制面板总览，红色指示框标注 INSTRUCTOR STATION 展开按钮位置</p>
       </div>
       <div class="img-block">
+        <img src="./images/ch1_2_6_expand_button.jpg" alt="教员台滑动面板展开按钮特写">
+        <p class="img-caption">图 2：展开按钮特写（位于控制面板右侧边缘）</p>
+      </div>
+      <div class="img-block">
         <img src="./images/ch1_2_6_instructor_station_panel.jpg" alt="教员台滑动面板总览">
-        <p class="img-caption">图 2：教员台滑动面板总览（点击展开按钮后弹出）</p>
+        <p class="img-caption">图 3：教员台滑动面板总览（点击展开按钮后弹出）</p>
       </div>
     </div>
 
@@ -221,7 +234,7 @@ graph TD
     <h2>二、核心功能详解</h2>
 
     <h3>2.1 PREFERENCES Tab（偏好设置选项卡）</h3>
-    <p>偏好设置选项卡包含多个下拉按钮，允许教员设置力单位、飞机重量单位、环境单位。所有设置均为即时生效，无需额外确认。点击主界面控制面板右侧的<strong>展开按钮</strong>即可弹出该滑动面板（详见 1.2 界面结构）。</p>
+    <p>触发方式：点击控制面板右侧的<strong>展开按钮（Expand Button）</strong>展开教员台滑动面板，默认进入 PREFERENCES 选项卡。该选项卡包含多个下拉按钮，允许教员设置力单位、飞机重量单位、环境单位。所有设置均为即时生效，无需额外确认。</p>
 
     <h4>2.1.1 面板属性</h4>
     <div class="table-wrap">
@@ -241,18 +254,18 @@ graph TD
     <h4>2.1.2 参数设置项</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>参数项</th><th>可选值 / 说明</th></tr></thead>
+        <thead><tr><th>参数项</th><th>可选值</th><th>原文说明 / 生效效果</th></tr></thead>
         <tbody>
-          <tr><td>力单位</td><td>下拉选择：Lbf（磅力）/ daN（十牛顿）</td></tr>
-          <tr><td>飞机重量单位</td><td>下拉选择：Kg（千克，液体体积使用升）/ lb（磅，液体体积使用加仑、夸脱、品脱）</td></tr>
-          <tr><td>环境单位</td><td>下拉选择：Metric（公制：QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft）/ Imperial（英制：QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft）</td></tr>
-          <tr><td>自动匹配参考机场</td><td>复选框：勾选后自动将单位制参数设置为与所选参考机场匹配</td></tr>
+          <tr><td>力单位<br>Force Units</td><td>Lbf / daN</td><td>Lbf：将力单位设置为磅力（lbf）；daN：将力单位设置为十牛顿（daN）</td></tr>
+          <tr><td>飞机重量单位<br>A/C Weight Units</td><td>Kg / lb</td><td>Kg：将飞机重量单位设置为千克（kg），液体体积使用升（liters）；lb：将飞机重量单位设置为磅（lb），液体体积使用加仑、夸脱和品脱（gal, qt, pt）</td></tr>
+          <tr><td>环境单位<br>Environment Units</td><td>Metric / Imperial</td><td>Metric：QFE-hPa/mb、QNH-hPa/mb、温度-°C、RVR-m、能见度-km、风-kt、跑道污染深度-mm、云高-ft；Imperial：QFE-inHg、QNH-inHg、温度-°C、RVR-ft、能见度-sm、风-kt、跑道污染深度-in、云高-ft</td></tr>
+          <tr><td>自动匹配参考机场<br>Automatic to Reference Airport</td><td>复选框</td><td>勾选后将单位制参数自动设置为与所选参考机场匹配</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>2.2 CONFIGURATION Tab（配置选项卡）</h3>
-    <p>配置选项卡允许教员查看当前 IOS 配置的参数，并将当前 IOS 更改为其他配置。</p>
+    <p>触发方式：点击教员台滑动面板顶部的 <strong>CONFIGURATION</strong> 选项卡进入。该选项卡允许教员查看当前 IOS 配置的参数，并将当前 IOS 更改为其他配置。</p>
 
     <div class="table-wrap">
       <table>
@@ -269,19 +282,19 @@ graph TD
 
     <div class="img-block">
       <img src="./images/ch1_2_6_configurations_page.jpg" alt="IOS 配置选择页面">
-      <p class="img-caption">图 3：IOS 配置选择页面</p>
+      <p class="img-caption">图 4：IOS 配置选择页面</p>
     </div>
 
     <h3>2.3 End Session（结束会话）</h3>
-    <p>点击结束会话按钮可结束当前 IOS 会话，返回 IOS 主页或选择其他配置。</p>
+    <p>触发方式：点击教员台滑动面板底部的 <strong>End Session</strong> 按钮。点击后结束当前 IOS 会话并返回 IOS 主页；在 IOS 主页点击 <strong>Change</strong> 按钮可选择并加载其他配置。</p>
 
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
           <tr><td>功能定义</td><td>结束当前 IOS 训练会话</td></tr>
-          <tr><td>呈现方式</td><td>滑动面板底部按钮</td></tr>
-          <tr><td>交互方式</td><td>点击按钮 → 结束当前会话 → 返回 IOS 主页 → 可选择"更改"按钮加载其他配置</td></tr>
+          <tr><td>呈现方式</td><td>滑动面板底部区域的高亮按钮</td></tr>
+          <tr><td>交互方式</td><td>点击按钮 → 结束当前会话 → 返回 IOS 主页；若需切换配置，在 IOS 主页点击 Change 按钮进入配置选择页面</td></tr>
           <tr><td>边界行为</td><td>结束会话后将清空当前训练状态；若有未保存数据可能丢失；若当前有活跃课程将同时结束课程</td></tr>
           <tr><td>与其他功能关系</td><td>与 CONFIGURATION Tab 共用配置切换能力；与课程计划选项卡（1.2.1）的 End Lesson 功能语义相近但作用域不同（End Session 为整个 IOS，End Lesson 为当前课程）</td></tr>
         </tbody>
@@ -290,7 +303,7 @@ graph TD
 
     <div class="img-block">
       <img src="./images/ch1_2_6_ios_main_page.jpg" alt="IOS 主页">
-      <p class="img-caption">图 4：IOS 主页</p>
+      <p class="img-caption">图 5：IOS 主页</p>
     </div>
 
     <!-- 三、全局操作流程与推导 -->
@@ -310,29 +323,40 @@ flowchart LR
         UOM1 --> UOM2[选择飞机重量单位<br>Kg / lb]
         UOM2 --> UOM3[选择环境单位<br>Metric / Imperial]
         UOM3 --> UOM4[勾选/取消<br>自动匹配参考机场]
+        UOM4 --> UOM5[设置即时生效]
     end
 
     subgraph CONFIG_FLOW["配置切换流程 — 2.2"]
         CONFIG_ENTRY --> C1[点击更改配置按钮]
         C1 --> C2[浏览配置列表]
-        C2 --> C3[点击目标配置<br>加载按钮]
+        C2 --> C3{选择目标配置}
+        C3 -->|点击加载| C4[配置加载中]
+        C4 -->|加载成功| C5[IOS 切换至新配置]
+        C4 -->|加载失败| C_ERR[提示错误<br>保留原配置]
+        C_ERR --> C2
+        C3 -->|取消| PANEL_OPEN[返回面板]
     end
 
     subgraph END_FLOW["结束会话流程 — 2.3"]
-        END_ENTRY --> E1[确认结束当前会话]
-        E1 --> E2{是否切换配置?}
-        E2 -->|是| E3[点击更改按钮<br>选择其他配置]
-        E2 -->|否| E4[返回 IOS 主页]
+        END_ENTRY --> E1{确认结束会话?}
+        E1 -->|确认| E2[结束当前会话]
+        E2 --> E3[返回 IOS 主页]
+        E3 --> E4{是否切换配置?}
+        E4 -->|是| E5[点击 Change 按钮<br>选择其他配置]
+        E4 -->|否| E6[停留在 IOS 主页]
+        E1 -->|取消| PANEL_OPEN
     end
 
-    UOM4 --> End([设置完成])
-    C3 --> End
-    E3 --> End
-    E4 --> End
+    UOM5 --> End([训练就绪/完成])
+    C5 --> End
+    E5 --> End
+    E6 --> End
+    PANEL_OPEN --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
     style OP_TYPE fill:#fef3c7,stroke:#d97706
+    style C_ERR fill:#fee2e2,stroke:#dc2626
     </div>
 
     <h3>3.2 参数设置通用状态机</h3>
@@ -403,6 +427,53 @@ stateDiagram-v2
           <tr><td>配置加载失败</td><td>点击加载后无响应或报错</td><td>检查配置文件完整性，重试或联系维护人员</td></tr>
           <tr><td>结束会话时课程进行中</td><td>可能导致课程数据丢失</td><td>系统应提示确认，或自动保存课程状态</td></tr>
           <tr><td>单位切换后显示异常</td><td>参数值显示为非法值或空白</td><td>检查参数值是否在新单位制下有效，必要时重置为默认值</td></tr>
+          <tr><td>自动匹配参考机场时机场未选择</td><td>复选框已勾选但无参考机场数据</td><td>保持当前单位制不变，待选择参考机场后自动同步</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.4 数据流与开发流程推导</h3>
+
+    <h4>3.4.1 数据流</h4>
+    <pre><code>教员操作 → UI 事件 → 状态变更 → 模拟器指令/本地状态更新 → 反馈呈现
+
+【单位制切换】
+教员点击 PREFERENCES 选项卡中的下拉按钮
+  → 选择目标单位选项
+    → 更新 UOM State（力单位、重量单位、环境单位）
+      → 若勾选"自动匹配参考机场"，则根据参考机场 ICAO 覆盖环境单位
+        → 向相关模块广播 UOM_CHANGE 事件
+          → 参考机场选项卡（1.2.5）、当前条件选项卡（1.2.3）同步重绘显示单位
+            → 所有参数值按新单位进行数值转换与格式化显示
+
+【配置切换】
+教员点击 CONFIGURATION 选项卡中的"更改配置"按钮
+  → 弹出 CONFIGURATIONS 页面并加载可用配置列表
+    → 教员选择目标配置并点击 Load
+      → 系统校验当前配置与目标配置的兼容性（机型、场景、导航数据库版本）
+        → 向 IOS Core 发送 CONFIG_LOAD 指令
+          → IOS 释放当前训练资源，重新初始化至目标配置
+            → 界面刷新，课程计划状态重置，返回新配置的默认工作区
+
+【结束会话】
+教员点击 End Session 按钮
+  → 系统弹出二次确认（若课程进行中则提示课程数据可能丢失）
+    → 确认后向 IOS Core 发送 SESSION_END 指令
+      → 保存当前会话快照（可选，依据配置）
+        → 释放飞机状态、环境状态、课程状态、故障状态等所有运行时资源
+          → 返回 IOS 主页
+            → 教员可在主页点击 Change 按钮进入配置选择流程</code></pre>
+
+    <h4>3.4.2 API 接口契约建议</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /api/v1/ios/uom/preferences</code></td><td>—</td><td>force_unit, weight_unit, environment_unit, auto_match_airport</td><td>—</td></tr>
+          <tr><td><code>POST /api/v1/ios/uom/preferences</code></td><td>force_unit, weight_unit, environment_unit, auto_match_airport</td><td>updated_preferences, affected_modules[]</td><td>400 INVALID_UOM, 409 AUTO_MATCH_NO_AIRPORT</td></tr>
+          <tr><td><code>GET /api/v1/ios/configurations</code></td><td>—</td><td>configurations[{id, name, aircraft_type, description}]</td><td>503 CONFIG_STORE_UNAVAILABLE</td></tr>
+          <tr><td><code>POST /api/v1/ios/configurations/load</code></td><td>config_id</td><td>status, estimated_duration_ms</td><td>404 CONFIG_NOT_FOUND, 409 CONFIG_LOAD_IN_PROGRESS, 422 INCOMPATIBLE_CONFIG</td></tr>
+          <tr><td><code>POST /api/v1/ios/session/end</code></td><td>force（是否跳过确认）, save_snapshot（可选）</td><td>status, main_page_url</td><td>409 SESSION_END_IN_PROGRESS</td></tr>
         </tbody>
       </table>
     </div>
@@ -411,14 +482,18 @@ stateDiagram-v2
     <h2>四、测试要点</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>测试场景</th><th>测试步骤</th><th>期望结果</th></tr></thead>
+        <thead><tr><th>测试类型</th><th>测试场景</th><th>测试步骤</th><th>期望结果</th></tr></thead>
         <tbody>
-          <tr><td>正向路径：设置单位制</td><td>1. 打开教员台滑动面板 2. 进入 PREFERENCES 3. 依次设置力单位/重量单位/环境单位 4. 勾选自动匹配参考机场</td><td>所有设置即时生效，相关参数显示同步更新</td></tr>
-          <tr><td>正向路径：切换配置</td><td>1. 进入 CONFIGURATION 2. 点击更改配置 3. 选择新配置并加载</td><td>IOS 成功切换至新配置，界面刷新</td></tr>
-          <tr><td>正向路径：结束会话</td><td>1. 点击 End Session 2. 确认结束</td><td>返回 IOS 主页，会话状态重置</td></tr>
-          <tr><td>异常路径：配置加载中断</td><td>加载配置过程中关闭面板或断电</td><td>系统应回退至原配置或进入安全模式</td></tr>
-          <tr><td>边界条件：单位制组合</td><td>测试所有单位制组合（公制/英制 × 各参数）</td><td>所有组合下参数显示正确，无溢出或格式错误</td></tr>
-          <tr><td>联动测试：自动匹配参考机场</td><td>更改参考机场后观察自动匹配复选框</td><td>单位制自动同步为参考机场标准单位</td></tr>
+          <tr><td>正向路径</td><td>设置单位制</td><td>1. 点击控制面板右侧 Expand 按钮打开教员台滑动面板<br>2. 进入 PREFERENCES 选项卡<br>3. 依次设置力单位、飞机重量单位、环境单位<br>4. 勾选/取消自动匹配参考机场</td><td>所有设置即时生效，参考机场选项卡（1.2.5）和当前条件选项卡（1.2.3）中的参数显示单位同步更新</td></tr>
+          <tr><td>正向路径</td><td>切换配置</td><td>1. 进入 CONFIGURATION 选项卡<br>2. 点击更改配置按钮<br>3. 在配置列表中选择新配置并点击加载</td><td>IOS 成功切换至新配置，界面刷新，当前训练状态重置</td></tr>
+          <tr><td>正向路径</td><td>结束会话</td><td>1. 点击 End Session 按钮<br>2. 在确认弹窗中点击确认</td><td>当前会话结束，返回 IOS 主页，所有运行时资源释放</td></tr>
+          <tr><td>异常路径</td><td>配置加载失败</td><td>1. 进入 CONFIGURATION 选项卡<br>2. 选择目标配置并点击加载<br>3. 模拟配置文件损坏或网络中断</td><td>系统提示加载失败，保留原配置，界面不进入不可恢复状态</td></tr>
+          <tr><td>异常路径</td><td>结束会话时课程进行中</td><td>1. 启动一个课程计划<br>2. 进入教员台滑动面板<br>3. 点击 End Session</td><td>系统提示"当前有活跃课程，结束会话将同时结束课程"，需二次确认</td></tr>
+          <tr><td>异常路径</td><td>取消结束会话</td><td>1. 点击 End Session 按钮<br>2. 在确认弹窗中点击取消</td><td>保持在当前滑动面板，会话状态不发生变化</td></tr>
+          <tr><td>边界条件</td><td>单位制组合</td><td>测试所有单位制组合：力单位（Lbf/daN）× 重量单位（Kg/lb）× 环境单位（Metric/Imperial）</td><td>所有组合下参数显示正确，数值转换无精度丢失，无溢出或格式错误</td></tr>
+          <tr><td>边界条件</td><td>自动匹配参考机场但无机场</td><td>1. 勾选自动匹配参考机场<br>2. 清除当前参考机场</td><td>环境单位保持当前值不变，系统不崩溃，待重新选择参考机场后自动同步</td></tr>
+          <tr><td>联动测试</td><td>自动匹配参考机场</td><td>1. 勾选自动匹配参考机场<br>2. 在参考机场选项卡（1.2.5）中切换参考机场</td><td>环境单位自动同步为所选参考机场所在地区的标准单位</td></tr>
+          <tr><td>联动测试</td><td>配置切换与课程计划互斥</td><td>1. 启动课程计划<br>2. 尝试切换 IOS 配置</td><td>系统提示"切换配置将中断当前课程"，加载新配置前自动结束当前课程</td></tr>
         </tbody>
       </table>
     </div>
@@ -432,6 +507,7 @@ stateDiagram-v2
           <tr><td>2026-06-04</td><td>V1.0</td><td>初始生成 ch1_2_6 教员台滑动面板 HTML，含功能层级图、属性表格、全局操作流程、状态机及测试要点</td></tr>
           <tr><td>2026-06-04</td><td>V1.1</td><td>补充控制面板总览图（含 INSTRUCTOR STATION 红色指示框）并调整为左/右并排布局；删除重复的展开按钮特写图；图片重新编号</td></tr>
           <tr><td>2026-06-04</td><td>V1.2</td><td>拆分 2.1 PREFERENCES Tab 表格为面板属性与参数设置项两层；合并环境单位公制/英制为单行并补充互斥关系说明</td></tr>
+          <tr><td>2026-06-08</td><td>V1.3</td><td>Redline Review 优化：1）补充 3.4 数据流与 API 接口契约推导；2）重构 1.1 功能层级图，增加 Expand Button → Sliding Panel 触发映射；3）优化 3.1 流程图，增加配置加载失败、结束会话取消等异常/回退分支；4）修正 2.3 End Session 描述，明确 Change 按钮位于 IOS 主页；5）参数设置项表格增加「原文说明/生效效果」列；6）测试要点按类型分类并补充异常/边界场景；7）修复 img-row 缺少 flex-wrap 问题；8）补充 expand_button.jpg 特写图引用</td></tr>
         </tbody>
       </table>
     </div>
@@ -469,23 +545,108 @@ function toggleCollapsible(el) {
 mermaid.initialize({ startOnLoad: true, theme: 'default' });
 
 // Image zoom
-document.addEventListener('click', function(e) {
-  if (e.target.tagName === 'IMG' && e.target.closest('.img-block')) {
-    const overlay = document.createElement('div');
-    overlay.className = 'img-zoom-overlay';
-    const img = document.createElement('img');
-    img.src = e.target.src;
-    overlay.appendChild(img);
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', function() { overlay.remove(); });
+(function(){
+  let imgZoomOverlay = null;
+  let imgDragStart = null;
+  let imgDragLast = null;
+  let imgIsDragging = false;
+
+  function updateImgZoomTransform(overlay){
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    const scale = parseFloat(overlay.dataset.scale) || 1;
+    const tx = parseFloat(overlay.dataset.tx) || 0;
+    const ty = parseFloat(overlay.dataset.ty) || 0;
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
   }
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const overlay = document.querySelector('.img-zoom-overlay');
-    if (overlay) overlay.remove();
-  }
-});
+
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.img-block img');
+    if(img){
+      e.preventDefault();
+      const overlay = document.createElement('div');
+      overlay.className = 'img-zoom-overlay';
+      overlay.dataset.scale = '1';
+      overlay.dataset.tx = '0';
+      overlay.dataset.ty = '0';
+      const zoomed = document.createElement('img');
+      zoomed.src = img.src;
+      zoomed.alt = img.alt;
+      zoomed.style.transform = 'translate(0px,0px) scale(1)';
+      overlay.appendChild(zoomed);
+      document.body.appendChild(overlay);
+      imgZoomOverlay = overlay;
+      imgIsDragging = false;
+      return;
+    }
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(overlay){
+      if(imgIsDragging){
+        imgIsDragging = false;
+        return;
+      }
+      overlay.remove();
+      if(imgZoomOverlay === overlay) imgZoomOverlay = null;
+    }
+  });
+
+  document.addEventListener('wheel', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    e.preventDefault();
+    let scale = parseFloat(overlay.dataset.scale) || 1;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.5, Math.min(5, scale * delta));
+    overlay.dataset.scale = scale.toFixed(3);
+    updateImgZoomTransform(overlay);
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    e.preventDefault();
+    imgDragStart = { x: e.clientX, y: e.clientY };
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    imgZoomOverlay = overlay;
+    imgIsDragging = false;
+    img.classList.add('is-dragging');
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!imgDragStart || !imgZoomOverlay) return;
+    const dx = e.clientX - imgDragLast.x;
+    const dy = e.clientY - imgDragLast.y;
+    const movedX = Math.abs(e.clientX - imgDragStart.x);
+    const movedY = Math.abs(e.clientY - imgDragStart.y);
+    if(movedX > 3 || movedY > 3) imgIsDragging = true;
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    let tx = parseFloat(imgZoomOverlay.dataset.tx) || 0;
+    let ty = parseFloat(imgZoomOverlay.dataset.ty) || 0;
+    tx += dx;
+    ty += dy;
+    imgZoomOverlay.dataset.tx = tx.toFixed(1);
+    imgZoomOverlay.dataset.ty = ty.toFixed(1);
+    updateImgZoomTransform(imgZoomOverlay);
+  });
+
+  document.addEventListener('mouseup', function(){
+    if(imgZoomOverlay){
+      const img = imgZoomOverlay.querySelector('img');
+      if(img) img.classList.remove('is-dragging');
+    }
+    imgDragStart = null;
+    imgDragLast = null;
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+      imgZoomOverlay = null;
+    }
+  });
+})();
 
 // Mermaid zoom + pan + wheel
 (function() {

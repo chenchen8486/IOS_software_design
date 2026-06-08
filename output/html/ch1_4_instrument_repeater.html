@@ -59,14 +59,17 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
-.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
-.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
 .img-row .img-block img{max-height:320px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
+/* Image zoom overlay */
 .img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
-.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);cursor:grab;transition:transform .1s ease-out;transform-origin:center center}
+.img-zoom-overlay img.is-dragging{cursor:grabbing}
+.img-zoom-overlay::after{content:'滚轮缩放 / 拖拽平移 / 点击关闭';position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;color:#fff;background:rgba(15,23,42,0.7);padding:6px 14px;border-radius:999px;pointer-events:none;white-space:nowrap}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
@@ -216,28 +219,28 @@ graph TD
     <h2>二、核心功能详解</h2>
 
     <h3>2.1 仪表选项卡（INSTRUMENTS Tab）</h3>
-    <p>该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
+    <p>触发方式：进入仪表复示器工作区后，主区域默认显示 <strong>INSTRUMENTS Tab</strong>。该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
           <tr><td>功能定义</td><td>列出驾驶舱中所有可被复示到 IOS 显示屏上的可用仪表</td></tr>
           <tr><td>呈现方式/交互方式</td><td>以列表形式呈现，点击仪表名称进行选择；选中后驱动右侧视图区域显示对应仪表</td></tr>
-          <tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（待确认）</td></tr>
+          <tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（注：需根据实际 IOS 配置确认）</td></tr>
           <tr><td>与其他功能关系</td><td>与 Instrument View Mode Section 为<strong>依赖关系</strong>，选择结果直接决定视图区域显示内容</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>2.2 仪表视图模式区域（Instrument View Mode Section）</h3>
-    <p>仪表复示器工作区的此区域显示在"仪表"选项卡中选择的仪表。</p>
+    <p>触发方式：在 <strong>INSTRUMENTS Tab</strong> 中点击仪表名称后，该区域自动显示所选仪表的实时复示画面。无需额外操作。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性</th><th>说明</th></tr></thead>
         <tbody>
           <tr><td>功能定义</td><td>将驾驶舱中选定的仪表画面实时复示到 IOS 当前监视器上</td></tr>
           <tr><td>呈现方式/交互方式</td><td>只读显示区域，接收并渲染来自模拟器的仪表画面数据流</td></tr>
-          <tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（待确认）</td></tr>
+          <tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（注：具体帧率取决于模拟器实现）</td></tr>
           <tr><td>与其他功能关系</td><td>依赖 INSTRUMENTS Tab 的选择结果；与 Map Header / Footer 共享同一套工作区框架</td></tr>
         </tbody>
       </table>
@@ -249,40 +252,39 @@ graph TD
     <h3>3.1 仪表复示器教员核心操作流程全景图</h3>
     <div class="mermaid">
 flowchart LR
-    Start([进入仪表复示器工作区]) --> View[查看 INSTRUMENTS Tab]
-    View --> Select{选择目标仪表}
-    Select --> Load[系统加载仪表数据流]
-    Load --> Display[仪表画面显示在 View Mode]
-    Display --> End([训练就绪/复示完成])
+    Start([进入仪表复示器工作区]) --> OP_TYPE{选择操作类型}
 
-    Select --> Cancel[未选择/取消]
-    Cancel --> End
+    OP_TYPE -->|选择仪表| INSTRUMENTS_ENTRY[查看 INSTRUMENTS Tab]
+    OP_TYPE -->|不选择| NO_SELECT[不选择仪表]
 
-    subgraph INSTRUMENTS_FLOW["选择流程 — 2.1"]
-        View --> Select
+    subgraph INSTRUMENTS_FLOW["仪表选择与复示流程 — 2.1 / 2.2"]
+        INSTRUMENTS_ENTRY --> Select{选择目标仪表}
+        Select --> Load[系统加载仪表数据流]
+        Load --> Display[仪表画面显示在 View Mode]
+        Display --> Unsubscribe[取消旧仪表订阅]
     end
 
-    subgraph DISPLAY_FLOW["复示流程 — 2.2"]
-        Load --> Display
-    end
+    NO_SELECT --> End([训练就绪/复示完成])
+    Unsubscribe --> End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
-    style Cancel fill:#fee2e2,stroke:#dc2626
+    style OP_TYPE fill:#fef3c7,stroke:#d97706
+    style NO_SELECT fill:#fee2e2,stroke:#dc2626
     </div>
 
     <h3>3.2 仪表复示通用状态机</h3>
     <div class="mermaid">
 stateDiagram-v2
-    [*] --> 空闲态: 进入工作区
-    空闲态 --> 选择中: 点击仪表列表
-    选择中 --> 显示中: 系统加载完成
-    显示中 --> 选择中: 切换其他仪表
-    选择中 --> 空闲态: 取消选择/关闭
-    显示中 --> 空闲态: 关闭工作区/切换工作区
+    [*] --> 空闲态 : 进入工作区时
+    空闲态 --> 选择中 : 点击仪表列表时
+    选择中 --> 显示中 : 系统加载完成时
+    显示中 --> 选择中 : 切换其他仪表时
+    选择中 --> 空闲态 : 取消选择或关闭时
+    显示中 --> 空闲态 : 关闭工作区或切换工作区时
 
-    显示中 --> 冻结中: 飞行冻结激活
-    冻结中 --> 显示中: 飞行冻结解除
+    显示中 --> 冻结中 : 飞行冻结激活时
+    冻结中 --> 显示中 : 飞行冻结解除时
     </div>
 
     <div class="table-wrap">
@@ -292,7 +294,7 @@ stateDiagram-v2
           <tr><td>空闲态</td><td>进入仪表复示器工作区，尚未选择任何仪表；View Mode 区域为空或显示默认提示</td></tr>
           <tr><td>选择中</td><td>教员在 INSTRUMENTS Tab 中点击了某个仪表名称，系统正在加载对应数据流</td></tr>
           <tr><td>显示中</td><td>选中仪表的画面已成功在 View Mode 区域中实时复示</td></tr>
-          <tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示但数据不再更新（待确认是否暂停更新）</td></tr>
+          <tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
         </tbody>
       </table>
     </div>
@@ -319,8 +321,8 @@ stateDiagram-v2
         <tbody>
           <tr><td>无可复示仪表</td><td>INSTRUMENTS Tab 列表为空，显示默认空状态提示</td></tr>
           <tr><td>IOS 配置变更</td><td>可复示仪表列表应动态刷新；若当前显示仪表被移除则回退到空闲态</td></tr>
-          <tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（待确认）</td></tr>
-          <tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（待确认）</td></tr>
+          <tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（注：具体行为取决于客户端实现策略）</td></tr>
+          <tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
         </tbody>
       </table>
     </div>
@@ -345,11 +347,11 @@ API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
     <h4>3.4.2 API 接口契约建议</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>接口</th><th>方法</th><th>请求</th><th>响应</th><th>错误码</th></tr></thead>
+        <thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
         <tbody>
-          <tr><td>/api/instruments</td><td>GET</td><td>—</td><td>{ instruments: [{id, name, category}] }</td><td>500: 配置读取失败</td></tr>
-          <tr><td>/api/instrument/{id}/stream</td><td>WS</td><td>instrument_id</td><td>实时二进制/JSON 帧数据</td><td>404: 仪表不存在；403: 无权限</td></tr>
-          <tr><td>/api/instrument/unsubscribe</td><td>POST</td><td>{ instrument_id }</td><td>{ success: true }</td><td>400: 未订阅</td></tr>
+          <tr><td><code>GET /api/v1/instruments</code></td><td>—</td><td>instruments[{id, name, category}]</td><td>500 CONFIG_READ_FAILED</td></tr>
+          <tr><td><code>WS /api/v1/instrument/{id}/stream</code></td><td>instrument_id（路径参数）</td><td>实时二进制/JSON 帧数据流</td><td>404 INSTRUMENT_NOT_FOUND, 403 NO_PERMISSION</td></tr>
+          <tr><td><code>POST /api/v1/instrument/unsubscribe</code></td><td>instrument_id</td><td>success, unsubscribed_id</td><td>400 NOT_SUBSCRIBED</td></tr>
         </tbody>
       </table>
     </div>
@@ -359,14 +361,14 @@ API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
 
     <div class="table-wrap">
       <table>
-        <thead><tr><th>维度</th><th>测试场景</th><th>期望结果</th></tr></thead>
+        <thead><tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr></thead>
         <tbody>
-          <tr><td rowspan="2">正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
-          <tr><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
-          <tr><td rowspan="2">异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
-          <tr><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
-          <tr><td rowspan="2">边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
-          <tr><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
+          <tr><td>正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
+          <tr><td>正向路径</td><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
+          <tr><td>异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
+          <tr><td>异常路径</td><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
+          <tr><td>边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
+          <tr><td>边界条件</td><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
           <tr><td>联动测试</td><td>飞行冻结激活期间仪表复示</td><td>画面保持显示，行为符合模拟器冻结策略</td></tr>
           <tr><td>性能测试</td><td>多仪表同时复示（若配置支持）</td><td>帧率稳定，无卡顿，带宽占用在合理范围</td></tr>
         </tbody>
@@ -380,6 +382,7 @@ API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
         <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
         <tbody>
           <tr><td>2026-06-05</td><td>V1.0</td><td>初始生成 ch1_4 仪表复示器工作区 HTML，含功能层级图、界面结构、核心功能详解、操作流程、状态机、API 契约建议及测试要点</td></tr>
+          <tr><td>2026-06-08</td><td>V1.1</td><td>Redline Review 优化：1）修复 3.2 状态机 transition label 冒号语法错误（改为"时"连词）；2）修复 img-row 缺少 flex-wrap；3）重构 3.1 流程图消除 subgraph 内重复边，增加 OP_TYPE 决策点和"不选择"异常分支；4）2.1/2.2 补充触发方式说明；5）3.4.2 API 接口表格统一为四列格式（接口名/请求字段/响应字段/错误码）；6）测试要点去除 rowspan，增加独立「测试类型」列；7）统一"（待确认）"标记为规范注释格式</td></tr>
         </tbody>
       </table>
     </div>
@@ -414,23 +417,108 @@ function toggleCollapsible(el) {
 mermaid.initialize({ startOnLoad: true, theme: 'default' });
 
 // Image zoom
-document.addEventListener('click', function(e) {
-  if (e.target.tagName === 'IMG' && e.target.closest('.img-block')) {
-    const overlay = document.createElement('div');
-    overlay.className = 'img-zoom-overlay';
-    const img = document.createElement('img');
-    img.src = e.target.src;
-    overlay.appendChild(img);
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', function() { overlay.remove(); });
+(function(){
+  let imgZoomOverlay = null;
+  let imgDragStart = null;
+  let imgDragLast = null;
+  let imgIsDragging = false;
+
+  function updateImgZoomTransform(overlay){
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    const scale = parseFloat(overlay.dataset.scale) || 1;
+    const tx = parseFloat(overlay.dataset.tx) || 0;
+    const ty = parseFloat(overlay.dataset.ty) || 0;
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
   }
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const overlay = document.querySelector('.img-zoom-overlay');
-    if (overlay) overlay.remove();
-  }
-});
+
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.img-block img');
+    if(img){
+      e.preventDefault();
+      const overlay = document.createElement('div');
+      overlay.className = 'img-zoom-overlay';
+      overlay.dataset.scale = '1';
+      overlay.dataset.tx = '0';
+      overlay.dataset.ty = '0';
+      const zoomed = document.createElement('img');
+      zoomed.src = img.src;
+      zoomed.alt = img.alt;
+      zoomed.style.transform = 'translate(0px,0px) scale(1)';
+      overlay.appendChild(zoomed);
+      document.body.appendChild(overlay);
+      imgZoomOverlay = overlay;
+      imgIsDragging = false;
+      return;
+    }
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(overlay){
+      if(imgIsDragging){
+        imgIsDragging = false;
+        return;
+      }
+      overlay.remove();
+      if(imgZoomOverlay === overlay) imgZoomOverlay = null;
+    }
+  });
+
+  document.addEventListener('wheel', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    e.preventDefault();
+    let scale = parseFloat(overlay.dataset.scale) || 1;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.5, Math.min(5, scale * delta));
+    overlay.dataset.scale = scale.toFixed(3);
+    updateImgZoomTransform(overlay);
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    e.preventDefault();
+    imgDragStart = { x: e.clientX, y: e.clientY };
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    imgZoomOverlay = overlay;
+    imgIsDragging = false;
+    img.classList.add('is-dragging');
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!imgDragStart || !imgZoomOverlay) return;
+    const dx = e.clientX - imgDragLast.x;
+    const dy = e.clientY - imgDragLast.y;
+    const movedX = Math.abs(e.clientX - imgDragStart.x);
+    const movedY = Math.abs(e.clientY - imgDragStart.y);
+    if(movedX > 3 || movedY > 3) imgIsDragging = true;
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    let tx = parseFloat(imgZoomOverlay.dataset.tx) || 0;
+    let ty = parseFloat(imgZoomOverlay.dataset.ty) || 0;
+    tx += dx;
+    ty += dy;
+    imgZoomOverlay.dataset.tx = tx.toFixed(1);
+    imgZoomOverlay.dataset.ty = ty.toFixed(1);
+    updateImgZoomTransform(imgZoomOverlay);
+  });
+
+  document.addEventListener('mouseup', function(){
+    if(imgZoomOverlay){
+      const img = imgZoomOverlay.querySelector('img');
+      if(img) img.classList.remove('is-dragging');
+    }
+    imgDragStart = null;
+    imgDragLast = null;
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+      imgZoomOverlay = null;
+    }
+  });
+})();
 
 // Mermaid zoom + pan + wheel
 (function() {

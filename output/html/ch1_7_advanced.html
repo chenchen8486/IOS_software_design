@@ -47,8 +47,9 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
 .content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
 .content p{margin-bottom:14px}
-.content ul,.content ol{margin:12px 0 12px 22px}
-.content li{margin-bottom:6px}
+.content ul,.content ol{list-style:none;margin:12px 0 12px 22px;padding-left:0}
+.content li{position:relative;padding-left:1.2em;margin-bottom:6px}
+.content li::before{content:'·';position:absolute;left:0;color:var(--text-secondary);font-weight:700}
 .content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
 .content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
@@ -64,8 +65,11 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-row .img-block img{max-height:320px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
+/* Image zoom overlay */
 .img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
-.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);cursor:grab;transition:transform .1s ease-out;transform-origin:center center}
+.img-zoom-overlay img.is-dragging{cursor:grabbing}
+.img-zoom-overlay::after{content:'滚轮缩放 / 拖拽平移 / 点击关闭';position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;color:#fff;background:rgba(15,23,42,0.7);padding:6px 14px;border-radius:999px;pointer-events:none;white-space:nowrap}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
@@ -296,27 +300,107 @@ graph TD
     </div>
 
     <h4>2.3.1 天气区域（Weather Region）</h4>
-    <p>天气区域提供所有必要的控制，以更改最多五个不同机场和航路天气条件的环境参数。对于特定区域，教员可以更改风、温度和气压、云和能见度条件、降水、跑道条件、湍流。</p>
+    <p>天气区域提供所有必要的控制，以更改最多五个不同机场和航路天气条件的环境参数。</p>
+
     <div class="img-block">
       <img src="./images/ch1_7_weather_region.jpg" alt="图 6：高级 — 天气区域（典型）（Figure 148）">
       <p class="img-caption">图 6：高级 — 天气区域（典型）（Figure 148）</p>
     </div>
+
+    <h5>区域 Tab 含义与自动切换逻辑</h5>
+    <p>天气区域页面顶部通常显示一排可切换的 Tab，每个 Tab 代表一个独立的天气配置区域。教员选中某个 Tab 后，即可为该区域单独设置风、温度、气压、云、能见度、降水、跑道条件、湍流等参数。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tab 类型</th><th>典型示例</th><th>含义</th><th>生效条件</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>航路条件<br><span style="color:var(--text-secondary);font-size:12px">En Route</span></td>
+            <td>En Route</td>
+            <td>飞机在<strong>两个机场之间巡航</strong>、远离所有已定义机场时使用的天气条件。它不是某个具体机场，而是「巡航阶段」的默认天气。</td>
+            <td>① 飞机在所有已定义机场的 <strong>50 海里半径之外</strong>；或<br>② 参考机场与任何已定义机场都不匹配时，fallback 到 En Route</td>
+          </tr>
+          <tr>
+            <td>机场 ICAO 代码<br><span style="color:var(--text-secondary);font-size:12px">Airport ICAO Code</span></td>
+            <td>KJFK</td>
+            <td>John F. Kennedy International Airport<br>纽约肯尼迪国际机场（美国）</td>
+            <td rowspan="3">① 飞机距该机场 <strong>50 海里以内</strong>时，该机场的天气自动复制到环境天气；或<br>② 该机场被设为「机场与重新定位」中的<strong>参考机场</strong>时生效</td>
+          </tr>
+          <tr>
+            <td>机场 ICAO 代码</td>
+            <td>CYUL</td>
+            <td>Montreal-Pierre Elliott Trudeau International Airport<br>蒙特利尔特鲁多国际机场（加拿大）</td>
+          </tr>
+          <tr>
+            <td>机场 ICAO 代码</td>
+            <td>CYQG</td>
+            <td>Windsor International Airport<br>温莎国际机场（加拿大）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>整体切换逻辑总结：</strong>教员可以为最多 5 个不同区域分别配置天气。飞机飞到 KJFK 附近 50 海里内，环境天气自动变成 KJFK 的天气；飞到 CYUL 附近就自动变成 CYUL 的天气；如果在这些机场之间巡航、谁都不靠近，就自动使用 <strong>En Route</strong> 航路天气。系统会根据飞机当前位置或参考机场设置，自动帮你切换，不需要手动来回改。</p>
+
+    <h5>可更改的区域参数</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数类别</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>风、温度和气压<br><span style="color:var(--text-secondary);font-size:12px">Wind, Temperature & Pressure</span></td><td>地面/中间层/对流层顶风、高度表设定（QNH）、温度</td></tr>
+          <tr><td>云和能见度条件<br><span style="color:var(--text-secondary);font-size:12px">Cloud & Visibility</span></td><td>云量、云底高、能见度距离</td></tr>
+          <tr><td>降水<br><span style="color:var(--text-secondary);font-size:12px">Precipitation</span></td><td>雨、雪等降水类型与强度</td></tr>
+          <tr><td>跑道条件<br><span style="color:var(--text-secondary);font-size:12px">Runway Conditions</span></td><td>跑道表面状态（干/湿/结冰等）</td></tr>
+          <tr><td>湍流<br><span style="color:var(--text-secondary);font-size:12px">Turbulence</span></td><td>大气湍流强度设置</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>天气区域核心功能</h5>
     <div class="table-wrap">
       <table>
         <thead><tr><th>功能</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>多机场天气条件</td><td>支持两种模式决定何时将多机场天气复制到环境天气：① 按距离（50 海里内）② 按参考机场匹配</td></tr>
-          <tr><td>添加区域</td><td>点击天气区域页面，按屏幕说明添加一个新区域（最多 5 个）</td></tr>
-          <tr><td>保存场景</td><td>保存当前区域天气参数（不包括活跃风暴、微暴流、风切变、结冰）。保存参数包括：海平面温度、中间层和对流层顶温度、QNH、地面/中间层/对流层顶风</td></tr>
-          <tr><td>调用场景</td><td>按日期或字母顺序列出所有已保存场景，支持以新名称保存、加载或删除</td></tr>
+          <tr><td>添加区域<br><span style="color:var(--text-secondary);font-size:12px">Add Region</span></td><td>点击天气区域页面按屏幕说明添加，最多同时定义 5 个不同区域</td></tr>
+          <tr><td>保存场景<br><span style="color:var(--text-secondary);font-size:12px">Save Scenario</span></td><td>将当前区域天气参数保存为命名场景，供后续调用</td></tr>
+          <tr><td>调用场景<br><span style="color:var(--text-secondary);font-size:12px">Recall Scenario</span></td><td>按日期或字母顺序列出所有已保存场景，支持加载、重命名或删除</td></tr>
+          <tr><td>删除场景<br><span style="color:var(--text-secondary);font-size:12px">Delete Scenario</span></td><td>在调用场景弹出窗口中删除选定的天气场景</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="img-block">
+      <img src="./images/ch1_7_add_region.jpg" alt="图 7：高级 — 添加区域（Figure 149）">
+      <p class="img-caption">图 7：高级 — 添加区域（Figure 149）</p>
+    </div>
+
+    <h5>多机场天气条件复制模式</h5>
+    <p>有两种不同的模式决定何时将多机场天气条件复制到环境天气条件中。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>模式</th><th>触发条件</th><th>复制逻辑</th><th>边界/ fallback 情况</th></tr></thead>
+        <tbody>
+          <tr><td>第一种（按距离）<br><span style="color:var(--text-secondary);font-size:12px">Distance Mode</span></td><td>飞机距该机场 <strong>50 海里</strong>以内</td><td>该机场特定条件复制到环境天气</td><td>50 海里外且定义了航路条件时，复制航路条件；若参考机场未定义天气条件，则适用航路天气条件</td></tr>
+          <tr><td>第二种（按参考机场匹配）<br><span style="color:var(--text-secondary);font-size:12px">Reference Airport Match</span></td><td>「机场与重新定位」滑动面板中指定的参考机场与多天气机场匹配</td><td>匹配机场条件复制到环境天气</td><td>参考机场与多天气机场不匹配且定义了航路条件时，复制航路条件到环境天气</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>保存/调用天气场景详解</h5>
+    <blockquote>
+      <strong>重要限制：</strong>「保存场景」功能<strong>仅保存天气参数</strong>，不保存也不包括活跃风暴、微下击暴流、预测性风切变、非预测性风切变或结冰条件。同样，「调用场景」功能仅从特定场景中调用天气参数。无论哪种情况，上述排除项的状态<strong>均不受「保存/调用场景」功能的影响</strong>。
+    </blockquote>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>保存参数范围<br><span style="color:var(--text-secondary);font-size:12px">Saved Parameters</span></td><td>海平面温度、中间层和对流层顶温度、高度表设定（QNH）、地面/中间层/对流层顶风</td></tr>
+          <tr><td>跨地形调用补偿<br><span style="color:var(--text-secondary);font-size:12px">Cross-Terrain Recall Compensation</span></td><td>从不同地形海拔位置调用时，<strong>地面温度和气压（QFE）会根据保留数据重新计算</strong>，以保持从海平面到中间高度的相同剖面；<strong>地面风和中间风仍适用于新位置</strong></td></tr>
+          <tr><td>保存操作<br><span style="color:var(--text-secondary);font-size:12px">Save Scenario Operation</span></td><td>点击「保存场景」<span style="color:var(--text-secondary);font-size:12px">Save Scenario</span> → 输入机场/航路天气场景名称 → 点击「保存」<span style="color:var(--text-secondary);font-size:12px">Save</span> 或「取消」<span style="color:var(--text-secondary);font-size:12px">Cancel</span></td></tr>
+          <tr><td>调用操作<br><span style="color:var(--text-secondary);font-size:12px">Recall Scenario Operation</span></td><td>点击「调用场景」<span style="color:var(--text-secondary);font-size:12px">Recall Scenario</span> → 弹出窗口按日期或字母顺序列出所有已保存场景 → 可选择<strong>加载 Load / 以新名称保存 Save As / 删除 Delete</strong></td></tr>
         </tbody>
       </table>
     </div>
     <div class="img-row">
-      <div class="img-block">
-        <img src="./images/ch1_7_add_region.jpg" alt="图 7：高级 — 添加区域（Figure 149）">
-        <p class="img-caption">图 7：高级 — 添加区域（Figure 149）</p>
-      </div>
       <div class="img-block">
         <img src="./images/ch1_7_save_scenario.jpg" alt="图 8：天气区域 — 保存场景（Figure 150）">
         <p class="img-caption">图 8：天气区域 — 保存场景（Figure 150）</p>
@@ -350,7 +434,7 @@ graph TD
     </div>
 
     <h4>2.3.6 机场视觉效果（Airport Visual FX）</h4>
-    <p>允许教员修改跑道条件和灯光、修改机场灯光、向视觉场景添加预录交通效果。包含四个选项卡：</p>
+    <p>机场视觉效果页面允许教员修改跑道条件和灯光、修改机场灯光、向视觉场景添加预录交通效果。包含四个选项卡：</p>
     <div class="img-block">
       <img src="./images/ch1_7_airport_visual_fx.jpg" alt="图 10：机场视觉效果（Figure 152）">
       <p class="img-caption">图 10：机场视觉效果（Figure 152）</p>
@@ -367,35 +451,246 @@ graph TD
       </table>
     </div>
 
+    <h5>2.3.6.1 跑道条件选项卡（Runway Conditions Tab）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>类型</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>跑道条件只读字段<br><span style="color:var(--text-secondary);font-size:12px">Runway Conditions Read-Only</span></td><td>只读文本</td><td>显示当前跑道条件</td></tr>
+          <tr><td>跑道条件按钮<br><span style="color:var(--text-secondary);font-size:12px">Runway Conditions Expandable</span></td><td>可展开按钮</td><td>点击打开「跑道条件」滑动面板</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>2.3.6.2 视觉控制选项卡（Visual Control Tab）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>类型</th><th>操作说明</th><th>禁用条件/备注</th></tr></thead>
+        <tbody>
+          <tr><td>引导员（Marshaller）</td><td>Toggle</td><td>正常状态点击在视觉场景中<strong>显示引导员</strong>；激活状态点击<strong>移除引导员</strong>。当飞机处于适当位置靠近登机口时，引导员将飞机引导至登机口。</td><td><strong>飞机离地时</strong>禁用；<strong>飞机推出过程中</strong>禁用</td></tr>
+          <tr><td>录制的交通（Recorded Traffic）</td><td>可展开按钮</td><td>显示「录制的交通」滑动面板，允许教员向视觉场景添加录制的交通场景效果</td><td>—</td></tr>
+          <tr><td>场景交通（Scenario Traffic）</td><td>可展开按钮</td><td>显示「场景交通」滑动面板，允许教员向视觉场景添加录制的交通场景效果</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>2.3.6.3 机场灯光选项卡（Airport Lights Tab）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>类型</th><th>操作说明</th><th>范围</th></tr></thead>
+        <tbody>
+          <tr><td>停止排灯（Stop Bar）</td><td>Toggle</td><td>正常状态点击<strong>点亮</strong>停止排灯；激活状态点击<strong>熄灭</strong>停止排灯</td><td>—</td></tr>
+          <tr><td>滑行道灯（Taxi）</td><td>Dropdown</td><td>点击下拉按钮展开选项，选择滑行道灯光强度</td><td>Min=0, Max=5</td></tr>
+          <tr><td>城市灯（City）</td><td>Dropdown</td><td>点击下拉按钮展开选项，选择城市灯光强度</td><td>Min=0, Max=5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>2.3.6.4 跑道默认灯光选项卡（Runway Default Lighting Tab）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>控件</th><th>类型</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>跑道灯光（Runway Lights）</td><td>可展开按钮</td><td>点击显示跑道灯光滑动面板</td></tr>
+          <tr><td>参考机场跑道默认灯光<br><span style="color:var(--text-secondary);font-size:12px">Reference Airport RWY Default Lighting</span></td><td>—</td><td>此选项卡包含用于控制所选参考机场跑道默认灯光的按钮</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <h3>2.4 入侵者（Intruders）</h3>
-    <p>入侵者页面允许教员通过在飞机空域周围插入入侵者来设置交通场景。包含四个子页面：TCAS、随机交通、进近交通、ITP。</p>
+    <p>入侵者页面允许教员通过在本机（飞机）空域周围插入入侵者来设置交通场景。包含四个子页面：TCAS、随机交通、进近交通、ITP。通过此页面，教员可以训练飞行机组应对多种类型的空中交通场景。</p>
     <div class="img-block">
       <img src="./images/ch1_7_intruders.jpg" alt="图 11：高级 — 入侵者（Figure 153）">
       <p class="img-caption">图 11：高级 — 入侵者（Figure 153）</p>
     </div>
 
     <h4>2.4.1 TCAS</h4>
-    <p>TCAS 页面包含必要的控制项，用于在训练课程中自定义入侵者的存在。</p>
+    <p>TCAS 页面包含必要的控制项，用于在训练课程中自定义入侵者的存在。它包括以下部分：入侵者位置、入侵者垂直航径、场景、入侵者应答机设备、本机能力限制。</p>
     <div class="img-block">
       <img src="./images/ch1_7_tcas.jpg" alt="图 12：TCAS 页面（Figure 154）">
       <p class="img-caption">图 12：TCAS 页面（Figure 154）</p>
     </div>
+
+    <h5>入侵者位置部分（Intruder Position）</h5>
+    <p>此部分包含互斥的单选按钮，允许教员设置接近的入侵者飞机相对于本机的方向。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <thead><tr><th>方位</th><th>方位角</th></tr></thead>
         <tbody>
-          <tr><td>入侵者位置</td><td>8 个互斥方位单选按钮：前方左侧(-45°)、前方(0°)、前方右侧(+45°)、正左方(-90°)、正右方(+90°)、后方左侧(-135°)、后方(180°)、后方右侧(+135°)</td></tr>
-          <tr><td>垂直飞行航径</td><td>3 个互斥选项：下降（入侵者置于本机上方后下降）、平飞（同高度后接近）、爬升（本机下方后爬升）</td></tr>
-          <tr><td>场景</td><td>6 种 TCAS 场景：仅交通咨询（单一威胁）、决断咨询（双重威胁）不爬升/不下降、决断咨询（单一威胁）爬升/下降、爬升/下降后增加爬升/下降、双重威胁爬升/下降后改平、反向 RA（FL210 以上执行）</td></tr>
-          <tr><td>应答机设备</td><td>高度报告（Mode C/S vs Mode A）、ADS-B 报告</td></tr>
-          <tr><td>本机容量限制</td><td>未测量方位数据复选框：禁止/允许从 TCAS 天线测量方位</td></tr>
-          <tr><td>启动/停止场景</td><td>点击激活或停止入侵者场景</td></tr>
+          <tr><td>前方左侧 Ahead Left</td><td>-45°</td></tr>
+          <tr><td>前方 Ahead</td><td>0°</td></tr>
+          <tr><td>前方右侧 Ahead Right</td><td>+45°</td></tr>
+          <tr><td>正左方 Abeam Left</td><td>-90°</td></tr>
+          <tr><td>正右方 Abeam Right</td><td>+90°</td></tr>
+          <tr><td>后方左侧 Behind Left</td><td>-135°</td></tr>
+          <tr><td>后方 Behind</td><td>180°</td></tr>
+          <tr><td>后方右侧 Behind Right</td><td>+135°</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>入侵者垂直飞行航径部分（Intruder Vertical Flight Path）</h5>
+    <p>此部分包含互斥的单选按钮，允许教员设置入侵者飞机相对于本机的垂直飞行航径。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>航径</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>下降 Descending</td><td>将入侵者飞机置于本机上方，然后开始向本机下降</td></tr>
+          <tr><td>平飞 Level</td><td>将入侵者飞机置于与本机相同的高度，然后开始向本机移动</td></tr>
+          <tr><td>爬升 Climbing</td><td>将入侵者飞机置于本机下方，然后开始向本机爬升</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>场景部分（Scenario）</h5>
+    <p>本节包含单选按钮，允许教员选择以下六种场景之一。每种场景的详细机动逻辑如下：</p>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 1：仅交通咨询（单一威胁）Traffic Advisory Only (Single Threat)</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 仅生成交通咨询 TA</li>
+          <li>入侵者数量：<strong>1</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±1000 fpm</strong></li>
+        </ul>
+        <p>入侵者从水平位置窗格中选择的方向接近，沿相同轨迹飞行，直到碰撞时间约为最接近点 CPA 前 <strong>100 秒</strong>。然后入侵者垂直路径计算为达到相对高度，使其通过 TA 高度限制内但超出 RA 高度限制。此机动在进入 RA 范围包线前 <strong>10 秒</strong>完成。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 2：决断咨询（双重威胁）不爬升/不下降 RA (Dual Threat) No Climb/No Descend</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 生成 RA，要求机组<strong>无需采取特定行动</strong></li>
+          <li>入侵者数量：<strong>2</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±200 fpm</strong></li>
+        </ul>
+        <p>两架入侵者中的一架从水平位置窗格中选择的方向接近，另一架位于相对方位，可在第一架入侵者方位 <strong>15~45 度</strong>之间变化。入侵者保持相同高度，直到碰撞时间约为 CPA 前 <strong>100 秒</strong>。</p>
+        <p>第一次机动计算为使入侵者始终保持在 RA 高度包线内 <strong>100~150 英尺</strong>的相对高度。当一架入侵者满足 TA 条件时，听到音频「TRAFFIC TRAFFIC」。入侵者在 RA 高度包线内稳定高度并保持平飞直到场景结束。</p>
+        <p>当第一架入侵者满足 RA 条件时，TCAS 给出预防性建议「MONITOR VERTICAL SPEED」。在发出「CLEAR OF CONFLICT」前，不应听到纠正性建议，此场景<strong>无需机组采取行动</strong>。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 3：决断咨询（单一威胁）爬升/下降 RA (Single Threat) Climb/Descend</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 生成 RA，要求机组<strong>爬升或下降</strong>以避免冲突</li>
+          <li>入侵者数量：<strong>1</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±1000 fpm</strong></li>
+        </ul>
+        <p>入侵者从水平位置窗格中选择的方向开始，保持相同高度直到碰撞时间约为 CPA 前 <strong>100 秒</strong>。第一次机动计算为使其在进入 RA 距离包线前 <strong>10 秒</strong>达到 RA 高度包线内约 <strong>100 英尺</strong>的相对高度。</p>
+        <p>当入侵者满足 TA 条件时，首先听到音频「TRAFFIC, TRAFFIC」。接下来 <strong>15 秒</strong>内，入侵者垂直路径计算为在 CPA 处瞄准本机高度上方（或下方）<strong>100 英尺</strong>的目标高度。在此阶段发布<strong>纠正性咨询</strong>，机组必须快速平稳遵循，不得超出目标。入侵者以 <strong>1500~2000 fpm</strong> 继续下降（或爬升）直到 CPA 后 <strong>5 秒</strong>并在该高度稳定。在「CLEAR OF CONFLICT」前不再宣布其他纠正性咨询。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 4：决断咨询（单一威胁）爬升/下降后增加爬升/下降 RA (Single Threat) Climb/Descend then Increase</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 生成 RA，要求机组<strong>爬升或下降</strong>以避免冲突</li>
+          <li>入侵者数量：<strong>1</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±1000 fpm</strong></li>
+        </ul>
+        <p>与场景 3 类似，但由于威胁飞机的机动，机组需要<strong>增加爬升/下降</strong>以消除冲突。入侵者以 <strong>2000~2500 fpm</strong> 继续下降（或爬升）直到 CPA 后 <strong>5 秒</strong>。</p>
+        <p>应发布<strong>第二次纠正性咨询</strong>以规避入侵者。机组必须快速平稳遵循新的纠正性咨询，不得超出目标。在「CLEAR OF CONFLICT」前不再宣布其他纠正性咨询。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 5：决断咨询（双重威胁）爬升/下降后改平 RA (Dual Threat) Climb/Descend then Level Off</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 生成 RA，要求机组<strong>爬升或下降</strong>以规避冲突</li>
+          <li>入侵者数量：<strong>2</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±1000 fpm</strong></li>
+        </ul>
+        <p>两架入侵者相对于本机呈<strong>非对称布局</strong>（水平和垂直平面）。一架从水平位置窗格所选方向开始，另一架位于相对方位角，与第一架相差 <strong>15~45 度</strong>。每架入侵者保持相同高度直到碰撞时间约为 CPA 前 <strong>100 秒</strong>。一架从本机上方通过，另一架从下方通过。</p>
+        <p>第一架入侵者机动计算为使其在进入 RA 范围包线前 <strong>10 秒</strong>达到 RA 高度包线内的相对高度（约 <strong>100~150 英尺</strong>）。当满足 TA 条件时，听到「TRAFFIC TRAFFIC」。接下来 <strong>15 秒</strong>内垂直路径计算为在 CPA 处目标高度位于本机高度上方（或下方）<strong>100 英尺</strong>。发布纠正性咨询，指令机组朝向第二架入侵者飞行。</p>
+        <p>此前未成为 RA 的第二架入侵者变为 RA，发布第二次纠正性咨询「LEVEL OFF, LEVEL OFF」。在「CLEAR OF CONFLICT」前不再发布其他纠正性咨询。</p>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <h4>场景 6：反向决断咨询（单威胁）在 FL210 以上执行 Reversal RA (Single Threat) Above FL210</h4>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <ul>
+          <li>TCAS 生成 RA，要求机组<strong>爬升或下降</strong>以避免冲突</li>
+          <li>入侵者数量：<strong>1</strong></li>
+          <li>本机 V/S 建议最大限制：<strong>±1000 fpm</strong></li>
+        </ul>
+        <p>机组需在初始 RA 后执行<strong>反向爬升/下降机动</strong>，以解决因入侵者机动导致的冲突。场景开始时，入侵者从水平位置窗格中选择的位置接近，与本机处于同一高度。入侵者路径会持续重新计算以<strong>镜像本机的路径</strong>，直到本机发出第一次决断咨询。</p>
+        <p>当 TCAS 检测到入侵者未解除时，本机将发出第二次 RA（即<strong>反向 RA</strong>）。当本机在反向 RA 后尝试机动时，入侵者解除并沿自身轨迹飞行。</p>
+        <p>例如在 FL150 时：约 <strong>45 秒</strong>时发出 TA「TRAFFIC TRAFFIC」；约 <strong>30 秒</strong>时发出 RA「CLIMB CLIMB」或「DESCEND DESCEND」；CPA 前约 <strong>20 秒</strong>时发出反向 RA「DESCEND, DESCEND NOW」或「CLIMB, CLIMB NOW」。</p>
+        <p><strong>注意：</strong>对初始 RA 的加速度响应约为 <strong>0.25g</strong>，而对反向 RA 的加速度响应约为 <strong>0.35g</strong>。</p>
+      </div>
+    </div>
+
+    <blockquote>
+      <strong>WARNING 警告：</strong>本机必须在<strong>稳定飞行状态</strong>下进行 TCAS 场景训练。<strong>DESCEND DESCEND</strong> 垂直引导在以下情况下被抑制：
+      <ul>
+        <li>下降时低于 <strong>1000 ft AGL</strong></li>
+        <li>爬升时低于 <strong>1200 ft AGL</strong></li>
+      </ul>
+    </blockquote>
+
+    <h5>应答机设备（Transponder Equipment）</h5>
+    <p>此部分包含复选框，允许教员设置入侵者应答机的询问模式。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">高度报告<br><span style="color:var(--text-secondary);font-size:12px">Altitude Reporting</span></td><td>选中</td><td>将入侵者应答机模式设置为 <strong>Mode C/S</strong>，传输高度。TCAS 将发出 TA 和 RA（如有）</td></tr>
+          <tr><td>未选中</td><td>设置为 <strong>Mode A</strong>，不传输高度。TCAS 显示器上入侵者符号不带高度标签，<strong>不发出 RA</strong></td></tr>
+          <tr><td rowspan="2">ADS-B 报告<br><span style="color:var(--text-secondary);font-size:12px">ADS-B Reporting</span></td><td>选中</td><td>允许入侵者应答机传输 ADS-B 信息（位置、速度、飞行方向、纬度、经度、垂直速度等）</td></tr>
+          <tr><td>未选中</td><td>不允许传输 ADS-B 信息</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>本机容量限制（Ownship Capacity）</h5>
+    <p>此部分包含一个复选框，用于允许或禁止从 TCAS 天线测量方位。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数</th><th>状态</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">未测量方位数据<br><span style="color:var(--text-secondary);font-size:12px">Unmeasured Bearing Data</span></td><td>选中</td><td><strong>禁止</strong>从 TCAS 天线测量方位</td></tr>
+          <tr><td>未选中</td><td><strong>允许</strong>从 TCAS 天线测量方位</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>启动/停止场景（Start/Stop Scenario）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按钮</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>启动场景 Start Scenario</td><td>点击以激活入侵者场景</td></tr>
+          <tr><td>停止场景 Stop Scenario</td><td>点击以停止入侵者场景</td></tr>
         </tbody>
       </table>
     </div>
 
     <h4>2.4.2 随机交通（Random Traffic）</h4>
-    <p>允许插入任意数量的入侵者，选择高度间隔模型和应答器设置。</p>
+    <p>「随机交通」页面包含必要的控制项，用于：插入任意数量的入侵者、选择高度间隔模型、选择入侵者的应答器设置和本机容量限制。</p>
     <div class="img-block">
       <img src="./images/ch1_7_random_traffic.jpg" alt="图 13：随机交通页面（Figure 155）">
       <p class="img-caption">图 13：随机交通页面（Figure 155）</p>
@@ -404,17 +699,17 @@ graph TD
       <table>
         <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>入侵者数量</td><td>滑块或键盘输入任意数量</td></tr>
-          <tr><td>高度间隔模型</td><td>RVSM（航路垂直间隔最小值）、IFR（仪表飞行规则）、VFR（目视飞行规则）</td></tr>
-          <tr><td>应答器设置</td><td>高度报告、无 ADS-B 报告、ADS-B 报告、混合</td></tr>
-          <tr><td>本机容量限制</td><td>同 TCAS 页面</td></tr>
-          <tr><td>清除随机交通</td><td>一键清除所有随机交通</td></tr>
+          <tr><td>入侵者数量<br><span style="color:var(--text-secondary);font-size:12px">Number of Intruders</span></td><td>通过以下方式设置：① 将滑块移动到所需数量 ② 触摸输入文本字段并使用键盘输入入侵者数量</td></tr>
+          <tr><td>高度间隔模型<br><span style="color:var(--text-secondary);font-size:12px">Altitude Spacing Model</span></td><td>RVSM（航路垂直间隔最小值）、IFR（仪表飞行规则）、VFR（目视飞行规则）。所选数量的入侵者将按照所选模型放置</td></tr>
+          <tr><td>应答器设置<br><span style="color:var(--text-secondary);font-size:12px">Transponder Settings</span></td><td>高度报告、无 ADS-B 报告、ADS-B 报告、混合</td></tr>
+          <tr><td>本机容量限制<br><span style="color:var(--text-secondary);font-size:12px">Ownship Capacity</span></td><td>同 TCAS 页面</td></tr>
+          <tr><td>清除随机交通<br><span style="color:var(--text-secondary);font-size:12px">Clear Random Traffic</span></td><td>点击此按钮以清除所有随机交通</td></tr>
         </tbody>
       </table>
     </div>
 
     <h4>2.4.3 进近交通（Approach Traffic）</h4>
-    <p>允许插入 1~3 个入侵者，选择高度间隔模型和应答器设置，用于评估和训练进近阶段的空中交通场景。</p>
+    <p>「进近交通」页面允许教员：插入 1 到 3 个入侵者、选择高度间隔模型、选择入侵者的应答器设置和本机容量限制。通过此页面，教员可在训练场景中引入入侵机，以评估和训练飞行机组在进近阶段应对空中交通场景的能力。</p>
     <div class="img-block">
       <img src="./images/ch1_7_approach_traffic.jpg" alt="图 14：进近交通页面（Figure 156）">
       <p class="img-caption">图 14：进近交通页面（Figure 156）</p>
@@ -423,16 +718,17 @@ graph TD
       <table>
         <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>入侵者数量</td><td>下拉按钮选择 1~3 个</td></tr>
-          <tr><td>高度间隔模型</td><td>下风、等待航线、侧风、五边、混合</td></tr>
-          <tr><td>应答器设置</td><td>同随机交通页面</td></tr>
-          <tr><td>清除进近交通</td><td>一键清除所有进近交通</td></tr>
+          <tr><td>入侵者数量<br><span style="color:var(--text-secondary);font-size:12px">Number of Intruders</span></td><td>下拉按钮展开选项，点击选择 1~3 个</td></tr>
+          <tr><td>高度间隔模型<br><span style="color:var(--text-secondary);font-size:12px">Altitude Spacing Model</span></td><td>下风、等待航线、侧风、五边、混合。所选数量的入侵机将放置在所选模型上</td></tr>
+          <tr><td>应答器设置<br><span style="color:var(--text-secondary);font-size:12px">Transponder Settings</span></td><td>同随机交通页面</td></tr>
+          <tr><td>本机容量限制<br><span style="color:var(--text-secondary);font-size:12px">Ownship Capacity</span></td><td>同 TCAS 页面</td></tr>
+          <tr><td>清除进近交通<br><span style="color:var(--text-secondary);font-size:12px">Clear Approach Traffic</span></td><td>点击此按钮可清除所有进近交通</td></tr>
         </tbody>
       </table>
     </div>
 
     <h4>2.4.4 同航迹程序（ITP）</h4>
-    <p>ITP 页面允许教员查看预定义场景列表、创建/编辑/删除 ITP 场景、将场景激活到训练场景中。包含预定义场景和快速场景两个选项卡。</p>
+    <p>ITP 页面允许教员查看预定义场景列表、创建/编辑/删除 ITP 场景、将场景激活到训练场景中。包含预定义场景和快速场景两个选项卡。通过此页面，教员可以激活各种类型的 ITP 场景，其中多个入侵机位于本机空域周围的不同位置，以评估和训练飞行机组如何应对此类情况。</p>
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_7_itp.jpg" alt="图 15：ITP（Figure 157）">
@@ -443,18 +739,51 @@ graph TD
         <p class="img-caption">图 16：ITP 页面（Figure 158）</p>
       </div>
     </div>
+
+    <h5>ITP 主功能一览</h5>
     <div class="table-wrap">
       <table>
         <thead><tr><th>功能</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>场景列表</td><td>通常 CAE 提供 12 个预定义场景，名称一目了然</td></tr>
-          <tr><td>ITP 评估</td><td>在激活前评估在期望飞行高度层（FL）上 ITP 机会是否可行</td></tr>
-          <tr><td>ITP 地图</td><td>预览所选场景中所有入侵者与本机的相对位置，显示飞机符号、飞行 ID 和相对高度</td></tr>
-          <tr><td>新场景/编辑场景/删除场景</td><td>创建、修改或删除 ITP 场景，删除前需确认</td></tr>
-          <tr><td>快速场景</td><td>快速设置 ITP 场景，可自定义每个入侵者参数并评估</td></tr>
+          <tr><td>场景列表<br><span style="color:var(--text-secondary);font-size:12px">Scenario List</span></td><td>通常 CAE 提供 12 个预定义场景，名称一目了然</td></tr>
+          <tr><td>ITP 评估<br><span style="color:var(--text-secondary);font-size:12px">ITP Assessment</span></td><td>在激活前评估在期望飞行高度层（FL）上 ITP 机会是否可行（或不可行）</td></tr>
+          <tr><td>ITP 地图<br><span style="color:var(--text-secondary);font-size:12px">ITP Map</span></td><td>预览所选场景中所有入侵者与本机的相对位置，显示飞机符号、飞行 ID 和相对高度</td></tr>
+          <tr><td>新场景/编辑场景/删除场景<br><span style="color:var(--text-secondary);font-size:12px">New / Edit / Delete Scenario</span></td><td>创建、修改或删除 ITP 场景，删除前需确认</td></tr>
+          <tr><td>快速场景<br><span style="color:var(--text-secondary);font-size:12px">Quick Scenario</span></td><td>快速设置 ITP 场景，可自定义每个入侵者参数并评估</td></tr>
+          <tr><td>入侵者数量指示<br><span style="color:var(--text-secondary);font-size:12px">Intruder Count Indicator</span></td><td>红色徽章表示当前场景中入侵者的数量</td></tr>
+          <tr><td>清除所有入侵者<br><span style="color:var(--text-secondary);font-size:12px">Clear All Intruders</span></td><td>点击此按钮可清除训练场景中的所有入侵者</td></tr>
         </tbody>
       </table>
     </div>
+
+    <h5>预定义场景选项卡（Predefined Scenario Tab）</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>子模块</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>场景部分<br><span style="color:var(--text-secondary);font-size:12px">Scenario</span></td><td>列出可用的 ITP 场景。通常 CAE 提供 12 个场景，每个场景的名称都一目了然</td></tr>
+          <tr><td>ITP 评估部分<br><span style="color:var(--text-secondary);font-size:12px">ITP Assessment</span></td><td>根据所选 ITP 场景，在将所选场景激活到训练课程之前，评估 ITP 机会在所需飞行高度层（FL）上是否可行（或不可行）。<br><strong>操作链路：</strong>教员选择一个 ITP 场景 → 输入所需飞行高度层 → 观察 ITP 评估部分中的消息 → 决定是否激活该场景</td></tr>
+          <tr><td>ITP 地图<br><span style="color:var(--text-secondary);font-size:12px">ITP Map</span></td><td>地图提供所选 ITP 场景的预览。它显示所选场景中所有与本机（飞机）相关的入侵者。对于每个入侵者，地图提供飞机符号、飞行 ID 和相对高度</td></tr>
+          <tr><td>新场景<br><span style="color:var(--text-secondary);font-size:12px">New Scenario</span></td><td>点击「新场景」按钮以显示「新场景」页面。此页面包含允许教员定义给定场景中多个入侵者参数的控制项。点击入侵者展开按钮会显示所选入侵者的「编辑入侵者」页面</td></tr>
+          <tr><td>编辑场景<br><span style="color:var(--text-secondary);font-size:12px">Edit Scenario</span></td><td>点击「编辑场景」按钮以显示「编辑场景」页面。此页面包含允许教员修改给定场景中多个入侵者参数的控制项。点击入侵者展开按钮会显示所选入侵者的「编辑入侵者」页面</td></tr>
+          <tr><td>删除场景<br><span style="color:var(--text-secondary);font-size:12px">Delete Scenario</span></td><td>点击「删除场景」按钮以从「场景」列表中移除所选场景。在永久删除所选场景之前，会显示一个确认弹出窗口</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>快速场景选项卡（Quick Scenario Tab）</h5>
+    <p>此选项卡包含允许教员快速设置 ITP 场景的必要控制项。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>子模块</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>入侵者部分<br><span style="color:var(--text-secondary);font-size:12px">Intruders</span></td><td>列出可定制的可用入侵者</td></tr>
+          <tr><td>ITP 评估部分<br><span style="color:var(--text-secondary);font-size:12px">ITP Assessment</span></td><td>在包含多个入侵者的 ITP 场景中，允许教员在激活前评估在期望飞行高度层（FL）上 ITP 机会是否可行（或不可行）。教员可自定义每个入侵者的参数，输入期望飞行高度层，并观察 ITP 评估部分的消息，以决定是否激活该场景</td></tr>
+          <tr><td>ITP 地图<br><span style="color:var(--text-secondary);font-size:12px">ITP Map</span></td><td>提供正在创建的 ITP 场景预览。它显示场景中所有入侵者与本机（飞机）的相对位置。对于每个入侵者，地图提供飞机符号、飞行 ID 和相对高度</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_7_new_scenario.jpg" alt="图 17：新场景页面（Figure 160）">
@@ -488,50 +817,126 @@ graph TD
     </div>
 
     <h4>2.5.1 ATIS（自动终端信息服务）</h4>
-    <p>ATIS 页面允许教员监控参考机场及环境机场的当前 ATIS 语音消息，支持自动和手动两种模式。</p>
+    <p>ATIS 页面允许教员监控参考机场以及任何已定义的机场/航路环境机场（或简称环境机场）当前可用的 ATIS 语音消息。选定的参考机场 ICAO 代码显示在机场选项卡正下方。ICAO 机场代码旁的绿色 REF 标志表示这是参考机场。ATIS 消息有两种模式：自动和手动。</p>
     <div class="img-block">
       <img src="./images/ch1_7_atis.jpg" alt="图 22：ATIS 页面（Figure 165）">
       <p class="img-caption">图 22：ATIS 页面（Figure 165）</p>
     </div>
+
+    <h5>ATIS 模式说明</h5>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>模式</th><th>状态/行为</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="4">自动模式<br><span style="color:var(--text-secondary);font-size:12px">Automatic</span></td><td>默认模式</td><td>正常情况下的默认模式</td></tr>
+          <tr><td>同步更新</td><td>参考机场和环境机场的 ATIS 消息会自动更新，以反映环境页面和机场/航路环境页面上的当前天气。每当教员在这些页面中输入天气变化时，该机场的 ATIS 消息会立即更新以反映此变化</td></tr>
+          <tr><td>天气输入按钮</td><td>ATIS 语音消息无法被覆盖，因此 ATIS 页面上的所有天气输入按钮均被禁用或灰显。然而，这些禁用或灰显按钮旁边的所有文本以白色显示，因为数值反映了实际的 ATIS 消息</td></tr>
+          <tr><td>例外</td><td>ATIS 页面上有两个按钮永远不会被禁用或变灰：进近（Approach）和备注（Remarks）。这是因为它们与机场环境页面上的天气无关。用户可以随时点击任一按钮、进行其他选择、点击更新广播（Update Broadcast）按钮，当前的 ATIS 信息将更新以反映这些选择</td></tr>
+          <tr><td rowspan="2">手动模式<br><span style="color:var(--text-secondary);font-size:12px">Manual</span></td><td>启用方式</td><td>通过点击手动（Manual）按钮启用手动模式。这样做会启用 ATIS 页面上所有天气输入按钮。此时，教员可以进行新的选择，并点击更新广播以激活新信息</td></tr>
+          <tr><td>标志</td><td>允许教员覆盖某个机场的 ATIS 信息。当选择 ATIS 手动模式时，所选机场旁边会显示一个琥珀色 MANUAL 标志。在手动模式下，所有信息（INFORMATION）参数均可修改。当手动模式禁用时，所有信息参数将被禁用或变灰</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>ATIS 参数/控件一览</h5>
     <div class="table-wrap">
       <table>
         <thead><tr><th>参数/控件</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>模式</td><td>自动模式：ATIS 消息随环境天气变化自动更新，天气输入按钮禁用；手动模式：允许教员覆盖 ATIS 消息，所有按钮启用</td></tr>
-          <tr><td>机场选项卡</td><td>显示所选机场 ICAO 代码，绿色 REF 标志表示参考机场</td></tr>
-          <tr><td>手动（Manual）</td><td>启用 ATIS 手动模式，机场旁显示琥珀色 MANUAL 标志</td></tr>
-          <tr><td>重置（Reset）</td><td>将修改的参数更新为当前实际 ATIS 信息</td></tr>
-          <tr><td>暂停 ATIS 传输</td><td>禁用 ATIS 传输</td></tr>
-          <tr><td>排除刹车作用</td><td>禁用刹车作用语音播报</td></tr>
-          <tr><td>气象报告/风向风速/阵风/能见度/RVR/天气类型/云/云底高/温度/露点/QNH/进近/到达跑道/起飞跑道/跑道状况/刹车效应/备注</td><td>各类 ATIS 消息参数，部分为只读（自动模式），部分可编辑（手动模式）</td></tr>
-          <tr><td>更新广播</td><td>将 ATIS 信息更新为教员设置的最新环境信息，变化时启用，激活后保持 2 秒</td></tr>
+          <tr><td>机场选项卡<br><span style="color:var(--text-secondary);font-size:12px">Airport Tab</span></td><td>显示所选机场 ICAO 代码。绿色 REF 标志表示参考机场</td></tr>
+          <tr><td>手动（Manual）</td><td>显示状态和选择启用 ATIS 信息手动模式，允许教员修改部分 ATIS 参数。当选择 ATIS 手动模式时，所选机场旁边会显示一个琥珀色 MANUAL 标志</td></tr>
+          <tr><td>重置（Reset）</td><td>选择重置会导致页面上的修改参数更新，以反映当前的 ATIS 信息</td></tr>
+          <tr><td>暂停 ATIS 传输<br><span style="color:var(--text-secondary);font-size:12px">Suspend ATIS Transmission</span></td><td>显示状态和选择禁用 ATIS 传输</td></tr>
+          <tr><td>排除刹车作用<br><span style="color:var(--text-secondary);font-size:12px">Exclude Braking Action</span></td><td>显示状态和选择禁用刹车作用的语音播报</td></tr>
+          <tr><td>气象报告<br><span style="color:var(--text-secondary);font-size:12px">Met Report / WX Report</span></td><td>显示 GMT 报告时间，并允许修改 ATIS 信息的时间，而不影响模拟器的实际时间</td></tr>
+          <tr><td>风向风速<br><span style="color:var(--text-secondary);font-size:12px">Wind</span></td><td>显示状态和选择允许输入 ATIS 信息的风向（以度为单位）和风速（以所选单位：节/米每秒）。零风速时广播静风（Wind Calm）</td></tr>
+          <tr><td>阵风<br><span style="color:var(--text-secondary);font-size:12px">Wind Gust</span></td><td>显示 ATIS 阵风值（以米每秒为单位），与模拟器实际值不同</td></tr>
+          <tr><td>能见度<br><span style="color:var(--text-secondary);font-size:12px">Visibility</span></td><td>显示状态和选择允许输入 ATIS 信息的能见度（以所选单位：公里/法定英里），与模拟器实际值不同。广播的 ATIS 信息中的单位反映信息来源的区域</td></tr>
+          <tr><td>跑道视程<br><span style="color:var(--text-secondary);font-size:12px">RVR</span></td><td>显示状态和选择允许输入 ATIS 信息的跑道视程（RVR）（以所选单位：米/英尺）。广播的 ATIS 信息中的单位反映信息来源的区域</td></tr>
+          <tr><td>天气类型<br><span style="color:var(--text-secondary);font-size:12px">Weather Type</span></td><td>显示当前 ATIS 信息的特殊天气状况，选择后显示天气类型页面</td></tr>
+          <tr><td>云<br><span style="color:var(--text-secondary);font-size:12px">Clouds</span></td><td>显示当前 ATIS 信息的云类型，选择后显示云类型列表</td></tr>
+          <tr><td>云底高<br><span style="color:var(--text-secondary);font-size:12px">Cloud Base / Ceiling</span></td><td>显示状态，并允许以所选单位（公制/英制）输入云底高度，用于 ATIS 信息广播中的云底信息。Min=0, Max=40000 英尺；Min=0, Max=12192 米</td></tr>
+          <tr><td>温度<br><span style="color:var(--text-secondary);font-size:12px">Temperature</span></td><td>显示状态，并允许以所选单位（摄氏度/华氏度）输入 ATIS 信息的地面温度（动态最小/最大值）</td></tr>
+          <tr><td>露点<br><span style="color:var(--text-secondary);font-size:12px">Dew Point</span></td><td>显示状态，并允许以所选单位（摄氏度/华氏度）输入 ATIS 信息的露点温度。露点最大值将等于温度值，若温度设置低于露点，露点将自动调整为温度值（动态最小/最大值）</td></tr>
+          <tr><td>QNH<br><span style="color:var(--text-secondary);font-size:12px">QNH</span></td><td>以所选单位（百帕/英寸汞柱）显示 ATIS 环境气压，并允许输入与实际模拟器海平面气压不同的气压值。广播的 ATIS 信息中的单位反映信息源所在区域</td></tr>
+          <tr><td>进近方式<br><span style="color:var(--text-secondary);font-size:12px">Approach</span></td><td>显示当前 ATIS 信息的进近方式类型，选择后可显示进近方式页面，允许教员更改进近方式信息。此按钮在自动模式下也不会被禁用或变灰</td></tr>
+          <tr><td>到达跑道<br><span style="color:var(--text-secondary);font-size:12px">Arr RWY / Arrival Runway</span></td><td>显示当前 ATIS 信息的到达跑道，选择后可显示附加跑道选择列表</td></tr>
+          <tr><td>起飞跑道<br><span style="color:var(--text-secondary);font-size:12px">Dep RWY / Departure Runway</span></td><td>显示当前 ATIS 信息的起飞跑道，选择后可显示附加跑道选择列表</td></tr>
+          <tr><td>跑道状况<br><span style="color:var(--text-secondary);font-size:12px">RWY Cond / Runway Conditions</span></td><td>显示 ATIS 信息的跑道状况，选择后可显示附加跑道状况列表</td></tr>
+          <tr><td>刹车效应<br><span style="color:var(--text-secondary);font-size:12px">Braking / Braking Action</span></td><td>显示 ATIS 信息的刹车效应状况，选择后可显示附加刹车效应状况列表</td></tr>
+          <tr><td>备注<br><span style="color:var(--text-secondary);font-size:12px">Remarks</span></td><td>显示当前参考机场的 ATIS 备注，选择后可显示附加备注列表。此按钮在自动模式下也不会被禁用或变灰</td></tr>
+          <tr><td>更新广播<br><span style="color:var(--text-secondary);font-size:12px">Update Broadcast</span></td><td>显示状态，选择后可更新 ATIS 信息为教员设置的最新环境信息。当页面上任何 ATIS 信息参数发生变化时，该按钮处于启用状态。选择后，按钮将保持激活状态 2 秒</td></tr>
         </tbody>
       </table>
     </div>
 
     <h4>2.5.2 ATC（空中交通管制）</h4>
-    <p>ATC 页面包含 ATC UNIT 和 MESSAGE 两个主选项卡。ATC UNIT 包含六类消息页面：</p>
+    <p>ATC 页面包含两个主选项卡：ATC UNIT 和 MESSAGE。ATC UNIT 选项卡包含六类消息页面，用于模拟 ATC 和背景无线电通话信息。</p>
     <div class="img-block">
       <img src="./images/ch1_7_atc.jpg" alt="图 23：ATC 页面（Figure 166）">
       <p class="img-caption">图 23：ATC 页面（Figure 166）</p>
     </div>
+
+    <h5>放行许可（Clearance Delivery）</h5>
+    <p>放行许可页面显示可自定义播放的放行许可消息类型。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>ATC 页面</th><th>核心功能</th></tr></thead>
+        <thead><tr><th>参数/控件</th><th>功能说明</th></tr></thead>
         <tbody>
-          <tr><td>放行许可（Clearance Delivery）</td><td>航空公司选择、航班号输入、目的地机场、飞行高度层、播放按钮、频率、背景通信</td></tr>
-          <tr><td>地面管制（Ground Control）</td><td>航空公司、航班号、滑行路线、移交下一管制员、下一频率（Min=118.0, Max=136.97）</td></tr>
-          <tr><td>塔台（Tower）</td><td>塔台消息类型自定义播放</td></tr>
-          <tr><td>离场（Departure）</td><td>离场消息类型自定义播放</td></tr>
-          <tr><td>管制（Control）</td><td>管制消息类型自定义播放</td></tr>
-          <tr><td>进近（Approach）</td><td>进近消息类型自定义播放</td></tr>
+          <tr><td>航空公司<br><span style="color:var(--text-secondary);font-size:12px">Airline</span></td><td>显示航空公司名称，选择后显示下拉菜单，允许选择要在消息中播报的航空公司名称</td></tr>
+          <tr><td>航班号<br><span style="color:var(--text-secondary);font-size:12px">Flight Number</span></td><td>显示当前航空公司航班号，选择后显示键盘，允许输入新的航班号</td></tr>
+          <tr><td>目的地机场<br><span style="color:var(--text-secondary);font-size:12px">Destination Airport</span></td><td>显示状态，选择后显示键盘，允许输入目的地机场名称（仅放行许可页面可用）</td></tr>
+          <tr><td>飞行高度层<br><span style="color:var(--text-secondary);font-size:12px">Flight Level</span></td><td>显示状态，选择后显示键盘，允许输入 ATC 放行的飞行高度层（Min=0, Max=动态最大值）</td></tr>
+          <tr><td>播放<br><span style="color:var(--text-secondary);font-size:12px">Play</span></td><td>播放相应的消息</td></tr>
+          <tr><td>频率<br><span style="color:var(--text-secondary);font-size:12px">Frequency</span></td><td>显示所选 ATC 消息类型的活动通信频率</td></tr>
+          <tr><td>背景通信<br><span style="color:var(--text-secondary);font-size:12px">Background Comms</span></td><td>显示状态，选择后根据所选 ATC 页面类型激活/停用无线电背景通信</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>地面管制（Ground Control）</h5>
+    <p>地面管制页面显示可自定义播放的地面管制消息类型。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数/控件</th><th>功能说明</th></tr></thead>
+        <tbody>
+          <tr><td>航空公司<br><span style="color:var(--text-secondary);font-size:12px">Airline</span></td><td>同放行许可页面</td></tr>
+          <tr><td>航班号<br><span style="color:var(--text-secondary);font-size:12px">Flight Number</span></td><td>同放行许可页面</td></tr>
+          <tr><td>滑行路线<br><span style="color:var(--text-secondary);font-size:12px">Taxi Route</span></td><td>显示状态，选择后允许输入 ATC 消息联系中的滑行路线</td></tr>
+          <tr><td>联系<br><span style="color:var(--text-secondary);font-size:12px">Contact</span></td><td>显示当前移交的下一指定无线电联系管制员，选择后显示下拉菜单</td></tr>
+          <tr><td>联系 — 下一频率<br><span style="color:var(--text-secondary);font-size:12px">Contact — Next Frequency</span></td><td>显示状态，选择后允许输入下一管制员的频率（Min=118.0, Max=136.97）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>其他 ATC 页面</h5>
+    <p>上述每个 ATC 消息页面均包含针对特定类型无线电台的通用信息。除放行许可和地面管制外，其余四类页面同样支持选择航空公司、航班号、飞行高度层/频率/背景通信等通用参数，并显示可自定义播放的对应类别消息类型。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>页面</th><th>消息类型</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>塔台<br><span style="color:var(--text-secondary);font-size:12px">Tower</span></td><td>塔台消息</td><td>显示可自定义播放的塔台消息类型。页面包含与放行许可/地面管制类似的通用参数选择</td></tr>
+          <tr><td>离场<br><span style="color:var(--text-secondary);font-size:12px">Departure</span></td><td>离场消息</td><td>显示可自定义播放的离场消息类型。页面包含与放行许可/地面管制类似的通用参数选择</td></tr>
+          <tr><td>管制<br><span style="color:var(--text-secondary);font-size:12px">Control</span></td><td>管制消息</td><td>显示可自定义播放的管制消息类型。页面包含与放行许可/地面管制类似的通用参数选择</td></tr>
+          <tr><td>进近<br><span style="color:var(--text-secondary);font-size:12px">Approach</span></td><td>进近消息</td><td>显示可自定义播放的进近消息类型。页面包含与放行许可/地面管制类似的通用参数选择</td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>2.6 故障（Failure）</h3>
-    <p>故障按钮提供访问页面的途径，允许教员触发故障、跳闸/弹出断路器、触发电台故障，并获取武装且活跃故障、跳闸断路器、失效无线电台的总体状态。</p>
-    <blockquote>从高级菜单进入的故障、断路器和故障汇总子页面，其控制功能与从控制面板访问的对应滑动面板相同。详见 <a href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡</a>。</blockquote>
+    <p>故障按钮提供访问页面的途径，允许教员触发故障、跳闸/弹出断路器、触发电台故障，并获取以下内容的总体状态：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能类别</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>触发故障<br><span style="color:var(--text-secondary);font-size:12px">Trigger Failures</span></td><td>激活特定系统或部件的故障模拟</td></tr>
+          <tr><td>跳闸/弹出断路器<br><span style="color:var(--text-secondary);font-size:12px">Trip/Pop Circuit Breakers</span></td><td>模拟断路器跳闸或弹出</td></tr>
+          <tr><td>触发电台故障<br><span style="color:var(--text-secondary);font-size:12px">Trigger Radio Failures</span></td><td>使地面无线电台导航组件失效</td></tr>
+          <tr><td>总体状态监控<br><span style="color:var(--text-secondary);font-size:12px">Overall Status</span></td><td>获取武装且活跃的故障、跳闸/触发的断路器、失效无线电台的总体状态</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <blockquote>从高级菜单进入的「故障」、「断路器」和「故障汇总」子页面，其控制功能与从控制面板访问的对应滑动面板相同（详见第 8.12、8.13 和 8.14 节）。详见 <a href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡</a>。</blockquote>
     <div class="img-block">
       <img src="./images/ch1_7_failure.jpg" alt="图 24：高级 — 故障（Figure 167）">
       <p class="img-caption">图 24：高级 — 故障（Figure 167）</p>
@@ -552,12 +957,12 @@ graph TD
       <table>
         <thead><tr><th>功能</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>列表方式</td><td>按电台名称 / 按识别码 / 按终端区域（TMA）</td></tr>
-          <tr><td>列表信息</td><td>电台名称和类型、识别码、频率、跑道编号、状态</td></tr>
-          <tr><td>重置</td><td>重置所选失效无线电台</td></tr>
-          <tr><td>失效</td><td>使所选无线电台失效</td></tr>
-          <tr><td>清除失效电台</td><td>重置所有由教员设为失效的无线电台</td></tr>
-          <tr><td>重新定位到电台</td><td>激活重新定位到所选电台（显著经纬度变化时禁用）</td></tr>
+          <tr><td>列表方式<br><span style="color:var(--text-secondary);font-size:12px">List Mode</span></td><td>按电台名称 By Name / 按识别码 By Identifier / 按终端区域（TMA）By TMA</td></tr>
+          <tr><td>列表信息<br><span style="color:var(--text-secondary);font-size:12px">List Information</span></td><td>电台名称和类型、识别码、频率、跑道编号、状态</td></tr>
+          <tr><td>重置<br><span style="color:var(--text-secondary);font-size:12px">Reset</span></td><td>重置所选失效无线电台</td></tr>
+          <tr><td>失效<br><span style="color:var(--text-secondary);font-size:12px">Fail</span></td><td>使所选无线电台失效</td></tr>
+          <tr><td>清除失效电台<br><span style="color:var(--text-secondary);font-size:12px">Clear Failed Radios</span></td><td>重置所有由教员设为失效的无线电台</td></tr>
+          <tr><td>重新定位到电台<br><span style="color:var(--text-secondary);font-size:12px">Reposition to Station</span></td><td>激活重新定位到所选电台（显著经纬度变化时禁用）</td></tr>
         </tbody>
       </table>
     </div>
@@ -576,22 +981,46 @@ graph TD
     </div>
 
     <h4>2.7.1 数据汇总选项卡（Data Summary）</h4>
-    <p>在 UPRT 场景进行过程中显示实时飞行数据，并提供最关键的数据参数摘要。包含以下部分：</p>
+    <p>「数据汇总」选项卡在 UPRT 场景进行过程中显示实时飞行数据，并提供最关键的 UPRT 数据参数摘要。包含以下部分：</p>
     <div class="img-block">
       <img src="./images/ch1_7_data_summary.jpg" alt="图 28：数据摘要选项卡（Figure 171）">
       <p class="img-caption">图 28：数据摘要选项卡（Figure 171）</p>
     </div>
+
+    <h5>关键参数列表（Critical Parameters）</h5>
+    <p>此部分显示以下五个关键参数的信息，每列提供：当前值、最小值、最大值。在场景录制过程中，每列的值会实时持续更新。在回放模式下，仅「当前值」列会更新。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>部分</th><th>功能说明</th></tr></thead>
+        <thead><tr><th>参数</th><th>英文</th></tr></thead>
         <tbody>
-          <tr><td>关键参数列表</td><td>显示载荷因数、迎角（AOA）、指示空速（IAS）、侧滑角、脚蹬力五个参数的当前值、最小值、最大值</td></tr>
-          <tr><td>缩略图</td><td>Alpha-Beta 曲线图、V-n 曲线图、主飞行显示（PFD）、总览页面、时间历程、四视图</td></tr>
-          <tr><td>缩略图查看窗格</td><td>点击缩略图后在窗格中显示对应页面</td></tr>
-          <tr><td>超限</td><td>列出记录阶段发生的超限事件对应的咨询级别信息，按严重程度排序</td></tr>
+          <tr><td>载荷因数</td><td>Load Factor</td></tr>
+          <tr><td>迎角</td><td>AOA</td></tr>
+          <tr><td>指示空速</td><td>IAS</td></tr>
+          <tr><td>侧滑角</td><td>Sideslip</td></tr>
+          <tr><td>脚蹬力</td><td>Rudder Force</td></tr>
         </tbody>
       </table>
     </div>
+
+    <h5>缩略图（Thumbnails）</h5>
+    <p>「数据摘要」选项卡中的缩略图代表辅助教员评估练习表现的主要工具。点击后将在缩略图查看窗格中显示。缩略图包括：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>缩略图</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>Alpha-Beta 曲线图</td><td>将迎角（AOA）绘制在 Y 轴上，侧滑角绘制在 X 轴上。最多可显示三个包线（高/中/低置信度），对应襟翼收起/放下状态。包含四条与失速角相关的水平线：零升力（绿）、失速警告（绿）、临界迎角 AOAc（琥珀）、急性失速（红）</td></tr>
+          <tr><td>V-n 曲线图</td><td>将 G 载荷绘制在 Y 轴上，指示空速（IAS）绘制在 X 轴上。三个彩色包线表示逐渐升高的关注等级：绿色、琥珀色、红色</td></tr>
+          <tr><td>主飞行显示（PFD）</td><td>复制驾驶舱 PFD 的部分内容，显示约 15 个对 UPRT 训练有用的 PFD 类型参数。为通用 PFD 图形，并非所模拟飞机的实际 PFD 复制</td></tr>
+          <tr><td>总览页面（Overview）</td><td>复制驾驶舱主要控制装置，包含页面顶部和底部的状态读数、各种控制装置示意图（部分包含实际读数）。示意图仅用于代表所模拟飞机的控制装置，详细程度以满足 UPRT 训练需求为准</td></tr>
+          <tr><td>时间历程（Time History）</td><td>以表格形式按时间顺序显示与所选 UPRT 场景最相关的参数（俯仰角、滚转角、指示空速、高度、载荷因数、油门、侧滑、驾驶杆、方向舵、副翼、偏航角等）。可与录制过程配合使用，讲师可同时监控图表页面和驾驶舱复示器</td></tr>
+          <tr><td>四视图（Quad View）</td><td>同时显示 Alpha-Beta 图、V-n 图、PFD 和总览页面</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>超限部分（Exceedances）</h5>
+    <p>本节列出在记录阶段发生的超限事件对应的咨询级别信息。颜色信息对应 Alpha-Beta 图和 V-n 图页面中规定的咨询级别颜色规则，并按严重程度顺序显示。这些信息随后可根据严重程度顺序用于学员讲评。</p>
+
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_7_critical_params.jpg" alt="图 29：关键参数（Figure 172）">
@@ -610,16 +1039,18 @@ graph TD
     </div>
 
     <h4>2.7.2 控制选项卡（Controls）</h4>
-    <p>包含显示 UPRT 场景页面、记录选定异常状态场景、确定图表上绘制的点数、在记录中插入标记、回放记录以进行座舱内讲评等功能。</p>
+    <p>此选项卡包含必要的控制功能，用于：显示 UPRT 场景页面、记录选定的异常状态场景、确定图表上绘制的点数（数据点）、在记录中插入标记、回放记录以进行座舱内讲评。</p>
+
+    <h5>控制选项卡功能一览</h5>
     <div class="table-wrap">
       <table>
         <thead><tr><th>功能</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>选择场景</td><td>点击可展开按钮显示 UPRT 场景页面，选择 MBT 或 SBT</td></tr>
-          <tr><td>记录/重置</td><td>进入记录模式，最长 5 分钟（300 秒）。可插入标记：开始、G 载荷、失速、机头上仰、机头下俯、滚转 G、其他、结束</td></tr>
-          <tr><td>时间范围</td><td>指定图表上显示的最大数据点数，用于简化图表</td></tr>
-          <tr><td>回放模式</td><td>回放整个场景记录或开始/结束标记定义的部分。飞行冻结暂停记录</td></tr>
-          <tr><td>可选标记</td><td>控制选项卡可包含可选标记</td></tr>
+          <tr><td>选择场景<br><span style="color:var(--text-secondary);font-size:12px">Select Scenario</span></td><td>点击此可展开按钮以显示 UPRT 场景页面，选择基于机动训练（MBT）或基于场景训练（SBT）练习</td></tr>
+          <tr><td>记录/重置<br><span style="color:var(--text-secondary);font-size:12px">Record / Reset</span></td><td>点击记录/重置按钮进入记录模式。在此模式下，选定的异常状态场景正在被记录。一旦启动记录模式，可通过点击停止按钮手动停止，或在最大记录时间（<strong>5 分钟或 300 秒</strong>）到期后自动停止。场景的最大长度为 <strong>5 分钟或 300 秒</strong>。在场景记录期间，教员可在记录中插入标记。部分标记包括：开始 Start、G 载荷 G-Load、失速 Stall、机头上仰 Nose Up、机头下俯 Nose Down、滚转 G Roll G、其他 Other、结束 End。这些标记旨在便于与飞行机组进行座舱内讲评</td></tr>
+          <tr><td>时间范围<br><span style="color:var(--text-secondary);font-size:12px">Time Range</span></td><td>点击输入文本字段以指定在记录期间图表上绘制的最大点数（数据点）。时间范围基本上允许教员根据经过时间指定图表上显示的最大点数，这可以作为<strong>简化图表</strong>的一种手段</td></tr>
+          <tr><td>回放模式<br><span style="color:var(--text-secondary);font-size:12px">Review Mode</span></td><td>回放模式允许教员回放整个场景记录或由教员添加到记录时间轴上的开始和结束标记定义的场景记录部分。在记录阶段，所有 <strong>300 秒</strong>的数据都会被存储，并可在回放模式下用于回放。<strong>飞行冻结或完全冻结会暂停记录模式</strong>。在记录期间，教员可通过专注于记录练习的某个阶段来为回放模式做准备。这可通过在教员希望与飞行机组回顾的时刻插入开始和结束标记来实现</td></tr>
+          <tr><td>可选标记<br><span style="color:var(--text-secondary);font-size:12px">Optional Markers</span></td><td>控制选项卡可包含可选标记</td></tr>
         </tbody>
       </table>
     </div>
@@ -639,17 +1070,39 @@ graph TD
     </div>
 
     <h4>2.7.3 UPRT 场景页面（UPRT Scenarios）</h4>
-    <p>提供所有必要控制，允许教员启动 MBT 或 SBT 练习，持续时间最长 5 分钟（300 秒）。</p>
+    <p>此页面提供所有必要控制，使教员能够启动基于机动训练（MBT）或基于场景训练（SBT）的练习，持续时间最长可达 <strong>5 分钟或 300 秒</strong>。</p>
     <div class="img-block">
       <img src="./images/ch1_7_uprt_scenarios.jpg" alt="图 35：UPRT 场景页面（Figure 181）">
       <p class="img-caption">图 35：UPRT 场景页面（Figure 181）</p>
     </div>
+
+    <h5>基于机动（Maneuver Based Training — MBT）</h5>
+    <p>此选项卡包含可由教员触发的基于机动的异常姿态场景。这些场景分为以下部分：</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>类型</th><th>功能说明</th></tr></thead>
+        <thead><tr><th>部分</th><th>场景选项</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>基于机动（MBT）</td><td>分为机翼水平（40°机头上仰/25°机头下俯/平飞/最大升阻比）、坡度（30°机头上仰+60°坡度/20°机头下俯+65°坡度/20°机头下俯+125°坡度，左/右互斥）、高度（FL100/FL200/FL350）三部分。执行按钮激活所选 MBT 剖面</td></tr>
-          <tr><td>基于场景（SBT）</td><td>左坡度—右坡度、空速减小—空速增加两组互斥单选按钮。强度分为轻度/中度/重度。激活按钮触发所选场景</td></tr>
+          <tr><td>机翼水平<br><span style="color:var(--text-secondary);font-size:12px">Wings Level</span></td><td>40° 机头上仰<br>25° 机头下俯<br>平飞<br>最大升阻比在最大高度</td><td>互斥的场景按钮，点击后将飞机重新定位到所选场景</td></tr>
+          <tr><td>坡度<br><span style="color:var(--text-secondary);font-size:12px">Bank Angle</span></td><td>30° 机头上仰，60° 坡度<br>20° 机头下俯，65° 坡度<br>20° 机头下俯，125° 坡度</td><td>互斥的场景按钮。互斥的左/右单选按钮控制向左或向右的坡度机动</td></tr>
+          <tr><td>高度<br><span style="color:var(--text-secondary);font-size:12px">Altitude</span></td><td>FL100<br>FL200<br>FL350</td><td>互斥的高度单选按钮，点击后将 MBT 练习设置为所选高度</td></tr>
+          <tr><td>执行<br><span style="color:var(--text-secondary);font-size:12px">Execute</span></td><td>—</td><td>点击此按钮以激活所选 MBT UPRT 剖面。基于机动的场景类似于重新定位，当飞行冻结开启时，飞机会进入所选基于机动的场景，直到飞行冻结解除</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h5>基于场景（Scenario Based Training — SBT）</h5>
+    <p>此选项卡包含可由教员触发的基于场景的异常姿态场景。这些场景由互斥的单选按钮组成，并配对为：</p>
+    <ul>
+      <li>左坡度 – 右坡度</li>
+      <li>空速减小 – 空速增加</li>
+    </ul>
+    <p>这类场景类似于一阵阵风，会逐渐将飞机置于所选异常姿态状态。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>强度 Intensity</td><td>允许教员将所选场景的强度设置为<strong>轻度 Light / 中度 Moderate / 重度 Severe</strong></td></tr>
+          <tr><td>激活 Activate</td><td>点击此按钮以激活所选基于场景的场景</td></tr>
         </tbody>
       </table>
     </div>
@@ -670,20 +1123,28 @@ graph TD
     </div>
 
     <h4>2.9.1 飞行状态捕捉/调用（FSC/Recall）</h4>
-    <p>允许教员在训练过程中记录最多 10 种预定义参数的不同飞行状态，并在之后恢复这些状态。调用功能以类似于常规飞机重新定位的方式执行。</p>
-    <p>对于空中状态的调用，通过调整飞机配平来实现。对于非反向驱动的飞行控制，将出现「控制不一致（CNIA）」页面，指示控制装置应处于的位置。解除冻结后，飞行员可从捕捉点继续训练课程。</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <thead><tr><th>功能/参数</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>复制到存储的捕获</td><td>将临时捕获转换为永久存储捕获。若存在捕获、调用、重新定位或扫描操作，按钮禁用</td></tr>
-          <tr><td>清除所有捕获</td><td>显示确认弹出菜单，需确认操作</td></tr>
+          <tr><td>核心功能</td><td>飞行状态捕捉/调用页面允许教员在训练过程中记录最多 <strong>10 种预定义参数</strong>的不同飞行状态，并在之后恢复这些状态。调用功能以类似于常规飞机重新定位的方式执行</td></tr>
+          <tr><td>空中状态调用</td><td>对于空中状态的调用，通过调整飞机配平来实现，这与空中重新定位的正常操作一致。模拟器可能无法恢复到与捕捉时完全相同的状态，但会处于相似的条件</td></tr>
+          <tr><td>非反向驱动飞行控制</td><td>对于非反向驱动的飞行控制，将出现「控制不一致（CNIA）」页面，指示控制装置应处于的位置。当飞行冻结解除后，飞行员可以从捕捉点继续训练课程。当飞行冻结解除后，飞行员应能够继续训练课程</td></tr>
+          <tr><td>复制到存储的捕获<br><span style="color:var(--text-secondary);font-size:12px">Copy to Stored Capture</span></td><td>显示飞行状态转移页面，用于将临时捕获转换为永久存储捕获。如果存在捕获、召回、重新定位或扫描操作，该按钮将处于禁用或灰色状态</td></tr>
+          <tr><td>清除所有捕获<br><span style="color:var(--text-secondary);font-size:12px">Clear All Captures</span></td><td>选择后会显示「清除所有捕获」弹出菜单，需要确认操作</td></tr>
         </tbody>
       </table>
     </div>
 
     <h4>2.9.2 FMS 内存保存/召回（FMS Memory Save/Recall）</h4>
-    <p>激活保存/召回所选 FMS 内存飞行计划的过程。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>FMS 内存保存/召回<br><span style="color:var(--text-secondary);font-size:12px">FMS Memory Save/Recall</span></td><td>显示状态，选择后激活保存/召回所选 FMS 内存飞行计划的过程</td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- 三、全局操作流程与推导 -->
     <h2>三、全局操作流程与推导</h2>
@@ -758,12 +1219,12 @@ stateDiagram-v2
       <table>
         <thead><tr><th>状态</th><th>说明</th><th>进入条件</th></tr></thead>
         <tbody>
-          <tr><td>空闲状态</td><td>Advanced 工作区已打开，未选择任何功能模块</td><td>进入工作区或完成操作后</td></tr>
-          <tr><td>模块选择中</td><td>已点击某个高级功能按钮，显示对应子页面</td><td>点击飞机/位置/环境/入侵者等按钮</td></tr>
-          <tr><td>参数编辑中</td><td>在子页面中修改参数或选择选项</td><td>选择子功能后进入编辑界面</td></tr>
-          <tr><td>值已修改</td><td>参数值已被教员修改但尚未确认生效</td><td>输入新值或切换选项</td></tr>
-          <tr><td>参数生效中</td><td>指令正在下发至模拟器</td><td>点击确认/更新/激活按钮</td></tr>
-          <tr><td>生效完成</td><td>参数已生效，模拟器反馈确认</td><td>模拟器返回生效完成信号</td></tr>
+          <tr><td>空闲状态<br><span style="color:var(--text-secondary);font-size:12px">Idle</span></td><td>Advanced 工作区已打开，未选择任何功能模块</td><td>进入工作区或完成操作后</td></tr>
+          <tr><td>模块选择中<br><span style="color:var(--text-secondary);font-size:12px">Module Selected</span></td><td>已点击某个高级功能按钮，显示对应子页面</td><td>点击飞机/位置/环境/入侵者等按钮</td></tr>
+          <tr><td>参数编辑中<br><span style="color:var(--text-secondary);font-size:12px">Editing</span></td><td>在子页面中修改参数或选择选项</td><td>选择子功能后进入编辑界面</td></tr>
+          <tr><td>值已修改<br><span style="color:var(--text-secondary);font-size:12px">Value Modified</span></td><td>参数值已被教员修改但尚未确认生效</td><td>输入新值或切换选项</td></tr>
+          <tr><td>参数生效中<br><span style="color:var(--text-secondary);font-size:12px">Applying</span></td><td>指令正在下发至模拟器</td><td>点击确认/更新/激活按钮</td></tr>
+          <tr><td>生效完成<br><span style="color:var(--text-secondary);font-size:12px">Applied</span></td><td>参数已生效，模拟器反馈确认</td><td>模拟器返回生效完成信号</td></tr>
         </tbody>
       </table>
     </div>
@@ -871,6 +1332,7 @@ UI 事件层 ——→ 模块切换事件 / 参数变更事件 / 场景激活事
         <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
         <tbody>
           <tr><td>2026-06-05</td><td>V1.0</td><td>初始版本：基于 A320.md 2.7 章节与原始手册 ## 16 章生成高级工作区 HTML。涵盖飞机、位置、环境（天气区域/灯光/机场视觉效果）、入侵者（TCAS/随机/进近/ITP）、通信（ATIS/ATC）、故障、UPRT、重置/冻结、录制共 10 大子模块，配套 36 张截图，含状态机、数据流与 API 契约推导</td></tr>
+          <tr><td>2026-06-08</td><td>V1.1</td><td>结构化重构 2.4.4 ~ 2.9 章节内容：将 ITP、ATIS 参数、ATC 其余页面、UPRT 控制选项卡、录制（FSC/FMS）等段落式描述改为表格化呈现，补充 ATIS 自动/手动模式详细行为、各天气参数独立条目、ATC 塔台/离场/管制/进近页面汇总表，确保与 A320.md 原文逐句对齐无信息丢失</td></tr>
         </tbody>
       </table>
     </div>
@@ -887,12 +1349,6 @@ UI 事件层 ——→ 模块切换事件 / 参数变更事件 / 场景激活事
 
 <script>
 // Toggle navigation
-document.addEventListener('click',function(e){
-  const overlay=document.querySelector('.img-zoom-overlay');
-  if(overlay && (e.target.closest('.img-zoom-overlay')===overlay)){
-    overlay.remove();
-  }
-});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     const overlay=document.querySelector('.img-zoom-overlay');
@@ -915,17 +1371,109 @@ function toggleNav(el){
   }
 }
 
-// Image zoom (event delegation)
-document.addEventListener('click',function(e){
-  const img=e.target.closest('.img-block img');
-  if(!img) return;
-  const overlay=document.createElement('div');
-  overlay.className='img-zoom-overlay';
-  const zoomedImg=document.createElement('img');
-  zoomedImg.src=img.src;
-  overlay.appendChild(zoomedImg);
-  document.body.appendChild(overlay);
-});
+// Image zoom
+(function(){
+  let imgZoomOverlay = null;
+  let imgDragStart = null;
+  let imgDragLast = null;
+  let imgIsDragging = false;
+
+  function updateImgZoomTransform(overlay){
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    const scale = parseFloat(overlay.dataset.scale) || 1;
+    const tx = parseFloat(overlay.dataset.tx) || 0;
+    const ty = parseFloat(overlay.dataset.ty) || 0;
+    img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+  }
+
+  document.addEventListener('click', function(e){
+    const img = e.target.closest('.img-block img');
+    if(img){
+      e.preventDefault();
+      const overlay = document.createElement('div');
+      overlay.className = 'img-zoom-overlay';
+      overlay.dataset.scale = '1';
+      overlay.dataset.tx = '0';
+      overlay.dataset.ty = '0';
+      const zoomed = document.createElement('img');
+      zoomed.src = img.src;
+      zoomed.alt = img.alt;
+      zoomed.style.transform = 'translate(0px,0px) scale(1)';
+      overlay.appendChild(zoomed);
+      document.body.appendChild(overlay);
+      imgZoomOverlay = overlay;
+      imgIsDragging = false;
+      return;
+    }
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(overlay){
+      if(imgIsDragging){
+        imgIsDragging = false;
+        return;
+      }
+      overlay.remove();
+      if(imgZoomOverlay === overlay) imgZoomOverlay = null;
+    }
+  });
+
+  document.addEventListener('wheel', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    e.preventDefault();
+    let scale = parseFloat(overlay.dataset.scale) || 1;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.5, Math.min(5, scale * delta));
+    overlay.dataset.scale = scale.toFixed(3);
+    updateImgZoomTransform(overlay);
+  }, { passive: false });
+
+  document.addEventListener('mousedown', function(e){
+    const overlay = e.target.closest('.img-zoom-overlay');
+    if(!overlay) return;
+    const img = overlay.querySelector('img');
+    if(!img) return;
+    e.preventDefault();
+    imgDragStart = { x: e.clientX, y: e.clientY };
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    imgZoomOverlay = overlay;
+    imgIsDragging = false;
+    img.classList.add('is-dragging');
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(!imgDragStart || !imgZoomOverlay) return;
+    const dx = e.clientX - imgDragLast.x;
+    const dy = e.clientY - imgDragLast.y;
+    const movedX = Math.abs(e.clientX - imgDragStart.x);
+    const movedY = Math.abs(e.clientY - imgDragStart.y);
+    if(movedX > 3 || movedY > 3) imgIsDragging = true;
+    imgDragLast = { x: e.clientX, y: e.clientY };
+    let tx = parseFloat(imgZoomOverlay.dataset.tx) || 0;
+    let ty = parseFloat(imgZoomOverlay.dataset.ty) || 0;
+    tx += dx;
+    ty += dy;
+    imgZoomOverlay.dataset.tx = tx.toFixed(1);
+    imgZoomOverlay.dataset.ty = ty.toFixed(1);
+    updateImgZoomTransform(imgZoomOverlay);
+  });
+
+  document.addEventListener('mouseup', function(){
+    if(imgZoomOverlay){
+      const img = imgZoomOverlay.querySelector('img');
+      if(img) img.classList.remove('is-dragging');
+    }
+    imgDragStart = null;
+    imgDragLast = null;
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+      imgZoomOverlay = null;
+    }
+  });
+})();
 
 // Mermaid zoom
 document.addEventListener('click',function(e){
