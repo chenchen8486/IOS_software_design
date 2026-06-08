@@ -156,6 +156,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
         <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
       </div>
     </div>
   </nav>
@@ -246,11 +247,11 @@ graph TD
         <tr><td><strong>IAS 指示空速</strong><br>Indicated Airspeed</td><td>主区域</td><td>显示当前指示空速，点击后显示 SLEW 滑动面板</td><td>详见 2.4</td></tr>
         <tr><td><strong>Mach 马赫数</strong><br>Mach Speed</td><td>主区域</td><td>显示当前马赫速度，点击后显示 SLEW 滑动面板</td><td>详见 2.5</td></tr>
         <tr><td><strong>Heading 航向</strong><br>Aircraft Heading</td><td>主区域</td><td>显示当前飞机航向，点击后显示 SLEW 滑动面板</td><td>详见 2.6</td></tr>
-        <tr><td><strong>Icing Conditions 结冰条件</strong><br>Icing Conditions</td><td>主区域</td><td>显示当前飞机结冰条件，点击后显示 ICING 滑动面板；也可使用滚轮选择器</td><td>详见 2.7</td></tr>
-        <tr><td><strong>Turbulence 湍流</strong><br>Turbulence</td><td>主区域</td><td>显示当前湍流状况，点击后显示 TURBULENCE 滑动面板</td><td>详见 2.8</td></tr>
-        <tr><td><strong>A/C Wind 飞机风向</strong><br>A/C Wind</td><td>主区域</td><td>显示当前飞机处风向风速，点击后显示飞机风键盘</td><td>详见 2.9</td></tr>
-        <tr><td><strong>A/C OAT 外界大气温度</strong><br>A/C OAT</td><td>主区域</td><td>显示当前飞机处 OAT，点击后显示飞机 OAT 键盘；也可使用滚轮选择器</td><td>详见 2.10</td></tr>
-        <tr><td><strong>A/C ISA Dev ISA 偏差</strong><br>A/C ISA Dev</td><td>主区域</td><td>显示当前 ISA 偏差，点击后显示 ISA 偏差键盘；也可使用滚轮选择器</td><td>详见 2.11</td></tr>
+        <tr><td><strong>Icing Conditions 结冰条件</strong><br>Icing Conditions</td><td>主区域</td><td>显示当前飞机结冰条件，点击后显示 ICING 滑动面板；也可使用滚轮选择器</td><td>详见 2.8</td></tr>
+        <tr><td><strong>Turbulence 湍流</strong><br>Turbulence</td><td>主区域</td><td>显示当前湍流状况，点击后显示 TURBULENCE 滑动面板</td><td>详见 2.9</td></tr>
+        <tr><td><strong>A/C Wind 飞机风向</strong><br>A/C Wind</td><td>主区域</td><td>显示当前飞机处风向风速，点击后显示飞机风键盘</td><td>详见 2.10</td></tr>
+        <tr><td><strong>A/C OAT 外界大气温度</strong><br>A/C OAT</td><td>主区域</td><td>显示当前飞机处 OAT，点击后显示飞机 OAT 键盘；也可使用滚轮选择器</td><td>详见 2.11</td></tr>
+        <tr><td><strong>A/C ISA Dev ISA 偏差</strong><br>A/C ISA Dev</td><td>主区域</td><td>显示当前 ISA 偏差，点击后显示 ISA 偏差键盘；也可使用滚轮选择器</td><td>详见 2.12</td></tr>
       </table>
     </div>
 
@@ -272,12 +273,113 @@ graph TD
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示飞机飞行所在地理区域的当前云设置，点击后打开飞机处云层滑动面板</td></tr>
-        <tr><td>交互方式</td><td>点击该部分区域 → 弹出 CLOUDS AT AIRCRAFT 滑动面板</td></tr>
-        <tr><td>联动</td><td>云层滑动面板中的设置会同步反映到该部分的显示文本中</td></tr>
+        <tr><td>位置</td><td>CURRENT CONDITIONS Tab 主区域的<strong>顶部</strong>（占据上半部分的飞机可视化区域）</td></tr>
+        <tr><td>功能定义</td><td>以可视化方式显示飞机飞行所在地理区域的当前云层设置（包括云型、云底/云顶高度、能见度等），点击后打开飞机处云层滑动面板</td></tr>
+        <tr><td>外观特征</td><td>界面中央为<strong>飞机俯视图</strong>，四周渲染有<strong>云层效果</strong>；该区域<strong>无任何文字标签或独立按钮边框</strong>，整个可视化区域均可点击</td></tr>
+        <tr><td>交互方式</td><td><strong>点击飞机周围的云层可视化区域</strong> → 弹出 CLOUDS AT AIRCRAFT 滑动面板</td></tr>
+        <tr><td>联动</td><td>云层滑动面板中的设置会同步反映到该区域的云层可视化效果中（如云层厚度、类型变化会实时渲染）</td></tr>
       </table>
     </div>
 
+    <h3>2.2.1 飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>允许教员修改本机周围区域的云层和能见度参数</td></tr>
+        <tr><td>包含区域</td><td>能见度部分、云层高度部分、雾区、天气预设区</td></tr>
+        <tr><td>控件类型</td><td>下拉按钮（云层类型）、输入文本字段（上下限）、单选按钮（雾类型）、按钮（天气预设）</td></tr>
+      </table>
+    </div>
+
+    <div class="img-block">
+      <img src="./images/ch1_2_3_clouds_panel.jpg" alt="飞机处云层滑动面板">
+      <div class="img-caption">图 5：飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）— 云层类型、厚度、能见度、雾、天气预设</div>
+    </div>
+
+    <h4>2.2.1.1 能见度部分（Visibility Section）</h4>
+    <p>显示并调整云层之间的能见度。</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>参数项</th><th>说明</th></tr>
+        <tr><td>降雨限制</td><td>小雨最大 15 nm；中雨最大 5 nm；大雨最大 1 nm</td></tr>
+        <tr><td>输入范围</td><td>Min = 0，Max = 动态值；也可使用法定英里（sm）显示</td></tr>
+      </table>
+    </div>
+
+    <h4>2.2.1.2 云层高度部分（Cloud Level Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>层级</th><th>可选类型</th><th>厚度设置</th></tr>
+        <tr><td><strong>高云</strong></td><td>无、卷积云、卷云、卷层云</td><td>—</td></tr>
+        <tr><td><strong>中云</strong></td><td>晴朗、疏云、裂云、阴天</td><td>Top ASL / Base ASL（英尺）</td></tr>
+        <tr><td><strong>低云</strong></td><td>晴朗、疏云、多云、阴天</td><td>Top ASL / Base AGL（英尺）</td></tr>
+        <tr><td colspan="3"><strong>厚度说明：</strong>最小/最大厚度取决于覆盖类型；输入字段有时定义为 MSL 或 AGL</td></tr>
+      </table>
+    </div>
+
+    <h4>2.2.1.3 雾区（Fog Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>选项</th><th>说明</th></tr>
+        <tr><td><strong>无雾</strong></td><td>点击移除雾</td></tr>
+        <tr><td><strong>零星雾</strong></td><td>雾厚度在预设 RVR 最小/最大及零星雾顶部高度之间随机变化</td></tr>
+        <tr><td><strong>浓雾</strong></td><td>雾厚度在给定 RVR 最小/最大之间变化；支持输入浓雾顶部值（英尺）</td></tr>
+        <tr><td><strong>RVR 最小/最大</strong></td><td>点击输入文本字段输入最小/最大跑道视程（米/英尺）；RVR MIN: 0 ~ RVR MAX；RVR MAX: RVR MIN ~ 3045 米 / 9990 英尺</td></tr>
+        <tr><td><strong>互斥关系</strong></td><td>无雾、零星雾、浓雾三个单选按钮<strong>互斥</strong>，只能激活其一</td></tr>
+      </table>
+    </div>
+
+    <h4>2.2.1.4 天气预设区（Weather Presets Section）</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th>预设按钮</th><th>说明</th></tr>
+        <tr><td><strong>CAVOK</strong></td><td>无云底低于 5000 英尺；无积雨云；能见度 ≥ 6 sm/10 km；无降水、雷暴、浅雾或低吹雪</td></tr>
+        <tr><td><strong>1000/5km</strong></td><td>激活 1000/5km 条件下的盘旋</td></tr>
+        <tr><td><strong>800/2km</strong></td><td>激活 800/2km 条件下的盘旋</td></tr>
+        <tr><td><strong>CAT I ~ CAT IIIC</strong></td><td>按对应仪表着陆等级激活视觉条件</td></tr>
+        <tr><td><strong>0/0</strong></td><td>激活 0/0 条件</td></tr>
+        <tr><td><strong>MIN T/O RVR</strong></td><td>激活最小起飞 RVR 条件</td></tr>
+      </table>
+    </div>
+
+    <h4>2.2.1.5 云层设置操作流程（Clouds Setup Flow）</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([进入 CLOUDS]) --> Method{设置方式}
+    Method -->|手动| Manual[调整云层参数]
+    Method -->|预设| Preset[点击天气预设]
+
+    Manual -->|能见度| Vis[输入能见度值]
+    Manual -->|高云| High[选择卷积云卷云卷层云]
+    Manual -->|中云| Mid[选择覆盖类型设置厚度]
+    Manual -->|低云| Low[选择覆盖类型设置厚度]
+    Manual -->|雾区| Fog[选择雾类型设置RVR]
+
+    Preset -->|CAVOK| CAVOK[自动设置CAVOK条件]
+    Preset -->|CAT等级| CAT[按仪表着陆等级设置]
+    Preset -->|其他| Other[按预设值设置]
+
+    Vis --> Confirm{确认}
+    High --> Confirm
+    Mid --> Confirm
+    Low --> Confirm
+    Fog --> Confirm
+    CAVOK --> Confirm
+    CAT --> Confirm
+    Other --> Confirm
+
+    Confirm -->|确认| Apply[应用设置]
+    Confirm -->|取消| Cancel[放弃修改]
+
+    Apply --> End([完成])
+    Cancel --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style Preset fill:#fef3c7,stroke:#d97706
+    </div>
+
+    <!-- 2.13 SLEW -->
     <h3>2.3 ASL（Above Sea Level / 海拔高度）</h3>
     <div class="table-wrap">
       <table>
@@ -323,156 +425,7 @@ graph TD
       </table>
     </div>
 
-    <h3>2.7 Icing Conditions（结冰条件）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示当前飞机结冰条件，允许修改结冰等级</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出 ICING 滑动面板；或使用滚轮选择器</td></tr>
-        <tr><td>状态标志</td><td>预位黄色标志（已选择但不在云中）/ 激活红色标志（已选择且在云中）</td></tr>
-        <tr><td>触发条件</td><td>TAT &lt; 6°C 且 TAT &gt; -20°C</td></tr>
-      </table>
-    </div>
-
-    <h3>2.8 Turbulence（湍流）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>显示并允许修改当前飞机处的湍流状况</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出 TURBULENCE 滑动面板</td></tr>
-        <tr><td>类型</td><td>晴空湍流、雷暴湍流、低空湍流</td></tr>
-        <tr><td>互斥关系</td><td>三种湍流类型的轻/中/重度按钮各自组内互斥；不同类型可同时激活</td></tr>
-      </table>
-    </div>
-
-    <h3>2.9 A/C Wind（飞机风向风速）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的风向和风速</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出飞机风键盘（详见 2.16）；或使用滑块控件</td></tr>
-      </table>
-    </div>
-
-    <h3>2.10 A/C OAT（外界大气温度）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的外界大气温度</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出飞机 OAT 键盘（详见 2.17）；或使用滑块/滚轮选择器</td></tr>
-      </table>
-    </div>
-
-    <h3>2.11 A/C ISA Dev（ISA 偏差）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的 ISA 温度偏差</td></tr>
-        <tr><td>交互方式</td><td>点击字段 → 弹出 ISA 偏差键盘（详见 2.18）；或使用滚轮选择器</td></tr>
-      </table>
-    </div>
-
-    <!-- 2.12 飞机处云层滑动面板 -->
-    <h3>2.12 飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>属性</th><th>说明</th></tr>
-        <tr><td>功能定义</td><td>允许教员修改本机周围区域的云层和能见度参数</td></tr>
-        <tr><td>包含区域</td><td>能见度部分、云层高度部分、雾区、天气预设区</td></tr>
-        <tr><td>控件类型</td><td>下拉按钮（云层类型）、输入文本字段（上下限）、单选按钮（雾类型）、按钮（天气预设）</td></tr>
-      </table>
-    </div>
-
-    <div class="img-block">
-      <img src="./images/ch1_2_3_clouds_panel.jpg" alt="飞机处云层滑动面板">
-      <div class="img-caption">图 5：飞机处云层滑动面板（CLOUDS AT AIRCRAFT Sliding Panel）— 云层类型、厚度、能见度、雾、天气预设</div>
-    </div>
-
-    <h4>2.12.1 能见度部分（Visibility Section）</h4>
-    <p>显示并调整云层之间的能见度。</p>
-    <div class="table-wrap">
-      <table>
-        <tr><th>参数项</th><th>说明</th></tr>
-        <tr><td>降雨限制</td><td>小雨最大 15 nm；中雨最大 5 nm；大雨最大 1 nm</td></tr>
-        <tr><td>输入范围</td><td>Min = 0，Max = 动态值；也可使用法定英里（sm）显示</td></tr>
-      </table>
-    </div>
-
-    <h4>2.12.2 云层高度部分（Cloud Level Section）</h4>
-    <div class="table-wrap">
-      <table>
-        <tr><th>层级</th><th>可选类型</th><th>厚度设置</th></tr>
-        <tr><td><strong>高云</strong></td><td>无、卷积云、卷云、卷层云</td><td>—</td></tr>
-        <tr><td><strong>中云</strong></td><td>晴朗、疏云、裂云、阴天</td><td>Top ASL / Base ASL（英尺）</td></tr>
-        <tr><td><strong>低云</strong></td><td>晴朗、疏云、多云、阴天</td><td>Top ASL / Base AGL（英尺）</td></tr>
-        <tr><td colspan="3"><strong>厚度说明：</strong>最小/最大厚度取决于覆盖类型；输入字段有时定义为 MSL 或 AGL</td></tr>
-      </table>
-    </div>
-
-    <h4>2.12.3 雾区（Fog Section）</h4>
-    <div class="table-wrap">
-      <table>
-        <tr><th>选项</th><th>说明</th></tr>
-        <tr><td><strong>无雾</strong></td><td>点击移除雾</td></tr>
-        <tr><td><strong>零星雾</strong></td><td>雾厚度在预设 RVR 最小/最大及零星雾顶部高度之间随机变化</td></tr>
-        <tr><td><strong>浓雾</strong></td><td>雾厚度在给定 RVR 最小/最大之间变化；支持输入浓雾顶部值（英尺）</td></tr>
-        <tr><td><strong>RVR 最小/最大</strong></td><td>点击输入文本字段输入最小/最大跑道视程（米/英尺）；RVR MIN: 0 ~ RVR MAX；RVR MAX: RVR MIN ~ 3045 米 / 9990 英尺</td></tr>
-        <tr><td><strong>互斥关系</strong></td><td>无雾、零星雾、浓雾三个单选按钮<strong>互斥</strong>，只能激活其一</td></tr>
-      </table>
-    </div>
-
-    <h4>2.12.4 天气预设区（Weather Presets Section）</h4>
-    <div class="table-wrap">
-      <table>
-        <tr><th>预设按钮</th><th>说明</th></tr>
-        <tr><td><strong>CAVOK</strong></td><td>无云底低于 5000 英尺；无积雨云；能见度 ≥ 6 sm/10 km；无降水、雷暴、浅雾或低吹雪</td></tr>
-        <tr><td><strong>1000/5km</strong></td><td>激活 1000/5km 条件下的盘旋</td></tr>
-        <tr><td><strong>800/2km</strong></td><td>激活 800/2km 条件下的盘旋</td></tr>
-        <tr><td><strong>CAT I ~ CAT IIIC</strong></td><td>按对应仪表着陆等级激活视觉条件</td></tr>
-        <tr><td><strong>0/0</strong></td><td>激活 0/0 条件</td></tr>
-        <tr><td><strong>MIN T/O RVR</strong></td><td>激活最小起飞 RVR 条件</td></tr>
-      </table>
-    </div>
-
-    <h4>2.12.5 云层设置操作流程（Clouds Setup Flow）</h4>
-    <div class="mermaid">
-flowchart LR
-    Start([进入 CLOUDS]) --> Method{设置方式}
-    Method -->|手动| Manual[调整云层参数]
-    Method -->|预设| Preset[点击天气预设]
-
-    Manual -->|能见度| Vis[输入能见度值]
-    Manual -->|高云| High[选择卷积云卷云卷层云]
-    Manual -->|中云| Mid[选择覆盖类型设置厚度]
-    Manual -->|低云| Low[选择覆盖类型设置厚度]
-    Manual -->|雾区| Fog[选择雾类型设置RVR]
-
-    Preset -->|CAVOK| CAVOK[自动设置CAVOK条件]
-    Preset -->|CAT等级| CAT[按仪表着陆等级设置]
-    Preset -->|其他| Other[按预设值设置]
-
-    Vis --> Confirm{确认}
-    High --> Confirm
-    Mid --> Confirm
-    Low --> Confirm
-    Fog --> Confirm
-    CAVOK --> Confirm
-    CAT --> Confirm
-    Other --> Confirm
-
-    Confirm -->|确认| Apply[应用设置]
-    Confirm -->|取消| Cancel[放弃修改]
-
-    Apply --> End([完成])
-    Cancel --> End
-
-    style Start fill:#dbeafe,stroke:#2563eb
-    style End fill:#d1fae5,stroke:#059669
-    style Preset fill:#fef3c7,stroke:#d97706
-    </div>
-
-    <!-- 2.13 SLEW -->
-    <h3>2.13 位移滑动面板（SLEW Sliding Panel）</h3>
+    <h3>2.7 位移滑动面板（SLEW Sliding Panel）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -488,7 +441,7 @@ flowchart LR
       <div class="img-caption">图 6：飞机位移滑动面板（SLEW Sliding Panel）— 包含 ALTITUDE/SPEED 和 HEADING/POSITION 两个选项卡</div>
     </div>
 
-    <h4>2.13.1 ALTITUDE / SPEED 选项卡</h4>
+    <h4>2.7.1 ALTITUDE / SPEED 选项卡</h4>
     <div class="table-wrap">
       <table>
         <tr><th>控件</th><th>功能说明</th></tr>
@@ -499,7 +452,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.13.2 HEADING / POSITION 选项卡</h4>
+    <h4>2.7.2 HEADING / POSITION 选项卡</h4>
     <div class="table-wrap">
       <table>
         <tr><th>控件</th><th>功能说明</th></tr>
@@ -514,7 +467,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.13.3 SLEW 位移操作流程</h4>
+    <h4>2.7.3 SLEW 位移操作流程</h4>
     <div class="mermaid">
 flowchart LR
     Start([打开SLEW面板]) --> Tab{选择选项卡}
@@ -548,7 +501,18 @@ flowchart LR
     </div>
 
     <!-- 2.14 ICING -->
-    <h3>2.14 结冰滑动面板（ICING Sliding Panel）</h3>
+    <h3>2.8 Icing Conditions（结冰条件）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示当前飞机结冰条件，允许修改结冰等级</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 ICING 滑动面板；或使用滚轮选择器</td></tr>
+        <tr><td>状态标志</td><td>预位黄色标志（已选择但不在云中）/ 激活红色标志（已选择且在云中）</td></tr>
+        <tr><td>触发条件</td><td>TAT &lt; 6°C 且 TAT &gt; -20°C</td></tr>
+      </table>
+    </div>
+
+    <h3>2.8.1 结冰滑动面板（ICING Sliding Panel）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -562,7 +526,7 @@ flowchart LR
       <div class="img-caption">图 7：结冰滑动面板（ICING Sliding Panel）— 轻度/中度/重度互斥按钮 + 积冰量只读显示</div>
     </div>
 
-    <h4>2.14.1 结冰条件存在标志</h4>
+    <h4>2.8.1.1 结冰条件存在标志</h4>
     <div class="table-wrap">
       <table>
         <tr><th>标志</th><th>状态</th><th>条件</th></tr>
@@ -571,7 +535,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.14.2 结冰等级控制</h4>
+    <h4>2.8.1.2 结冰等级控制</h4>
     <div class="table-wrap">
       <table>
         <tr><th>按钮</th><th>说明</th></tr>
@@ -582,7 +546,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.14.3 积冰量部分（ICE ACCUMULATION Section）</h4>
+    <h4>2.8.1.3 积冰量部分（ICE ACCUMULATION Section）</h4>
     <p>只读文本字段，显示各飞机部件的积冰重量和百分比。</p>
     <div class="table-wrap">
       <table>
@@ -592,7 +556,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.14.4 结冰条件状态流转</h4>
+    <h4>2.8.1.4 结冰条件状态流转</h4>
     <div class="mermaid">
 stateDiagram-v2
     [*] --> 未选择 : 默认
@@ -608,7 +572,7 @@ stateDiagram-v2
     激活红 --> 未选择 : 点击除冰按钮
 </div>
 
-    <h4>2.14.5 结冰操作流程（Icing Flow）</h4>
+    <h4>2.8.1.5 结冰操作流程（Icing Flow）</h4>
     <div class="mermaid">
 flowchart LR
     Start([进入 ICING]) --> Select{选择结冰等级}
@@ -637,7 +601,18 @@ flowchart LR
     </div>
 
     <!-- 2.15 TURBULENCE -->
-    <h3>2.15 湍流滑动面板（TURBULENCE Sliding Panel）</h3>
+    <h3>2.9 Turbulence（湍流）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>显示并允许修改当前飞机处的湍流状况</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 TURBULENCE 滑动面板</td></tr>
+        <tr><td>类型</td><td>晴空湍流、雷暴湍流、低空湍流</td></tr>
+        <tr><td>互斥关系</td><td>三种湍流类型的轻/中/重度按钮各自组内互斥；不同类型可同时激活</td></tr>
+      </table>
+    </div>
+
+    <h3>2.9.1 湍流滑动面板（TURBULENCE Sliding Panel）</h3>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -652,7 +627,7 @@ flowchart LR
       <div class="img-caption">图 8：湍流滑动面板（TURBULENCE Sliding Panel）— 晴空/雷暴/低空三种湍流类型控制</div>
     </div>
 
-    <h4>2.15.1 晴空湍流（CLEAR AIR Turbulence）</h4>
+    <h4>2.9.1.1 晴空湍流（CLEAR AIR Turbulence）</h4>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -667,7 +642,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.15.2 雷暴湍流（THUNDERSTORM Turbulence）</h4>
+    <h4>2.9.1.2 雷暴湍流（THUNDERSTORM Turbulence）</h4>
     <div class="table-wrap">
       <table>
         <tr><th>属性</th><th>说明</th></tr>
@@ -681,7 +656,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.15.3 低空湍流（LOW LEVEL Turbulence）</h4>
+    <h4>2.9.1.3 低空湍流（LOW LEVEL Turbulence）</h4>
     <div class="table-wrap">
       <table>
         <tr><th>高度区间</th><th>强度表现</th></tr>
@@ -705,7 +680,7 @@ flowchart LR
       </table>
     </div>
 
-    <h4>2.15.4 湍流操作流程（Turbulence Flow）</h4>
+    <h4>2.9.1.4 湍流操作流程（Turbulence Flow）</h4>
     <div class="mermaid">
 flowchart LR
     Start([进入 TURBULENCE]) --> SelectType{选择湍流类型}
@@ -728,7 +703,16 @@ flowchart LR
     </div>
 
     <!-- 2.16-2.18 Keypads -->
-    <h3>2.16 飞机风键盘（A/C Wind Keypad）</h3>
+    <h3>2.10 A/C Wind（飞机风向风速）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的风向和风速</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机风键盘（详见 2.10.1）；或使用滑块控件</td></tr>
+      </table>
+    </div>
+
+    <h3>2.10.1 飞机风键盘（A/C Wind Keypad）</h3>
     <p>触发方式：点击主界面"A/C Wind"参数字段弹出。功能定义：显示当前飞机位置的风向和风速，并支持修改。</p>
 
     <div class="table-wrap">
@@ -753,7 +737,16 @@ flowchart LR
       <div class="img-caption">图 9：飞机风键盘（A/C Wind Keypad）— 显示当前风向风速并支持键盘/滑块输入</div>
     </div>
 
-    <h3>2.17 飞机 OAT 键盘（A/C OAT Keypad）</h3>
+    <h3>2.11 A/C OAT（外界大气温度）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的外界大气温度</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出飞机 OAT 键盘（详见 2.11.1）；或使用滑块/滚轮选择器</td></tr>
+      </table>
+    </div>
+
+    <h3>2.11.1 飞机 OAT 键盘（A/C OAT Keypad）</h3>
     <p>触发方式：点击主界面"A/C OAT"参数字段弹出；或通过滚轮选择器触发。功能定义：显示当前飞机位置的外界大气温度，并支持修改。</p>
 
     <div class="table-wrap">
@@ -779,7 +772,17 @@ flowchart LR
       <div class="img-caption">图 10：飞机 OAT 键盘（A/C OAT Keypad）— 显示当前外界大气温度并支持键盘/滑块输入</div>
     </div>
 
-    <h3>2.18 飞机 ISA 偏差键盘（A/C ISA Dev Keypad）</h3>
+    <h3>2.12 A/C ISA Dev（ISA 偏差）</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>属性</th><th>说明</th></tr>
+        <tr><td>功能定义</td><td>主界面字段，显示当前飞机位置的 ISA 温度偏差</td></tr>
+        <tr><td>交互方式</td><td>点击字段 → 弹出 ISA 偏差键盘（详见 2.12.1）；或使用滚轮选择器</td></tr>
+      </table>
+    </div>
+
+    <!-- 2.12 飞机处云层滑动面板 -->
+    <h3>2.12.1 飞机 ISA 偏差键盘（A/C ISA Dev Keypad）</h3>
     <p>触发方式：点击主界面"A/C ISA Dev"参数字段弹出；或通过滚轮选择器触发。功能定义：显示当前飞机位置的 ISA 温度偏差，并支持修改。</p>
 
     <div class="table-wrap">
@@ -808,7 +811,7 @@ flowchart LR
     <h2>三、全局操作流程与推导</h2>
 
     <h3>3.1 当前条件选项卡中教员核心操作流程</h3>
-    <p>下图汇总了 Chapter 1 全部子章节（2.1~2.18）的核心操作流程，形成<strong>从主界面入口到最终应用生效的完整闭环</strong>。教员可从任意入口进入对应模块；每个模块内部的关键决策与操作步骤均在对应纵向 subgraph 中展开。如需查看各面板内部更详细的字段属性与边界行为，请参见对应子章节的横向流程图（2.12.5、2.13.3、2.14.5、2.15.4）。</p>
+    <p>下图汇总了 Chapter 1 全部子章节（2.1~2.12）的核心操作流程，形成<strong>从主界面入口到最终应用生效的完整闭环</strong>。教员可从任意入口进入对应模块；每个模块内部的关键决策与操作步骤均在对应纵向 subgraph 中展开。如需查看各面板内部更详细的字段属性与边界行为，请参见对应子章节的横向流程图（2.2.1.5、2.7.3、2.8.1.5、2.9.1.4）。</p>
     <div class="mermaid">
 flowchart LR
     Start([打开 CURRENT CONDITIONS]) --> View[查看当前参数]

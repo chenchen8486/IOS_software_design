@@ -135,14 +135,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
-          <div class="nav-children collapsed">
-            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
-            <a class="nav-link" href="#">1.1.2 用户交互</a>
-            <a class="nav-link" href="#">1.1.3 参数选择</a>
-          </div>
-        </div>
+        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -159,7 +152,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        
         <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
       </div>
     </div>
   </nav>
@@ -187,7 +183,8 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     </div>
 
     <blockquote>
-      <strong>核心定位：</strong>课程计划选项卡是教员<strong>查看、管理和执行训练课程</strong>的核心入口。所有课程均通过 <strong>CAE Slick 网页编辑器</strong> 创建，IOS 上仅支持执行，不支持编辑。
+      <strong>核心定位：</strong>课程计划选项卡是教员<strong>查看、管理和执行训练课程</strong>的核心入口。所有课程均通过 <strong>CAE Slick 网页编辑器</strong> 创建，IOS 上仅支持执行，不支持编辑。<br><br>
+      <strong>⚠️ 常见困惑澄清：</strong>本界面（LESSON PLAN Tab）<strong>没有「创建课程」按钮</strong>，也<strong>不能新建或修改训练阶段/课程步骤</strong>。教员在此处只能加载已由 CAE Slick 编辑器编制好的课程，并对其进行执行控制。如需新建课程、修改阶段名称或增删步骤，请前往独立的 <strong>CAE Slick 网页编辑器</strong>（详见当前页面 2.5 小节「背景说明」）。
     </blockquote>
 
     <h3>1.1 功能层级结构</h3>
@@ -279,11 +276,20 @@ graph TD
     <div class="table-wrap">
       <table>
         <tr><th>区域/控件<br>Area / Control</th><th>位置<br>Position</th><th>功能说明<br>Description</th><th>对应核心功能详解<br>Referenced Section</th></tr>
-        <tr><td><strong>课程大纲</strong><br>Lesson Outline</td><td>左侧区域<br>Left Panel</td><td>以树形结构列出课程的训练阶段及每个阶段内的步骤</td><td>详见 2.1 训练阶段、2.2 课程步骤</td></tr>
-        <tr><td><strong>课程步骤详情</strong><br>Lesson Step Details</td><td>右侧区域<br>Right Panel</td><td>可滚动区域，显示当前选中步骤的详细参数和说明</td><td>详见 2.3 课程步骤详情</td></tr>
-        <tr><td><strong>控制按钮栏</strong><br>Tab Buttons</td><td>底部区域<br>Bottom Bar</td><td>Autorun / Step-by-Step / Go to Current / Skip Condition / Execute / End Lesson</td><td>详见 2.4 控制按钮栏</td></tr>
+        <tr><td><strong>课程大纲</strong><br>Lesson Outline</td><td>左侧区域<br>Left Panel</td><td>以树形结构列出课程的训练阶段及每个阶段内的步骤</td><td>详见当前页面 2.1 小节（训练阶段）、2.2 小节（课程步骤）</td></tr>
+        <tr><td><strong>课程步骤详情</strong><br>Lesson Step Details</td><td>右侧区域<br>Right Panel</td><td>可滚动区域，显示当前选中步骤的详细参数和说明</td><td>详见当前页面 2.3 小节（课程步骤详情）</td></tr>
+        <tr><td><strong>控制按钮栏</strong><br>Tab Buttons</td><td>底部区域<br>Bottom Bar</td><td>Autorun / Step-by-Step / Go to Current / Skip Condition / Execute / End Lesson</td><td>详见当前页面 2.4 小节（控制按钮栏）</td></tr>
       </table>
     </div>
+
+    <blockquote>
+      <strong>🚫 LESSON PLAN Tab 能力边界速查：</strong><br>
+      <table style="margin:10px 0 0;border:none">
+        <tr style="background:none"><td style="border:none;padding:4px 12px 4px 0;white-space:nowrap"><strong>❌ 本界面不能做：</strong></td><td style="border:none;padding:4px 0">创建新课程、新建/重命名训练阶段、增删改课程步骤、修改步骤参数</td></tr>
+        <tr style="background:none"><td style="border:none;padding:4px 12px 4px 0;white-space:nowrap"><strong>✅ 本界面只能做：</strong></td><td style="border:none;padding:4px 0">加载已有课程、浏览训练阶段和步骤、查看步骤详情、执行/跳过/结束课程</td></tr>
+        <tr style="background:none"><td style="border:none;padding:4px 12px 4px 0;white-space:nowrap"><strong>📝 编辑入口在哪：</strong></td><td style="border:none;padding:4px 0">独立的 <strong>CAE Slick 网页编辑器</strong>（详见当前页面 2.5 小节「背景说明」）</td></tr>
+      </table>
+    </blockquote>
 
     <!-- ==================== 二、核心功能详解 ==================== -->
     <h2>二、核心功能详解</h2>
@@ -294,9 +300,9 @@ graph TD
       <table>
         <tr><th>属性<br>Attribute</th><th>说明<br>Description</th></tr>
         <tr><td>功能定义<br>Function Definition</td><td>课程按阶段结构化组织，以匹配飞行的各个阶段或培训任务</td></tr>
-        <tr><td>创建方式<br>Creation Method</td><td>教员在 <strong>CAE Slick 编辑器</strong> 中定义</td></tr>
+        <tr><td>创建方式<br>Creation Method</td><td>由教员在 <strong>CAE Slick 编辑器</strong> 中<strong>自行定义和命名</strong>，IOS 界面中不提供创建入口</td></tr>
         <tr><td>层级关系<br>Hierarchy</td><td>一个课程 → 多个训练阶段 → 每个阶段包含多个课程步骤</td></tr>
-        <tr><td>典型示例<br>Typical Example</td><td>地面操作（Ground Operations）→ 起飞（Takeoff）→ 爬升（Climb）→ 巡航（Cruise）→ 进近（Approach）→ 着陆（Landing）</td></tr>
+        <tr><td>典型示例<br>Typical Example</td><td>原始手册截图（图 2，Lesson 8）中实际显示的 5 个训练阶段为：<strong>1 Preflight（飞行前准备）</strong> → <strong>2 Ascend（爬升）</strong> → <strong>3 On Route（航路飞行）</strong> → <strong>4 Descend（下降）</strong> → <strong>5 Final Ground（最终地面）</strong>。注意：这仅为该课程的示例，<strong>并非软件预置模板</strong>，实际阶段名称、数量和顺序均由课程编制者在 CAE Slick 编辑器中自定义</td></tr>
       </table>
     </div>
 
@@ -304,16 +310,18 @@ graph TD
     <p>在 LESSON PLAN Tab 左侧的<strong>课程大纲（Lesson Outline）</strong>区域中，训练阶段是树形结构的<strong>顶层节点</strong>。每个训练阶段作为一个可折叠的分组容器，本身<strong>不可直接执行</strong>，仅用于组织和展示其内部的课程步骤。</p>
     <ul>
       <li>点击训练阶段左侧的展开/折叠图标，可显示或隐藏该阶段内的所有步骤</li>
-      <li>训练阶段由教员在 <strong>CAE Slick 编辑器</strong> 中自定义命名（如"地面操作"、"起飞"等），无固定模板</li>
+      <li><strong>训练阶段的名称、数量和顺序并非软件预置</strong>，而是由课程编制者在 <strong>CAE Slick 编辑器</strong> 中根据实际训练需求<strong>完全自定义</strong>。如图 2 所示，该课程（Lesson 8）的阶段命名为：<strong>Preflight（飞行前准备）</strong> → <strong>Ascend（爬升）</strong> → <strong>On Route（航路飞行）</strong> → <strong>Descend（下降）</strong> → <strong>Final Ground（最终地面）</strong>。其他课程可能采用完全不同的划分方式（如"地面操作"、"起飞"、"巡航"、"进近"等）</li>
       <li>同一课程内的训练阶段按时间顺序排列，形成完整的训练剖面</li>
     </ul>
 
     <h4>2.1.2 训练阶段与步骤的层级关系</h4>
     <div class="mermaid">
 flowchart TB
-    Course[课程 Lesson] --> Phase1[训练阶段1 地面操作]
-    Course --> Phase2[训练阶段2 起飞]
-    Course --> Phase3[训练阶段3 巡航]
+    Course[课程 Lesson] --> Phase1[训练阶段1 Preflight 飞行前准备]
+    Course --> Phase2[训练阶段2 Ascend 爬升]
+    Course --> Phase3[训练阶段3 On Route 航路飞行]
+    Course --> Phase4[训练阶段4 Descend 下降]
+    Course --> Phase5[训练阶段5 Final Ground 最终地面]
     Course --> PhaseN[训练阶段N ...]
 
     Phase1 --> Step1a[步骤 NOTE]
@@ -322,15 +330,37 @@ flowchart TB
     Phase2 --> Step2b[步骤 SIM]
     Phase3 --> Step3a[步骤 Freeplay]
     Phase3 --> Step3b[步骤 Nested]
+    Phase4 --> Step4a[步骤 SIM]
+    Phase4 --> Step4b[步骤 MALF]
+    Phase5 --> Step5a[步骤 NOTE]
+    Phase5 --> Step5b[步骤 SIM]
 
     style Course fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style Phase1 fill:#f0fdf4,stroke:#059669,stroke-width:2px
     style Phase2 fill:#f0fdf4,stroke:#059669,stroke-width:2px
     style Phase3 fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style Phase4 fill:#f0fdf4,stroke:#059669,stroke-width:2px
+    style Phase5 fill:#f0fdf4,stroke:#059669,stroke-width:2px
     style PhaseN fill:#f0fdf4,stroke:#059669,stroke-width:2px
     </div>
 
-    <h4>2.1.3 跨工作区关联</h4>
+    <h4>2.1.3 训练阶段中英文映射（以 Lesson 8 为例）</h4>
+    <p>下图 2 截图中左侧课程大纲显示的 5 个训练阶段名称及其推荐中文译法如下：</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>序号</th><th>英文名称（界面显示）</th><th>推荐中文译法</th><th>对应飞行阶段</th></tr>
+        <tr><td>1</td><td><strong>Preflight</strong></td><td>飞行前准备 / 航前准备</td><td>地面操作、起飞前检查、推离停机位</td></tr>
+        <tr><td>2</td><td><strong>Ascend</strong></td><td>爬升</td><td>起飞后爬升至巡航高度</td></tr>
+        <tr><td>3</td><td><strong>On Route</strong></td><td>航路飞行 / 巡航</td><td>巡航阶段、航路点过渡</td></tr>
+        <tr><td>4</td><td><strong>Descend</strong></td><td>下降</td><td>开始下降、进场过渡</td></tr>
+        <tr><td>5</td><td><strong>Final Ground</strong></td><td>最终地面 / 着陆后地面</td><td>进近、着陆、滑行、关车（注：该课程将进近/着陆/地面操作合并为一个阶段）</td></tr>
+      </table>
+    </div>
+    <blockquote>
+      <strong>译法说明：</strong>上述中文译法为推荐参考，并非软件强制显示。由于 CAE Slick 编辑器允许课程编制者<strong>完全自定义</strong>阶段名称，其他课程可能采用如"Ground Ops（地面操作）→ Takeoff（起飞）→ Climb（爬升）→ Cruise（巡航）→ Approach（进近）→ Landing（着陆）"等完全不同的命名方式。教员应以编辑器中实际定义的名称为准。
+    </blockquote>
+
+    <h4>2.1.4 跨工作区关联</h4>
     <p>训练阶段不仅是 LESSON PLAN Tab 课程大纲中的树形分组，在<strong>课程计划配置文件工作区（Lesson Plan Profile）</strong>中同样以可视化方式呈现：</p>
     <div class="table-wrap">
       <table>
@@ -358,7 +388,8 @@ flowchart LR
 
     <h3>2.2 课程步骤（Lesson Steps）</h3>
     <p class="area-map"><strong>所属区域：</strong>课程大纲（Lesson Outline）— 左侧树形列表内的可执行元素</p>
-    <p>插入训练阶段中的步骤分为 <strong>5 种类型</strong>，通过左侧图标标识：</p>
+    <p>课程步骤是训练阶段内的具体执行单元，由课程编制者在 <strong>CAE Slick 编辑器</strong> 中预先设计并插入到对应阶段下。教员在 IOS 的 LESSON PLAN Tab 中<strong>只能查看和执行已有步骤，不能新增、删除或修改步骤内容</strong>。</p>
+    <p>步骤分为 <strong>5 种类型</strong>，通过左侧图标标识：</p>
 
     <!-- 原始图片3：课程步骤标识 -->
     <div class="img-block">
@@ -486,8 +517,79 @@ flowchart LR
     style Abort fill:#fee2e2,stroke:#dc2626
     </div>
 
-    <h3>2.5 课程创建与编辑（背景说明）</h3>
+    <!-- ==================== 2.5 新增：步骤执行后的场景与状态变化 ==================== -->
+    <h3>2.5 步骤执行后的场景与状态变化</h3>
+    <p class="area-map"><strong>本章说明：</strong>本节是文档中最容易让读者产生困惑的部分，因此需要特别详细说明。以下描述基于原始手册文字、图 2 截图分析、ch1_5 课程计划配置工作区的运行时状态截图，以及跨章节逻辑推导综合得出。</p>
+
+    <blockquote>
+      <strong>💡 核心问题解答：点击 Execute 后到底发生了什么？</strong><br>
+      简言之：<strong>指令下发 → 模拟器响应 → 界面状态更新 → 自动推进或等待下一步</strong>。具体表现因步骤类型而异，详见下方各节。
+    </blockquote>
+
+    <h4>2.5.1 执行前 vs 执行后的界面对比</h4>
+    <p>以图 2 中的 Lesson 8 为例，当教员选中左侧大纲中的步骤 4「Engine Fail」（MALF 类型）时，界面处于「<strong>执行前</strong>」状态：</p>
+    <ul>
+      <li><strong>左侧大纲</strong>：步骤 4 被高亮选中（浅蓝色背景），左侧显示红色 MALF 标识</li>
+      <li><strong>右侧详情</strong>：显示 Engine Fail 的完整参数（Monitoring Altitude、Altitude、IAS、Set Malfunction 等），底部出现提示文字「Press 'Execute' to monitor condition」（点击 Execute 以监控条件）</li>
+      <li><strong>底部按钮</strong>：Execute 按钮可用（绿色/激活态），Skip Condition 根据该步骤是否有条件触发条件决定是否可用</li>
+    </ul>
+    <p>点击 <strong>Execute</strong> 后，界面进入「<strong>执行中</strong>」状态：</p>
+    <ul>
+      <li><strong>左侧大纲</strong>：步骤 4 保持高亮，可能短暂显示执行中标记（如齿轮图标或闪烁边框）</li>
+      <li><strong>右侧详情</strong>：提示文字消失，可能显示「Executing...」或直接进入结果确认状态；对于 MALF 步骤，故障参数（如 Engine Fail - Engine 1 - ON）被发送至模拟器</li>
+      <li><strong>底部按钮</strong>：Execute 按钮在执行期间可能短暂禁用，防止重复点击；执行完成后重新可用</li>
+    </ul>
+    <p>执行完成后，界面进入「<strong>已完成</strong>」状态：</p>
+    <ul>
+      <li><strong>左侧大纲</strong>：步骤 4 显示完成标记（如对勾 ✓ 或颜色变淡/灰化），表示该步骤已执行完毕</li>
+      <li><strong>右侧详情</strong>：<br>
+        • <strong>Autorun 模式</strong>：自动加载并显示下一个自动步骤的详情<br>
+        • <strong>Step-by-Step 模式</strong>：保持当前步骤的完成状态，等待教员手动选择下一步骤后点击 Execute</li>
+      <li><strong>底部按钮</strong>：Go to Current 按钮可用于快速定位到当前正在执行的步骤</li>
+    </ul>
+
+    <h4>2.5.2 五种步骤类型的执行效果对比</h4>
+    <p>不同类型的步骤点击 Execute 后，模拟器和界面的反应截然不同。这是理解 LESSON PLAN Tab 操作逻辑的关键：</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>步骤类型</th><th>点击 Execute 后模拟器发生什么</th><th>界面视觉反馈</th><th>执行耗时</th></tr>
+        <tr><td><span class="tag tag-note">NOTE</span> 注释</td><td><strong>无任何变化</strong>。NOTE 是纯文本提示，不向模拟器发送指令</td><td>步骤标记为「已读/已完成」，可能显示对勾；右侧详情保持显示提示文本</td><td>瞬时</td></tr>
+        <tr><td><span class="tag tag-sim">SIM</span> 模拟条件</td><td><strong>模拟器状态改变</strong>。例如：飞机高度调整至 12,000ft、IAS 设为 135kt、位置重新定位等。具体变化取决于步骤中定义的参数</td><td>步骤显示执行中标记 → 完成后显示对勾；右侧详情可能显示参数生效确认；Map 工作区中飞机位置/状态实时更新</td><td>通常瞬时，复杂 reposition 可能需数秒</td></tr>
+        <tr><td><span class="tag tag-malf">MALF</span> 故障</td><td><strong>故障被激活或预位</strong>。例如：Engine 1 Fail 被注入；模拟器仪表（如 EICAS/ECAM）立即显示相关警告。若步骤定义为「预位」，则故障等待触发条件满足后才生效</td><td>步骤显示完成标记；AIRCRAFT Tab 底部 Malfunction Section 更新显示新故障；Footer 状态指示灯变化；INSTRUMENT REPEATER 中相关仪表显示警告</td><td>瞬时激活，预位故障等待条件</td></tr>
+        <tr><td><span class="tag tag-free">Freeplay</span> 自由操作</td><td><strong>预编程操作集立即生效</strong>。例如：一键设置特定天气场景、一键调整多个飞机参数。可在课程任意时间点触发，不受当前阶段限制</td><td>步骤显示完成标记；Map / Current Conditions / Aircraft 等关联工作区参数同步更新；通常伴随弹出确认提示</td><td>瞬时</td></tr>
+        <tr><td><span class="tag tag-nest">Nested</span> 嵌套课程</td><td><strong>加载并执行子课程</strong>。当前课程暂停，左侧大纲切换为子课程的训练阶段和步骤列表。子课程执行完毕后，自动返回主课程并继续后续步骤</td><td>左侧大纲内容完全替换为子课程；右侧详情显示子课程第一个步骤；课程标题可能显示嵌套标识；执行完成后大纲恢复为主课程，并在原 Nested 步骤处标记完成</td><td>取决于子课程长度</td></tr>
+      </table>
+    </div>
+
+    <h4>2.5.3 为什么你很难脑补？——原始手册的盲区</h4>
+    <p>正如你感受到的困惑，原始手册在「执行后」这一环节的描述确实非常薄弱。原因如下：</p>
+    <ul>
+      <li><strong>手册侧重「操作入口」而非「执行反馈」</strong>：原始手册告诉你按钮在哪、怎么点，但很少展示点击后的界面截图（图 2 是少数展示执行前状态的截图）</li>
+      <li><strong>执行效果高度依赖步骤内容</strong>：同一个 SIM 步骤，有的改变高度，有的改变位置，有的改变天气——手册无法穷举所有执行后的具体画面</li>
+      <li><strong>跨工作区反馈分散在各章节</strong>：MALF 执行后的故障显示在 AIRCRAFT Tab（1.2.4），位置变化反映在 Map（1.6），仪表警告在 INSTRUMENT REPEATER（1.4）——这些信息在 LESSON PLAN Tab 的手册章节中没有集中说明</li>
+    </ul>
+    <blockquote>
+      <strong>给阅读者的建议：</strong>阅读本节时，请始终记住——<strong>LESSON PLAN Tab 是「导演控制台」</strong>，你在这里发出指令（点击 Execute），而指令的实际效果需要在其他工作区（Map、AIRCRAFT、INSTRUMENT REPEATER）中观察。不要试图只在 LESSON PLAN Tab 这一个界面中脑补全部结果。
+    </blockquote>
+
+    <h4>2.5.4 课程执行状态流转（可视化速查）</h4>
+    <p>以下状态流转适用于<strong>单个步骤</strong>的生命周期，与 ch1_5 课程计划配置工作区中的运行时状态一致（两者共享同一套课程数据源）：</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>状态</th><th>左侧大纲视觉表现</th><th>右侧详情内容</th><th>教员操作</th></tr>
+        <tr><td><strong>① 未选择</strong></td><td>默认显示，无高亮</td><td>显示上一个已选中步骤的内容，或空白</td><td>点击左侧步骤选中它</td></tr>
+        <tr><td><strong>② 已选择</strong></td><td>步骤高亮（浅蓝色背景），类型图标（NOTE/SIM/MALF 等）清晰可见</td><td>显示该步骤的完整参数和说明，底部提示「Press 'Execute' to monitor condition」</td><td>审阅参数，确认无误后点击 Execute；或点击 Skip Condition 跳过</td></tr>
+        <tr><td><strong>③ 执行中</strong></td><td>步骤保持高亮，可能显示短暂执行标记（如齿轮图标 ⚙️ 或闪烁边框）</td><td>提示文字消失，可能显示「Executing...」或直接进入结果状态</td><td>等待系统完成（通常瞬时完成，复杂 reposition 需数秒）；期间 Execute 按钮可能禁用</td></tr>
+        <tr><td><strong>④ 已完成</strong></td><td>步骤显示完成标记（✓ 对勾 或 颜色变淡/灰化），高亮移除</td><td>Autorun 模式：自动切换至下一个步骤详情；Step-by-Step 模式：保持当前完成状态，等待教员选择下一步</td><td>观察执行效果（切换至 Map / AIRCRAFT / INSTRUMENT REPEATER）；确认后继续下一步或结束课程</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 2.6 课程创建与编辑（背景说明） ==================== -->
+    <h3>2.6 课程创建与编辑（背景说明）</h3>
     <p class="area-map"><strong>定位说明：</strong>本章节为 CAE Slick 编辑器的背景信息，不对应 LESSON PLAN Tab 界面内的具体区域</p>
+    <blockquote>
+      <strong>⚠️ 重要提示：</strong>很多初次使用 IOS 的教员会寻找「创建课程」或「新建训练阶段」的按钮，但在 LESSON PLAN Tab 界面上<strong>不存在此类功能</strong>。课程、训练阶段、步骤的创建与编辑全部在独立的 <strong>CAE Slick 网页编辑器</strong> 中完成。本选项卡仅用于<strong>加载并执行</strong>已编制好的课程。如果您需要新建或修改课程，请退出 IOS 界面，前往 CAE Slick 编辑器操作。
+    </blockquote>
     <div class="collapsible collapsed">
       <div class="collapsible-header" onclick="toggleCollapsible(this)">
         <div style="display:flex;align-items:center;gap:10px"><h4>编辑器工具与可添加元素</h4><span class="badge">展开</span></div>
@@ -504,7 +606,7 @@ flowchart LR
             <tr><td>自由操作按钮（Freeplay Button）</td><td>预编程的操作集，可随时触发</td></tr>
           </table>
         </div>
-        <p><strong>与 IOS 关系：</strong>编辑器创建的课程保存后自动出现在 IOS 课程计划选项卡中；教员在 IOS 上只能<strong>执行</strong>，不能<strong>编辑</strong>。</p>
+        <p><strong>与 IOS 关系：</strong>编辑器创建的课程保存后自动出现在 IOS 课程计划选项卡中；教员在 IOS 上只能<strong>执行</strong>，不能<strong>编辑</strong>。<strong>LESSON PLAN Tab 不是课程的创建入口，而是课程的消费入口。</strong></p>
       </div>
     </div>
 

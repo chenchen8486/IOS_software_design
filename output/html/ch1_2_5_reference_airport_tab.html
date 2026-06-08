@@ -119,14 +119,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
-          <div class="nav-children collapsed">
-            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
-            <a class="nav-link" href="#">1.1.2 用户交互</a>
-            <a class="nav-link" href="#">1.1.3 参数选择</a>
-          </div>
-        </div>
+        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -143,7 +136,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        
         <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
       </div>
     </div>
   </nav>
@@ -252,8 +248,8 @@ graph TD
         <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
         <tbody>
           <tr><td>参考机场选项卡标签<br>REFERENCE AIRPORT Tab</td><td>控制面板顶部选项卡栏（第 5 个选项卡）</td><td>监控和更改参考机场、跑道、环境条件、微暴流/风切变</td><td>—</td></tr>
-          <tr><td>参数输入文本字段区域<br>Parameter Input Text Fields</td><td>选项卡主区域上半部分</td><td>14 组可点击参数字段，点击后弹出对应滑动面板或键盘</td><td>详见 2.1 / 2.2~2.10</td></tr>
-          <tr><td>交互式机场部分<br>Interactive Airport Section</td><td>选项卡主区域右中部</td><td>点击跑道图形即可直接切换参考跑道</td><td>详见 2.2</td></tr>
+          <tr><td>参数输入文本字段区域<br>Parameter Input Text Fields</td><td>选项卡主区域上半部分</td><td>14 组可点击参数字段，点击后弹出对应滑动面板或键盘</td><td>详见本页 2.1 节 / 2.2~2.10 节</td></tr>
+          <tr><td>交互式机场部分<br>Interactive Airport Section</td><td>选项卡主区域右中部</td><td>点击跑道图形即可直接切换参考跑道</td><td>详见本页 2.2 节</td></tr>
         </tbody>
       </table>
     </div>
@@ -272,19 +268,19 @@ graph TD
       <table>
         <thead><tr><th>字段名称</th><th>显示内容</th><th>交互方式</th><th>弹出面板/键盘</th></tr></thead>
         <tbody>
-          <tr><td>机场（Airport）</td><td>当前参考机场 ICAO 代码</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
-          <tr><td>跑道（Runway）</td><td>参考机场当前跑道号</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见 2.2）</td></tr>
-          <tr><td>时间（Time）</td><td>当前时刻</td><td>点击 / Wheel Picker</td><td>时刻键盘 / Wheel Picker 选择黎明/白天/黄昏/夜间（详见 2.3）</td></tr>
-          <tr><td>地面风（磁）（Surface Wind）</td><td>参考机场和跑道当前风况</td><td>点击 / 长按风向/风速字段 + Wheel Picker</td><td>地面风滑动面板（详见 2.4）</td></tr>
-          <tr><td>能见度（Visibility）</td><td>当前云下能见度</td><td>点击 / Wheel Picker</td><td>能见度键盘（详见 2.5）</td></tr>
-          <tr><td>RVR</td><td>当前跑道视程</td><td>点击 / Wheel Picker</td><td>能见度/RVR 滑动面板（详见 2.5）</td></tr>
-          <tr><td>降水（Precipitation）</td><td>参考机场当前降水情况</td><td>点击 / Wheel Picker</td><td>降水滑动面板（详见 2.6）</td></tr>
-          <tr><td>云层（Clouds）</td><td>参考机场/飞行场当前云层状况</td><td>点击 / Wheel Picker</td><td>云层滑动面板（详见 2.7）</td></tr>
-          <tr><td>温度（Temperature）</td><td>参考机场当前温度</td><td>点击 / Wheel Picker</td><td>参考温度键盘（详见 2.8）</td></tr>
-          <tr><td>ISA 偏差（ISA Dev）</td><td>当前 ISA 温度偏差</td><td>点击 / Wheel Picker</td><td>ISA 偏差键盘（详见 2.8）</td></tr>
-          <tr><td>QNH</td><td>当前机场海平面气压</td><td>点击 / Wheel Picker</td><td>QNH 键盘（详见 2.8）</td></tr>
-          <tr><td>微暴流/风切变（Microburst/Windshear）</td><td>当前激活的微暴流/风切变剖面</td><td>点击</td><td>风切变与微暴流滑动面板（详见 2.9）</td></tr>
-          <tr><td>跑道状况（Runway Condition）</td><td>参考机场当前跑道状况</td><td>点击 / Wheel Picker</td><td>跑道状况滑动面板（详见 2.10）</td></tr>
+          <tr><td>机场（Airport）</td><td>当前参考机场 ICAO 代码</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见本页 2.2 节）</td></tr>
+          <tr><td>跑道（Runway）</td><td>参考机场当前跑道号</td><td>点击 / Wheel Picker</td><td>机场与重新定位滑动面板（详见本页 2.2 节）</td></tr>
+          <tr><td>时间（Time）</td><td>当前时刻</td><td>点击 / Wheel Picker</td><td>时刻键盘 / Wheel Picker 选择黎明/白天/黄昏/夜间（详见本页 2.3 节）</td></tr>
+          <tr><td>地面风（磁）（Surface Wind）</td><td>参考机场和跑道当前风况</td><td>点击 / 长按风向/风速字段 + Wheel Picker</td><td>地面风滑动面板（详见本页 2.4 节）</td></tr>
+          <tr><td>能见度（Visibility）</td><td>当前云下能见度</td><td>点击 / Wheel Picker</td><td>能见度键盘（详见本页 2.5 节）</td></tr>
+          <tr><td>RVR</td><td>当前跑道视程</td><td>点击 / Wheel Picker</td><td>能见度/RVR 滑动面板（详见本页 2.5 节）</td></tr>
+          <tr><td>降水（Precipitation）</td><td>参考机场当前降水情况</td><td>点击 / Wheel Picker</td><td>降水滑动面板（详见本页 2.6 节）</td></tr>
+          <tr><td>云层（Clouds）</td><td>参考机场/飞行场当前云层状况</td><td>点击 / Wheel Picker</td><td>云层滑动面板（详见本页 2.7 节）</td></tr>
+          <tr><td>温度（Temperature）</td><td>参考机场当前温度</td><td>点击 / Wheel Picker</td><td>参考温度键盘（详见本页 2.8 节）</td></tr>
+          <tr><td>ISA 偏差（ISA Dev）</td><td>当前 ISA 温度偏差</td><td>点击 / Wheel Picker</td><td>ISA 偏差键盘（详见本页 2.8 节）</td></tr>
+          <tr><td>QNH</td><td>当前机场海平面气压</td><td>点击 / Wheel Picker</td><td>QNH 键盘（详见本页 2.8 节）</td></tr>
+          <tr><td>微暴流/风切变（Microburst/Windshear）</td><td>当前激活的微暴流/风切变剖面</td><td>点击</td><td>风切变与微暴流滑动面板（详见本页 2.9 节）</td></tr>
+          <tr><td>跑道状况（Runway Condition）</td><td>参考机场当前跑道状况</td><td>点击 / Wheel Picker</td><td>跑道状况滑动面板（详见本页 2.10 节）</td></tr>
           <tr><td>交互式机场（Interactive Airport）</td><td>机场跑道图形</td><td>点击跑道</td><td>直接更改参考跑道并更新跑道文本字段</td></tr>
         </tbody>
       </table>
@@ -449,7 +445,7 @@ graph TD
           <tr><td>飞机推出 — 直线</td><td>操作按钮</td><td>飞机移动时禁用；执行直线推出</td></tr>
           <tr><td>飞机推出 — 尾部向右</td><td>操作按钮</td><td>飞机移动时禁用；执行推出并随后向右转弯</td></tr>
           <tr><td>飞机轮挡（A/C on Chocks）</td><td>切换按钮</td><td>飞机移动时禁用；与「飞机在千斤顶上」互斥；激活态放置轮挡（飞机不可移动）</td></tr>
-          <tr><td>跑道状况</td><td>可展开按钮</td><td>显示「跑道状况」滑动面板（详见 2.10）</td></tr>
+          <tr><td>跑道状况</td><td>可展开按钮</td><td>显示「跑道状况」滑动面板（详见本页 2.10 节）</td></tr>
           <tr><td>录制交通</td><td>可展开按钮</td><td>若登机口交通或 TCAS/随机交通激活则禁用；显示「录制交通」滑动面板</td></tr>
           <tr><td>场景交通</td><td>可展开按钮</td><td>若登机口交通或 TCAS/随机交通激活则禁用；显示「场景交通」滑动面板</td></tr>
         </tbody>

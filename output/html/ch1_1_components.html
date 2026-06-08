@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1.1 组成部分 — CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+/* Image blocks */
+.img-block{margin:20px 0;text-align:center}
+.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img:hover{transform:scale(1.02)}
+.img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+.img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
+
+/* Image row layout */
+.img-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.img-row .img-block{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.img-row .img-block .img-pic{width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:4px;overflow:hidden}
+.img-row .img-block .img-pic img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:4px;box-shadow:0 0 0 1px var(--border);border:none;cursor:zoom-in}
+.img-row .img-block .img-caption{margin-top:10px;font-size:12px;line-height:1.5;color:var(--text-secondary);font-style:italic;text-align:center}
+.img-row-2{grid-template-columns:repeat(2,1fr);max-width:66%;margin-left:auto;margin-right:auto}
+@media (max-width:768px){
+  .img-row{grid-template-columns:1fr}
+  .img-row-2{grid-template-columns:1fr;max-width:100%}
+}
+
+/* Image zoom overlay */
+.img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.img-zoom-overlay img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius);box-shadow:0 25px 50px -12px rgba(0,0,0,.25);cursor:grab;transition:transform .1s ease-out;transform-origin:center center}
+.img-zoom-overlay img.is-dragging{cursor:grabbing}
+.img-zoom-overlay::after{content:'滚轮缩放 / 拖拽平移 / 点击关闭';position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;color:#fff;background:rgba(15,23,42,0.7);padding:6px 14px;border-radius:999px;pointer-events:none;white-space:nowrap}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+
+/* Footer nav */
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+      <div class="nav-children">
+        <a class="nav-link active" href="ch1_1_components.html">1.1 组成部分</a>
+        <div class="nav-group">
+          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+          <div class="nav-children collapsed">
+            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
+            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
+            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
+            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
+            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+          </div>
+        </div>
+        <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+        <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
+        <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
+        <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        
+        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
+      </div>
+    </div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="breadcrumb">
+    <a href="#">首页</a><span class="breadcrumb-sep">/</span>
+    <a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span>
+    <span>1.1 组成部分</span>
+  </div>
+
+  <article class="content">
+    <h1>1.1 组成部分</h1>
+    <p class="subtitle">原始手册对应：## 3.1 IOS Workspaces + ## 3.2 UI Controls &nbsp;|&nbsp; 整理时间：2026-05-30</p>
+
+    <blockquote>
+      <strong>本章定位：</strong>1.1 节是对 IOS 软件界面整体组成与交互控件的抽象概述。所有子页面（1.2.x ~ 1.7）均建立在本节定义的工作区与控件体系之上。
+    </blockquote>
+
+    <!-- ==================== 1.1.1 IOS工作区 ==================== -->
+    <h2 id="sec-1-1-1">1.1.1 IOS工作区</h2>
+
+    <p>IOS 工作区软件界面由以下六大工作区组成，每个工作区承担不同的训练控制职责：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">工作区</th>
+            <th style="width:45%">功能描述</th>
+            <th style="width:33%">主要使用场景</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>控制面板（Control Board）</strong></td>
+            <td>
+              • 包含与本机场相关的所有参数，是访问本机场参数的主要途径，允许直接在面板上更改数值（例如，调整燃油重量）；<br>
+              • 包含滑动面板（参考 1.2.6）：例如，用于激活和预位故障；<br>
+              • 包含一个通用页脚（参考 1.2.7）：提供对常用命令的快速访问
+            </td>
+            <td>日常训练全程使用</td>
+          </tr>
+          <tr>
+            <td><strong>地图（Map）</strong></td>
+            <td>
+              • 包含与环境相关的元素；<br>
+              • 具有 2D/3D 地图可视模式；<br>
+              • 包含环境特征（如风暴、导航台 Navaids stations、模拟的入侵者或交通 simulated intruders or traffic）；<br>
+              • 显示起飞/进近/跑道、飞机轨迹以及飞行管理系统（FMS）航线
+            </td>
+            <td>程序训练、位置监控</td>
+          </tr>
+          <tr>
+            <td><strong>课程计划剖面（Lesson Plan Profile）</strong></td>
+            <td>
+              • 包含与课程相关的所有元素；<br>
+              • 监控和控制课程的执行；<br>
+              • 显示在课程计划编辑器中创建的课程；<br>
+              • 允许教员自动执行某个步骤，而不是输入单个命令
+            </td>
+            <td>教员参考观察飞行数据</td>
+          </tr>
+          <tr>
+            <td><strong>复示仪表（Instruments Repeaters）</strong></td>
+            <td>允许教员选择将哪些座舱仪表复示或显示在 IOS（教员操作台）显示屏上</td>
+            <td>课程推进与阶段管理</td>
+          </tr>
+          <tr>
+            <td><strong>维护（Maintenance）</strong></td>
+            <td>提供相关页面，允许维护人员执行各种模拟机维护任务</td>
+            <td>复杂场景、专项训练</td>
+          </tr>
+          <tr>
+            <td><strong>高级（Advanced）</strong></td>
+            <td>
+              • 具备快速访问按钮，允许教员进行如下操作：<br>
+              • 修改飞机、位置和环境参数；<br>
+              • 执行各种类型的冻结和重置；<br>
+              • 触发故障；<br>
+              • 访问附加页面
+            </td>
+            <td>技术人员使用</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>下图展示了 IOS 中最核心的<strong>控制面板（Control Board）</strong>界面布局。教员通过该工作区可直接修改飞机参数、激活滑动面板，并访问底部快捷命令栏。</p>
+    <div class="img-block">
+      <img src="./images/ch1_2_6_control_board_overview.png" alt="控制面板整体界面">
+      <div class="img-caption">图 1：IOS 控制面板（Control Board）整体界面 — 包含参数面板、滑动面板入口与底部快捷栏</div>
+    </div>
+
+    <!-- ==================== 1.1.2 用户交互 ==================== -->
+    <h2 id="sec-1-1-2">1.1.2 用户交互（User Interface Controls）</h2>
+
+    <p>用来控制各种软件定义的变化量的 UI 交互方式。以下控件遍布于 IOS 各工作区中，是教员与模拟器交互的基础语言。</p>
+
+    <h3>基础控件</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">控件类型</th>
+            <th style="width:35%">交互方式</th>
+            <th style="width:43%">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>滑动面板（Sliding Panel）</strong></td>
+            <td>从左侧滑入，左滑/点击外部关闭</td>
+            <td>主要子页面形式，数据通常即时生效</td>
+          </tr>
+          <tr>
+            <td><strong>文本输入框（Text Field）</strong></td>
+            <td>点击激活对应键盘</td>
+            <td>部分支持 <strong>Wheel Picker</strong>（长按/上下滑动呼出）</td>
+          </tr>
+          <tr>
+            <td><strong>只读字段（Read Only Field）</strong></td>
+            <td>无需操作</td>
+            <td>仅显示状态</td>
+          </tr>
+          <tr>
+            <td><strong>按钮（Button）</strong></td>
+            <td>点击激活，亮浅蓝色</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>滚动菜单（Roll-up Menu）</strong></td>
+            <td>点击展开，选择后生效，点击外部取消</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>轮选器（Wheel Picker）</strong></td>
+            <td>长按/滑动参数呼出</td>
+            <td>绿勾确认，红叉取消</td>
+          </tr>
+          <tr>
+            <td><strong>交互图表</strong></td>
+            <td>拖拽图表元素修改值</td>
+            <td>如 Slew 图表可拖动「+」号联动更新滑块与文本框</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>选择类控件</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">类型</th>
+            <th style="width:35%">特性</th>
+            <th style="width:43%">视觉反馈</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Toggle Normal</strong><br>普通切换</td>
+            <td>普通切换</td>
+            <td>正常态 → 激活态（亮蓝）</td>
+          </tr>
+          <tr>
+            <td><strong>Toggle Fail</strong><br>故障切换</td>
+            <td>激活后为红色，触发故障并记录到 Malfunctions 区域与 Footer；再次点击解除</td>
+            <td>激活后红色高亮</td>
+          </tr>
+          <tr>
+            <td><strong>Action Button</strong><br>瞬时动作</td>
+            <td>激活后亮数秒，返回正常态或禁用态</td>
+            <td>短暂高亮后恢复</td>
+          </tr>
+          <tr>
+            <td><strong>Expandable Button</strong><br>展开滑动面板</td>
+            <td>点击展开关联滑动面板</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Radio Button</strong><br>单选按钮</td>
+            <td>互斥选择</td>
+            <td>选中项高亮</td>
+          </tr>
+          <tr>
+            <td><strong>Checkbox</strong><br>复选框</td>
+            <td>独立开关</td>
+            <td>勾选/取消勾选</td>
+          </tr>
+          <tr>
+            <td><strong>Slider</strong><br>滑块</td>
+            <td>最小值~最大值调节</td>
+            <td>滑块位置实时反馈</td>
+          </tr>
+          <tr>
+            <td><strong>Keypad</strong><br>键盘</td>
+            <td>数字/字符输入</td>
+            <td>绿勾确认，红叉取消</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ==================== 1.1.3 参数选择 ==================== -->
+    <h2 id="sec-1-1-3">1.1.3 参数选择与数据输入</h2>
+
+    <p>在 IOS 中，几乎所有参数的修改都遵循统一的输入范式：点击参数文本字段 → 弹出对应输入控件 → 确认/取消。以下表格详细列出了各类输入控件的行为与交互细节。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28%">输入控件</th>
+            <th style="width:72%">说明与交互细节</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Quick Access Buttons<br>（快速访问按钮）</strong></td>
+            <td>
+              点击快速访问按钮会显示相应的滑动面板。例如：DL、UL、VHF、Weight&amp;CG、Services&amp;Doors、Malfunctions、Circuit Breakers、Fail Summary 等按钮。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Dropdown Buttons<br>（下拉按钮）</strong></td>
+            <td>
+              点击下拉按钮会展开特定项目的选择项，选择后生效。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Selection Buttons<br>（选择按钮）— 普通切换</strong></td>
+            <td>
+              具有三种状态：<strong>正常状态</strong>、<strong>激活状态</strong>、<strong>禁用状态</strong>。点击后在正常态与激活态（亮蓝）之间切换。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Selection Buttons<br>（选择按钮）— 故障切换</strong></td>
+            <td>
+              具有两种状态：<strong>正常状态</strong>、<strong>激活状态</strong>（红色）。一旦触发，故障将被控制面板记录，并显示在故障部分、控制面板底部以及故障滑动面板中。从红色激活状态再次点击可取消故障。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Selection Buttons<br>（选择按钮）— 操作按钮</strong></td>
+            <td>
+              具有三种状态：<strong>正常状态</strong>、<strong>激活状态</strong>（持续数秒）、<strong>禁用状态</strong>。点击后按钮会亮起数秒，随后返回正常状态或禁用状态，取决于各种条件。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Expandable Buttons<br>（扩展按钮）</strong></td>
+            <td>
+              点击可展开按钮会显示关联的滑动面板。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Radio Buttons<br>（单选按钮）</strong></td>
+            <td>
+              点击单选按钮允许教员从预定义的选项集中<strong>仅选择一项</strong>。这些按钮是互斥的。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Checkbox<br>（复选框）</strong></td>
+            <td>
+              复选框是一种切换功能，用于选择或取消选择特定项目。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Sliders<br>（滑块）</strong></td>
+            <td>
+              滑块也可称为滑块控件或滚动条。它们有多种形式，但都允许将特定项目从最小值调整到最大值。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Wheel Picker<br>（轮选器）</strong></td>
+            <td>
+              适用于重量、时间、日期、机场、跑道、跑道条件、表面风、温度、天气、海平面气压等参数。<br><br>
+              根据 IOS 控制面板的配置，某些参数可通过滚轮选择器进行调整。要激活特定项目的滚轮选择器，请按以下步骤操作：<br>
+              • 选择一个特定参数；<br>
+              • 按住该参数直至显示滚轮选择器，或上下滑动该参数以显示滚轮选择器；<br>
+              • 滚动选择项并选择。<br><br>
+              <strong>绿色对勾</strong>确认输入，<strong>红色叉号</strong>取消输入。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Keypad<br>（键盘）</strong></td>
+            <td>
+              许多参数可通过键盘进行调整。在键盘中输入数值时，既可以使用滑块，也可以使用键盘按键。<br><br>
+              <strong>绿色对勾</strong>确认输入，<strong>红色叉号</strong>取消输入。
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Interactive Graphs<br>（交互式图表）</strong></td>
+            <td>
+              交互式图表中部分图表具有交互功能，允许教员通过直接触摸图表上的元素来更改数值。<br><br>
+              例如，在 Slew 图表中，教员可以移动图表上的「+」符号，滑块和文本字段将根据图表上新的「+」位置自动更新。
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>控件截图示例</h3>
+    <p>以下截图展示了 1.1.3 节中各类参数输入控件在 IOS 界面中的实际呈现效果（均来自原始手册）：</p>
+
+    <!-- 第一行：快速访问与展开类 -->
+    <div class="img-row">
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_quick_access_buttons.jpg" alt="快速访问按钮"></div>
+        <div class="img-caption">图 2：快速访问按钮（Quick Access Buttons）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_dropdown_button.jpg" alt="下拉按钮"></div>
+        <div class="img-caption">图 3：下拉按钮（Dropdown Button）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_expandable_button.jpg" alt="扩展按钮"></div>
+        <div class="img-caption">图 4：扩展按钮（Expandable Button）</div>
+      </div>
+    </div>
+
+    <!-- 第二行：选择按钮类 -->
+    <div class="img-row">
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_toggle_normal.jpg" alt="普通切换按钮"></div>
+        <div class="img-caption">图 5：普通切换按钮（Toggle Normal）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_action_button.jpg" alt="操作按钮"></div>
+        <div class="img-caption">图 6：操作按钮（Action Button）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_radio_button.jpg" alt="单选按钮"></div>
+        <div class="img-caption">图 7：单选按钮（Radio Button）</div>
+      </div>
+    </div>
+
+    <!-- 第三行：开关、滑块与轮选器 -->
+    <div class="img-row">
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_checkbox.jpg" alt="复选框"></div>
+        <div class="img-caption">图 8：复选框（Checkbox）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_slider.jpg" alt="滑块"></div>
+        <div class="img-caption">图 9：滑块（Slider）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_wheel_picker.jpg" alt="轮选器"></div>
+        <div class="img-caption">图 10：轮选器（Wheel Picker）</div>
+      </div>
+    </div>
+
+    <!-- 第四行：键盘与轮选器可调参数（仅 2 张，双列居中） -->
+    <div class="img-row img-row-2">
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_keypad.jpg" alt="键盘"></div>
+        <div class="img-caption">图 11：键盘（Keypad）</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_wheel_picker_adjustable.jpg" alt="轮选器可调参数"></div>
+        <div class="img-caption">图 12：轮选器 — 可调参数示例</div>
+      </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav">
+      <span></span>
+      <a class="next" href="ch1_2_1_lesson_plan_tab.html">下一节：1.2.1 课程计划选项卡 →</a>
+    </div>
+  </article>
+</main>
+</div>
+
+<script>
+// Sidebar toggle
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children) children.classList.toggle('collapsed');
+}
+
+// Image zoom
+let imgZoomOverlay = null;
+let imgIsDragging = false;
+let imgDragStart = null;
+let imgDragLast = null;
+
+function updateImgZoomTransform(overlay){
+  const img = overlay.querySelector('img');
+  if(!img) return;
+  const tx = parseFloat(overlay.dataset.tx) || 0;
+  const ty = parseFloat(overlay.dataset.ty) || 0;
+  const scale = parseFloat(overlay.dataset.scale) || 1;
+  img.style.transform = 'translate('+tx+'px,'+ty+'px) scale('+scale+')';
+}
+
+document.addEventListener('click', function(e){
+  const img = e.target.closest('.img-block img');
+  if(img){
+    e.preventDefault();
+    const overlay = document.createElement('div');
+    overlay.className = 'img-zoom-overlay';
+    overlay.dataset.scale = '1';
+    overlay.dataset.tx = '0';
+    overlay.dataset.ty = '0';
+    const zoomed = document.createElement('img');
+    zoomed.src = img.src;
+    zoomed.alt = img.alt;
+    zoomed.style.transform = 'translate(0px,0px) scale(1)';
+    overlay.appendChild(zoomed);
+    document.body.appendChild(overlay);
+    imgZoomOverlay = overlay;
+    imgIsDragging = false;
+    return;
+  }
+  const overlay = e.target.closest('.img-zoom-overlay');
+  if(overlay){
+    if(imgIsDragging){
+      imgIsDragging = false;
+      return;
+    }
+    overlay.remove();
+    if(imgZoomOverlay === overlay) imgZoomOverlay = null;
+  }
+});
+
+document.addEventListener('wheel', function(e){
+  const overlay = e.target.closest('.img-zoom-overlay');
+  if(!overlay) return;
+  e.preventDefault();
+  let scale = parseFloat(overlay.dataset.scale) || 1;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  scale = Math.max(0.5, Math.min(5, scale * delta));
+  overlay.dataset.scale = scale.toFixed(3);
+  updateImgZoomTransform(overlay);
+}, { passive: false });
+
+document.addEventListener('mousedown', function(e){
+  const overlay = e.target.closest('.img-zoom-overlay');
+  if(!overlay) return;
+  const img = overlay.querySelector('img');
+  if(!img) return;
+  e.preventDefault();
+  imgDragStart = { x: e.clientX, y: e.clientY };
+  imgDragLast = { x: e.clientX, y: e.clientY };
+  imgZoomOverlay = overlay;
+  imgIsDragging = false;
+  img.classList.add('is-dragging');
+});
+
+document.addEventListener('mousemove', function(e){
+  if(!imgDragStart || !imgZoomOverlay) return;
+  const dx = e.clientX - imgDragLast.x;
+  const dy = e.clientY - imgDragLast.y;
+  const movedX = Math.abs(e.clientX - imgDragStart.x);
+  const movedY = Math.abs(e.clientY - imgDragStart.y);
+  if(movedX > 3 || movedY > 3) imgIsDragging = true;
+  imgDragLast = { x: e.clientX, y: e.clientY };
+  let tx = parseFloat(imgZoomOverlay.dataset.tx) || 0;
+  let ty = parseFloat(imgZoomOverlay.dataset.ty) || 0;
+  tx += dx;
+  ty += dy;
+  imgZoomOverlay.dataset.tx = tx.toFixed(1);
+  imgZoomOverlay.dataset.ty = ty.toFixed(1);
+  updateImgZoomTransform(imgZoomOverlay);
+});
+
+document.addEventListener('mouseup', function(){
+  if(imgZoomOverlay){
+    const img = imgZoomOverlay.querySelector('img');
+    if(img) img.classList.remove('is-dragging');
+  }
+  imgDragStart = null;
+  imgDragLast = null;
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.img-zoom-overlay').forEach(el => el.remove());
+    imgZoomOverlay = null;
+  }
+});
+</script>
+</body>
+</html>

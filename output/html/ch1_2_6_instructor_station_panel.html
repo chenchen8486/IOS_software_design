@@ -124,14 +124,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
-          <div class="nav-children collapsed">
-            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
-            <a class="nav-link" href="#">1.1.2 用户交互</a>
-            <a class="nav-link" href="#">1.1.3 参数选择</a>
-          </div>
-        </div>
+        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -148,7 +141,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        
         <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
       </div>
     </div>
   </nav>
@@ -208,9 +204,9 @@ graph TD
         <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr></thead>
         <tbody>
           <tr><td>Expand Button<br>展开按钮</td><td>控制面板右侧边缘（垂直长条形按钮，含右向箭头图标）</td><td>点击展开/收起教员台滑动面板</td><td>—</td></tr>
-          <tr><td>PREFERENCES Tab<br>偏好设置选项卡</td><td>滑动面板顶部选项卡栏（最左侧）</td><td>设置力单位、飞机重量单位、环境单位及自动匹配参考机场</td><td>详见 2.1</td></tr>
-          <tr><td>CONFIGURATION Tab<br>配置选项卡</td><td>滑动面板顶部选项卡栏（中间）</td><td>查看当前 IOS 配置参数并切换至其他配置</td><td>详见 2.2</td></tr>
-          <tr><td>End Session Button<br>结束会话按钮</td><td>滑动面板底部区域（蓝色/高亮按钮）</td><td>结束当前会话并返回 IOS 主页；在主页可通过 Change 按钮选择其他配置</td><td>详见 2.3</td></tr>
+          <tr><td>PREFERENCES Tab<br>偏好设置选项卡</td><td>滑动面板顶部选项卡栏（最左侧）</td><td>设置力单位、飞机重量单位、环境单位及自动匹配参考机场</td><td>详见当前页面 2.1 小节（PREFERENCES Tab）</td></tr>
+          <tr><td>CONFIGURATION Tab<br>配置选项卡</td><td>滑动面板顶部选项卡栏（中间）</td><td>查看当前 IOS 配置参数并切换至其他配置</td><td>详见当前页面 2.2 小节（CONFIGURATION Tab）</td></tr>
+          <tr><td>End Session Button<br>结束会话按钮</td><td>滑动面板底部区域（蓝色/高亮按钮）</td><td>结束当前会话并返回 IOS 主页；在主页可通过 Change 按钮选择其他配置</td><td>详见当前页面 2.3 小节（End Session）</td></tr>
         </tbody>
       </table>
     </div>

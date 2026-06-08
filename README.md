@@ -9,10 +9,10 @@
 
 ```
 IOS_software_design/
-├── docs/                # 设计文档与开发规范
-│   ├── A320_与_原始手册_章节映射表.md
-│   ├── HTML生成规范与转换规则.md
-│   └── 需求描述与工作计划.md
+├── docs/                # 设计文档与开发规范（已按阅读顺序编号）
+│   ├── 1_需求描述与工作计划.md
+│   ├── 2_A320_与_原始手册_章节映射表.md
+│   └── 3_HTML生成规范与转换规则.md
 ├── output/              # 最终产物输出目录
 │   └── html/            # HTML 可视化页面与细化 MD
 │       ├── ch1_2_1_lesson_plan_tab.html
@@ -45,13 +45,13 @@ IOS_software_design/
 
 每次开启新会话继续下一章节转换时，请按以下顺序阅读：
 
-1. **`docs/需求描述与工作计划.md`**
+1. **`docs/1_需求描述与工作计划.md`**
    - 了解项目背景、原始资料位置、双文档对照逻辑、工作节奏。
 
-2. **`docs/HTML生成规范与转换规则.md`**
+2. **`docs/3_HTML生成规范与转换规则.md`**
    - 了解文件输出路径、图片处理规则、HTML 结构模板、内容红线、Checklist。
 
-3. **`docs/A320_与_原始手册_章节映射表.md`**
+3. **`docs/2_A320_与_原始手册_章节映射表.md`**
    - 了解 A320.md 章节与原始手册章节的对应关系，确认目标章节的精确层级归属。
 
 4. **`reference/A320.md`**
@@ -64,28 +64,30 @@ IOS_software_design/
 
 ## 3. 当前进度
 
-### 已完成（第 2 章 — 控制面板工作区）
+### 已完成（第 1 章 — 软件操作）
 
 | 章节 | A320.md 标题 | 原始手册对应 | 状态 |
 |------|-------------|-------------|------|
-| 2.2.1 | 课程计划选项卡（LESSON PLAN） | ## 5. LESSON PLAN Tab | ✅ 已完成 |
-| 2.2.2 | 文档选项卡（DOCS） | ## 6. DOCS Tab | ✅ 已完成 |
-| 2.2.3 | 当前条件选项卡（CURRENT CONDITIONS） | ## 7. CURRENT CONDITIONS Tab | ✅ 已完成 |
-| 2.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ✅ 已完成 |
-| 2.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | ✅ 已完成 |
-| 2.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | ✅ 已完成 |
-| 2.2.7 | 控制面板底部（Footer） | ## 11. Control Board Footer | ✅ 已完成 |
-| 2.3 | 维护页面（Maintenance Pages） | ## 12. Maintenance Pages | ✅ 已完成 |
-| 2.4 | 仪表复示器工作区（INSTRUMENT REPEATER） | ## 13. INSTRUMENT REPEATER Workspace | ✅ 已完成 |
-| 2.5 | 课程计划配置工作区（Lesson Plan Profile） | ## 14. Lesson Plan Profile Workspace | ✅ 已完成 |
+| 1.1 | 组成部分 | ## 3.1 IOS Workspaces + ## 3.2 UI Controls | ✅ 已完成 |
+| 1.2.1 | 课程计划选项卡（LESSON PLAN） | ## 5. LESSON PLAN Tab | ✅ 已完成 |
+| 1.2.2 | 文档选项卡（DOCS） | ## 6. DOCS Tab | ✅ 已完成 |
+| 1.2.3 | 当前条件选项卡（CURRENT CONDITIONS） | ## 7. CURRENT CONDITIONS Tab | ✅ 已完成 |
+| 1.2.4 | 飞机/航空器选项卡（AIRCRAFT） | ## 8. AIRCRAFT Tab | ✅ 已完成 |
+| 1.2.5 | 参考机场选项卡（REFERENCE AIRPORT） | ## 9. REFERENCE AIRPORT Tab | ✅ 已完成 |
+| 1.2.6 | 教员台滑动面板（INSTRUCTOR STATION Sliding Panel） | ## 10. INSTRUCTOR STATION Sliding Panel | ✅ 已完成 |
+| 1.2.7 | 控制面板底部（Footer） | ## 11. Control Board Footer | ✅ 已完成 |
+| 1.3 | 维护页面（Maintenance Pages） | ## 12. Maintenance Pages | ✅ 已完成 |
+| 1.4 | 仪表复示器工作区（INSTRUMENT REPEATER） | ## 13. INSTRUMENT REPEATER Workspace | ✅ 已完成 |
+| 1.5 | 课程计划配置工作区（Lesson Plan Profile） | ## 14. Lesson Plan Profile Workspace | ✅ 已完成 |
+| 1.6 | 地图工作区（Map） | ## 15. Map Workspace | ✅ 已完成 |
+| 1.7 | 高级（Advanced） | ## 16. Advanced | ⚠️ 初版已完成，内容待优化 |
+| 1.8 | 参考流程（Reference Flows） | 无直接对应（基于 1.1~1.7 整合创作） | ✅ 已完成 |
 
 ### 待处理
 
 | 章节 | A320.md 标题 | 原始手册对应 | 状态 |
 |------|-------------|-------------|------|
-| 2.6 | 地图工作区（Map） | ## 15. Map Workspace | ✅ 已完成 |
-| 2.7 | 高级（Advanced） | ## 16. Advanced | ⚠️ 初版已完成，内容待优化 |
-| 2.8 | 参考流程 | 无直接对应 | ⏳ 下一章 |
+| 2 | 软件架构与交互设计（逆向推导） | 无直接对应 | 🔜 待启动（设计草案阶段） |
 | 4~10 | 开发设计章节 | 无直接对应 | 🔜 待填充 |
 
 ---
@@ -98,7 +100,7 @@ IOS_software_design/
 
 Claude 将自动：
 1. 阅读本 `README.md` 了解项目结构与当前进度。
-2. 按顺序阅读 `docs/` 下的三份规范文档。
+2. 按顺序阅读 `docs/` 下的三份规范文档：`1_需求描述与工作计划.md` → `2_A320_与_原始手册_章节映射表.md` → `3_HTML生成规范与转换规则.md`。
 3. 读取 `reference/A320.md` 与 `reference/CAE IOS使用手册.md` 进行双文档对照。
 4. 生成下一章节的细化 Markdown + HTML 文件。
 

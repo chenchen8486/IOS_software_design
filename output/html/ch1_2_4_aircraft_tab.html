@@ -123,14 +123,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <div class="nav-group">
-          <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.1 组成部分</span></div>
-          <div class="nav-children collapsed">
-            <a class="nav-link" href="#">1.1.1 IOS工作区</a>
-            <a class="nav-link" href="#">1.1.2 用户交互</a>
-            <a class="nav-link" href="#">1.1.3 参数选择</a>
-          </div>
-        </div>
+        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -147,7 +140,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
         <a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
         <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
         <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+        
         <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+
+        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
       </div>
     </div>
   </nav>
@@ -242,14 +238,14 @@ graph TD
     <div class="table-wrap">
       <table>
         <tr><th>区域/控件</th><th>位置</th><th>功能说明</th><th>对应章节</th></tr>
-        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（上半部分）</td><td>集中显示飞机重量与平衡相关参数，每个字段可点击弹出对应键盘或使用滚轮选择器</td><td>详见 2.1</td></tr>
-        <tr><td><strong>总重 GW</strong><br>Gross Weight</td><td>参数区第一行</td><td>显示飞机总重，点击弹出总重键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
-        <tr><td><strong>总重重心 GW CG</strong><br>GW Center of Gravity</td><td>参数区第二行</td><td>显示总重重心（% MAC），点击弹出总重重心键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
-        <tr><td><strong>零燃油重量 ZFW</strong><br>Zero Fuel Weight</td><td>参数区第三行</td><td>显示零燃油重量，点击弹出 ZFW 键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
-        <tr><td><strong>ZFW CG</strong><br>ZFW Center of Gravity</td><td>参数区第四行</td><td>显示零燃油重量重心（% MAC），点击弹出 ZFW CG 键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
-        <tr><td><strong>燃油 FUEL</strong><br>Fuel Weight</td><td>参数区第五行</td><td>显示总燃油量，点击弹出燃油键盘；支持滚轮选择器</td><td>详见 2.1 / 2.5</td></tr>
-        <tr><td><strong>快速访问按钮区</strong><br>Quick Access Buttons</td><td>主区域（中部）</td><td>一排快捷按钮，点击后弹出对应滑动面板，部分按钮显示状态指示灯或红色标记</td><td>详见 2.2~2.9</td></tr>
-        <tr><td><strong>故障部分</strong><br>Malfunction Section</td><td>主区域（底部）</td><td>显示激活和预位故障摘要，提供清除和激活操作</td><td>详见 2.10</td></tr>
+        <tr><td><strong>参数输入文本字段区</strong><br>Parameter Input Text Fields</td><td>主区域（上半部分）</td><td>集中显示飞机重量与平衡相关参数，每个字段可点击弹出对应键盘或使用滚轮选择器</td><td>详见本页 2.1 节</td></tr>
+        <tr><td><strong>总重 GW</strong><br>Gross Weight</td><td>参数区第一行</td><td>显示飞机总重，点击弹出总重键盘；支持滚轮选择器</td><td>详见本页 2.1 / 2.5 节</td></tr>
+        <tr><td><strong>总重重心 GW CG</strong><br>GW Center of Gravity</td><td>参数区第二行</td><td>显示总重重心（% MAC），点击弹出总重重心键盘；支持滚轮选择器</td><td>详见本页 2.1 / 2.5 节</td></tr>
+        <tr><td><strong>零燃油重量 ZFW</strong><br>Zero Fuel Weight</td><td>参数区第三行</td><td>显示零燃油重量，点击弹出 ZFW 键盘；支持滚轮选择器</td><td>详见本页 2.1 / 2.5 节</td></tr>
+        <tr><td><strong>ZFW CG</strong><br>ZFW Center of Gravity</td><td>参数区第四行</td><td>显示零燃油重量重心（% MAC），点击弹出 ZFW CG 键盘；支持滚轮选择器</td><td>详见本页 2.1 / 2.5 节</td></tr>
+        <tr><td><strong>燃油 FUEL</strong><br>Fuel Weight</td><td>参数区第五行</td><td>显示总燃油量，点击弹出燃油键盘；支持滚轮选择器</td><td>详见本页 2.1 / 2.5 节</td></tr>
+        <tr><td><strong>快速访问按钮区</strong><br>Quick Access Buttons</td><td>主区域（中部）</td><td>一排快捷按钮，点击后弹出对应滑动面板，部分按钮显示状态指示灯或红色标记</td><td>详见本页 2.2~2.9 节</td></tr>
+        <tr><td><strong>故障部分</strong><br>Malfunction Section</td><td>主区域（底部）</td><td>显示激活和预位故障摘要，提供清除和激活操作</td><td>详见本页 2.10 节</td></tr>
       </table>
     </div>
 
@@ -262,11 +258,11 @@ graph TD
     <div class="table-wrap">
       <table>
         <tr><th>参数</th><th>功能定义</th><th>交互方式</th><th>与其他功能关系</th></tr>
-        <tr><td><strong>总重 GW</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总重</td><td>点击弹出总重键盘，或使用滚轮选择器（详见 2.5 重量与平衡滑动面板）</td><td>与 ZFW、燃油动态联动；修改 GW 时 ZFW 自动调整，若超出限制则燃油自动调整</td></tr>
-        <tr><td><strong>总重重心 GW CG</strong></td><td>以 % MAC 显示总重重心</td><td>点击弹出总重重心键盘，或使用滚轮选择器（详见 2.5）</td><td>与 ZFW CG 动态联动；修改 GW CG 时 ZFW CG 自动调整，若超出限制则燃油减少、ZFW 增加</td></tr>
-        <tr><td><strong>零燃油重量 ZFW</strong></td><td>以所选单位（千克/磅 x1000）显示零燃油重量</td><td>点击弹出 ZFW 键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW、燃油动态联动；修改 ZFW 时 GW 自动变化，若超出限制则燃油自动调整</td></tr>
-        <tr><td><strong>ZFW CG</strong></td><td>以 % MAC 显示零燃油重量重心</td><td>点击弹出 ZFW CG 键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW CG 动态联动；修改 ZFW CG 时 GW CG 自动变化</td></tr>
-        <tr><td><strong>燃油 FUEL</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总燃油量</td><td>点击弹出燃油键盘，或使用滚轮选择器（详见 2.5）</td><td>与 GW、ZFW 动态联动；修改燃油时 GW 自动变化，若超出限制则 ZFW 自动调整；燃油按飞机燃油分配计划分配</td></tr>
+        <tr><td><strong>总重 GW</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总重</td><td>点击弹出总重键盘，或使用滚轮选择器（详见本页 2.5 节「重量与平衡滑动面板」）</td><td>与 ZFW、燃油动态联动；修改 GW 时 ZFW 自动调整，若超出限制则燃油自动调整</td></tr>
+        <tr><td><strong>总重重心 GW CG</strong></td><td>以 % MAC 显示总重重心</td><td>点击弹出总重重心键盘，或使用滚轮选择器（详见本页 2.5 节）</td><td>与 ZFW CG 动态联动；修改 GW CG 时 ZFW CG 自动调整，若超出限制则燃油减少、ZFW 增加</td></tr>
+        <tr><td><strong>零燃油重量 ZFW</strong></td><td>以所选单位（千克/磅 x1000）显示零燃油重量</td><td>点击弹出 ZFW 键盘，或使用滚轮选择器（详见本页 2.5 节）</td><td>与 GW、燃油动态联动；修改 ZFW 时 GW 自动变化，若超出限制则燃油自动调整</td></tr>
+        <tr><td><strong>ZFW CG</strong></td><td>以 % MAC 显示零燃油重量重心</td><td>点击弹出 ZFW CG 键盘，或使用滚轮选择器（详见本页 2.5 节）</td><td>与 GW CG 动态联动；修改 ZFW CG 时 GW CG 自动变化</td></tr>
+        <tr><td><strong>燃油 FUEL</strong></td><td>以所选单位（千克/磅 x1000）显示飞机总燃油量</td><td>点击弹出燃油键盘，或使用滚轮选择器（详见本页 2.5 节）</td><td>与 GW、ZFW 动态联动；修改燃油时 GW 自动变化，若超出限制则 ZFW 自动调整；燃油按飞机燃油分配计划分配</td></tr>
       </table>
     </div>
 
@@ -305,14 +301,14 @@ graph TD
     <div class="table-wrap">
       <table>
         <tr><th>按钮</th><th>功能定义</th><th>呈现方式</th><th>交互方式</th></tr>
-        <tr><td><strong>DL 数据链（Data Link）</strong></td><td>显示数据链下行消息状态</td><td>当有来自机组的下行消息时，按钮亮起绿色</td><td>点击弹出数据链滑动面板（详见 2.3）</td></tr>
-        <tr><td><strong>UL 上行链路（Uplink）</strong></td><td>显示上行链路消息状态</td><td>当有教员发送给机组的上行消息时，按钮亮起橙色</td><td>点击弹出数据链滑动面板（详见 2.3）</td></tr>
-        <tr><td><strong>VHF 通信（VHF Comm）</strong></td><td>显示飞行员/副驾驶无线电通信状态和调谐频率</td><td>机组讲话时，飞行员/副驾驶图标旁显示绿色发射波</td><td>点击弹出通信滑动面板（详见 2.4）</td></tr>
-        <tr><td><strong>重量与重心（Weight &amp; CG）</strong></td><td>快速访问重量与平衡设置</td><td>标准按钮</td><td>点击弹出重量与平衡滑动面板（详见 2.5）</td></tr>
-        <tr><td><strong>服务与舱门（Services &amp; Doors）</strong></td><td>快速访问地面服务和舱门控制</td><td>标准按钮</td><td>点击弹出服务与舱门滑动面板（详见 2.6）</td></tr>
-        <tr><td><strong>故障（Malf）</strong></td><td>快速访问故障预选和激活</td><td>按钮上红色标记表示已激活和待处理的故障数量</td><td>点击弹出故障滑动面板（详见 2.7）</td></tr>
-        <tr><td><strong>断路器（CB）</strong></td><td>快速访问断路器控制</td><td>按钮上红色标记表示跳闸/弹出的断路器数量</td><td>点击弹出断路器滑动面板（详见 2.8）</td></tr>
-        <tr><td><strong>故障总结（Malf Summary）</strong></td><td>快速访问所有故障和断路器的总体状态</td><td>按钮上红色标记表示故障总结中包含的故障数量</td><td>点击弹出故障总结滑动面板（详见 2.9）</td></tr>
+        <tr><td><strong>DL 数据链（Data Link）</strong></td><td>显示数据链下行消息状态</td><td>当有来自机组的下行消息时，按钮亮起绿色</td><td>点击弹出数据链滑动面板（详见本页 2.3 节）</td></tr>
+        <tr><td><strong>UL 上行链路（Uplink）</strong></td><td>显示上行链路消息状态</td><td>当有教员发送给机组的上行消息时，按钮亮起橙色</td><td>点击弹出数据链滑动面板（详见本页 2.3 节）</td></tr>
+        <tr><td><strong>VHF 通信（VHF Comm）</strong></td><td>显示飞行员/副驾驶无线电通信状态和调谐频率</td><td>机组讲话时，飞行员/副驾驶图标旁显示绿色发射波</td><td>点击弹出通信滑动面板（详见本页 2.4 节）</td></tr>
+        <tr><td><strong>重量与重心（Weight &amp; CG）</strong></td><td>快速访问重量与平衡设置</td><td>标准按钮</td><td>点击弹出重量与平衡滑动面板（详见本页 2.5 节）</td></tr>
+        <tr><td><strong>服务与舱门（Services &amp; Doors）</strong></td><td>快速访问地面服务和舱门控制</td><td>标准按钮</td><td>点击弹出服务与舱门滑动面板（详见本页 2.6 节）</td></tr>
+        <tr><td><strong>故障（Malf）</strong></td><td>快速访问故障预选和激活</td><td>按钮上红色标记表示已激活和待处理的故障数量</td><td>点击弹出故障滑动面板（详见本页 2.7 节）</td></tr>
+        <tr><td><strong>断路器（CB）</strong></td><td>快速访问断路器控制</td><td>按钮上红色标记表示跳闸/弹出的断路器数量</td><td>点击弹出断路器滑动面板（详见本页 2.8 节）</td></tr>
+        <tr><td><strong>故障总结（Malf Summary）</strong></td><td>快速访问所有故障和断路器的总体状态</td><td>按钮上红色标记表示故障总结中包含的故障数量</td><td>点击弹出故障总结滑动面板（详见本页 2.9 节）</td></tr>
       </table>
     </div>
 
@@ -458,7 +454,7 @@ flowchart LR
         <tr><td>无线电选项卡（Radio）</td><td>显示所有可用 VHF 和 HF 电台，每个电台包含电台名称、所选频率、调谐地面站类型。每个电台有三个按钮：发射（Transmit）、接收（Receive）、SELCAL</td></tr>
         <tr><td>内部通话选项卡（Intercom）</td><td>允许教员与 ICS 通信，包括驾驶舱（FLT）、客舱（CAB）、旅客广播（PA）。每个 ICS 包含发射和接收按钮；若无线电发射机无电源，发射按钮禁用</td></tr>
         <tr><td>导航选项卡（Navigation）</td><td>允许监听 NAV、DME、Marker Beacon、ADF、ILS 信号。每个导航接收机显示接收机名称、调谐频率、接收台站名称</td></tr>
-        <tr><td>特殊功能选项卡（Special Features）</td><td>提供私密通信、通信监听、各类呼叫及硬件控制功能（详见 2.4.1）</td></tr>
+        <tr><td>特殊功能选项卡（Special Features）</td><td>提供私密通信、通信监听、各类呼叫及硬件控制功能（详见本页 2.4.1 节）</td></tr>
       </table>
     </div>
 
@@ -1297,7 +1293,7 @@ flowchart LR
     </div>
 
     <h3>3.2 故障生命周期通用状态机</h3>
-    <p>故障在模拟中存在明确的生命周期状态流转：从选择到预位/激活，再到清除。断路器（CB）作为独立硬件/软件系统，其状态流转详见 2.8.4 硬件断路器状态流转图。</p>
+    <p>故障在模拟中存在明确的生命周期状态流转：从选择到预位/激活，再到清除。断路器（CB）作为独立硬件/软件系统，其状态流转详见本页 2.8.4 节「硬件断路器状态流转图」。</p>
     <div class="mermaid">
 stateDiagram-v2
     [*] --> 未选择 : 进入故障滑动面板
