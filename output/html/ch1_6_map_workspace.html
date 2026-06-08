@@ -392,6 +392,37 @@ graph TD
       </div>
     </div>
 
+    <h4>2.2.2 径向菜单操作流程（Radial Menu Flow）</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([点击地图主区域]) --> Select{选择目标对象}
+    Select -->|空白处| Cursor[光标径向菜单]
+    Select -->|飞机| Aircraft[飞机径向菜单]
+    Select -->|导航台| Navaid[导航台径向菜单]
+    Select -->|机场| Airport[机场径向菜单]
+    Select -->|风暴| StormMenu[风暴径向菜单]
+
+    Cursor --> Op1[放置蜘蛛网 / 重定位 / 添加风暴或实体]
+    Aircraft --> Op2[附加蜘蛛网]
+    Navaid --> Op3[重定位到导航台 / 故障或重置导航台]
+    Airport --> Op4[放置蜘蛛网]
+    StormMenu --> Op5[激活 / 删除 / 编辑 / 添加风暴]
+
+    Op1 --> End([操作完成])
+    Op2 --> End
+    Op3 --> End
+    Op4 --> End
+    Op5 --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Cursor fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style Aircraft fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style Navaid fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style Airport fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style StormMenu fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    </div>
+
     <h3>2.3 右侧工具栏（Right Toolbar）</h3>
     <p>右侧工具栏控制地图主界面上显示的信息，位于主区域右侧。</p>
 
@@ -464,6 +495,32 @@ graph TD
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <h4>2.3.1 地图视图控制流程（Map View Control Flow）</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([选择视图功能]) --> Func{功能类型}
+    Func -->|缩放| Zoom[点击 +/- 调整级别]
+    Func -->|自动范围| AR[确保飞机与参考跑道同屏]
+    Func -->|比例尺| Scale[选择 5~350 nm]
+    Func -->|透视| Persp[切换 3D 模式并调整视角]
+    Func -->|地图定位| MapTo[选择机场/飞机/风暴]
+    Func -->|符号| Sym[切换 T/眼睛可见性]
+    Func -->|指示器| Ind[切换眼睛可见性]
+
+    Zoom --> End([视图更新])
+    AR --> End
+    Scale --> End
+    Persp --> End
+    MapTo --> End
+    Sym --> End
+    Ind --> End
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Persp fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style MapTo fill:#fef3c7,stroke:#d97706,stroke-width:2px
     </div>
 
     <div class="img-row">
@@ -569,6 +626,32 @@ graph TD
       <div class="img-block"><img src="./images/ch1_6_plot_runway.jpg" alt="跑道图表"><div class="img-caption">图26 跑道图表（典型）</div></div>
     </div>
 
+    <h4>2.4.1.1 绘图显示流程（Plots Display Flow）</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([打开绘图卷起菜单]) --> SelectType{选择图表类型}
+    SelectType -->|精密进近| PA[显示下滑道/航向道/速度偏差]
+    SelectType -->|非精密进近| NPA[显示 HAT/中心线/速度偏差]
+    SelectType -->|起飞| TO[显示 HAT/中心线/速度偏差]
+    SelectType -->|尾部间隙| TC[显示空速/高度/间隙/姿态/速率]
+    SelectType -->|跑道| RW[显示跑道位置]
+
+    PA --> Adjust[调整范围滑块]
+    NPA --> Adjust
+    TO --> Adjust
+    TC --> Adjust
+    RW --> Adjust
+
+    Adjust --> End([显示完成])
+    Adjust --> Clear[点击清除绘图]
+    Clear --> End2([清除完成])
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style End2 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Clear fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    </div>
+
     <h5>清除（Clear）</h5>
     <p>「清除」卷起菜单可清除虚拟环境中的项目，包括：时间线、风暴、事件列表、航迹。</p>
     <div class="img-block">
@@ -588,6 +671,19 @@ graph TD
     <div class="img-block">
       <img src="./images/ch1_6_footer_marker.jpg" alt="标记卷起菜单">
       <div class="img-caption">图29 标记卷起菜单</div>
+    </div>
+
+    <h4>2.4.2.1 标记操作流程（Marker Flow）</h4>
+    <div class="mermaid">
+flowchart LR
+    Start([点击标记按钮]) --> Open[显示标记卷起菜单]
+    Open --> SelectColor{选择颜色}
+    SelectColor --> Place[在飞行路径上标记事件]
+    Place --> End([标记完成])
+
+    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style End fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Open fill:#fef3c7,stroke:#d97706,stroke-width:2px
     </div>
 
     <h5>风暴（Storm）与风暴属性滑动面板</h5>
