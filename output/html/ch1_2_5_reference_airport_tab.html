@@ -300,12 +300,17 @@ graph TD
     <p>此滑动面板允许教员查看并选择参考/目的地机场和跑道、将飞机重新定位到预设位置、执行地面操作、调整跑道灯光强度。包含四个选项卡：参考位置、机场重新定位、地面操作、FMS 快速设置。</p>
 
     <blockquote>
-      <strong>关于选项卡视觉状态的补充说明：</strong>滑动面板顶部的四个选项卡遵循标准的 iOS/Android 分段控制器（Segmented Control）视觉规范：
+      <strong>关于滑动面板顶部选项卡分组的补充说明：</strong>仔细观察图 2 的顶部选项卡栏，其布局并非四个平级 tab，而是分为<strong>三个视觉区域</strong>：
       <ul>
-        <li><strong>白色高亮（White/Active）</strong>：表示当前被选中的选项卡，其对应的内容区域显示在面板主体中。</li>
-        <li><strong>暗色/灰色（Dark/Inactive）</strong>：表示未被选中的选项卡，点击后可切换至该选项卡的内容。</li>
-        <li>在图 2 的截图中，<strong>REFERENCE LOCATION</strong> 是当前被选中的选项卡（白色高亮），而 <strong>AIRPORT REPOSITION</strong>、<strong>GROUND OPERATIONS</strong>、<strong>FMS QUICKSET</strong> 均处于未选中状态（暗色）。由于截图分辨率、光照反射和相邻像素的视觉融合效应，AIRPORT REPOSITION 和 FMS QUICKSET 可能与白色高亮区域在视觉上产生轻微混淆，但它们本质上均为未选中的暗色状态。</li>
-        <li>点击 <strong>GROUND OPERATIONS</strong> 选项卡后，该选项卡立即变为白色高亮，其他三个选项卡同步变为暗色；面板主体内容平滑过渡为地面操作界面（如图 8 所示）。此过渡为<strong>瞬时状态切换</strong>（无动画延迟），因为滑动面板本身保持打开，仅内部正文区域重新渲染。</li>
+        <li><strong>第一区域 — REFERENCE LOCATION</strong>（白色高亮）：独立的单选选项卡。点击后，面板主体切换为参考位置界面（2.2.1）。</li>
+        <li><strong>第二区域 — FMS QUICKSET</strong>（白色高亮）：独立的单选选项卡。点击后，面板主体切换为 FMS 快速设置界面（2.2.4）。</li>
+        <li><strong>第三区域 — AIRPORT REPOSITION / GROUND OPERATIONS</strong>（互斥切换按钮组）：这两个按钮共享同一块面板主体区域，彼此互斥。
+          <ul>
+            <li>图 2 中 <strong>AIRPORT REPOSITION 为白色高亮</strong>，表示当前第三区域显示的是机场重新定位内容（等待/滑行、登机口、重定位预设、跑道照明）。</li>
+            <li><strong>GROUND OPERATIONS 为灰色/暗色</strong>，表示该按钮当前未被选中；点击后，第三区域的界面会<strong>整体切换</strong>为地面操作内容（引导员、推出、轮挡、跑道状况、录制交通、场景交通），如图 8 所示。</li>
+          </ul>
+        </li>
+        <li><strong>点击过渡机制：</strong>点击 GROUND OPERATIONS 后，该按钮从灰色变为白色高亮，AIRPORT REPOSITION 同步从白色变为灰色；第三区域的主体内容瞬时重新渲染为地面操作界面。滑动面板本身保持打开，不会发生关闭或弹出新面板的行为。</li>
       </ul>
     </blockquote>
 
