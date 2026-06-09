@@ -54,14 +54,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
 .img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
-.img-row .img-block img{max-height:320px}
+.img-row .img-block img{max-height:200px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -159,6 +159,16 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
   <div class="content">
     <h1>1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</h1>
     <p class="subtitle">对应原始手册：## 10. INSTRUCTOR STATION Sliding Panel</p>
+
+    <blockquote>
+      <strong>设计意图与定位：</strong>INSTRUCTOR STATION Sliding Panel 并非 Control Board 内部的功能性子面板（如 Malfunctions、Weight &amp; CG 等），而是一个<strong>系统级的全局设置入口</strong>。它解决的核心问题是：
+      <strong>单位制（UOM）、系统配置切换和结束会话</strong>这三个操作<strong>不属于任何功能 Tab</strong>（它们既不是"飞机参数"，也不是"环境参数"），但又必须随时可达。
+      <ul>
+        <li><strong>为什么不放在某个 Tab 里？</strong>——单位制设置影响整个系统的显示方式，如果放在 AIRCRAFT Tab 中，教员会误以为"这只是改飞机重量的显示单位"；放在 REFERENCE AIRPORT Tab 中，又会误以为"这只是改机场气象的显示单位"。独立的 INSTRUCTOR STATION 面板在 UI 上划清了边界：<strong>"这里放的是关于'系统怎么看'的设置，不是关于'飞机是什么状态'的参数。"</strong></li>
+        <li><strong>为什么用 Sliding Panel 而不是常驻控件？</strong>——这些设置通常 session 开始前配置一次，训练中很少修改。放在右侧边缘的 Expand Button 中，平时不占用屏幕空间，需要时一步展开。</li>
+        <li><strong>为什么结束会话也放在这里？</strong>——End Session 是一个<strong>破坏性全局操作</strong>（会结束当前训练 session）。它不能放在任何功能 Tab 中（避免误触），也不能放在 Footer（Footer 是高频操作区）。放在 Sliding Panel 底部是一个<strong>需要两步才能触及</strong>的位置（先展开面板 → 再点击按钮），符合安全设计原则。</li>
+      </ul>
+    </blockquote>
 
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>

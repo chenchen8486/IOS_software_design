@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.1 组成部分 — CAE IOS 教员台</title>
+<title>1.1 组成部分与 IOS 设计哲学 — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -127,7 +127,7 @@ tr:last-child td{border-bottom:none}
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link active" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link active" href="ch1_1_components.html">1.1 组成部分与 IOS 设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children collapsed">
@@ -157,11 +157,11 @@ tr:last-child td{border-bottom:none}
   <div class="breadcrumb">
     <a href="#">首页</a><span class="breadcrumb-sep">/</span>
     <a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span>
-    <span>1.1 组成部分</span>
+    <span>1.1 组成部分与 IOS 设计哲学</span>
   </div>
 
   <article class="content">
-    <h1>1.1 组成部分</h1>
+    <h1>1.1 组成部分与 IOS 设计哲学</h1>
     <p class="subtitle">原始手册对应：## 3.1 IOS Workspaces + ## 3.2 UI Controls &nbsp;|&nbsp; 整理时间：2026-05-30</p>
 
     <blockquote>
@@ -600,6 +600,9 @@ Changing the current IOS workspace is performed through a <strong>Workspace butt
     <div class="content">冻结、重置、模拟控制、音量、工作区切换等高频全局命令，确保"随时可以操作"</div>
   </div>
 </div>
+
+<div class="highlight-box warn">
+<strong>两种 Sliding Panel 的设计意图对比：</strong>上述"侧边滑动层"描述的是 Control Board 内部<strong>功能性的 Sliding Panel</strong>（如 Malfunctions、Weight &amp; CG、SLEW 等），它们由各个 Tab 内部的 expandable buttons 触发，与当前功能上下文强相关。而<strong>1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</strong>是一个<strong>系统级的全局面板</strong>，由 Control Board 右侧边缘的 Expand Button 触发，承载的是与当前功能上下文无关的全局设置（单位制 UOM、IOS 配置切换、结束会话）。两者的核心区别在于：前者改变"模拟器状态"（飞机故障、重量分布），后者改变"教员工具的自身设置"（显示单位、系统配置）。</div>
 
 <p>这种设计让<strong>"当前正在看什么"</strong>（Tabs）和<strong>"随时可以做什么"</strong>（Footer 的快速冻结/重置/切换工作区）<strong>解耦</strong>了。教员不需要离开当前上下文就能执行高频命令。</p>
 
