@@ -299,7 +299,18 @@ graph TD
     </div>
     <p>此滑动面板允许教员查看并选择参考/目的地机场和跑道、将飞机重新定位到预设位置、执行地面操作、调整跑道灯光强度。包含四个选项卡：参考位置、机场重新定位、地面操作、FMS 快速设置。</p>
 
+    <blockquote>
+      <strong>关于选项卡视觉状态的补充说明：</strong>滑动面板顶部的四个选项卡遵循标准的 iOS/Android 分段控制器（Segmented Control）视觉规范：
+      <ul>
+        <li><strong>白色高亮（White/Active）</strong>：表示当前被选中的选项卡，其对应的内容区域显示在面板主体中。</li>
+        <li><strong>暗色/灰色（Dark/Inactive）</strong>：表示未被选中的选项卡，点击后可切换至该选项卡的内容。</li>
+        <li>在图 2 的截图中，<strong>REFERENCE LOCATION</strong> 是当前被选中的选项卡（白色高亮），而 <strong>AIRPORT REPOSITION</strong>、<strong>GROUND OPERATIONS</strong>、<strong>FMS QUICKSET</strong> 均处于未选中状态（暗色）。由于截图分辨率、光照反射和相邻像素的视觉融合效应，AIRPORT REPOSITION 和 FMS QUICKSET 可能与白色高亮区域在视觉上产生轻微混淆，但它们本质上均为未选中的暗色状态。</li>
+        <li>点击 <strong>GROUND OPERATIONS</strong> 选项卡后，该选项卡立即变为白色高亮，其他三个选项卡同步变为暗色；面板主体内容平滑过渡为地面操作界面（如图 8 所示）。此过渡为<strong>瞬时状态切换</strong>（无动画延迟），因为滑动面板本身保持打开，仅内部正文区域重新渲染。</li>
+      </ul>
+    </blockquote>
+
     <h4>2.2.1 参考位置选项卡（REFERENCE LOCATION Tab）</h4>
+    <p>允许教员查看并更改参考机场/跑道和目的地机场/跑道。包含只读文本字段、可展开按钮和自动参考位置复选框。</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>属性（Property）</th><th>说明</th></tr></thead>
@@ -441,6 +452,7 @@ graph TD
     </div>
 
     <h4>2.2.3 地面操作选项卡（GROUND OPERATIONS Tab）</h4>
+    <p>允许教员执行各种地面操作（引导员、飞机推出、轮挡）、修改跑道状况（添加水、雪、冰或沙等污染物）以及添加交通场景（录制交通、场景交通）到训练会话中。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_ground_operations_tab.jpg" alt="地面操作选项卡">
       <p class="img-caption">图 8：地面操作选项卡</p>
@@ -483,6 +495,7 @@ graph TD
     </div>
 
     <h4>2.2.4 FMS 快速设置选项卡（FMS QUICKSET Tab）</h4>
+    <p>允许教员保存、召回和管理 FMS 内存飞行计划。包含 FMS 保存、FMS 召回和 FMS 内存三个核心控件。</p>
     <div class="img-block">
       <img src="./images/ch1_2_5_fms_quickset_tab.jpg" alt="FMS 快速设置选项卡">
       <p class="img-caption">图 11：FMS 快速设置选项卡</p>
