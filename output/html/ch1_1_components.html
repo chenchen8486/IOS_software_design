@@ -55,8 +55,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre code{background:transparent;padding:0;color:inherit}
 
 /* Image blocks */
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 .img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
@@ -165,20 +165,19 @@ tr:last-child td{border-bottom:none}
       <table>
         <thead>
           <tr>
-            <th style="width:22%">工作区</th>
-            <th style="width:45%">功能描述</th>
-            <th style="width:33%">主要使用场景</th>
+            <th style="width:24%">工作区</th>
+            <th style="width:76%">功能描述</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>控制面板（Control Board）</strong></td>
             <td>
-              • 包含与本机场相关的所有参数，是访问本机场参数的主要途径，允许直接在面板上更改数值（例如，调整燃油重量）；<br>
+              • 包含与本机场（ownship）相关的所有参数，是访问本机场参数的主要途径，允许直接在面板上更改数值（例如，调整燃油重量）；<br>
               • 包含滑动面板（参考 1.2.6）：例如，用于激活和预位故障；<br>
-              • 包含一个通用页脚（参考 1.2.7）：提供对常用命令的快速访问
+              • 包含一个通用页脚（参考 1.2.7）：提供对常用命令的快速访问；<br>
+              • 包含 5 个标签页（Tabs）：LESSON PLAN、DOCS、CURRENT CONDITIONS、AIRCRAFT、REFERENCE AIRPORT，以及教员台滑动面板（INSTRUCTOR STATION Sliding Panel）
             </td>
-            <td>日常训练全程使用</td>
           </tr>
           <tr>
             <td><strong>地图（Map）</strong></td>
@@ -188,7 +187,6 @@ tr:last-child td{border-bottom:none}
               • 包含环境特征（如风暴、导航台 Navaids stations、模拟的入侵者或交通 simulated intruders or traffic）；<br>
               • 显示起飞/进近/跑道、飞机轨迹以及飞行管理系统（FMS）航线
             </td>
-            <td>程序训练、位置监控</td>
           </tr>
           <tr>
             <td><strong>课程计划剖面（Lesson Plan Profile）</strong></td>
@@ -198,17 +196,14 @@ tr:last-child td{border-bottom:none}
               • 显示在课程计划编辑器中创建的课程；<br>
               • 允许教员自动执行某个步骤，而不是输入单个命令
             </td>
-            <td>教员参考观察飞行数据</td>
           </tr>
           <tr>
             <td><strong>复示仪表（Instruments Repeaters）</strong></td>
             <td>允许教员选择将哪些座舱仪表复示或显示在 IOS（教员操作台）显示屏上</td>
-            <td>课程推进与阶段管理</td>
           </tr>
           <tr>
             <td><strong>维护（Maintenance）</strong></td>
             <td>提供相关页面，允许维护人员执行各种模拟机维护任务</td>
-            <td>复杂场景、专项训练</td>
           </tr>
           <tr>
             <td><strong>高级（Advanced）</strong></td>
@@ -219,11 +214,12 @@ tr:last-child td{border-bottom:none}
               • 触发故障；<br>
               • 访问附加页面
             </td>
-            <td>技术人员使用</td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <p>切换当前 IOS 工作区通过控制面板底部（Control Board Footer）上的 <strong>Workspace</strong> 按钮完成。点击该按钮会显示一个工作区卷动菜单（Workspace rollup menu），其中列出所有可用工作区。</p>
 
     <p>下图展示了 IOS 中最核心的<strong>控制面板（Control Board）</strong>界面布局。教员通过该工作区可直接修改飞机参数、激活滑动面板，并访问底部快捷命令栏。</p>
     <div class="img-block">
@@ -263,6 +259,11 @@ tr:last-child td{border-bottom:none}
             <td>仅显示状态</td>
           </tr>
           <tr>
+            <td><strong>指示灯（Indicators）</strong></td>
+            <td>无需操作</td>
+            <td>显示组件的当前状态</td>
+          </tr>
+          <tr>
             <td><strong>按钮（Button）</strong></td>
             <td>点击激活，亮浅蓝色</td>
             <td>—</td>
@@ -276,11 +277,6 @@ tr:last-child td{border-bottom:none}
             <td><strong>轮选器（Wheel Picker）</strong></td>
             <td>长按/滑动参数呼出</td>
             <td>绿勾确认，红叉取消</td>
-          </tr>
-          <tr>
-            <td><strong>交互图表</strong></td>
-            <td>拖拽图表元素修改值</td>
-            <td>如 Slew 图表可拖动「+」号联动更新滑块与文本框</td>
           </tr>
         </tbody>
       </table>
@@ -489,8 +485,8 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <!-- 第四行：键盘与轮选器可调参数（仅 2 张，双列居中） -->
-    <div class="img-row img-row-2">
+    <!-- 第四行：键盘、轮选器可调参数与交互图表 -->
+    <div class="img-row">
       <div class="img-block">
         <div class="img-pic"><img src="./images/ch1_1_3_keypad.jpg" alt="键盘"></div>
         <div class="img-caption">图 11：键盘（Keypad）</div>
@@ -498,6 +494,10 @@ tr:last-child td{border-bottom:none}
       <div class="img-block">
         <div class="img-pic"><img src="./images/ch1_1_3_wheel_picker_adjustable.jpg" alt="轮选器可调参数"></div>
         <div class="img-caption">图 12：轮选器 — 可调参数示例</div>
+      </div>
+      <div class="img-block">
+        <div class="img-pic"><img src="./images/ch1_1_3_interactive_graphs.jpg" alt="交互式图表"></div>
+        <div class="img-caption">图 13：交互式图表（Interactive Graphs）</div>
       </div>
     </div>
 
