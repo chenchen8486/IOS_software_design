@@ -9,8 +9,6 @@
 
 - **虚拟环境**：开发前询问当前环境，常用 `conda activate Chen`。
 - **环境隔离**：必须使用虚拟环境，严禁污染全局 Python。
-- **依赖锁定**：实时维护 `requirements.txt`。
-- **国内加速**：`pip install` 强制使用清华源 `https://pypi.tuna.tsinghua.edu.cn/simple/`。
 
 ## 3. 架构红线与目录规范
 
@@ -28,13 +26,6 @@
 ## 5. 极致异常与日志处理
 
 - **拒绝静默失败**：禁止空 `try-except` 或纯 `pass` 吞掉异常。
-- **日志分级**：
-  - `Debug`：开发期诊断信息
-  - `Info`：核心流程关键节点
-  - `Warning`：可恢复的不期望事件（如重试）
-  - `Error`：阻断当前流程，但程序未崩溃
-  - `Critical`：致命错误，程序必须退出
-- **底层记录，高层转化**：文件 I/O、图像解析、模型加载等底层异常须通过 `logging` 记录完整 Traceback 并向外抛出；UI / API 最外层拦截后转化为中文友好提示（如："文件 [xxx.json] 格式损坏，请检查标注工具"）。
 
 ## 6. 测试驱动与交付闭环
 
@@ -68,26 +59,7 @@
 
 ## 9. 权限与无中断自动化策略
 
-### 9.1 用户侧预授权配置
-
-为消除 Claude Code CLI 在常规开发中频繁弹出的 `yes/no` 权限中断，**请在项目根目录创建** `.claude/settings.json`，将高频只读操作加入预授权列表：
-
-```json
-{
-  "permissions": {
-    "allow": [
-      {"tool": "Read", "param": "file_path", "regex": ".*"},
-      {"tool": "Glob", "regex": ".*"},
-      {"tool": "Grep", "regex": ".*"},
-      {"tool": "Bash", "param": "command", "regex": "^(ls|find|grep|cat|head|tail|pwd|echo|git status|git log|git diff|git branch|conda env list|pip list|pytest|python -m unittest)"}
-    ]
-  }
-}
-```
-
-配置完成后，文件读取、目录遍历、代码搜索及常用诊断命令将不再触发中断。若字段格式存在差异，请以 `claude config` 交互设置或官方文档为准。
-
-### 9.2 助手侧行为策略
+### 9.1 助手侧行为策略
 
 - **批量优先**：需查看多个文件或遍历目录时，优先使用 `Glob` + `Read` 批量完成，禁止逐条询问"是否读取 xxx"。
 - **只读豁免**：代码诊断、日志查看、依赖检查等纯只读操作，直接执行 `Bash` / `Read` / `Grep`，无需提前征求同意。
