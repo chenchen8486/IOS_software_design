@@ -169,11 +169,61 @@ tr:last-child td{border-bottom:none}
       <li>所有流程均假设教员已完成<strong>系统启动与登录</strong>（维护页面层面的初始化不在本章范围内，详见 1.3 维护页面）</li>
     </ul>
 
+    <h3>1.3 流程 × 工作区全局映射矩阵</h3>
+    <p>下表从架构视角展示 6 个参考流程与 6 大工作区之间的交叉关系。✦ 表示该流程的<strong>主战场</strong>（核心操作发生在此工作区），○ 表示<strong>辅助参与</strong>（数据读取、状态监控或结果确认），— 表示不直接涉及。</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>工作区</th><th>RF-01<br/>完整 Session</th><th>RF-02<br/>课程执行</th><th>RF-03<br/>初始化</th><th>RF-04<br/>故障注入</th><th>RF-05<br/>地图监控</th><th>RF-06<br/>冻结/回放</th></tr>
+        <tr><td><strong>Control Board</strong><br/>控制面板</td><td>✦</td><td>✦</td><td>✦</td><td>✦</td><td>○</td><td>○</td></tr>
+        <tr><td><strong>Map</strong><br/>地图</td><td>✦</td><td>○</td><td>○</td><td>○</td><td>✦</td><td>○</td></tr>
+        <tr><td><strong>Lesson Plan Profile</strong><br/>课程计划剖面</td><td>✦</td><td>✦</td><td>—</td><td>—</td><td>—</td><td>○</td></tr>
+        <tr><td><strong>Instruments Repeaters</strong><br/>复示仪表</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td></tr>
+        <tr><td><strong>Maintenance</strong><br/>维护</td><td>○</td><td>—</td><td>—</td><td>○</td><td>○</td><td>—</td></tr>
+        <tr><td><strong>Advanced</strong><br/>高级</td><td>✦</td><td>○</td><td>○</td><td>✦</td><td>✦</td><td>✦</td></tr>
+      </table>
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构解读：</strong>从矩阵可见，<strong>Control Board</strong> 是唯一的「全流程核心」工作区（6 个流程中 4 个都是主战场），再次验证了其作为系统聚合根的地位；<strong>Advanced</strong> 虽然在 4 个流程中是主战场，但它扮演的都是「应急快速通道」角色，不是日常主路径；<strong>Maintenance</strong> 只在异常场景出现，体现了角色隔离设计。
+    </div>
+
+    <h3>1.4 核心数据流总览</h3>
+    <p>以下数据流描述是逆向开发时的关键输入。它们定义了各工作区之间<strong>共享哪些状态、谁产生数据、谁消费数据、谁拥有最终解释权</strong>。</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:22%">数据主题</th><th style="width:20%">来源工作区</th><th style="width:20%">消费工作区</th><th style="width:38%">数据流说明</th></tr>
+        <tr><td><strong>飞机重量与重心</strong></td><td>AIRCRAFT Tab</td><td>Map / Instruments Repeaters / Lesson Plan Profile</td><td>GW / GW CG / ZFW / Fuel 等参数在 AIRCRAFT Tab 输入后，实时同步至 Map（影响飞机图标姿态/性能包线显示）、Instruments Repeaters（影响相关仪表读数），Lesson Plan Profile 在涉及性能计算时使用</td></tr>
+        <tr><td><strong>参考机场与跑道</strong></td><td>REFERENCE AIRPORT Tab</td><td>Map / CURRENT CONDITIONS / Lesson Plan Profile</td><td>机场/跑道选择变更后，Map 重新定位中心并加载对应地景；CURRENT CONDITIONS 中的跑道条件与该跑道绑定；Lesson Plan Profile 的 amber line 以参考机场为地理基准</td></tr>
+        <tr><td><strong>环境参数</strong></td><td>CURRENT CONDITIONS Tab / Advanced → Environment</td><td>Map / Lesson Plan Profile / Instruments Repeaters</td><td>风、云、能见度、QNH 等由 CURRENT CONDITIONS 管理主线状态；Advanced → Environment 可临时覆盖部分参数；Map 负责渲染可视化效果</td></tr>
+        <tr><td><strong>课程执行进度</strong></td><td>LESSON PLAN Tab / Autorun 引擎</td><td>Lesson Plan Profile / Footer</td><td>当前步骤索引、步骤状态（未执行/执行中/已完成）由 LESSON PLAN Tab 产生；Lesson Plan Profile 画布中高亮当前步骤；Footer 中的部分状态指示灯可能随步骤类型变化</td></tr>
+        <tr><td><strong>故障状态</strong></td><td>AIRCRAFT Tab / Advanced → Failure / LESSON PLAN MALF</td><td>Footer / Map / Instruments Repeaters / Control Board Malfunction Section</td><td>故障被激活或预位后，状态写入全局故障注册表；Footer 指示灯更新；Map 中相关系统效果可能变化；Instruments Repeaters 中对应仪表显示故障指示</td></tr>
+        <tr><td><strong>冻结/回放状态</strong></td><td>Footer / Advanced → Resets/Freezes / Advanced → Recording</td><td>全部工作区</td><td>冻结状态是全局事件，所有工作区收到暂停信号；录制/回放状态由 Recording 引擎管理，调用时恢复飞机与环境参数快照</td></tr>
+        <tr><td><strong>座舱仪表选择</strong></td><td>INSTRUMENT REPEATER Workspace</td><td>INSTRUMENT REPEATER（自身显示）</td><td>教员选择复示哪些仪表，该选择仅影响当前 IOS 显示屏，不反向影响模拟器主状态</td></tr>
+      </table>
+    </div>
+
+    <div class="highlight-box warn">
+      <strong>逆向开发关键约束：</strong>上述数据流中存在几个<strong>单一事实来源（Single Source of Truth）</strong>：飞机物理状态由 AIRCRAFT Tab 主控；课程进度由 LESSON PLAN Tab 主控；全局冻结状态由 Footer/Advanced 主控。任何工作区在消费这些数据时都不应本地缓存后自成一派，否则会导致状态不一致。
+    </div>
+
     <!-- ==================== 二、RF-01 标准训练 Session 完整流程 ==================== -->
     <h2>二、RF-01 标准训练 Session 完整流程</h2>
-    <p class="area-map"><strong>性质：</strong>端到端主流程 &nbsp;|&nbsp; <strong>起点：</strong>进入 LESSON PLAN Tab &nbsp;|&nbsp; <strong>终点：</strong>结束课程并退出</p>
+    <p class="area-map">
+      <strong>性质：</strong>端到端主流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>IOS 已启动并加载配置；教员已完成登录；模拟器无全局告警 &nbsp;|&nbsp;
+      <strong>后置条件：</strong>课程正常结束或被中止；飞机与环境参数复位至安全默认值；可加载下一课程 &nbsp;|&nbsp;
+      <strong>异常退出：</strong>触发紧急中止流程后跳转至 RF-06（冻结）+ Maintenance 日志记录 &nbsp;|&nbsp;
+      <strong>起点：</strong>进入 LESSON PLAN Tab &nbsp;|&nbsp;
+      <strong>终点：</strong>结束课程并退出
+    </p>
 
     <p>下图展示了教员从加载课程到结束讲评的<strong>完整训练生命周期</strong>。该流程以课程计划为核心主线，在关键节点上与飞机初始化、环境配置、地图监控、故障注入等支线流程产生交叉。虚线框表示可独立执行的子流程（详见下文 RF-02 ~ RF-06）。</p>
+
+    <div class="highlight-box">
+      <strong>架构视角的衔接点解读：</strong>本流程图中有三个关键的<strong>领域切换点</strong>（用黄色虚线框标注）：<strong>「初始化检查 → RF-03」</strong>是从<strong>课程准备域</strong>切换到<strong>参数配置域</strong>；<strong>「动态干预 → RF-04」</strong>是从<strong>核心训练域</strong>切换到<strong>支撑保障域（Advanced）</strong>的应急通道；<strong>「冻结事件 → RF-06」</strong>是从<strong>实时执行状态</strong>切换到<strong>状态保全状态</strong>的全局控制点。这三个衔接点是后续软件架构设计中跨模块接口与状态同步协议的重点。
+    </div>
 
     <div class="mermaid">
 flowchart LR
@@ -228,20 +278,31 @@ flowchart LR
     <h3>2.1 流程阶段说明</h3>
     <div class="table-wrap">
       <table>
-        <tr><th>阶段</th><th>教员操作要点</th><th>关联 HTML</th></tr>
-        <tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
-        <tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
-        <tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-        <tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
-        <tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a></td></tr>
-        <tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
-        <tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；如需复盘，使用 Recording 功能回放或分析训练数据</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+        <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
+        <tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td>🔢 逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+        <tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td>🔢 逻辑推理："参数是否在包线内？数值是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
+        <tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td>🗺️ 空间直觉："飞机在跑道哪一端？航向对不对？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+        <tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td>📊 流程监控："课程是否按预期推进？是否需要干预？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
+        <tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数</td><td>🗺️ 空间直觉 + 📊 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a></td></tr>
+        <tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td>🔢 逻辑推理（参数修改）+ ⚡ 应激决策（快速响应）："需要注入什么？从哪个入口最快？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
+        <tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；如需复盘，使用 Recording 功能回放或分析训练数据</td><td>📊 流程监控 + 🔢 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
       </table>
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构衔接点说明：</strong>RF-01 主流程中存在两个关键的<strong>领域切换点</strong>：<strong>「动态干预」</strong>是从核心训练域（Control Board / Map / Lesson Plan）跳转到支撑域 Advanced 的应急通道；<strong>「冻结事件」</strong>则是从实时执行状态切换到状态保全状态的全局控制点。这两个衔接点是后续实现跨模块状态同步时必须重点设计的接口。
     </div>
 
     <!-- ==================== 三、RF-02 课程执行参考流程 ==================== -->
     <h2>三、RF-02 课程执行参考流程</h2>
-    <p class="area-map"><strong>性质：</strong>子流程 &nbsp;|&nbsp; <strong>触发条件：</strong>RF-01 中的「启动课程执行」 &nbsp;|&nbsp; <strong>终止条件：</strong>课程完成或教员手动结束</p>
+    <p class="area-map">
+      <strong>性质：</strong>子流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>课程已成功加载；飞机与环境参数已初始化完成；当前未处于冻结状态 &nbsp;|&nbsp;
+      <strong>后置条件：</strong>课程按步骤执行完毕或被教员中止；课程进度状态写入日志 &nbsp;|&nbsp;
+      <strong>异常退出：</strong>课程步骤执行失败时允许 Skip Condition 或 End Lesson 中止；冻结操作不中断课程执行状态，仅暂停模拟 &nbsp;|&nbsp;
+      <strong>触发条件：</strong>RF-01 中的「启动课程执行」 &nbsp;|&nbsp;
+      <strong>终止条件：</strong>课程完成或教员手动结束
+    </p>
 
     <h3>3.1 课程执行完整流程（Autorun 与 Step-by-Step 双模式）</h3>
     <div class="mermaid">
@@ -289,20 +350,69 @@ flowchart LR
       <li><strong>冻结模拟器</strong>：通过 Footer 的 Freeze 按钮暂停训练，解冻后课程可继续</li>
     </ul>
 
-    <h3>3.3 课程执行跨工作区联动规则</h3>
+    <h3>3.3 Tab 与 Profile 的视图选择：同一模型的两种呈现</h3>
+    <p>基于 1.1 节中的架构分析，LESSON PLAN Tab 与 Lesson Plan Profile 是<strong>同一课程数据的多重视图</strong>。RF-02 的执行流程可以在两个视图之间自由切换，教员应根据当前认知目标选择：</p>
+
     <div class="table-wrap">
       <table>
-        <tr><th>联动场景</th><th>触发源</th><th>受影响工作区</th><th>预期行为</th></tr>
-        <tr><td>步骤执行（SIM）</td><td>LESSON PLAN Tab</td><td>Map / Lesson Plan Profile</td><td>飞机位置/状态按步骤定义变更；Lesson Plan Profile 画布中高亮当前步骤</td></tr>
-        <tr><td>步骤执行（MALF）</td><td>LESSON PLAN Tab</td><td>AIRCRAFT Tab / Footer / INSTRUCTOR STATION Sliding Panel</td><td>故障被激活或预位；AIRCRAFT Tab 底部 Malfunction Section 更新；Footer 状态指示灯变化</td></tr>
-        <tr><td>Freeplay 触发</td><td>LESSON PLAN Tab 或 Lesson Plan Profile</td><td>Map / AIRCRAFT</td><td>预编程操作集立即生效；不受当前步骤序号限制</td></tr>
-        <tr><td>Nested 跳转</td><td>LESSON PLAN Tab</td><td>LESSON PLAN Tab（自身）</td><td>加载子课程并替换当前课程大纲；执行完成后可返回主课程</td></tr>
+        <tr><th style="width:22%">维度</th><th style="width:39%">LESSON PLAN Tab</th><th style="width:39%">Lesson Plan Profile</th></tr>
+        <tr><td><strong>信息形态</strong></td><td>纵向滚动列表，按阶段/步骤分层</td><td>横向飞行剖面图，以 amber line 为主线</td></tr>
+        <tr><td><strong>核心用途</strong></td><td>精确操作：Execute / Skip / Go to Current / End Lesson</td><td>全局监控：一眼看清课程结构、当前步骤在整体剖面中的位置</td></tr>
+        <tr><td><strong>最佳场景</strong></td><td>Step-by-Step 模式；需要查看某步骤的详细参数时</td><td>Autorun 模式；需要向学员/观察员展示课程全貌时</td></tr>
+        <tr><td><strong>认知模式</strong></td><td>🔢 逻辑推理模式："当前该执行第几步？参数是什么？"</td><td>📊 流程监控模式："我们飞到哪了？还剩哪些阶段？"</td></tr>
+        <tr><td><strong>实时联动</strong></td><td colspan="2">当前步骤索引双向同步：在 Tab 中点击 Go to Current，Profile 画布自动滚动并高亮；在 Profile 中点击某阶段，Tab 自动定位到对应步骤</td></tr>
+      </table>
+    </div>
+
+    <div class="highlight-box">
+      <strong>操作建议：</strong>Autorun 模式下，教员通常将主屏固定在 <strong>Lesson Plan Profile</strong> 进行全局监控，同时在副屏或画中画保留 <strong>LESSON PLAN Tab</strong> 用于必要时精确干预。Step-by-Step 模式下则相反：以 Tab 为主，Profile 为辅，便于每次点击 Execute 前确认该步骤在剖面中的上下文。
+    </div>
+
+    <h3>3.4 课程执行跨工作区联动规则</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>联动场景</th><th>触发源</th><th>受影响工作区</th><th>预期行为</th><th>边界情况与降级行为</th></tr>
+        <tr>
+          <td>步骤执行（SIM）</td><td>LESSON PLAN Tab</td><td>Map / Lesson Plan Profile</td><td>飞机位置/状态按步骤定义变更；Lesson Plan Profile 画布中高亮当前步骤</td>
+          <td>
+            若模拟器处于冻结状态，SIM 步骤的物理效果<strong>延迟至解冻后生效</strong>，但当前步骤索引会前进；<br/>
+            若 Map 与 Profile 的高亮不一致，以 <strong>LESSON PLAN Tab 的当前步骤索引</strong>为准。
+          </td>
+        </tr>
+        <tr>
+          <td>步骤执行（MALF）</td><td>LESSON PLAN Tab</td><td>AIRCRAFT Tab / Footer / INSTRUCTOR STATION Sliding Panel</td><td>故障被激活或预位；AIRCRAFT Tab 底部 Malfunction Section 更新；Footer 状态指示灯变化</td>
+          <td>
+            若同一故障已被手动激活，课程步骤执行时<strong>不会重复触发</strong>；<br/>
+            若故障库中不存在该故障代码，步骤执行失败并提示教员检查课程配置。
+          </td>
+        </tr>
+        <tr>
+          <td>Freeplay 触发</td><td>LESSON PLAN Tab 或 Lesson Plan Profile</td><td>Map / AIRCRAFT</td><td>预编程操作集立即生效；不受当前步骤序号限制</td>
+          <td>
+            Freeplay 步骤可能与当前 Autorun 步骤冲突；<strong>Freeplay 优先执行</strong>，Autorun 在其完成后继续；<br/>
+            若 Freeplay 中要求的状态与当前状态差异过大，部分参数可能分多帧渐变而非瞬时跳变。
+          </td>
+        </tr>
+        <tr>
+          <td>Nested 跳转</td><td>LESSON PLAN Tab</td><td>LESSON PLAN Tab（自身）</td><td>加载子课程并替换当前课程大纲；执行完成后可返回主课程</td>
+          <td>
+            子课程执行期间，主课程的步骤计时器<strong>暂停</strong>；<br/>
+            若子课程执行失败或中止，教员可选择返回主课程、重新加载子课程或结束整个训练。
+          </td>
+        </tr>
       </table>
     </div>
 
     <!-- ==================== 四、RF-03 环境配置与飞机初始化流程 ==================== -->
     <h2>四、RF-03 环境配置与飞机初始化流程</h2>
-    <p class="area-map"><strong>性质：</strong>子流程 &nbsp;|&nbsp; <strong>触发条件：</strong>RF-01 中的「课程加载后」或教员主动初始化 &nbsp;|&nbsp; <strong>终止条件：</strong>所有参数确认无误</p>
+    <p class="area-map">
+      <strong>性质：</strong>子流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>参考机场数据库可访问；飞机型号配置已加载；UOM（单位制）在 INSTRUCTOR STATION Sliding Panel 中已设置 &nbsp;|&nbsp;
+      <strong>后置条件：</strong>飞机重量与重心在允许包线内；参考机场/跑道/停机位已绑定；环境参数与所选跑道匹配 &nbsp;|&nbsp;
+      <strong>异常退出：</strong>Weight &amp; CG 超出包线时需回退调整；机场数据库加载失败时中止初始化并通知维护 &nbsp;|&nbsp;
+      <strong>触发条件：</strong>RF-01 中的「课程加载后」或教员主动初始化 &nbsp;|&nbsp;
+      <strong>终止条件：</strong>所有参数确认无误
+    </p>
 
     <h3>4.1 初始化流程图</h3>
     <div class="mermaid">
@@ -363,7 +473,14 @@ flowchart LR
 
     <!-- ==================== 五、RF-04 故障注入与应急训练流程 ==================== -->
     <h2>五、RF-04 故障注入与应急训练流程</h2>
-    <p class="area-map"><strong>性质：</strong>子流程 &nbsp;|&nbsp; <strong>触发条件：</strong>RF-01 中的「动态干预」或 RF-02 中的 MALF 步骤自动触发 &nbsp;|&nbsp; <strong>终止条件：</strong>故障解除或训练目标达成</p>
+    <p class="area-map">
+      <strong>性质：</strong>子流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>目标故障在 Malfunction 库中存在；教员具有故障注入权限；当前不处于维护锁定状态 &nbsp;|&nbsp;
+      <strong>后置条件：</strong>故障已被激活或预位；模拟器状态按故障定义更新；故障信息同步至 Footer / Fail Summary &nbsp;|&nbsp;
+      <strong>异常退出：</strong>故障注入后模拟器异常时，应立即解除故障或切换至 Maintenance 页面诊断；多个故障叠加时建议逐一解除排查 &nbsp;|&nbsp;
+      <strong>触发条件：</strong>RF-01 中的「动态干预」或 RF-02 中的 MALF 步骤自动触发 &nbsp;|&nbsp;
+      <strong>终止条件：</strong>故障解除或训练目标达成
+    </p>
 
     <h3>5.1 故障注入流程图</h3>
     <div class="mermaid">
@@ -424,7 +541,14 @@ flowchart LR
 
     <!-- ==================== 六、RF-05 地图监控与重新定位流程 ==================== -->
     <h2>六、RF-05 地图监控与重新定位流程</h2>
-    <p class="area-map"><strong>性质：</strong>子流程 &nbsp;|&nbsp; <strong>触发条件：</strong>RF-01 中的「位置确认」或「重新定位事件」 &nbsp;|&nbsp; <strong>终止条件：</strong>飞机到达目标位置并稳定</p>
+    <p class="area-map">
+      <strong>性质：</strong>子流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>目标机场/跑道/坐标在数据库中存在；飞机当前状态允许重新定位（非着陆接地瞬间、非系统级告警中） &nbsp;|&nbsp;
+      <strong>后置条件：</strong>飞机位置、姿态、高度、航向已更新至目标值；FMS 航线如需更新则已重新计算；Map 中视图中心已切换 &nbsp;|&nbsp;
+      <strong>异常退出：</strong>重新定位后飞机陷入地形或超出包线时，应再次使用 SLEW 微调或切换至 Airport Repo 重新选择 &nbsp;|&nbsp;
+      <strong>触发条件：</strong>RF-01 中的「位置确认」或「重新定位事件」 &nbsp;|&nbsp;
+      <strong>终止条件：</strong>飞机到达目标位置并稳定
+    </p>
 
     <h3>6.1 地图监控与重新定位流程图</h3>
     <div class="mermaid">
@@ -492,7 +616,14 @@ flowchart LR
 
     <!-- ==================== 七、RF-06 冻结、回放与录制操作流 ==================== -->
     <h2>七、RF-06 冻结、回放与录制操作流</h2>
-    <p class="area-map"><strong>性质：</strong>子流程 &nbsp;|&nbsp; <strong>触发条件：</strong>RF-01 中的「冻结事件」或教员主动暂停训练 &nbsp;|&nbsp; <strong>终止条件：</strong>训练恢复或结束</p>
+    <p class="area-map">
+      <strong>性质：</strong>子流程 &nbsp;|&nbsp;
+      <strong>前置条件：</strong>模拟器处于运行状态（未被维护锁定或硬件急停）；录制/回放引擎已就绪 &nbsp;|&nbsp;
+      <strong>后置条件：</strong>冻结已解除或训练已结束；录制文件已保存（如适用）；飞机与环境参数状态一致 &nbsp;|&nbsp;
+      <strong>异常退出：</strong>录制过程中系统异常时，已录制片段应保留；状态调用失败时，系统保持在调用前状态或回滚至最近快照 &nbsp;|&nbsp;
+      <strong>触发条件：</strong>RF-01 中的「冻结事件」或教员主动暂停训练 &nbsp;|&nbsp;
+      <strong>终止条件：</strong>训练恢复或结束
+    </p>
 
     <h3>7.1 冻结与恢复流程</h3>
     <div class="mermaid">
@@ -572,8 +703,87 @@ flowchart LR
       </table>
     </div>
 
-    <!-- ==================== 八、异常处理参考流程 ==================== -->
-    <h2>八、异常处理参考流程</h2>
+    <h3>7.4 状态一致性设计说明</h3>
+    <p>冻结、录制、回放是全局性操作，必须保证<strong>所有工作区对同一状态达成共识</strong>。以下是逆向开发时需要重点实现的一致性约束：</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:22%">操作</th><th style="width:78%">一致性约束</th></tr>
+        <tr>
+          <td><strong>冻结（Freeze）</strong></td>
+          <td>
+            冻结事件由 Footer 或 Advanced 发出后，应在<strong>同一帧内</strong>广播至模拟器核心、Map 渲染引擎、Lesson Plan 执行引擎和 Instruments Repeater 数据流。<strong>关键约束：</strong>
+            <ul style="margin:8px 0 0 18px">
+              <li>模拟器核心暂停物理计算，但 UI 输入事件队列不应清空，允许教员在冻结期间浏览/修改参数</li>
+              <li>Map 中飞机图标、环境动画（风暴、云层）必须同时静止，避免因渲染管线延迟导致"飞机停飞但云还在动"的异常</li>
+              <li>LESSON PLAN 的执行计时器暂停，但当前步骤索引保持不变；解冻后从该步骤继续</li>
+              <li>Instruments Repeater 中所有仪表读数保持在冻结瞬间值，不允许继续接收模拟器新数据</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>状态捕捉（Capture）</strong></td>
+          <td>
+            捕捉操作必须是一个<strong>原子快照（Atomic Snapshot）</strong>，包含以下数据包：
+            <ul style="margin:8px 0 0 18px">
+              <li>飞机物理状态：位置、姿态、速度、重量与重心、燃油分布</li>
+              <li>环境状态：参考机场、跑道、地面风、能见度、云层、温度、QNH</li>
+              <li>课程状态：当前步骤索引、已执行步骤列表、课程计时（可选）</li>
+              <li>故障状态：激活故障列表、预位故障列表</li>
+            </ul>
+            <strong>边界情况：</strong>捕捉过程中如飞机正在移动，应捕捉触发瞬间的状态；不应在捕捉过程中修改任何状态。
+          </td>
+        </tr>
+        <tr>
+          <td><strong>状态调用（Recall）</strong></td>
+          <td>
+            调用时应先<strong>冻结模拟器</strong>，然后按以下顺序恢复状态，以避免中间态被渲染：
+            <ol style="margin:8px 0 0 18px">
+              <li>恢复参考机场与跑道（REFERENCE AIRPORT）</li>
+              <li>恢复环境参数（CURRENT CONDITIONS）</li>
+              <li>恢复飞机物理状态（AIRCRAFT）</li>
+              <li>恢复故障状态（Malfunctions）</li>
+              <li>恢复课程状态（LESSON PLAN，可选）</li>
+              <li>通知 Map 和 Instruments Repeaters 刷新</li>
+              <li>解冻并继续训练</li>
+            </ol>
+            <strong>失败回滚：</strong>如果调用过程中任一状态恢复失败，系统应回滚到调用前的快照，或保持在冻结状态等待教员决策。
+          </td>
+        </tr>
+        <tr>
+          <td><strong>录制（Recording）</strong></td>
+          <td>
+            录制文件应包含时间戳索引，支持按时间戳跳转。录制过程中如触发冻结，录制应<strong>继续</strong>（记录冻结事件本身），而非暂停；这样回放时才能看到"冻结 → 解冻"的完整过程。
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="highlight-box warn">
+      <strong>逆向开发警示：</strong>冻结/回放功能最容易出现的架构缺陷是<strong>"状态同步时序"问题</strong>——Map 渲染引擎、Instruments Repeater 数据流、Lesson Plan 执行引擎三者处理消息的速度不同，如果没有统一的状态版本号或全局时间戳，很容易出现"飞机已解冻但地图还在冻结"或"仪表已更新但课程进度没跟上"的不一致现象。建议在实现时引入一个<strong>全局 Session State Version</strong>，每次冻结/解冻/调用都递增版本号，各工作区消费状态时校验版本号。
+    </div>
+
+    <!-- ==================== 八、按工作区索引的异常速查表 ==================== -->
+    <h2>八、按工作区索引的异常速查表</h2>
+    <p class="area-map"><strong>性质：</strong>架构级排错索引 &nbsp;|&nbsp; <strong>设计意图：</strong>教员在实际排错时通常先感知"哪个工作区异常"，再定位具体场景。本表按工作区聚合异常入口，与第 9 节的"按场景详述"形成互补。</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:20%">工作区</th><th style="width:35%">常见异常入口</th><th style="width:45%">第一排查动作</th></tr>
+        <tr><td><strong>LESSON PLAN Tab</strong></td><td>课程大纲为空 / 步骤执行失败 / Execute 无响应 / 子课程（Nested）未返回</td><td>1. 确认课程文件在 CAE Slick 中已保存<br/>2. 检查 IOS 与课程服务器的连接<br/>3. 尝试 Skip Condition 或重新加载课程</td></tr>
+        <tr><td><strong>Lesson Plan Profile</strong></td><td>画布中 amber line 不更新 / 当前步骤高亮错位 / 与 Tab 进度不一致</td><td>1. 在 Tab 中点击 Go to Current 强制同步<br/>2. 切换至其他工作区再切回触发重绘<br/>3. 如持续不一致，以 LESSON PLAN Tab 为准（Tab 是课程进度的事实来源）</td></tr>
+        <tr><td><strong>AIRCRAFT Tab</strong></td><td>Weight &amp; CG 超出包线 / 故障注入后仪表异常 / Fuel/GW 计算不匹配</td><td>1. 检查 GW = ZFW + Fuel 是否成立<br/>2. 打开 Weight &amp; CG Sliding Panel 查看详细分布<br/>3. 使用 Fail Summary 排查激活故障的叠加效应</td></tr>
+        <tr><td><strong>CURRENT CONDITIONS</strong></td><td>环境参数修改未生效 / 风速/云层与 Map 显示不一致 / 冻结期间修改丢失</td><td>1. 确认修改后已点击绿勾确认<br/>2. 检查是否在冻结期间修改（冻结期修改需解冻后生效）<br/>3. 切换至 Map Workspace 强制刷新渲染</td></tr>
+        <tr><td><strong>REFERENCE AIRPORT</strong></td><td>机场列表为空 / 跑道选择后地景未加载 / 重新定位后飞机陷入地形</td><td>1. 检查机场数据库与导航数据版本<br/>2. 使用 SLEW 微调位置或选择其他停机位<br/>3. 如数据库问题持续，通知维护人员更新 navdata</td></tr>
+        <tr><td><strong>Map Workspace</strong></td><td>地形/机场/航线未显示 / 飞机图标位置与 AIRCRAFT 参数不符 / 3D 视图卡顿</td><td>1. 检查覆盖层设置（FMS route、机场符号等）是否开启<br/>2. 切换 2D/3D 模式触发重绘<br/>3. 如持续缺失，检查地形数据库或通知维护</td></tr>
+        <tr><td><strong>Instruments Repeaters</strong></td><td>某仪表黑屏/卡顿 / 仪表读数与模拟器主状态不符 / 切换仪表无响应</td><td>1. 切换至其他仪表再切回，强制刷新数据流<br/>2. 确认该仪表在当前飞机状态中可用<br/>3. 如多个仪表异常，可能是数据总线问题，通知维护</td></tr>
+        <tr><td><strong>Footer / Advanced</strong></td><td>Freeze 按钮无响应 / Reset 后状态未恢复 / Recording 文件丢失或损坏</td><td>1. 检查是否为系统级冻结（Footer 指示灯状态）<br/>2. 使用 Reset 的"全部重置"（All）选项<br/>3. 录制文件路径与存储配额检查</td></tr>
+        <tr><td><strong>Maintenance</strong></td><td>维护页面告警 / 硬件状态异常 / 许可证或配置错误</td><td>1. 记录告警代码与发生时间<br/>2. 在 Maintenance 页面查看详细日志<br/>3. 如无法自行处理，联系 CAE 技术支持</td></tr>
+      </table>
+    </div>
+
+    <!-- ==================== 九、异常处理参考流程 ==================== -->
+    <h2>九、异常处理参考流程</h2>
     <p class="area-map"><strong>性质：</strong>辅助参考 &nbsp;|&nbsp; <strong>适用场景：</strong>训练过程中遇到非预期情况时的处置建议</p>
 
     <h3>8.1 常见异常场景与处置建议</h3>
@@ -606,13 +816,80 @@ flowchart LR
       <li>如需疏散，按模拟机机房应急预案执行</li>
     </ol>
 
-    <!-- ==================== 九、变更记录 ==================== -->
-    <h2>九、变更记录</h2>
+    <!-- ==================== 十、变更记录 ==================== -->
+    <h2>十、变更记录</h2>
     <div class="table-wrap">
       <table>
         <tr><th>日期<br>Date</th><th>版本<br>Version</th><th>变更内容<br>Changes</th></tr>
         <tr><td>2026-06-08</td><td>V1.0</td><td>初始创建 1.8 参考流程（Reference Flows）。基于 1.1~1.7 全部工作区操作手册整合，包含 6 类参考流程（RF-01~RF-06）与异常处理参考流程。所有流程均以 Mermaid 流程图呈现，关键步骤关联至对应子章节 HTML。</td></tr>
+        <tr><td>2026-06-09</td><td>V1.1</td><td>基于 5_IOS工作区架构抽象逻辑分析.html 进行全面架构化重构：(1) 新增 1.3「流程 × 工作区全局映射矩阵」与 1.4「核心数据流总览」；(2) 为 6 个 RF 补充前置/后置/异常退出条件；(3) 新增 RF-02 的 Tab 与 Profile 视图选择说明；(4) RF-01 阶段表新增「认知模式」列与架构衔接点说明；(5) 新增第八章「按工作区索引的异常速查表」；(6) RF-06 新增 7.4「状态一致性设计说明」；(7) 新增「附录 A：紧急快速决策树」；(8) RF-02 联动规则表新增「边界情况与降级行为」列。</td></tr>
       </table>
+    </div>
+
+    <!-- ==================== 附录 A：紧急快速决策树 ==================== -->
+    <h2>附录 A：紧急快速决策树</h2>
+    <p class="area-map"><strong>性质：</strong>架构级应急索引 &nbsp;|&nbsp; <strong>设计意图：</strong>基于 Advanced 工作区的"快速访问"哲学，当教员面临突发情况时，本决策树帮助其在 3 秒内确定"应该打开哪个工作区的哪个入口"。</p>
+
+    <div class="mermaid">
+flowchart TD
+    Start([突发情况]) --> Q1{需要立即<br/>暂停训练？}
+
+    Q1 -->|是| Q2{需要保存<br/>当前状态？}
+    Q1 -->|否| Q3{需要改变<br/>飞机/环境？}
+
+    Q2 -->|是| Capture[Footer / Advanced → Recording<br/>状态捕捉]
+    Q2 -->|否| QuickFreeze[Footer → Freeze<br/>瞬时冻结]
+    Capture --> AfterCapture{之后需要<br/>做什么？}
+    AfterCapture -->|重新定位| RepoPath
+    AfterCapture -->|注入故障| MalfPath
+    AfterCapture -->|修改参数| ModifyPath
+    AfterCapture -->|直接恢复| Unfreeze[Footer → Unfreeze]
+
+    QuickFreeze --> FrozenOps{冻结期间<br/>操作}
+    FrozenOps -->|重新定位| RepoPath
+    FrozenOps -->|注入故障| MalfPath
+    FrozenOps -->|修改参数| ModifyPath
+
+    Q3 -->|改变飞机参数| ModifyPath[AIRCRAFT Tab]
+    Q3 -->|改变环境| ModifyPath2[Advanced → Environment]
+    Q3 -->|改变位置| RepoPath
+    Q3 -->|注入故障| MalfPath
+
+    RepoPath --> RepoChoice{距离与精度}
+    RepoChoice -->|短距离微调| Slew[Advanced → Position<br/>或 REFERENCE AIRPORT → SLEW]
+    RepoChoice -->|跨机场重定位| Airport[REFERENCE AIRPORT Tab]
+
+    MalfPath --> MalfChoice{故障复杂度}
+    MalfChoice -->|简单常见故障| QuickMalf[AIRCRAFT Tab 底部<br/>Malfunction Section]
+    MalfChoice -->|复杂/条件触发故障| AdvMalf[Advanced → Failure]
+
+    ModifyPath --> End1([参数修改完成])
+    ModifyPath2 --> End1
+    Slew --> End2([位置调整完成])
+    Airport --> End2
+    QuickMalf --> End3([故障注入完成])
+    AdvMalf --> End3
+    Unfreeze --> End4([训练恢复])
+
+    style Start fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style QuickFreeze fill:#fef3c7,stroke:#d97706
+    style Capture fill:#dbeafe,stroke:#2563eb
+    style End1 fill:#d1fae5,stroke:#059669
+    style End2 fill:#d1fae5,stroke:#059669
+    style End3 fill:#d1fae5,stroke:#059669
+    style End4 fill:#d1fae5,stroke:#059669
+    </div>
+
+    <h3>A.1 决策树使用原则</h3>
+    <ul>
+      <li><strong>第一步永远是判断"是否需要暂停"</strong>：如果情况紧急（学员失能、系统异常、需要立即干预），先按 Footer Freeze，再考虑后续操作。这是"先止血，后治疗"原则。</li>
+      <li><strong>冻结是最佳参谋时间</strong>：冻结期间教员可以慢慢浏览 Advanced、AIRCRAFT Tab 或 Map，不必担心模拟器继续演化；但不要在冻结期间做过多修改，以免解冻后状态跳变让学员困惑。</li>
+      <li><strong>Advanced 不是万能的</strong>：如果只是调整燃油重量、修改风速等常规参数，直接打开对应的 Tab（AIRCRAFT / CURRENT CONDITIONS）更高效；Advanced 的优势在于"跨域组合拳"和"紧急直达"。</li>
+      <li><strong>状态捕捉是保险绳</strong>：在注入复杂故障或进行大幅重新定位前，先 Capture 一下当前状态。如果操作结果不理想，可以随时 Recall 回退。</li>
+    </ul>
+
+    <div class="highlight-box danger">
+      <strong>安全红线：</strong>当出现运动平台异响、视景卡死、座舱烟雾/异味、人员受伤等涉及物理安全的情况时，<strong>不要依赖软件流程</strong>，应立即按下教员台上的硬件急停按钮，并按模拟机机房应急预案执行疏散。
     </div>
 
     <!-- Footer nav -->
