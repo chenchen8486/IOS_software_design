@@ -54,14 +54,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
 .img-row .img-block{flex:1;min-width:0;margin:0}
-.img-row .img-block img{max-height:320px}
+.img-row .img-block img{max-height:200px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -124,7 +124,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -163,6 +163,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
 
+    <blockquote>
+      <strong>工作区入口说明：</strong>维护页面（Maintenance Pages）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Maintenance / 维护」进入本界面。进入后，当前显示器将切换为维护页面主视图。
+    </blockquote>
+
     <h3>1.1 功能层级结构</h3>
     <p>本章为单一功能页面，无内部功能层级划分。</p>
 
@@ -187,9 +191,19 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
       </table>
     </div>
 
-    <div class="img-block">
-      <img src="./images/ch1_3_maintenance_pages.jpg" alt="维护页面主视图">
-      <div class="img-caption">图 1.3-1 维护页面主视图（Maintenance Pages）</div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
+        <div class="img-caption">图 1：控制面板底部总览（Control Board Footer）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
+        <div class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_3_maintenance_pages.jpg" alt="维护页面主视图">
+        <div class="img-caption">图 3：维护页面主视图（Maintenance Pages）</div>
+      </div>
     </div>
 
     <blockquote>
@@ -211,10 +225,6 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
             <td>为维护人员提供的专用工作区，用于执行各类模拟器维护任务</td>
           </tr>
           <tr>
-            <td>触发方式</td>
-            <td>点击控制面板底部「Workspace / 工作区」按钮 → 在弹出的工作区菜单中选择「Maintenance / 维护」</td>
-          </tr>
-          <tr>
             <td>呈现方式</td>
             <td>全屏工作区页面，替换当前显示器中的控制面板视图</td>
           </tr>
@@ -234,14 +244,6 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
       </table>
     </div>
 
-    <h3>2.2 访问路径说明</h3>
-    <p>教员台系统提供六个工作区，维护页面是其中之一。进入维护页面的标准路径如下：</p>
-    <ol>
-      <li>在控制面板底部页脚（Control Board Footer）中找到「Workspace / 工作区」按钮；</li>
-      <li>点击后弹出工作区选择菜单；</li>
-      <li>在菜单中选择「Maintenance / 维护」；</li>
-      <li>当前显示器切换为维护页面主视图。</li>
-    </ol>
 
     <!-- 三、全局操作流程与推导 -->
     <h2>三、全局操作流程与推导</h2>

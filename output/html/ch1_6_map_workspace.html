@@ -55,14 +55,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:min(100%,640px);max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap;align-items:flex-start}
 .img-row .img-block{flex:1 1 0;min-width:0;margin:0;max-width:400px}
-.img-row .img-block img{max-width:100%;max-height:280px;width:auto;height:auto}
+.img-row .img-block img{max-width:100%;max-height:200px;width:auto;height:auto}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -124,7 +124,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -162,6 +162,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
+
+    <blockquote>
+      <strong>工作区入口说明：</strong>地图工作区（Map Workspace）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Map / 地图」进入本界面。进入后，当前显示器将切换为地图工作区，显示地图标题栏、主区域、右侧工具栏与地图页脚四大部分。
+    </blockquote>
 
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
@@ -264,9 +268,19 @@ graph TD
       </table>
     </div>
 
-    <div class="img-block">
-      <img src="./images/ch1_6_map_overview.jpg" alt="地图工作区整体界面">
-      <div class="img-caption">图1 地图工作区整体界面（Map Workspace）</div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
+        <div class="img-caption">图A 控制面板底部总览（Control Board Footer）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
+        <div class="img-caption">图B 工作区卷展菜单（Workspace Roll Up Menu）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_6_map_overview.jpg" alt="地图工作区整体界面">
+        <div class="img-caption">图1 地图工作区整体界面（Map Workspace）</div>
+      </div>
     </div>
 
     <!-- 二、核心功能详解 -->
@@ -427,6 +441,31 @@ flowchart LR
       <div class="img-caption">图13 右侧工具栏</div>
     </div>
 
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_6_toolbar_scales.jpg" alt="比例尺">
+        <div class="img-caption">图14 比例尺</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_6_toolbar_perspective.jpg" alt="透视">
+        <div class="img-caption">图15 透视</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_6_toolbar_map_to.jpg" alt="地图定位">
+        <div class="img-caption">图16 地图定位</div>
+      </div>
+    </div>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_6_toolbar_symbols.jpg" alt="符号">
+        <div class="img-caption">图17 符号</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_6_toolbar_indicators.jpg" alt="指示器">
+        <div class="img-caption">图18 指示器</div>
+      </div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -517,16 +556,6 @@ flowchart LR
     style End fill:#d1fae5,stroke:#059669,stroke-width:2px
     style Persp fill:#fef3c7,stroke:#d97706,stroke-width:2px
     style MapTo fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    </div>
-
-    <div class="img-row">
-      <div class="img-block"><img src="./images/ch1_6_toolbar_scales.jpg" alt="比例尺"><div class="img-caption">图14 比例尺</div></div>
-      <div class="img-block"><img src="./images/ch1_6_toolbar_perspective.jpg" alt="透视"><div class="img-caption">图15 透视</div></div>
-      <div class="img-block"><img src="./images/ch1_6_toolbar_map_to.jpg" alt="地图定位"><div class="img-caption">图16 地图定位</div></div>
-    </div>
-    <div class="img-row">
-      <div class="img-block"><img src="./images/ch1_6_toolbar_symbols.jpg" alt="符号"><div class="img-caption">图17 符号</div></div>
-      <div class="img-block"><img src="./images/ch1_6_toolbar_indicators.jpg" alt="指示器"><div class="img-caption">图18 指示器</div></div>
     </div>
 
     <h3>2.4 地图页脚（Map Footer）</h3>

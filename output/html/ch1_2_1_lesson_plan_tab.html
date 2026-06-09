@@ -55,11 +55,16 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre code{background:transparent;padding:0;color:inherit}
 
 /* Image blocks */
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 .img-placeholder{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 100%);border-radius:var(--radius);border:2px dashed var(--border);color:var(--text-secondary);font-size:14px;padding:24px}
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;align-items:stretch}
+.img-row .img-block{flex:1;min-width:0;margin:0;display:flex;flex-direction:column}
+.img-row .img-block img{width:100%;height:120px;object-fit:cover;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s;max-height:none}
+.img-row .img-block img:hover{transform:scale(1.02)}
+@media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
 /* Image zoom overlay */
@@ -135,7 +140,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -176,6 +181,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <!-- ==================== 一、功能层级与界面总览 ==================== -->
     <h2>一、功能层级与界面总览</h2>
 
+    <blockquote>
+      <strong>与 1.5 Lesson Plan Profile 的关系：</strong>LESSON PLAN Tab 位于<strong>控制面板（Control Board）内部</strong>，以<strong>文本列表</strong>形式呈现课程大纲（左侧）与步骤详情（右侧），是教员<strong>加载、控制与执行课程</strong>的核心操作入口。与之共享同一套课程数据源的独立工作区 <a href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a> 则提供了<strong>图形化飞行剖面视图</strong>（画布 + 琥珀色剖面线），用于鸟瞰课程全局、监控执行进度与时间线。两者分别对应"操作台"与"态势图"两种定位。
+    </blockquote>
+
     <!-- 原始图片1：课程计划选项卡整体界面 -->
     <div class="img-block">
       <img src="./images/ch1_2_1_lesson_plan_overview.jpg" alt="课程计划选项卡整体界面">
@@ -185,6 +194,70 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <blockquote>
       <strong>核心定位：</strong>课程计划选项卡是教员<strong>查看、管理和执行训练课程</strong>的核心入口。所有课程均通过 <strong>CAE Slick 网页编辑器</strong> 创建，IOS 上仅支持执行，不支持编辑。<br><br>
       <strong>⚠️ 常见困惑澄清：</strong>本界面（LESSON PLAN Tab）<strong>没有「创建课程」按钮</strong>，也<strong>不能新建或修改训练阶段/课程步骤</strong>。教员在此处只能加载已由 CAE Slick 编辑器编制好的课程，并对其进行执行控制。如需新建课程、修改阶段名称或增删步骤，请前往独立的 <strong>CAE Slick 网页编辑器</strong>（详见当前页面 2.5 小节「背景说明」）。
+    </blockquote>
+
+    <h3>场景演练：Lesson 8「单发失效进近」完整操作推演</h3>
+    <p>为帮助教员建立直观画面感，以下以图 1 中的 Lesson 8 为例，完整推演从<strong>课程编制 → 加载 → 选中步骤 → 执行 → 观察效果</strong>的全链路变化。原始手册对「点击 Execute 后发生了什么」描述较薄弱，本推演基于跨章节运行时状态截图（ch1_5）与数据流推导综合还原。</p>
+
+    <h4>第一步：CAE Slick 编辑器中编制课程</h4>
+    <p>课程编制者在 <strong>CAE Slick 网页编辑器</strong> 中创建了 Lesson 8，拖拽出 5 个训练阶段（Preflight → Ascend → On Route → Descend → Final Ground）。在「Descend」阶段下插入了一个 <strong>MALF 类型</strong> 的步骤，参数设置为：</p>
+    <ul>
+      <li><strong>故障类型</strong>：Engine 1 Fail（左发失效）</li>
+      <li><strong>监控条件</strong>：Monitoring Altitude = 5,000ft，IAS = 135kt</li>
+      <li><strong>激活方式</strong>：点击 Execute 后立即注入</li>
+    </ul>
+    <p>保存后，课程自动同步至 IOS，出现在 LESSON PLAN Tab 的课程列表中。</p>
+
+    <h4>第二步：LESSON PLAN Tab 中加载课程（执行前）</h4>
+    <p>教员登录 IOS，进入 LESSON PLAN Tab，加载 Lesson 8。此时界面呈现图 1 所示状态：</p>
+    <ul>
+      <li><strong>左侧大纲</strong>：5 个训练阶段展开，第 4 阶段「Descend」下显示红色 MALF 图标，文字为「4 Engine Fail」</li>
+      <li><strong>右侧详情</strong>：尚未点选步骤，显示空白或上一个步骤内容</li>
+      <li><strong>底部按钮</strong>：Execute 等按钮处于默认状态</li>
+    </ul>
+
+    <h4>第三步：选中 MALF 步骤（已选择状态）</h4>
+    <p>教员点击左侧大纲中的「<strong>4 Engine Fail</strong>」，界面进入<strong>已选择</strong>状态：</p>
+    <ul>
+      <li><strong>左侧大纲</strong>：该步骤被<strong>浅蓝色高亮</strong>，红色 MALF 图标清晰可见</li>
+      <li><strong>右侧详情</strong>：自动切换显示完整参数（Monitoring Altitude、IAS、Set Malfunction 等），底部出现提示：<strong>「Press 'Execute' to monitor condition」</strong></li>
+      <li><strong>底部按钮</strong>：<strong>Execute 变为绿色可用态</strong>，Skip Condition 同时亮起（因该步骤带有触发条件）</li>
+    </ul>
+
+    <h4>第四步：点击 Execute（执行中 → 已完成）</h4>
+    <p>教员审阅参数无误，点击 <strong>Execute</strong>。界面与模拟器同步发生以下变化：</p>
+    <ul>
+      <li><strong>LESSON PLAN Tab 左侧</strong>：步骤旁短暂出现执行标记（如齿轮 ⚙️），随后变为 <strong>✓ 完成标记</strong>，高亮移除</li>
+      <li><strong>LESSON PLAN Tab 右侧</strong>：提示文字消失；Autorun 模式下自动跳转下一步，Step-by-Step 模式下保持完成状态等待教员干预</li>
+      <li><strong>模拟器内部</strong>：左发立即失效，驾驶舱 EICAS/ECAM 跳出「ENG 1 FAIL」警告</li>
+      <li><strong>AIRCRAFT Tab（1.2.4）</strong>：底部 Malfunction Section 新增「Engine 1 Fail」条目</li>
+      <li><strong>INSTRUMENT REPEATER（1.4）</strong>：发动机仪表（N1、N2、EGT）显示失效数据或变红</li>
+      <li><strong>Map Workspace（1.6）</strong>：飞机姿态/航迹因推力不对称发生偏移</li>
+    </ul>
+
+    <h4>运行时状态视觉对照</h4>
+    <p>以下四张截图来自 <strong>Lesson Plan Profile 工作区（ch1_5）</strong>，其与 LESSON PLAN Tab 共享同一套课程数据源，因此步骤状态的视觉变化逻辑完全一致，可作为本界面状态流转的直观参照：</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_5_step_not_selected.jpg" alt="步骤未选择">
+        <div class="img-caption">图 A：未选择</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_selected.jpg" alt="步骤已选择">
+        <div class="img-caption">图 B：已选择</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_executing.jpg" alt="步骤执行中">
+        <div class="img-caption">图 C：执行中</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_step_completed.jpg" alt="步骤已完成">
+        <div class="img-caption">图 D：已完成</div>
+      </div>
+    </div>
+
+    <blockquote>
+      <strong>💡 关键认知：</strong>LESSON PLAN Tab 是<strong>「导演控制台」</strong>——你在这里发出指令（点击 Execute），但指令的实际效果需要在其他工作区观察。不要试图只在本界面中脑补全部结果；执行 MALF 后请切到 AIRCRAFT / Map / INSTRUMENT REPEATER 确认效果。
     </blockquote>
 
     <h3>1.1 功能层级结构</h3>

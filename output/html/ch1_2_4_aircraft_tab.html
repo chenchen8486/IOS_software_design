@@ -59,6 +59,13 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0;align-items:start}
+.img-grid .img-block{margin:0;display:flex;flex-direction:column;align-items:center}
+.img-grid .img-block img{max-height:180px;width:100%;object-fit:contain}
+.img-grid .img-caption{font-size:12px;margin-top:6px}
+@media (max-width:900px){.img-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.img-grid{grid-template-columns:1fr}}
+
 /* Image zoom overlay */
 /* Image zoom overlay */
 .img-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out;display:flex;justify-content:center;align-items:center;animation:fadeIn .2s ease}
@@ -123,7 +130,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -270,30 +277,32 @@ graph TD
       <strong>滚轮选择器通用操作：</strong>长按参数直至滚轮选择器显示，或向上/向下滑动参数呼出滚轮。滚动选择后，点击绿色勾号确认，或点击红色 X 取消。
     </blockquote>
 
-    <div class="img-block">
-      <img src="./images/ch1_2_4_gw_keyboard.jpg" alt="总重键盘">
-      <p>总重键盘显示当前总重量，并允许教员通过键盘或滑块输入另一个总重值。</p>
-      <div class="img-caption">图 2：总重键盘（GW Keyboard）</div>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_4_gw_cg_keyboard.jpg" alt="总重重心键盘">
-      <p>总重重心键盘显示当前总重量重心（GW CG），并允许教员通过键盘或滑块输入另一个总重重心值。</p>
-      <div class="img-caption">图 3：总重重心键盘（GW CG Keyboard）</div>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_4_zfw_keyboard.jpg" alt="零燃油重量键盘">
-      <p>零燃油重量键盘显示当前零燃油重量（ZFW），并允许教员通过键盘或滑块输入另一个零燃油重量值。</p>
-      <div class="img-caption">图 4：零燃油重量键盘（ZFW Keyboard）</div>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_4_zfw_cg_keyboard.jpg" alt="零燃油重量重心键盘">
-      <p>零燃油重量重心键盘显示当前零燃油重量重心（ZFW CG），并允许教员通过键盘或滑块输入另一个零燃油重量重心值。</p>
-      <div class="img-caption">图 5：零燃油重量重心键盘（ZFW CG Keyboard）</div>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_4_fuel_keyboard.jpg" alt="燃油键盘">
-      <p>燃油键盘显示当前燃油重量，并允许教员通过键盘或滑块输入另一个燃油重量值。</p>
-      <div class="img-caption">图 6：燃油键盘（Fuel Keyboard）</div>
+    <div class="img-grid">
+      <div class="img-block">
+        <img src="./images/ch1_2_4_gw_keyboard.jpg" alt="总重键盘">
+        <p>总重键盘显示当前总重量，并允许教员通过键盘或滑块输入另一个总重值。</p>
+        <div class="img-caption">图 2：总重键盘（GW Keyboard）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_4_gw_cg_keyboard.jpg" alt="总重重心键盘">
+        <p>总重重心键盘显示当前总重量重心（GW CG），并允许教员通过键盘或滑块输入另一个总重重心值。</p>
+        <div class="img-caption">图 3：总重重心键盘（GW CG Keyboard）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_4_zfw_keyboard.jpg" alt="零燃油重量键盘">
+        <p>零燃油重量键盘显示当前零燃油重量（ZFW），并允许教员通过键盘或滑块输入另一个零燃油重量值。</p>
+        <div class="img-caption">图 4：零燃油重量键盘（ZFW Keyboard）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_4_zfw_cg_keyboard.jpg" alt="零燃油重量重心键盘">
+        <p>零燃油重量重心键盘显示当前零燃油重量重心（ZFW CG），并允许教员通过键盘或滑块输入另一个零燃油重量重心值。</p>
+        <div class="img-caption">图 5：零燃油重量重心键盘（ZFW CG Keyboard）</div>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_4_fuel_keyboard.jpg" alt="燃油键盘">
+        <p>燃油键盘显示当前燃油重量，并允许教员通过键盘或滑块输入另一个燃油重量值。</p>
+        <div class="img-caption">图 6：燃油键盘（Fuel Keyboard）</div>
+      </div>
     </div>
 
     <!-- 2.2 快速访问按钮速览 -->

@@ -54,14 +54,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
 .img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
-.img-row .img-block img{max-height:320px}
+.img-row .img-block img{max-height:200px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -123,7 +123,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -161,6 +161,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
+
+    <blockquote>
+      <strong>工作区入口说明：</strong>仪表复示器（INSTRUMENT REPEATER）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Instr. Repeaters / 仪表复示器」进入本界面。进入后，当前显示器将切换为仪表复示器工作区，其顶部标题栏与底部页脚均与地图工作区/控制面板共用同一套组件。
+    </blockquote>
 
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
@@ -206,9 +210,19 @@ graph TD
       </table>
     </div>
 
-    <div class="img-block">
-      <img src="./images/ch1_4_instrument_repeater_workspace.jpg" alt="仪表复示器工作区总览">
-      <p class="img-caption">图 1：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
+        <p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
+        <p class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_4_instrument_repeater_workspace.jpg" alt="仪表复示器工作区总览">
+        <p class="img-caption">图 3：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
+      </div>
     </div>
 
     <!-- 二、核心功能详解 -->

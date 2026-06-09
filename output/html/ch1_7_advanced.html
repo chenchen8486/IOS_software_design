@@ -55,14 +55,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
 .img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
-.img-row .img-block img{max-height:320px}
+.img-row .img-block img{max-height:200px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -122,7 +122,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -156,6 +156,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <!-- 一、功能层级与界面总览 -->
     <h2>一、功能层级与界面总览</h2>
+
+    <blockquote>
+      <strong>工作区入口说明：</strong>高级工具栏（Advanced Toolbar）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Advanced / 高级」进入本界面。进入后，当前监视器左侧将显示高级工具栏。控制面板底部各按钮的详细说明请参见 <a href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部</a>。
+    </blockquote>
 
     <h3>1.1 功能层级结构</h3>
     <div class="mermaid">
@@ -243,18 +247,6 @@ graph TD
         </tbody>
       </table>
     </div>
-    <blockquote>
-      <strong>进入方式：</strong>在控制面板底部点击 <strong>Workspace</strong> 按钮，在弹出菜单中选择 <strong>Advanced</strong>，即可在当前监视器左侧呼出高级工具栏。
-      控制面板底部各按钮的详细说明请参见 <a href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部</a> — 2.14 Workspace（工作区）。
-    </blockquote>
-
-    <h4>操作链路</h4>
-    <p>从控制面板底部到高级工具栏的完整点击链路如下：</p>
-    <ol>
-      <li>在控制面板底部右侧点击 <strong>Workspace</strong> 按钮（详见 <a href="ch1_2_7_control_board_footer.html">1.2.7 — 2.14</a>）。</li>
-      <li>在弹出的工作区卷展菜单中点击 <strong>Advanced</strong>。</li>
-      <li>当前监视器左侧立即显示高级工具栏（即下图 1）。</li>
-    </ol>
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_7_workspace_menu.jpg" alt="工作区卷展菜单">

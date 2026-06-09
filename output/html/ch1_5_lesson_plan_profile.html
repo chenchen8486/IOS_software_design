@@ -54,14 +54,15 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
 .content pre code{background:transparent;padding:0;color:inherit}
 
-.img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block{margin:20px auto;text-align:center;max-width:680px}
+.img-block img{max-width:100%;max-height:240px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
 .img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
 .img-row .img-block{flex:1;min-width:0;margin:0}
-.img-row .img-block img{max-height:320px}
+.img-row .img-block img{max-height:200px}
+.img-row-sm .img-block img{max-height:120px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
@@ -127,7 +128,7 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
     <div class="nav-group">
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 组成部分</a>
+        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
         <div class="nav-group">
           <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
           <div class="nav-children">
@@ -172,7 +173,9 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
     <p>课程计划配置工作区以图形化方式展示所选课程中包含的所有训练元素。训练阶段及其关联步骤等训练元素，以覆盖在飞行剖面（琥珀色线）之上的形式呈现，该飞行剖面由基于 Web 的 CAE Slick 课程计划编辑器定义。</p>
 
-    <p>与控制面板中的 LESSON PLAN 选项卡不同（后者以两个可滚动区域分别展示训练阶段和步骤），课程计划配置工作区提供了<strong>另一种展示相同课程元素的方式</strong>，便于教员在更大视野下掌控课程全局。</p>
+    <blockquote>
+      <strong>与 1.2.1 LESSON PLAN Tab 的关系：</strong>本工作区与<a href="ch1_2_1_lesson_plan_tab.html">1.2.1 控制面板中的 LESSON PLAN 选项卡</a>共享同一套课程数据源，但定位不同：LESSON PLAN Tab 以两个可滚动区域分别展示训练阶段和步骤，是教员<strong>加载、控制与执行课程</strong>的操作入口；而本工作区提供了<strong>图形化飞行剖面视图</strong>（画布 + 琥珀色剖面线），用于在更大视野下鸟瞰课程全局、监控执行进度与时间线。两者分别对应"态势图"与"操作台"两种定位。
+    </blockquote>
 
     <p>课程计划配置工作区使教员能够快速浏览课程计划中包含的大部分（甚至全部）训练元素，当然具体可见数量取决于课程的规模大小。</p>
 
@@ -224,10 +227,19 @@ graph TD
       </table>
     </div>
 
-    <div class="img-block">
-      <img src="./images/ch1_5_overview.jpg" alt="课程计划配置工作区总览">
-      <p class="img-caption">图 1：课程计划配置工作区总览（Figure 110）</p>
-      <p class="img-caption" style="font-size:12px;color:#94a3b8;margin-top:4px">（参考控制面板底部右侧的 Workspace 按钮进入本工作区）</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
+        <p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
+        <p class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_5_overview.jpg" alt="课程计划配置工作区总览">
+        <p class="img-caption">图 3：课程计划配置工作区总览（Figure 110）</p>
+      </div>
     </div>
 
     <!-- 二、核心功能详解 -->
@@ -263,22 +275,22 @@ graph TD
 
     <h3>2.3 运行时状态（Runtime Statuses）</h3>
     <p>画布视图中每个步骤项具有四种运行时状态，以不同图标直观呈现当前执行进度：</p>
-    <div class="img-row">
+    <div class="img-row img-row-sm">
       <div class="img-block">
         <img src="./images/ch1_5_step_not_selected.jpg" alt="步骤未选择">
-        <p class="img-caption">图 2：步骤未选择</p>
+        <p class="img-caption">图 4：步骤未选择</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_selected.jpg" alt="步骤已选择">
-        <p class="img-caption">图 3：步骤已选择</p>
+        <p class="img-caption">图 5：步骤已选择</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_executing.jpg" alt="步骤执行中">
-        <p class="img-caption">图 4：步骤正在执行指令</p>
+        <p class="img-caption">图 6：步骤正在执行指令</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_step_completed.jpg" alt="步骤已完成">
-        <p class="img-caption">图 5：步骤已完成</p>
+        <p class="img-caption">图 7：步骤已完成</p>
       </div>
     </div>
     <div class="table-wrap">
@@ -348,7 +360,7 @@ graph TD
     </div>
     <div class="img-block">
       <img src="./images/ch1_5_lesson_list.jpg" alt="教案列表图标">
-      <p class="img-caption">图 6：教案列表图标</p>
+      <p class="img-caption">图 8：教案列表图标</p>
     </div>
 
     <h4>2.7.2 列表视图模式显示/隐藏（List View Mode Show/Hide）</h4>
@@ -366,11 +378,11 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_5_list_hide.jpg" alt="隐藏列表视图">
-        <p class="img-caption">图 7：点击隐藏列表视图</p>
+        <p class="img-caption">图 9：点击隐藏列表视图</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_list_show.jpg" alt="显示列表视图">
-        <p class="img-caption">图 8：点击显示列表视图</p>
+        <p class="img-caption">图 10：点击显示列表视图</p>
       </div>
     </div>
 
@@ -388,11 +400,11 @@ graph TD
     <div class="img-row">
       <div class="img-block">
         <img src="./images/ch1_5_list_expand.jpg" alt="展开列表视图">
-        <p class="img-caption">图 9：展开列表视图（增加信息详细程度）</p>
+        <p class="img-caption">图 11：展开列表视图（增加信息详细程度）</p>
       </div>
       <div class="img-block">
         <img src="./images/ch1_5_list_collapse.jpg" alt="折叠列表视图">
-        <p class="img-caption">图 10：折叠列表视图（减少信息详细程度）</p>
+        <p class="img-caption">图 12：折叠列表视图（减少信息详细程度）</p>
       </div>
     </div>
 
