@@ -55,9 +55,14 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .content pre code{background:transparent;padding:0;color:inherit}
 
 .img-block{margin:20px 0;text-align:center}
-.img-block img{max-width:100%;max-height:360px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
+.img-block img{max-width:100%;max-height:220px;width:auto;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);cursor:zoom-in;transition:transform .2s}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row .img-block img{max-height:200px}
+@media (max-width:768px){.img-row{flex-direction:column}}
 
 /* Image zoom overlay */
 /* Image zoom overlay */
@@ -297,23 +302,25 @@ graph TD
     <h4>2.2.1 参考位置选项卡（REFERENCE LOCATION Tab）</h4>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
+        <thead><tr><th>属性（Property）</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>参考机场</td><td>只读文本字段，显示参考机场 ICAO 代码和活动跑道编号</td></tr>
-          <tr><td>目的地机场</td><td>只读文本字段，显示目的地机场 ICAO 代码和活动跑道编号</td></tr>
-          <tr><td>更改参考按钮</td><td>点击展开参考机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
-          <tr><td>更改目的地按钮</td><td>点击展开目的地机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
-          <tr><td>自动参考位置复选框</td><td>切换自动/手动模式。自动模式：参考机场自动更新至最近可用跑道；手动模式：除非教员或课程计划输入，否则不更改</td></tr>
+          <tr><td>参考机场<br><span style="font-size:12px;color:var(--text-secondary)">Reference Airport</span></td><td>只读文本字段，显示参考机场 ICAO 代码和活动跑道编号</td></tr>
+          <tr><td>目的地机场<br><span style="font-size:12px;color:var(--text-secondary)">Destination Airport</span></td><td>只读文本字段，显示目的地机场 ICAO 代码和活动跑道编号</td></tr>
+          <tr><td>更改参考按钮<br><span style="font-size:12px;color:var(--text-secondary)">Change Reference Button</span></td><td>点击展开参考机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
+          <tr><td>更改目的地按钮<br><span style="font-size:12px;color:var(--text-secondary)">Change Destination Button</span></td><td>点击展开目的地机场（位置）滑动面板，显示可用机场 ICAO 代码列表及跑道</td></tr>
+          <tr><td>自动参考位置复选框<br><span style="font-size:12px;color:var(--text-secondary)">Auto Reference Location</span></td><td>切换自动/手动模式。自动模式：参考机场自动更新至最近可用跑道；手动模式：除非教员或课程计划输入，否则不更改</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_reference_location_tab.jpg" alt="参考位置选项卡">
-      <p class="img-caption">图 3：参考位置选项卡（典型）</p>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_airport_list.jpg" alt="参考机场列表">
-      <p class="img-caption">图 4：参考机场列表（典型）</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_5_reference_location_tab.jpg" alt="参考位置选项卡">
+        <p class="img-caption">图 3：参考位置选项卡（典型）</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_5_airport_list.jpg" alt="参考机场列表">
+        <p class="img-caption">图 4：参考机场列表（典型）</p>
+      </div>
     </div>
 
     <h4>2.2.2 机场重新定位选项卡（AIRPORT REPOSITION Tab）</h4>
@@ -400,10 +407,11 @@ graph TD
           </table>
         </div>
         <h4>跑道照明滑动面板</h4>
-        <div class="img-block">
-          <img src="./images/ch1_2_5_runway_lighting_panel.jpg" alt="跑道照明滑动面板">
-          <p class="img-caption">图 6：跑道照明滑动面板（典型）</p>
-        </div>
+        <div class="img-row">
+          <div class="img-block">
+            <img src="./images/ch1_2_5_runway_lighting_panel.jpg" alt="跑道照明滑动面板">
+            <p class="img-caption">图 6：跑道照明滑动面板（典型）</p>
+          </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>控件</th><th>功能说明</th><th>范围</th></tr></thead>
@@ -422,9 +430,10 @@ graph TD
             </tbody>
           </table>
         </div>
-        <div class="img-block">
-          <img src="./images/ch1_2_5_runway_default_lighting.jpg" alt="跑道默认灯光滑动面板">
-          <p class="img-caption">图 7：跑道默认灯光滑动面板</p>
+          <div class="img-block">
+            <img src="./images/ch1_2_5_runway_default_lighting.jpg" alt="跑道默认灯光滑动面板">
+            <p class="img-caption">图 7：跑道默认灯光滑动面板</p>
+          </div>
         </div>
         <p><strong>航向信标（Localizer）：</strong>正常状态下点击触发参考跑道航向信标发射机故障；激活状态下点击清除故障。<br>
         <strong>下滑信标（Glideslope）：</strong>正常状态下点击触发参考跑道下滑信标发射机故障；激活状态下点击清除故障。</p>
@@ -458,13 +467,15 @@ graph TD
         <span class="toggle-icon">▼</span>
       </div>
       <div class="collapsible-body">
-        <div class="img-block">
-          <img src="./images/ch1_2_5_recorded_traffic_panel.jpg" alt="录制交通滑动面板">
-          <p class="img-caption">图 9：录制交通滑动面板</p>
-        </div>
-        <div class="img-block">
-          <img src="./images/ch1_2_5_scenario_traffic_panel.jpg" alt="场景交通滑动面板">
-          <p class="img-caption">图 10：场景交通滑动面板</p>
+        <div class="img-row">
+          <div class="img-block">
+            <img src="./images/ch1_2_5_recorded_traffic_panel.jpg" alt="录制交通滑动面板">
+            <p class="img-caption">图 9：录制交通滑动面板</p>
+          </div>
+          <div class="img-block">
+            <img src="./images/ch1_2_5_scenario_traffic_panel.jpg" alt="场景交通滑动面板">
+            <p class="img-caption">图 10：场景交通滑动面板</p>
+          </div>
         </div>
         <p><strong>播放（Play）：</strong>点击场景旁的切换按钮播放选定的录制交通场景；再次点击暂停。<br>
         <strong>场景交通滑动面板：</strong>允许教员通过播放预录交通场景将交通效果添加到视觉场景中，提供「筛选」选项卡按类别筛选可用录制场景。</p>
@@ -558,13 +569,15 @@ flowchart LR
     <h3>2.3 时刻键盘与时刻滑动面板</h3>
     <p>功能定义：显示并更改当前时刻。交互方式：时刻键盘使用键盘或滑块输入新时刻（0~23 小时），绿勾确认，红叉取消；时刻滑动面板可快速选择黎明/白天/黄昏/夜间。</p>
 
-    <div class="img-block">
-      <img src="./images/ch1_2_5_time_keypad.jpg" alt="时刻键盘">
-      <p class="img-caption">图 13：时刻键盘</p>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_time_sliding_panel.jpg" alt="时刻滑动面板">
-      <p class="img-caption">图 14：时刻滑动面板</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_5_time_keypad.jpg" alt="时刻键盘">
+        <p class="img-caption">图 13：时刻键盘</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_5_time_sliding_panel.jpg" alt="时刻滑动面板">
+        <p class="img-caption">图 14：时刻滑动面板</p>
+      </div>
     </div>
 
     <div class="table-wrap">
@@ -692,13 +705,15 @@ flowchart LR
 
     <h3>2.5 能见度键盘与能见度/RVR滑动面板</h3>
     <p>触发方式：点击主界面「能见度」参数字段弹出能见度键盘；点击主界面「RVR」参数字段弹出能见度/RVR 滑动面板。</p>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_visibility_keypad.jpg" alt="能见度键盘">
-      <p class="img-caption">图 18：能见度键盘 — 数字键盘 + 滑块 + 绿勾确认/红叉取消</p>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_visibility_rvr_panel.jpg" alt="能见度/RVR滑动面板">
-      <p class="img-caption">图 19：能见度/RVR滑动面板 — 顶部为 Visibility 输入字段，中部为 FOG 雾区（None/Patchy/Solid 互斥单选），底部为 RVR 与 Fog Top 输入字段</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_5_visibility_keypad.jpg" alt="能见度键盘">
+        <p class="img-caption">图 18：能见度键盘 — 数字键盘 + 滑块 + 绿勾确认/红叉取消</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_5_visibility_rvr_panel.jpg" alt="能见度/RVR滑动面板">
+        <p class="img-caption">图 19：能见度/RVR滑动面板 — 顶部为 Visibility 输入字段，中部为 FOG 雾区（None/Patchy/Solid 互斥单选），底部为 RVR 与 Fog Top 输入字段</p>
+      </div>
     </div>
     <div class="table-wrap">
       <table>
@@ -773,17 +788,19 @@ flowchart LR
     </div>
 
     <h3>2.8 参考温度/ISA偏差/QNH键盘</h3>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_temp_keypad.jpg" alt="参考温度键盘">
-      <p class="img-caption">图 21：参考温度键盘</p>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_isa_keypad.jpg" alt="ISA偏差键盘">
-      <p class="img-caption">图 22：ISA 偏差键盘</p>
-    </div>
-    <div class="img-block">
-      <img src="./images/ch1_2_5_qnh_keypad.jpg" alt="QNH键盘">
-      <p class="img-caption">图 23：QNH 键盘</p>
+    <div class="img-row">
+      <div class="img-block">
+        <img src="./images/ch1_2_5_temp_keypad.jpg" alt="参考温度键盘">
+        <p class="img-caption">图 21：参考温度键盘</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_5_isa_keypad.jpg" alt="ISA偏差键盘">
+        <p class="img-caption">图 22：ISA 偏差键盘</p>
+      </div>
+      <div class="img-block">
+        <img src="./images/ch1_2_5_qnh_keypad.jpg" alt="QNH键盘">
+        <p class="img-caption">图 23：QNH 键盘</p>
+      </div>
     </div>
     <div class="table-wrap">
       <table>
