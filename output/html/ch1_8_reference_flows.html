@@ -178,16 +178,16 @@ tr:last-child td{border-bottom:none}
 <li>所有流程均假设教员已完成<strong>系统启动与登录</strong>（维护页面层面的初始化不在本章范围内，详见 1.3 维护页面）</li>
 </ul>
 <h3>1.3 流程 × 工作区全局映射矩阵</h3>
-<p>下表从架构视角展示 6 个参考流程与 6 大工作区之间的交叉关系。✦ 表示该流程的<strong>主战场</strong>（核心操作发生在此工作区），○ 表示<strong>辅助参与</strong>（数据读取、状态监控或结果确认），— 表示不直接涉及。</p>
+<p>下表从架构视角展示 6 个参考流程与 6 大工作区之间的交叉关系。<strong>主战场</strong>表示该流程的核心操作发生在此工作区，<strong>辅助参与</strong>表示数据读取、状态监控或结果确认，— 表示不直接涉及。</p>
 <div class="table-wrap">
 <table>
 <tr><th>工作区</th><th>RF-01<br/>完整 Session</th><th>RF-02<br/>课程执行</th><th>RF-03<br/>初始化</th><th>RF-04<br/>故障注入</th><th>RF-05<br/>地图监控</th><th>RF-06<br/>冻结/回放</th></tr>
-<tr><td><strong>Control Board</strong><br/>控制面板</td><td>✦</td><td>✦</td><td>✦</td><td>✦</td><td>○</td><td>○</td></tr>
-<tr><td><strong>Map</strong><br/>地图</td><td>✦</td><td>○</td><td>○</td><td>○</td><td>✦</td><td>○</td></tr>
-<tr><td><strong>Lesson Plan Profile</strong><br/>课程计划剖面</td><td>✦</td><td>✦</td><td>—</td><td>—</td><td>—</td><td>○</td></tr>
-<tr><td><strong>Instruments Repeaters</strong><br/>复示仪表</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td></tr>
-<tr><td><strong>Maintenance</strong><br/>维护</td><td>○</td><td>—</td><td>—</td><td>○</td><td>○</td><td>—</td></tr>
-<tr><td><strong>Advanced</strong><br/>高级</td><td>✦</td><td>○</td><td>○</td><td>✦</td><td>✦</td><td>✦</td></tr>
+<tr><td><strong>Control Board</strong><br/>控制面板</td><td>*</td><td>*</td><td>*</td><td>*</td><td>·</td><td>·</td></tr>
+<tr><td><strong>Map</strong><br/>地图</td><td>*</td><td>·</td><td>·</td><td>·</td><td>*</td><td>·</td></tr>
+<tr><td><strong>Lesson Plan Profile</strong><br/>课程计划剖面</td><td>*</td><td>*</td><td>—</td><td>—</td><td>—</td><td>·</td></tr>
+<tr><td><strong>Instruments Repeaters</strong><br/>复示仪表</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td></tr>
+<tr><td><strong>Maintenance</strong><br/>维护</td><td>·</td><td>—</td><td>—</td><td>·</td><td>·</td><td>—</td></tr>
+<tr><td><strong>Advanced</strong><br/>高级</td><td>*</td><td>·</td><td>·</td><td>*</td><td>*</td><td>*</td></tr>
 </table>
 </div>
 <div class="highlight-box">
@@ -299,14 +299,14 @@ flowchart LR
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td>🔢 逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
-<tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td>🔢 逻辑推理："参数是否在包线内？数值是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
-<tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td>🗺️ 空间直觉："飞机在跑道哪一端？航向对不对？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>文档查阅</strong></td><td>如需查阅机场图、SID/STAR 程序、检查单或 SOP，切换至 DOC Tab 快速浏览；文档查阅不改变模拟器状态，可随时进行</td><td>🔢 逻辑推理："这条跑道的离场程序是什么？限制高度多少？"</td><td><a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
-<tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td>📊 流程监控："课程是否按预期推进？是否需要干预？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
-<tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数；可随时返回 DOC Tab 查阅文档</td><td>🗺️ 空间直觉 + 📊 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
-<tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td>🔢 逻辑推理（参数修改）+ ⚡ 应激决策（快速响应）："需要注入什么？从哪个入口最快？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
-<tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；使用 Recording 回放训练关键片段 → 标记关键事件（故障注入点/冻结点/学员偏差）→ 在 Lesson Plan Profile 对比实际剖面与标准 amber line → 生成讲评要点/打印关键屏幕截图</td><td>📊 流程监控 + 🔢 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
+<tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td>逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+<tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td>逻辑推理："参数是否在包线内？数值是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
+<tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td>空间直觉："飞机在跑道哪一端？航向对不对？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>文档查阅</strong></td><td>如需查阅机场图、SID/STAR 程序、检查单或 SOP，切换至 DOC Tab 快速浏览；文档查阅不改变模拟器状态，可随时进行</td><td>逻辑推理："这条跑道的离场程序是什么？限制高度多少？"</td><td><a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
+<tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td>流程监控："课程是否按预期推进？是否需要干预？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
+<tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数；可随时返回 DOC Tab 查阅文档</td><td>空间直觉 + 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
+<tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td>逻辑推理（参数修改）+ 应激决策（快速响应）："需要注入什么？从哪个入口最快？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
+<tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；使用 Recording 回放训练关键片段 → 标记关键事件（故障注入点/冻结点/学员偏差）→ 在 Lesson Plan Profile 对比实际剖面与标准 amber line → 生成讲评要点/打印关键屏幕截图</td><td>流程监控 + 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
 </table>
 </div>
 <div class="highlight-box">
@@ -362,16 +362,16 @@ flowchart LR
     style End1 fill:#d1fae5,stroke:#059669
     style End2 fill:#d1fae5,stroke:#059669
     style Abort fill:#fee2e2,stroke:#dc2626
-    </br></br></br></div>
+    </div>
 <h4>3.1.1 课程执行阶段说明</h4>
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>模式选择</strong></td><td>在 LESSON PLAN Tab 中根据训练目标选择 Autorun（系统自动推进）或 Step-by-Step（教员逐条控制）；Autorun 适合标准化流程复现，Step-by-Step 适合需要评估和灵活干预的场景</td><td>🔢 逻辑推理："哪种模式更符合本次训练目标？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
-<tr><td><strong>自动执行循环</strong></td><td>Autorun 模式下系统自动执行步骤；教员在 Map / Lesson Plan Profile 中实时监控；遇到需要手动确认的步骤时系统等待教员点击 Execute</td><td>📊 流程监控："系统是否按预期推进？当前步骤是什么？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>逐步执行循环</strong></td><td>Step-by-Step 模式下系统加载当前步骤并在右侧显示详情；教员审阅参数后决策：点击 Execute 执行、Skip Condition 跳过、或 End Lesson 中止</td><td>🔢 逻辑推理 + 📊 流程监控："当前步骤参数是否正确？是否跳过？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
-<tr><td><strong>课程完成确认</strong></td><td>每次步骤执行后系统检查课程是否已完成；若未完成则继续下一循环；完成时自动结束或提示教员</td><td>📊 流程监控："课程进度到多少了？还剩几步？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
-<tr><td><strong>课程终止</strong></td><td>课程正常结束时状态写入日志；若教员主动中止（End Lesson），当前步骤状态标记为中止，可重新加载课程或进入讲评</td><td>🔢 逻辑推理："是否需要保存当前进度？下一步做什么？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+<tr><td><strong>模式选择</strong></td><td>在 LESSON PLAN Tab 中根据训练目标选择 Autorun（系统自动推进）或 Step-by-Step（教员逐条控制）；Autorun 适合标准化流程复现，Step-by-Step 适合需要评估和灵活干预的场景</td><td>逻辑推理："哪种模式更符合本次训练目标？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+<tr><td><strong>自动执行循环</strong></td><td>Autorun 模式下系统自动执行步骤；教员在 Map / Lesson Plan Profile 中实时监控；遇到需要手动确认的步骤时系统等待教员点击 Execute</td><td>流程监控："系统是否按预期推进？当前步骤是什么？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>逐步执行循环</strong></td><td>Step-by-Step 模式下系统加载当前步骤并在右侧显示详情；教员审阅参数后决策：点击 Execute 执行、Skip Condition 跳过、或 End Lesson 中止</td><td>逻辑推理 + 流程监控："当前步骤参数是否正确？是否跳过？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+<tr><td><strong>课程完成确认</strong></td><td>每次步骤执行后系统检查课程是否已完成；若未完成则继续下一循环；完成时自动结束或提示教员</td><td>流程监控："课程进度到多少了？还剩几步？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
+<tr><td><strong>课程终止</strong></td><td>课程正常结束时状态写入日志；若教员主动中止（End Lesson），当前步骤状态标记为中止，可重新加载课程或进入讲评</td><td>逻辑推理："是否需要保存当前进度？下一步做什么？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
 </table>
 </div>
 <h3>3.2 课程执行中的教员干预点</h3>
@@ -392,7 +392,7 @@ flowchart LR
 <tr><td><strong>信息形态</strong></td><td>纵向滚动列表，按阶段/步骤分层</td><td>横向飞行剖面图，以 amber line 为主线</td></tr>
 <tr><td><strong>核心用途</strong></td><td>精确操作：Execute / Skip / Go to Current / End Lesson</td><td>全局监控：一眼看清课程结构、当前步骤在整体剖面中的位置</td></tr>
 <tr><td><strong>最佳场景</strong></td><td>Step-by-Step 模式；需要查看某步骤的详细参数时</td><td>Autorun 模式；需要向学员/观察员展示课程全貌时</td></tr>
-<tr><td><strong>认知模式</strong></td><td>🔢 逻辑推理模式："当前该执行第几步？参数是什么？"</td><td>📊 流程监控模式："我们飞到哪了？还剩哪些阶段？"</td></tr>
+<tr><td><strong>认知模式</strong></td><td>逻辑推理模式："当前该执行第几步？参数是什么？"</td><td>流程监控模式："我们飞到哪了？还剩哪些阶段？"</td></tr>
 <tr><td><strong>实时联动</strong></td><td colspan="2">当前步骤索引双向同步：在 Tab 中点击 Go to Current，Profile 画布自动滚动并高亮；在 Profile 中点击某阶段，Tab 自动定位到对应步骤</td></tr>
 </table>
 </div>
@@ -508,17 +508,17 @@ flowchart LR
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
-    </br></br></div>
+    </div>
 <h4>4.1.1 初始化阶段说明</h4>
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>飞机参数初始化</strong></td><td>进入 AIRCRAFT Tab，依次设置 Gross Weight、GW CG、ZFW、ZFW CG、Fuel；确保 GW = ZFW + Fuel 等式成立</td><td>🔢 逻辑推理："数值是否在包线内？等式是否平衡？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
-<tr><td><strong>重量平衡校验</strong></td><td>系统检查 Weight &amp; CG 是否在允许包线内；若不通过，调整重量参数或打开 Weight &amp; CG Sliding Panel 精细调整</td><td>🔢 逻辑推理："重心是否超限？如何调整？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
-<tr><td><strong>通信与服务检查</strong></td><td>检查 DATALINK 状态、VHF 通信频率、Services &amp; Doors 状态；确保飞机系统与地面服务准备就绪</td><td>🔢 逻辑推理："通信链路是否正常？舱门状态是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
-<tr><td><strong>机场与位置绑定</strong></td><td>进入 REFERENCE AIRPORT Tab，选择参考机场、跑道与进场程序、停机位；跑道选择后地景自动加载</td><td>🗺️ 空间直觉："机场在哪条跑道？停机位位置对吗？"</td><td><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
-<tr><td><strong>环境参数配置</strong></td><td>进入 CURRENT CONDITIONS Tab，设置地面风、能见度、降水、云层、温度、ISA、QNH、跑道条件、风切变等；所有参数必须与所选跑道匹配</td><td>🔢 逻辑推理："风向风速是否符合训练目标？能见度设置是否正确？"</td><td><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td></tr>
-<tr><td><strong>全局目视确认</strong></td><td>切换至 Map Workspace，目视确认飞机位置、跑道朝向、环境效果（云层、风暴、能见度）与预期一致；如有偏差返回对应选项卡修正</td><td>🗺️ 空间直觉 + 📊 流程监控："整体场景是否符合训练设定？"</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
+<tr><td><strong>飞机参数初始化</strong></td><td>进入 AIRCRAFT Tab，依次设置 Gross Weight、GW CG、ZFW、ZFW CG、Fuel；确保 GW = ZFW + Fuel 等式成立</td><td>逻辑推理："数值是否在包线内？等式是否平衡？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
+<tr><td><strong>重量平衡校验</strong></td><td>系统检查 Weight &amp; CG 是否在允许包线内；若不通过，调整重量参数或打开 Weight &amp; CG Sliding Panel 精细调整</td><td>逻辑推理："重心是否超限？如何调整？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
+<tr><td><strong>通信与服务检查</strong></td><td>检查 DATALINK 状态、VHF 通信频率、Services &amp; Doors 状态；确保飞机系统与地面服务准备就绪</td><td>逻辑推理："通信链路是否正常？舱门状态是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
+<tr><td><strong>机场与位置绑定</strong></td><td>进入 REFERENCE AIRPORT Tab，选择参考机场、跑道与进场程序、停机位；跑道选择后地景自动加载</td><td>空间直觉："机场在哪条跑道？停机位位置对吗？"</td><td><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
+<tr><td><strong>环境参数配置</strong></td><td>进入 CURRENT CONDITIONS Tab，设置地面风、能见度、降水、云层、温度、ISA、QNH、跑道条件、风切变等；所有参数必须与所选跑道匹配</td><td>逻辑推理："风向风速是否符合训练目标？能见度设置是否正确？"</td><td><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td></tr>
+<tr><td><strong>全局目视确认</strong></td><td>切换至 Map Workspace，目视确认飞机位置、跑道朝向、环境效果（云层、风暴、能见度）与预期一致；如有偏差返回对应选项卡修正</td><td>空间直觉 + 流程监控："整体场景是否符合训练设定？"</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
 </table>
 </div>
 <h3>4.2 初始化顺序建议</h3>
@@ -594,16 +594,16 @@ flowchart LR
     style End fill:#d1fae5,stroke:#059669
     style Active fill:#fee2e2,stroke:#dc2626
     style Armed fill:#fef3c7,stroke:#d97706
-    </br></br></br></div>
+    </div>
 <h4>5.1.1 故障注入阶段说明</h4>
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>注入入口选择</strong></td><td>根据训练场景选择注入方式：课程步骤 MALF（标准化剧本）、AIRCRAFT Tab 底部（常见故障快速注入）、Advanced/INSTRUCTOR STATION（复杂/条件触发故障）</td><td>🔢 逻辑推理："需要哪种注入方式？时间压力如何？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
-<tr><td><strong>故障配置生效</strong></td><td>系统自动按步骤定义或教员选择激活/预位故障；故障信息同步至 Footer / Fail Summary；确认故障状态指示灯变化</td><td>📊 流程监控："故障是否已成功激活？状态指示正确吗？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a></td></tr>
-<tr><td><strong>故障状态等待/触发</strong></td><td>立即激活型故障瞬间生效；条件预位型故障等待预设触发条件（如高度、速度、时间）；教员可手动触发预位故障</td><td>⏱️ 时序监控："预位故障何时触发？是否按计划？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
-<tr><td><strong>监控与评估</strong></td><td>在 Map / Instruments Repeaters / Control Board 中监控机组对故障的识别与处置；评估处置是否符合训练目标</td><td>⚡ 应激决策 + 📊 流程监控："机组反应如何？处置是否正确？"</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
-<tr><td><strong>故障解除与恢复</strong></td><td>训练目标达成后解除故障；检查系统是否受损（如液压、发动机超限、电气等）；必要时使用 Footer/Advanced → Resets 执行系统重置</td><td>🔢 逻辑推理："故障是否完全清除？系统是否恢复正常？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>注入入口选择</strong></td><td>根据训练场景选择注入方式：课程步骤 MALF（标准化剧本）、AIRCRAFT Tab 底部（常见故障快速注入）、Advanced/INSTRUCTOR STATION（复杂/条件触发故障）</td><td>逻辑推理："需要哪种注入方式？时间压力如何？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
+<tr><td><strong>故障配置生效</strong></td><td>系统自动按步骤定义或教员选择激活/预位故障；故障信息同步至 Footer / Fail Summary；确认故障状态指示灯变化</td><td>流程监控："故障是否已成功激活？状态指示正确吗？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a></td></tr>
+<tr><td><strong>故障状态等待/触发</strong></td><td>立即激活型故障瞬间生效；条件预位型故障等待预设触发条件（如高度、速度、时间）；教员可手动触发预位故障</td><td>时序监控："预位故障何时触发？是否按计划？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>监控与评估</strong></td><td>在 Map / Instruments Repeaters / Control Board 中监控机组对故障的识别与处置；评估处置是否符合训练目标</td><td>应激决策 + 流程监控："机组反应如何？处置是否正确？"</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
+<tr><td><strong>故障解除与恢复</strong></td><td>训练目标达成后解除故障；检查系统是否受损（如液压、发动机超限、电气等）；必要时使用 Footer/Advanced → Resets 执行系统重置</td><td>逻辑推理："故障是否完全清除？系统是否恢复正常？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
 </table>
 </div>
 <h3>5.2 故障注入的三种入口对比</h3>
@@ -705,16 +705,16 @@ flowchart LR
     style Slew fill:#dbeafe,stroke:#2563eb
     style AirportRepo fill:#f0fdf4,stroke:#059669
     style FreezeRepo fill:#fef3c7,stroke:#d97706
-    </br></br></br></div>
+    </div>
 <h4>6.1.1 地图监控阶段说明</h4>
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>地图视图设置</strong></td><td>进入 Map Workspace，根据训练阶段选择 2D（全局监控/航迹跟踪）或 3D（进近/着陆透视）；切换覆盖层（FMS route、机场符号、风暴、Intruders）</td><td>🗺️ 空间直觉："哪种视图最适合当前阶段？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>实时监控操作</strong></td><td>执行缩放、自动范围（确保飞机与跑道同屏）、覆盖层切换、跟踪飞机或指定机场；在巡航/进近/着陆/TCAS 监控阶段使用不同组合</td><td>🗺️ 空间直觉 + 📊 流程监控："飞机位置对吗？航线偏离了吗？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>重新定位决策</strong></td><td>根据训练需求判断是否需要重新定位飞机；短距离微调选 SLEW，跨机场选 Airport Repo，快速预设选 Footer Reposition，大幅调整先冻结</td><td>🔢 逻辑推理："需要移动多远？精度要求如何？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>重新定位执行</strong></td><td>SLEW 微调（米级精度，机场范围）、Airport Repo（跨机场，跑道级）、Footer 预设（一键直达常用位置）、冻结后调整（任意距离，完全暂停）</td><td>🗺️ 空间直觉 + 🔢 逻辑推理："选择哪种方式最高效？"</td><td><a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a></td></tr>
-<tr><td><strong>位置验证</strong></td><td>在 Map 中确认新位置正确（跑道对准、高度合理、未陷入地形）；如不正确则重新选择定位方式或微调</td><td>🗺️ 空间直觉："飞机在新位置稳定了吗？姿态正常吗？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>地图视图设置</strong></td><td>进入 Map Workspace，根据训练阶段选择 2D（全局监控/航迹跟踪）或 3D（进近/着陆透视）；切换覆盖层（FMS route、机场符号、风暴、Intruders）</td><td>空间直觉："哪种视图最适合当前阶段？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>实时监控操作</strong></td><td>执行缩放、自动范围（确保飞机与跑道同屏）、覆盖层切换、跟踪飞机或指定机场；在巡航/进近/着陆/TCAS 监控阶段使用不同组合</td><td>空间直觉 + 流程监控："飞机位置对吗？航线偏离了吗？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>重新定位决策</strong></td><td>根据训练需求判断是否需要重新定位飞机；短距离微调选 SLEW，跨机场选 Airport Repo，快速预设选 Footer Reposition，大幅调整先冻结</td><td>逻辑推理："需要移动多远？精度要求如何？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>重新定位执行</strong></td><td>SLEW 微调（米级精度，机场范围）、Airport Repo（跨机场，跑道级）、Footer 预设（一键直达常用位置）、冻结后调整（任意距离，完全暂停）</td><td>空间直觉 + 逻辑推理："选择哪种方式最高效？"</td><td><a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a> / <a href="ch1_2_7_control_board_footer.html">1.2.7</a></td></tr>
+<tr><td><strong>位置验证</strong></td><td>在 Map 中确认新位置正确（跑道对准、高度合理、未陷入地形）；如不正确则重新选择定位方式或微调</td><td>空间直觉："飞机在新位置稳定了吗？姿态正常吗？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
 </table>
 </div>
 <h3>6.2 重新定位的四种方式选择指南</h3>
@@ -796,7 +796,7 @@ flowchart LR
     style End fill:#d1fae5,stroke:#059669
     style Frozen fill:#fef3c7,stroke:#d97706
     style Resume fill:#dbeafe,stroke:#2563eb
-    </br></br></br></div>
+    </div>
 <h3>7.2 录制与回放流程</h3>
 <div class="mermaid">
 flowchart LR
@@ -831,11 +831,11 @@ flowchart LR
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>冻结触发</strong></td><td>判断是否需要暂停训练；选择冻结类型：Footer 瞬时冻结（最常用）或 Advanced → Resets/Freezes（10 种精细冻结控制）</td><td>⚡ 应激决策："情况是否需要立即暂停？"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
-<tr><td><strong>冻结期间操作</strong></td><td>冻结期间可执行：观察当前状态、执行 RF-05 重新定位、修改环境/飞机参数（解冻后生效）、使用 Advanced → Recording 捕捉当前飞行状态</td><td>🔢 逻辑推理："冻结期间做什么？修改哪些参数？"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_6_map_workspace.html">1.6</a></td></tr>
-<tr><td><strong>训练恢复</strong></td><td>点击 Unfreeze 解除冻结；训练从冻结点无缝继续；解冻不会导致剧烈控制或运动变化</td><td>📊 流程监控："确认所有参数正确后恢复训练"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
-<tr><td><strong>状态捕捉与保存</strong></td><td>在 Advanced → Recording 中使用 Flight State Capture（FSC）捕捉当前飞机/环境/课程状态；选择预定义参数组；保存为临时或永久捕获</td><td>🔢 逻辑推理："需要保存哪些参数？永久还是临时？"</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
-<tr><td><strong>状态调用与回放</strong></td><td>选择已保存的状态调用（Recall）；系统冻结后按顺序恢复机场→环境→飞机→故障状态；空中状态自动调整配平；地面状态直接加载；解冻后飞行员继续训练</td><td>🔢 逻辑推理："调用哪个历史状态？是否在空中？"</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>冻结触发</strong></td><td>判断是否需要暂停训练；选择冻结类型：Footer 瞬时冻结（最常用）或 Advanced → Resets/Freezes（10 种精细冻结控制）</td><td>应激决策："情况是否需要立即暂停？"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>冻结期间操作</strong></td><td>冻结期间可执行：观察当前状态、执行 RF-05 重新定位、修改环境/飞机参数（解冻后生效）、使用 Advanced → Recording 捕捉当前飞行状态</td><td>逻辑推理："冻结期间做什么？修改哪些参数？"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+<tr><td><strong>训练恢复</strong></td><td>点击 Unfreeze 解除冻结；训练从冻结点无缝继续；解冻不会导致剧烈控制或运动变化</td><td>流程监控："确认所有参数正确后恢复训练"</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>状态捕捉与保存</strong></td><td>在 Advanced → Recording 中使用 Flight State Capture（FSC）捕捉当前飞机/环境/课程状态；选择预定义参数组；保存为临时或永久捕获</td><td>逻辑推理："需要保存哪些参数？永久还是临时？"</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>状态调用与回放</strong></td><td>选择已保存的状态调用（Recall）；系统冻结后按顺序恢复机场→环境→飞机→故障状态；空中状态自动调整配平；地面状态直接加载；解冻后飞行员继续训练</td><td>逻辑推理："调用哪个历史状态？是否在空中？"</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
 </table>
 </div>
 <h3>7.3 冻结/录制/回放的跨工作区影响</h3>
@@ -969,8 +969,8 @@ flowchart LR
 <div class="table-wrap">
 <table>
 <tr><th style="width:20%">工作区</th><th style="width:35%">常见异常入口</th><th style="width:45%">第一排查动作</th></tr>
-<tr><td><strong><a href="ch1_2_1_lesson_plan_tab.html">LESSON PLAN Tab</a></strong></td><td>课程大纲为空 / 步骤执行失败 / Execute 无响应 / 子课程（Nested）未返回</td><td>1. 确认课程文件在 CAE Slick 中已保存<br>2. 检查 IOS 与课程服务器的连接<br>3. 尝试 Skip Condition 或重新加载课程</br></br></td></tr>
-<tr><td><strong><a href="ch1_5_lesson_plan_profile.html">Lesson Plan Profile</a></strong></td><td>画布中 amber line 不更新 / 当前步骤高亮错位 / 与 Tab 进度不一致</td><td>1. 在 Tab 中点击 Go to Current 强制同步<br>2. 切换至其他工作区再切回触发重绘<br/>3. 如持续不一致，以 LESSON PLAN Tab 为准（Tab 是课程进度的事实来源）</br></td></tr>
+<tr><td><strong><a href="ch1_2_1_lesson_plan_tab.html">LESSON PLAN Tab</a></strong></td><td>课程大纲为空 / 步骤执行失败 / Execute 无响应 / 子课程（Nested）未返回</td><td>1. 确认课程文件在 CAE Slick 中已保存<br>2. 检查 IOS 与课程服务器的连接<br>3. 尝试 Skip Condition 或重新加载课程</td></tr>
+<tr><td><strong><a href="ch1_5_lesson_plan_profile.html">Lesson Plan Profile</a></strong></td><td>画布中 amber line 不更新 / 当前步骤高亮错位 / 与 Tab 进度不一致</td><td>1. 在 Tab 中点击 Go to Current 强制同步<br>2. 切换至其他工作区再切回触发重绘<br/>3. 如持续不一致，以 LESSON PLAN Tab 为准（Tab 是课程进度的事实来源）</td></tr>
 <tr><td><strong><a href="ch1_2_4_aircraft_tab.html">AIRCRAFT Tab</a></strong></td><td>Weight &amp; CG 超出包线 / 故障注入后仪表异常 / Fuel/GW 计算不匹配</td><td>1. 检查 GW = ZFW + Fuel 是否成立<br/>2. 打开 Weight &amp; CG Sliding Panel 查看详细分布<br/>3. 使用 Fail Summary 排查激活故障的叠加效应</td></tr>
 <tr><td><strong><a href="ch1_2_3_current_conditions_tab.html">CURRENT CONDITIONS</a></strong></td><td>环境参数修改未生效 / 风速/云层与 Map 显示不一致 / 冻结期间修改丢失</td><td>1. 确认修改后已点击绿勾确认<br/>2. 检查是否在冻结期间修改（冻结期修改需解冻后生效）<br/>3. 切换至 Map Workspace 强制刷新渲染</td></tr>
 <tr><td><strong><a href="ch1_2_5_reference_airport_tab.html">REFERENCE AIRPORT</a></strong></td><td>机场列表为空 / 跑道选择后地景未加载 / 重新定位后飞机陷入地形</td><td>1. 检查机场数据库与导航数据版本<br/>2. 使用 SLEW 微调位置或选择其他停机位<br/>3. 如数据库问题持续，通知维护人员更新 navdata</td></tr>
@@ -1077,7 +1077,7 @@ flowchart TD
     style End3 fill:#d1fae5,stroke:#059669
     style End4 fill:#d1fae5,stroke:#059669
     style End5 fill:#d1fae5,stroke:#059669
-    </br></br></br></div>
+    </div>
 <h3>A.1 决策树使用原则</h3>
 <ul>
 <li><strong>第一步永远是判断"是否需要暂停"</strong>：如果情况紧急（学员失能、系统异常、需要立即干预），先按 Footer Freeze，再考虑后续操作。这是"先止血，后治疗"原则。</li>
