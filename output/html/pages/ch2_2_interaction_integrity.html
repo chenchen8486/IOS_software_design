@@ -1,0 +1,1316 @@
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+@media print{.mermaid{page-break-inside:avoid}}
+</style>
+
+<h1>2.2 端到端交互完整性流程</h1>
+<p class="subtitle">原始手册对应：ch1_8 参考流程（RF-01 ~ RF-06） |  性质：基于操作手册的架构交互推导  |  置信度：中~高</p>
+
+<div class="speculation-box">
+<strong>内容性质声明：</strong>本章所有内容均基于 <a href="ch1_8_reference_flows.html">1.8 参考流程</a> 中的操作步骤与状态流转，在 <a href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a> 定义的约束下进行<strong>交互完整性验证与推导</strong>。所有"交互断点"与"状态传递契约"均标注了置信度，供后续软件开发参考，不构成最终技术设计约束。
+</div>
+
+<!-- ==================== 2.2.1 ==================== -->
+<h2 id="sec-2-2-1">2.2.1 交互完整性分析框架</h2>
+
+<p><a href="ch1_8_reference_flows.html">1.8 参考流程</a> 从<strong>操作手册视角</strong>回答了"教员在训练中应该如何操作"——它用流程图（Flowchart）描述了 6 个端到端流程的操作步骤、认知模式和效率技巧。而 2.2 节的任务是从<strong>软件架构视角</strong>回答另一个问题：<strong>"系统为了支撑这些操作，各工作区之间必须发生怎样的交互？"</strong></p>
+
+<p>这种视角转换的核心价值在于<strong>识别交互断点</strong>——即操作手册中明确描述了某个行为，但 2.1 的架构推导中尚未为其分配数据流、同步机制或状态管理逻辑。每一个断点都是后续软件实现中必须填补的架构缺口。</p>
+
+<h3>分析方法论：四步法</h3>
+<p>将操作手册流程转化为架构交互模型的标准方法如下：</p>
+<ol>
+<li><strong>提取工作区与数据变更</strong>：从 ch1_8 的每个 RF 中，识别出"涉及哪些工作区"、"修改了哪些数据项"、"触发了哪些状态转换"。</li>
+<li><strong>对照 2.1 数据依赖矩阵</strong>：将步骤 1 中提取的数据变更，逐一映射到 <a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 跨工作区数据依赖矩阵</a>，确认数据所有者、共享范围和同步规则是否已定义。</li>
+<li><strong>推导跨工作区消息序列</strong>：使用 Mermaid Sequence Diagram 描述消息的发送方、接收方、方向（请求/响应/广播）、同步属性（同步调用 vs 异步通知）以及数据负载。</li>
+<li><strong>识别交互断点</strong>：若某一步操作在 ch1_8 中有描述，但在 2.1 中找不到对应的数据流或同步机制，则标记为交互断点（Interaction Gap），并推导最小可行的架构补充。</li>
+</ol>
+
+<div class="highlight-box">
+<strong>约束红线：</strong>2.2 节的所有推导必须以 <a href="ch2_1_functional_architecture.html">2.1</a> 定义的数据所有权和同步规则为约束。任何与 2.1 矛盾的推导都必须被视为错误并修正，而非推翻 2.1 的结论。
+</div>
+
+<h3>符号约定与图例</h3>
+<p>本节统一使用以下符号体系描述跨工作区交互：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">符号/术语</th><th style="width:35%">含义</th><th style="width:43%">示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>实线箭头 →</strong></td><td>同步请求/响应</td><td>Instructor → CB：点击 Execute，CB 等待 Session State Manager 确认后才更新 UI</td></tr>
+<tr><td><strong>虚线箭头 --→</strong></td><td>异步通知/广播</td><td>Simulator Core --→ Map：物理引擎按 30Hz 广播飞机位置更新</td></tr>
+<tr><td><strong>红色边框节点</strong></td><td>强一致性要求（&lt; 100ms，零偏差）</td><td>冻结/解冻标志、飞机位置/姿态</td></tr>
+<tr><td><strong>橙色边框节点</strong></td><td>最终一致性要求（允许短暂偏差）</td><td>云层动画、仪表指针插值</td></tr>
+<tr><td><strong>虚线框 rect</strong></td><td>子流程调用/引用</td><td>RF-01 中调用 RF-03 初始化子流程</td></tr>
+<tr><td><strong>GAP-XX</strong></td><td>交互断点编号</td><td>GAP-01：Debrief 阶段的事件标记机制在 2.1 中未定义</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Sequence Diagram 参与者命名</h3>
+<p>为了与 2.1.1 的功能架构全景图保持一致，Mermaid Sequence Diagram 中的参与者（Actor）命名如下：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">架构实体</th><th style="width:28%">Sequence Diagram 中的别名</th><th style="width:50%">职责</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Instructor</strong></td><td>INST（教员）</td><td>人类操作者，所有交互序列的起点</td></tr>
+<tr><td><strong>Control Board</strong></td><td>CB（控制面板）</td><td>聚合根，承载 AIRCRAFT / CURRENT CONDITIONS / REFERENCE AIRPORT / LESSON PLAN 等 Tabs</td></tr>
+<tr><td><strong>Map</strong></td><td>MAP（地图）</td><td>空间渲染与交互，SLEW 拖动回写</td></tr>
+<tr><td><strong>Lesson Plan Profile</strong></td><td>LPP（课程计划剖面）</td><td>课程数据的可视化剖面视图</td></tr>
+<tr><td><strong>Instruments Repeaters</strong></td><td>IR（复示仪表）</td><td>只读消费端，订阅物理引擎数据</td></tr>
+<tr><td><strong>Advanced</strong></td><td>ADV（高级）</td><td>应急快速通道，直接操作核心或修改 CB 参数</td></tr>
+<tr><td><strong>Footer / Instructor Station</strong></td><td>FS（底部快捷栏）</td><td>全局控制网关，冻结/重置/时间控制/工作区切换</td></tr>
+<tr><td><strong>Session State Manager</strong></td><td>SSM（状态管理器）</td><td>全局状态协调者，仲裁、版本控制、批量下发</td></tr>
+<tr><td><strong>Simulator Core</strong></td><td>SC（模拟器核心）</td><td>物理引擎、环境引擎、声音系统、FMS 子模块</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box warn">
+<strong>重要约定：</strong>在 Sequence Diagram 中，<strong>SSM（Session State Manager）</strong>被显式画为独立参与者，而非隐式内嵌于某个工作区中。这强调了 2.1.2 中提出的核心假设——SSM 是所有工作区与模拟器核心之间的<strong>唯一协调者</strong>。所有跨工作区的状态变更（即使是看似"直接"的联动，如 Map Slew → CB 位置更新）在架构层面都建议经过 SSM 转发，以保证版本控制和仲裁逻辑的统一性。
+</div>
+
+<!-- ==================== 2.2.2 ==================== -->
+<h2 id="sec-2-2-2">2.2.2 RF-01 标准训练 Session 交互序列与状态机</h2>
+
+<p>RF-01 是覆盖训练完整生命周期的<strong>主流程</strong>，从加载课程到结束讲评，横跨全部 6 大工作区。本节将其转化为跨工作区的消息序列图，并验证每个阶段在 2.1 架构中的覆盖情况。</p>
+
+<h3>主流程交互序列图</h3>
+<p>下图展示了 RF-01 主干路径的跨工作区消息序列。为控制图表复杂度，RF-02~RF-06 子流程的详细内部序列在各自小节中展开，此处以<strong>虚线框（ref）</strong>引用。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant FS as Footer
+    participant SSM as Session State Manager
+    participant LPP as Lesson Plan Profile
+    participant MAP as Map
+    participant ADV as Advanced
+    participant SC as Simulator Core
+    participant IR as Instruments Repeaters
+
+    rect rgb(219,234,254)
+    Note over INST,IR: 阶段一：课程加载与初始化检查
+    INST->>CB: 1. 进入 LESSON PLAN Tab，选择课程
+    CB->>SSM: 课程加载请求 {courseId}
+    SSM->>SC: 加载课程定义
+    SC-->>SSM: 课程数据 {phases, steps, params}
+    SSM->>CB: 课程加载完成 {version+=1}
+    SSM-->>LPP: 同步课程结构（剖面数据）
+    CB-->>INST: 显示课程大纲与步骤列表
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: 阶段二：环境配置与飞机初始化（引用 RF-03）
+    INST->>CB: 2. 进入 AIRCRAFT / REF AIRPORT / CC Tabs
+    CB->>SSM: 参数变更事件（多轮）
+    SSM->>SC: 下发飞机/环境/机场参数
+    SC-->>SSM: 参数确认 / 校验结果
+    SSM->>CB: 参数生效回显 {version+=1}
+    SSM-->>MAP: 机场/环境数据推送
+    MAP-->>INST: 渲染地图与地景
+    end
+
+    rect rgb(219,234,254)
+    Note over INST,IR: 阶段三：位置确认与课程启动
+    INST->>MAP: 3. 切换至 Map，确认位置/跑道
+    MAP-->>INST: 显示飞机位置与航迹
+    INST->>CB: 4. 返回 LESSON PLAN Tab
+    INST->>CB: 5. 选择 Autorun / Step-by-Step
+    CB->>SSM: 课程执行模式 {mode}
+    SSM->>SC: 启动课程引擎
+    SC-->>SSM: 课程状态 {stepIndex, state}
+    SSM->>CB: 步骤高亮更新
+    SSM-->>LPP: 剖面进度同步
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,IR: 阶段四：实时监控循环
+    loop 训练进行中
+        SC-->>MAP: 飞机位置/航迹广播
+        SC-->>IR: 仪表数据广播
+        SC-->>CB: 参数状态回显
+        MAP-->>INST: 地图渲染
+        IR-->>INST: 仪表显示
+    end
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: 阶段五：动态干预（引用 RF-04 / RF-05）
+    alt 故障注入
+        INST->>ADV: 6a. 进入 Advanced → Failure
+        ADV->>SSM: 故障激活/预位请求
+        SSM->>SC: 注入故障
+        SC-->>SSM: 故障状态确认
+        SSM->>CB: Malfunctions Panel 更新
+        SSM->>FS: Footer 故障计数器更新
+    else 重新定位
+        INST->>MAP: 6b. SLEW 拖动 / Airport Repo
+        MAP->>SSM: 位置变更事件
+        SSM->>SC: 更新飞机位置
+        SSM->>CB: 位置参数同步
+    end
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: 阶段六：冻结与状态保全（引用 RF-06）
+    INST->>FS: 7. 点击 Freeze
+    FS->>SSM: 全局冻结请求 {freezeType}
+    SSM->>SC: 暂停物理引擎
+    SSM->>CB: 冻结状态通知
+    SSM->>MAP: 冻结状态通知
+    SSM->>IR: 冻结状态通知
+    SSM->>LPP: 冻结状态通知
+    Note over CB,LPP: 全部工作区保持冻结瞬间快照
+    end
+
+    rect rgb(219,234,254)
+    Note over INST,IR: 阶段七：结束与讲评
+    INST->>CB: 8. 点击 End Lesson
+    CB->>SSM: 课程终止请求
+    SSM->>SC: 停止课程引擎
+    SSM->>CB: 课程状态重置
+    SSM-->>LPP: 清除进度高亮
+    INST->>ADV: 9. 回放 Recording
+    ADV->>SSM: 回放请求
+    SSM->>SC: 按序恢复状态快照
+    SC-->>SSM: 恢复完成
+    SSM->>CB: 显示回放状态
+    end
+</div>
+
+<h3>领域切换点的状态传递契约</h3>
+<p>RF-01 中存在三个关键的<strong>领域切换点</strong>（Domain Handoff），即主流程临时进入子流程（RF-03~RF-06）的衔接位置。每个切换点都必须定义清晰的输入/输出状态契约，否则子流程返回后主流程将失去上下文。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">切换点</th><th style="width:28%">源状态（进入子流程前）</th><th style="width:28%">目标状态（子流程完成后）</th><th style="width:26%">契约验证规则</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>A：课程加载 → RF-03 初始化</strong></td><td>{courseLoaded: true, stepIndex: 0, aircraft: default, env: default, airport: null}</td><td>{initComplete: true, aircraft: validated, env: validated, airport: validated, version: N}</td><td>version 必须递增；所有校验链通过；GW = ZFW + Fuel 等式成立</td></tr>
+<tr><td><strong>B：实时监控 → RF-04 故障注入</strong></td><td>{sessionRunning: true, stepIndex: K, malfList: []}</td><td>{malfList: [...], malfVersion: M, sessionRunning: true}</td><td>故障状态必须在 50ms 内同步至所有工作区；课程执行状态不丢失</td></tr>
+<tr><td><strong>C：实时监控 → RF-05 重新定位</strong></td><td>{position: P0, heading: H0, flightPhase: F}</td><td>{position: P1, heading: H1, flightPhase: F, repositionVersion: R}</td><td>重新定位期间课程执行状态暂停或保持；非着陆接地瞬间允许重新定位</td></tr>
+<tr><td><strong>D：任意阶段 → RF-06 冻结</strong></td><td>{sessionRunning: true, ...allState}</td><td>{freezeFlag: true, frozenSnapshot: S, version: V+1}</td><td>冻结瞬间捕获全量状态快照；所有工作区在 50ms 内响应；解冻后 version 再次递增</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>架构覆盖验证矩阵</h3>
+<p>将 RF-01 的每个阶段与 <a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a> 和 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> 进行交叉验证：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:16%">RF-01 阶段</th><th style="width:22%">涉及数据项</th><th style="width:20%">2.1.3 覆盖情况</th><th style="width:20%">2.1.4 一致性要求</th><th style="width:22%">验证结论</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>课程加载</strong></td><td>课程状态（阶段列表、步骤定义）</td><td>✅ 有定义（Lesson Plan Profile 所有者）</td><td>课程步骤索引：强一致性</td><td>通过。加载后 stepIndex=0 必须同步至 CB 和 LPP</td></tr>
+<tr><td><strong>初始化检查</strong></td><td>飞机物理状态、环境参数、参考机场</td><td>✅ 有定义（SC/CB 所有者）</td><td>环境参数：强一致性（&lt;100ms）</td><td>通过。参数校验链需要 2.1.4 原则一的"全局原子状态标志"支撑</td></tr>
+<tr><td><strong>位置确认</strong><td>飞机位置、航向、FMS 航线</td><td>✅ 有定义（SC 所有者）</td><td>飞机位置/姿态：强一致性（0ms）</td><td>通过。Map 渲染允许最终一致性，但物理值必须严格一致</td></tr>
+<tr><td><strong>课程执行</strong><td>当前步骤索引、执行模式</td><td>✅ 有定义（LPP/CB 共享）</td><td>课程步骤索引：强一致性（&lt;100ms）</td><td>通过。CB 与 LPP 必须同步高亮</td></tr>
+<tr><td><strong>实时监控</strong><td>飞机物理状态（持续广播）</td><td>✅ 有定义（SC 所有者，Pub-Sub）</td><td>仪表指针动画：最终一致性（&lt;200ms）</td><td>通过。IR 作为只读消费端，允许指针平滑插值</td></tr>
+<tr><td><strong>动态干预</strong><td>故障状态、环境参数、飞机位置</td><td>✅ 有定义（CB/ADV 所有者）</td><td>故障状态：强一致性（&lt;50ms）</td><td>通过。故障激活后 Footer 计数器和 CB Malfunctions Panel 必须实时更新</td></tr>
+<tr><td><strong>冻结/解冻</strong><td>全局冻结标志</td><td>✅ 有定义（FS/ADV 所有者）</td><td>冻结/解冻标志：强一致性（&lt;50ms）</td><td>通过。2.1.4 原则一已定义全局原子状态标志机制</td></tr>
+<tr><td><strong>结束与讲评</strong><td>课程日志、录制片段、事件标记</td><td>⚠️ 部分缺失（事件标记未定义）</td><td>状态恢复：强一致性</td><td><strong>断点</strong>。见下方 GAP-01 / GAP-02</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>交互断点识别（RF-01）</h3>
+
+<div class="speculation-box">
+<strong>GAP-01：Debrief 阶段的事件标记机制</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 描述教员在讲评阶段需要"标记关键事件（故障注入点/冻结点/学员偏差）"，但 2.1 的数据依赖矩阵中没有定义<strong>Event Marker</strong>这类数据项。架构补充建议：增加一个轻量级的 Event Marker 类型，包含 {timestamp, type, sourceWorkspace, description, snapshotRef}，由 SSM 在事件发生时自动生成，教员可在 Debrief 阶段审阅和手动补充标注。
+</div>
+
+<div class="speculation-box">
+<strong>GAP-02：Session Cleanup 后的状态验证机制</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 描述 Cleanup 阶段需要"复位模拟器状态，准备下一课程"，但 2.1 中未定义<strong>Post-Session Validation</strong>步骤。架构补充建议：在 Total Reset 或 Session Reset 后，SSM 应自动执行一次全参数一致性校验（飞机是否回默认值、环境是否回 ISA、故障是否清零、冻结是否解除），校验失败时保持冻结并提示教员，避免"半复位"状态进入下一课程。
+</div>
+
+<!-- ==================== 2.2.3 ==================== -->
+<h2 id="sec-2-2-3">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</h2>
+
+<p>RF-02（课程执行）和 RF-03（初始化）是 RF-01 主流程中<strong>最紧密耦合</strong>的两个子流程。RF-03 的输出（初始化完成确认）是 RF-02 的前置条件；RF-02 执行过程中又可能中断进入 RF-04/RF-05/RF-06。本节推导它们各自的交互序列，以及衔接处的状态契约。</p>
+
+<h3>课程执行交互序列图</h3>
+<p>RF-02 的两种执行模式在架构层面有本质差异：<strong>Autorun</strong> 模式下课程引擎自动推进，教员处于"监控者"角色；<strong>Step-by-Step</strong> 模式下教员的每次点击 Execute 都是一次显式的人机交互事件。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant SSM as Session State Manager
+    participant LPP as Lesson Plan Profile
+    participant SC as Simulator Core
+    participant MAP as Map
+    participant FS as Footer
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: Autorun 模式
+    INST->>CB: 点击 Autorun
+    CB->>SSM: 执行模式变更 {mode: autorun}
+    SSM->>SC: 启动自动执行引擎
+    loop 自动步骤推进
+        SC->>SC: 评估当前步骤条件
+        SC-->>SSM: 步骤状态 {stepIndex, state}
+        SSM->>CB: 更新步骤高亮
+        SSM-->>LPP: 同步剖面进度
+        alt SIM 步骤
+            SC->>SC: 更新飞机状态
+            SC-->>MAP: 位置/航迹广播
+        else MALF 步骤
+            SC->>SC: 激活/预位故障
+            SSM->>CB: Malfunctions Panel 更新
+            SSM->>FS: Footer 故障计数器更新
+        end
+        opt 遇到手动确认步骤
+            SC-->>SSM: 等待教员确认
+            SSM->>CB: 高亮"等待 Execute"
+            INST->>CB: 点击 Execute
+            CB->>SSM: 手动确认
+            SSM->>SC: 继续推进
+        end
+    end
+    SC-->>SSM: 课程完成
+    SSM->>CB: 显示"课程结束"
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: Step-by-Step 模式
+    INST->>CB: 点击 Step-by-Step
+    CB->>SSM: 执行模式变更 {mode: step}
+    loop 教员逐条控制
+        SC-->>SSM: 当前步骤 {stepIndex, detail}
+        SSM->>CB: 加载步骤详情
+        CB-->>INST: 显示步骤参数
+        INST->>CB: 决策：Execute / Skip / End
+        alt Execute
+            CB->>SSM: 执行当前步骤
+            SSM->>SC: 推进步骤
+        else Skip Condition
+            CB->>SSM: 跳过当前步骤
+            SSM->>SC: 跳至下一条
+        else End Lesson
+            CB->>SSM: 终止课程
+            SSM->>SC: 停止引擎
+            SSM->>CB: 课程中止状态
+            break
+        end
+    end
+    end
+</div>
+
+<h3>LESSON PLAN Tab ↔ Lesson Plan Profile 双向同步契约推导</h3>
+<p>ch1_8 的 3.3 节描述了 Tab 与 Profile 的视图选择行为，但并未从架构层面定义它们之间的<strong>数据同步契约</strong>。基于 2.1.3 的状态同步规则，推导如下：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">同步场景</th><th style="width:25%">触发源</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>当前步骤索引变更</strong></td>
+<td>LESSON PLAN Tab（Execute / Skip / Go to Current）</td>
+<td>CB -> SSM -> LPP（事件驱动）</td>
+<td>强一致性（&lt;100ms）；Profile 必须在 CB 高亮后同步滚动并高亮当前阶段</td>
+</tr>
+<tr>
+<td><strong>剖面阶段跳转</strong></td>
+<td>Lesson Plan Profile（点击某阶段）</td>
+<td>LPP -> SSM -> CB（事件驱动）</td>
+<td>强一致性（&lt;100ms）；CB 自动定位到对应步骤，但不自动执行</td>
+</tr>
+<tr>
+<td><strong>课程加载完成</strong></td>
+<td>Session State Manager（课程引擎）</td>
+<td>SSM -> CB + SSM -> LPP（广播）</td>
+<td>强一致性；两者必须同时收到完整的课程结构数据</td>
+</tr>
+<tr>
+<td><strong>执行模式切换</strong></td>
+<td>教员（Autorun / Step-by-Step）</td>
+<td>CB -> SSM -> LPP（状态变更）</td>
+<td>强一致性；Profile 上的进度标记样式需随模式变化（Autorun 连续流动 vs Step 离散跳跃）</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>架构推导结论：</strong>当前步骤索引的<strong>单一事实来源</strong>应为 <strong>Session State Manager</strong>，而非 LESSON PLAN Tab 或 Lesson Plan Profile 中的任意一方。CB 和 LPP 都是该状态的<strong>消费视图</strong>，任何一方的用户操作（点击 Execute 或点击剖面阶段）都应先发送至 SSM，由 SSM 更新权威状态后再广播至所有视图。这避免了双向绑定导致的竞态条件。
+</div>
+
+<h3>Freeplay / Nested 异常分支的架构补充</h3>
+<p>ch1_8 的 3.2 节和 3.4 节提到了 Freeplay 和 Nested 两种打破常规步骤序列的异常机制。2.1 架构中未对这两种场景做专门设计，属于明确的交互断点。</p>
+
+<div class="speculation-box">
+<strong>GAP-03：Freeplay 优先级仲裁机制</strong><span class="confidence conf-high">高优先级</span><br/>
+ch1_8 描述："Freeplay 步骤可能与当前 Autorun 步骤冲突；Freeplay 优先执行，Autorun 在其完成后继续。"<br/><br/>
+<strong>架构补充建议：</strong>Session State Manager 需增加<strong>步骤优先级仲裁器</strong>。规则如下：
+<ul>
+<li>Freeplay 步骤的优先级高于常规 SIM/MALF 步骤</li>
+<li>当 Freeplay 触发时，SSM 暂停当前常规步骤的执行上下文（非冻结，只是挂起）</li>
+<li>Freeplay 完成后，SSM 恢复被挂起的常规步骤上下文</li>
+<li>若 Freeplay 与当前步骤修改了同一参数（如都修改飞机位置），Freeplay 的修改覆盖常规步骤，但需在课程日志中记录覆盖事件</li>
+</ul>
+</div>
+
+<div class="speculation-box">
+<strong>GAP-04：Nested 课程状态栈</strong><span class="confidence conf-high">高优先级</span><br/>
+ch1_8 描述："加载子课程并替换当前课程大纲；执行完成后可返回主课程。子课程执行期间，主课程的步骤计时器暂停。"<br/><br/>
+<strong>架构补充建议：</strong>SSM 需维护一个<strong>课程状态栈（Course State Stack）</strong>，支持 LIFO 的嵌套调用：
+<ul>
+<li>进入 Nested 时：将主课程的 {courseId, stepIndex, stepTimer, executionContext} 压栈</li>
+<li>子课程执行期间：栈顶为子课程状态，主课程计时器暂停</li>
+<li>子课程完成/中止时：弹出主课程状态，恢复 stepTimer 和 executionContext</li>
+<li>最大嵌套深度建议限制为 3 层，防止栈溢出导致状态混乱</li>
+</ul>
+</div>
+
+<h3>初始化交互序列图与参数校验链</h3>
+<p>RF-03 是纯逻辑推理流程，所有步骤都是精确的数值输入与包线验证。其交互序列的特点是<strong>多轮参数变更 + 层级校验</strong>。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant MAP as Map
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: 飞机参数初始化
+    INST->>CB: 进入 AIRCRAFT Tab，输入 GW
+    CB->>SSM: 参数变更 {param: GW, value, source: CB}
+    SSM->>SSM: UI 层校验（范围/格式）
+    SSM->>SSM: 业务校验：GW 是否在包线内？
+    SSM->>SC: 下发 GW
+    SC-->>SSM: GW 确认
+    SSM->>CB: GW CG 自动计算回显
+
+    INST->>CB: 输入 ZFW / Fuel
+    CB->>SSM: 参数变更 {ZFW, Fuel}
+    SSM->>SSM: 业务校验：GW = ZFW + Fuel？
+    alt 等式不成立
+        SSM->>CB: 报错提示，拒绝下发
+        CB-->>INST: 显示校验失败
+    else 等式成立
+        SSM->>SC: 下发 ZFW / Fuel
+        SC-->>SSM: 确认
+    end
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: 机场与环境初始化
+    INST->>CB: 进入 REFERENCE AIRPORT，选择机场
+    CB->>SSM: 参数变更 {airportICAO}
+    SSM->>SC: 查询机场数据库
+    SC-->>SSM: 机场数据 {runways, gates, terrain}
+    SSM->>CB: 跑道列表更新
+
+    INST->>CB: 选择跑道
+    CB->>SSM: 参数变更 {runwayId}
+    SSM->>CB: 跑道条件选项绑定
+
+    INST->>CB: 进入 CURRENT CONDITIONS，逐项配置
+    CB->>SSM: 多轮参数变更
+    SSM->>SSM: 依赖校验：Surface Wind → QNH 计算基础
+    SSM->>SC: 下发环境参数
+    SC-->>SSM: 环境确认
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,MAP: 全局目视确认
+    SSM-->>MAP: 推送机场/环境/飞机数据
+    MAP-->>INST: 渲染完整场景
+    INST->>MAP: 目视确认
+    alt 确认通过
+        MAP-->>INST: 初始化完成
+    else 需要调整
+        INST->>CB: 返回对应 Tab 修正
+    end
+    end
+</div>
+
+<h3>参数校验链的架构实现推导</h3>
+<p>RF-03 的初始化流程揭示了一个三层校验架构，这是 2.1.2 中"UI 层 → 状态管理层 → 模拟器核心层"数据流的具体实例：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">校验层级</th><th style="width:30%">执行者</th><th style="width:25%">校验内容</th><th style="width:27%">失败行为</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L1 UI 层校验</strong></td>
+<td>Control Board 前端控件</td>
+<td>输入格式（数字/字符串）、取值范围（如 GW 必须在 40t~80t 之间）</td>
+<td>即时阻止非法输入，给出红色边框/提示文案，不向 SSM 发送请求</td>
+</tr>
+<tr>
+<td><strong>L2 业务校验</strong></td>
+<td>Session State Manager</td>
+<td>跨参数等式（GW = ZFW + Fuel）、包线约束（CG 在 MAC 范围内）、依赖顺序（必须先选机场再选跑道）</td>
+<td>拒绝下发并回滚到上次合法状态，向 CB 返回具体错误码</td>
+</tr>
+<tr>
+<td><strong>L3 物理校验</strong></td>
+<td>Simulator Core</td>
+<td>物理可行性（飞机在当前机场跑道能否起飞）、地形碰撞检测、FMS 航线可计算性</td>
+<td>返回物理校验失败，SSM 保持冻结或回滚到上一次通过校验的快照</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box warn">
+<strong>失败回滚策略：</strong>L1 失败无需回滚（仅前端拦截）；L2 失败回滚到 SSM 上一次合法状态；L3 失败回滚到 Simulator Core 上一次通过物理校验的快照。三层校验的粒度逐层收紧，避免了"前端通过但后端崩溃"的状态不一致。
+</div>
+
+<h3>Save/Recall Scenario 的状态持久化契约</h3>
+<p>ch1_8 的 4.3 节描述了 Advanced → Environment 中的 Save/Recall Scenario 功能。将其映射到 2.1 架构中，需要明确<strong>保存范围</strong>与<strong>数据依赖矩阵</strong>的对应关系。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">场景数据项</th><th style="width:22%">2.1.3 数据类别</th><th style="width:28%">是否被 Save/Recall 持久化</th><th style="width:28%">架构原因</th></tr>
+</thead>
+<tbody>
+<tr><td>海平面温度、中间层/对流层顶温度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数，可复用</td></tr>
+<tr><td>QNH、QFE</td><td>环境参数</td><td>✅ 保存（衍生存储）</td><td>可由温度和气压剖面重新计算</td></tr>
+<tr><td>地面/中间层/对流层顶风</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
+<tr><td>云和能见度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
+<tr><td>活跃风暴、微下击暴流</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>属于瞬时模拟状态，非配置参数；重新加载后应由教员按需重新配置</td></tr>
+<tr><td>风切变、结冰条件</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>同上，属于触发式瞬时状态</td></tr>
+<tr><td>飞机位置、重量、重心</td><td>飞机物理状态</td><td>❌ 不保存</td><td>Save Scenario 仅保存环境配置，飞机状态由课程或教员单独管理</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>状态持久化契约：</strong>Save Scenario 操作的消息序列为：ADV -> SSM -> 持久化存储。SSM 在保存前需过滤掉"瞬时模拟状态"，只持久化"教员输入的配置参数"。Recall 时，SSM 从持久化存储读取配置参数，按 RF-03 的初始化顺序（机场→环境→验证）重新下发至 SC，并递增 State Version 通知所有工作区刷新。
+</div>
+
+<!-- ==================== 2.2.4 ==================== -->
+<h2 id="sec-2-2-4">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</h2>
+
+<p>RF-04（故障注入）和 RF-05（重新定位）都是训练进行中的<strong>动态干预</strong>操作，它们打破了 RF-02 的常规执行节奏，对状态一致性有极高的实时性要求。本节推导它们的交互序列，并识别与冻结、课程执行等状态的组合约束。</p>
+
+<h3>故障注入交互序列图（三种入口统一建模）</h3>
+<p>ch1_8 描述了三种故障注入入口（课程 MALF、AIRCRAFT Tab 底部、Advanced/INSTRUCTOR STATION），但从架构视角看，它们最终都应汇聚到一个统一的<strong>故障注册表（Malfunction Registry）</strong>中，再由 SSM 协调广播。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant FS as Footer
+    participant IR as Instruments Repeaters
+    participant MAP as Map
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: 入口 A：课程步骤 MALF
+    SC->>SC: 课程引擎执行到 MALF 步骤
+    SC->>SSM: 故障注入请求 {malfCode, source: lesson}
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: 入口 B：AIRCRAFT Tab 快速注入
+    INST->>CB: 点击 Toggle Fail（AIRCRAFT Tab 底部）
+    CB->>SSM: 故障注入请求 {malfCode, source: quick}
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,MAP: 入口 C：Advanced / INSTRUCTOR STATION
+    INST->>ADV: 选择故障类型与参数
+    ADV->>SSM: 故障注入请求 {malfCode, params, source: advanced}
+    end
+
+    rect rgb(254,242,242)
+    Note over INST,MAP: 统一汇聚与广播
+    SSM->>SSM: 写入 Malfunction Registry
+    SSM->>SSM: 冲突检测：同一故障是否已激活？
+    alt 冲突（已激活）
+        SSM->>CB: 忽略重复注入，提示"故障已存在"
+    else 无冲突
+        SSM->>SC: 下发故障定义
+        SC-->>SSM: 故障状态确认 {malfId, state: active/armed}
+        SSM->>CB: Malfunctions Panel 更新
+        SSM->>FS: Footer 故障计数器 + 指示灯更新
+        SSM-->>IR: 仪表故障指示更新
+        SSM-->>MAP: 相关系统效果更新（如液压故障影响运动）
+    end
+    end
+</div>
+
+<h3>故障状态机（Armed → Active → Reset）的架构推导</h3>
+<p>ch1_8 的 5.1 节描述了故障的生命周期，但将其映射到 2.1 的架构中，需要明确状态转换的触发者和数据流路径。</p>
+
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle: 系统启动
+    Idle --> Armed: 教员预位故障
+    Armed --> Active: 触发条件满足
+    Armed --> Active: 教员手动触发
+    Active --> Reset: 教员解除故障
+    Active --> SysDamage: 故障导致系统损坏
+    SysDamage --> Reset: 执行对应系统 Reset
+    Reset --> Idle: 系统健康检查通过
+    Reset --> SysDamage: 健康检查失败（需二次 Reset）
+
+    note right of Idle
+        Malfunction Registry 中无该故障记录
+    end note
+
+    note right of Armed
+        故障定义已写入 Registry，
+        等待触发条件评估
+    end note
+
+    note right of Active
+        故障已影响 Simulator Core，
+        状态广播至所有工作区
+    end note
+
+    note right of SysDamage
+        故障解除后系统参数
+        未自动恢复（如 EGT 超限）
+    end note
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">状态转换</th><th style="width:25%">触发者</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
+</thead>
+<tbody>
+<tr><td>Idle → Armed</td><td>教员（三种入口）</td><td>CB/ADV -> SSM -> Malfunction Registry</td><td>最终一致性；预位不立即影响物理状态</td></tr>
+<tr><td>Armed → Active</td><td>触发条件引擎 / 教员手动</td><td>SC 触发器评估 -> SSM -> SC 故障生效 -> SSM 广播</td><td>强一致性（&lt;50ms）；故障生效后所有工作区必须同步</td></tr>
+<tr><td>Active → Reset</td><td>教员解除 / 课程步骤自动解除</td><td>CB/ADV -> SSM -> SC 故障解除 -> SSM 广播</td><td>强一致性；解除后仪表和 Footer 指示灯必须同步熄灭</td></tr>
+<tr><td>Active → SysDamage</td><td>Simulator Core（物理引擎内部）</td><td>SC -> SSM：系统健康告警</td><td>强一致性；损坏状态必须立即通知教员</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>GAP-05：预位故障触发条件评估的归属</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 描述预位故障等待"预设触发条件（如高度、速度、时间）"，但 2.1 架构中未明确<strong>触发条件评估引擎</strong>的归属。<br/><br/>
+<strong>架构补充建议：</strong>触发条件评估建议由 <strong>Simulator Core 内部的专用触发器引擎</strong>执行，而非 SSM。原因：触发条件通常与物理状态（高度、速度、位置）强耦合，由物理引擎内部评估可避免跨进程通信延迟。当触发条件满足时，触发器引擎向 SSM 发送"Armed → Active"事件，SSM 负责后续的广播同步。
+</div>
+
+<h3>系统损坏 → Reset 级联的异常分支设计</h3>
+<p>ch1_8 的 5.4 节提供了详细的故障→Reset 映射表。将其转化为架构交互序列，需要明确<strong>"谁检测损坏、谁执行 Reset、谁验证恢复"</strong>的分工。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant CB as Control Board
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant FS as Footer
+    participant IR as Instruments Repeaters
+
+    CB->>SSM: 教员解除故障 {malfId}
+    SSM->>SC: 故障解除指令
+    SC->>SC: 移除故障影响
+    SC-->>SSM: 故障已移除
+
+    SSM->>SC: 请求系统健康检查
+    SC->>SC: 评估各子系统参数
+    alt 健康检查通过
+        SC-->>SSM: 全部正常
+        SSM->>CB: 清除 Malfunctions Panel
+        SSM->>FS: 清除故障指示灯
+        SSM-->>IR: 仪表恢复正常显示
+    else 健康检查失败（系统损坏）
+        SC-->>SSM: 损坏报告 {systemId, damageType}
+        SSM->>CB: 提示"系统损坏，需要 Reset"
+        CB-->>INST: 显示损坏详情（省略 INST 以简化图）
+
+        CB->>SSM: 教员执行对应 Reset
+        SSM->>SC: Reset 指令 {resetType}
+        SC->>SC: 重置子系统参数
+        SC-->>SSM: Reset 完成
+
+        SSM->>SC: 二次健康检查
+        alt 二次检查通过
+            SC-->>SSM: 正常
+            SSM->>CB: 系统恢复正常
+        else 二次检查仍失败
+            SC-->>SSM: 持续异常
+            SSM->>CB: 提示"请切换至 Maintenance 诊断"
+            SSM->>FS: 全局告警状态
+        end
+    end
+</div>
+
+<div class="highlight-box warn">
+<strong>级联 Reset 的架构原则：</strong>故障解除 ≠ 系统恢复。架构上必须将"故障状态移除"和"系统健康恢复"视为两个独立阶段，中间由<strong>强制健康检查</strong>连接。这避免了教员误以为"解除故障就万事大吉"，而实际上液压压力或发动机 EGT 仍处于异常区间。
+</div>
+
+<h3>重新定位交互序列图（四种方式统一建模）</h3>
+<p>RF-05 的四种重新定位方式在教员视角差异显著，但在架构视角下，它们都可以抽象为<strong>"位置变更请求 → 物理引擎更新 → 全工作区广播"</strong>的统一模式，差异仅在于变更源的精度和触发路径。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">方式</th><th style="width:30%">变更源路径</th><th style="width:22%">精度/范围</th><th style="width:30%">架构特性</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SLEW 微调</strong></td>
+<td>MAP（拖拽）→ SSM → SC；或 ADV → SSM → SC</td>
+<td>米级，机场范围内</td>
+<td>高频低延迟；Map 渲染与物理更新允许最终一致性（&lt;200ms）</td>
+</tr>
+<tr>
+<td><strong>Airport Repo</strong></td>
+<td>CB（REFERENCE AIRPORT）→ SSM → SC</td>
+<td>跑道/停机位级，跨机场</td>
+<td>中频；触发环境参数联动（跑道条件绑定）；需重新加载地景</td>
+</tr>
+<tr>
+<td><strong>Footer Repo</strong></td>
+<td>FS → SSM → SC</td>
+<td>预设程序级（HOLD/TAXI/3nm/6nm 等）</td>
+<td>最高效率；一键配置飞机姿态/襟翼/速度/高度；SSM 需按优先级批量下发</td>
+</tr>
+<tr>
+<td><strong>Freeze + Repo</strong></td>
+<td>FS（Freeze）→ SSM → 上述任一方式 → FS（Unfreeze）</td>
+<td>任意</td>
+<td>组合操作；SSM 需维护操作互斥锁，禁止冻结期间其他全局状态变更</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant FS as Footer
+    participant ADV as Advanced
+    participant MAP as Map
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant IR as Instruments Repeaters
+
+    rect rgb(219,234,254)
+    Note over INST,IR: SLEW 微调
+    INST->>MAP: 拖拽飞机图标
+    MAP->>SSM: 位置增量 {deltaX, deltaY, deltaH}
+    SSM->>SC: 更新飞机位置
+    SC-->>SSM: 新位置确认
+    SSM->>CB: 同步位置/航向参数
+    SSM-->>IR: 仪表数据更新
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: Airport Repo / Footer Repo
+    INST->>CB: 选择新机场/跑道（或 FS 预设位置）
+    CB->>SSM: 位置变更请求 {targetType, targetParams}
+    SSM->>SC: 原子位置更新
+    SC-->>SSM: 位置确认 + FMS 航线重算
+    SSM->>CB: REFERENCE AIRPORT 参数更新
+    SSM-->>MAP: 视图中心切换 + 航迹更新
+    SSM-->>IR: 仪表数据更新
+    end
+</div>
+
+<h3>2D/3D 视图状态：纯渲染层状态</h3>
+<p>RF-05 中的 2D/3D 视图切换、缩放级别、覆盖层选择等操作，从架构视角看属于<strong>纯渲染层状态</strong>，不影响模拟器核心的物理计算，也不应进入全局 Session State。</p>
+
+<div class="highlight-box">
+<strong>架构推导结论：</strong>Map 的视图状态（2D/3D、缩放、覆盖层开关）应作为 <strong>Map 工作区的本地状态</strong>管理，理由如下：
+<ul>
+<li>视图切换不改变模拟器核心状态，无跨工作区同步需求</li>
+<li>教员可能使用多个显示设备，每个设备的 Map 视图独立（如主屏 3D、副屏 2D）</li>
+<li>视图状态纳入全局 Session State 会增加不必要的状态版本开销</li>
+</ul>
+<strong>例外：</strong>如果视图状态需要被 Recording 捕获并在回放时恢复（如"教员当时在看 3D 进近视图"），则应在录制数据包中作为<strong>附属元数据</strong>保存，但不纳入核心状态管理。
+</div>
+
+<h3>FMS Memory Save/Recall 的数据流推导</h3>
+<p>FMS Memory 功能允许教员保存和召回飞行计划，但其边界在 ch1_8 中被明确限定：<strong>仅保存飞行计划数据，不保存飞机物理状态或环境参数</strong>。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant MAP as Map
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: FMS Memory Save
+    INST->>ADV: 点击 FMS Memory Save
+    ADV->>SSM: 保存请求
+    SSM->>SC: 读取当前 FMS 飞行计划
+    SC-->>SSM: 飞行计划数据 {waypoints, approach, SID/STAR}
+    SSM->>SSM: 持久化至 FMS Memory 存储区
+    SSM->>ADV: 保存成功确认
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: FMS Memory Recall
+    INST->>ADV: 选择已保存的 FMS Memory
+    ADV->>SSM: 召回请求 {memoryId}
+    SSM->>SSM: 从存储区读取飞行计划
+    SSM->>SC: 写入 FMS 子模块
+    SC->>SC: 重新计算航线
+    SC-->>SSM: 航线确认
+    SSM-->>MAP: FMS 航线覆盖层更新
+    SSM->>ADV: 召回完成
+    end
+</div>
+
+<div class="highlight-box warn">
+<strong>边界约束：</strong>FMS Memory Save/Recall <strong>不触发 State Version 递增</strong>，也不影响飞机位置/姿态/环境参数。因为它操作的是 FMS 子模块内部的飞行计划数据，而非全局 Session State。这与 Flight State Capture（FSC）有本质区别——FSC 保存的是全量状态，Recall 时必须遵循 2.1.4 原则四的 8 步恢复顺序。
+</div>
+
+<h3>交互断点识别（RF-04/05）</h3>
+
+<div class="speculation-box">
+<strong>GAP-06：重新定位操作互斥锁</strong><span class="confidence conf-high">高优先级</span><br/>
+ch1_8 6.2 节提到"冻结后调整"是一种重新定位方式，但未明确说明<strong>冻结期间是否允许其他全局状态变更</strong>（如课程执行推进、故障注入、环境参数修改）。<br/><br/>
+<strong>架构补充建议：</strong>Session State Manager 需维护一个<strong>操作互斥锁（Operation Mutex）</strong>，规则如下：
+<ul>
+<li>重新定位操作期间（从请求到确认），禁止其他工作区修改飞机位置/姿态/航向</li>
+<li>冻结期间允许重新定位，但重新定位完成后必须再次确认才能解冻</li>
+<li>课程执行引擎在重新定位期间可继续运行（如 Autorun 步骤计时），但 SIM 步骤的物理效果应延迟至重新定位确认后生效</li>
+</ul>
+</div>
+
+<!-- ==================== 2.2.5 ==================== -->
+<h2 id="sec-2-2-5">2.2.5 RF-06 冻结、回放与录制交互完整性</h2>
+
+<p>RF-06 是 IOS 中<strong>影响范围最大</strong>的全局操作流程。冻结操作会同时停止所有工作区的状态更新；录制/回放操作涉及全量状态快照的持久化与恢复。本节严格对照 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性设计原则</a>，推导其交互序列与原子性约束。</p>
+
+<h3>冻结/解冻交互序列图</h3>
+<p>冻结是唯一的<strong>全局广播型</strong>操作——它必须被全部 6 个工作区和模拟器核心同时感知。2.1.4 原则一要求"全局原子状态标志"由单一协调者管理，此处即 Session State Manager。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant FS as Footer
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant CB as Control Board
+    participant MAP as Map
+    participant LPP as Lesson Plan Profile
+    participant IR as Instruments Repeaters
+    participant SC as Simulator Core
+
+    rect rgb(254,243,199)
+    Note over INST,SC: 冻结触发
+    alt Footer 瞬时冻结
+        INST->>FS: 点击 Freeze
+        FS->>SSM: 冻结请求 {freezeType: global, source: footer}
+    else Advanced 精细冻结
+        INST->>ADV: 选择冻结类型（Position/Time/Motion 等）
+        ADV->>SSM: 冻结请求 {freezeType: specific, source: advanced}
+    end
+    end
+
+    rect rgb(254,242,242)
+    Note over INST,SC: 全局原子状态更新
+    SSM->>SSM: 更新全局冻结标志 {frozen: true, version: V+1}
+    SSM->>SSM: 捕获全量状态快照 Snapshot(S)
+    SSM->>SC: 暂停物理引擎 / 环境引擎
+    SC-->>SSM: 确认暂停
+
+    par 并行广播至所有工作区
+        SSM->>CB: 冻结通知 {version: V+1}
+        CB-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>MAP: 冻结通知 {version: V+1}
+        MAP-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>LPP: 冻结通知 {version: V+1}
+        LPP-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>IR: 冻结通知 {version: V+1}
+        IR-->>SSM: 确认（&lt;50ms）
+    end
+
+    Note over CB,IR: 全部工作区保持冻结瞬间快照
+    end
+
+    rect rgb(219,234,254)
+    Note over INST,SC: 冻结期间操作
+    opt 教员预调整参数
+        INST->>CB: 修改参数（UI 值变化但不下发）
+        CB->>CB: 本地缓存预调整值
+        CB-->>INST: 显示"待解冻后生效"
+    end
+    opt 状态捕捉（FSC）
+        INST->>ADV: 点击 Flight State Capture
+        ADV->>SSM: 捕捉请求
+        SSM->>SSM: 保存 Snapshot(S) 至持久化存储
+    end
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,SC: 解冻恢复
+    INST->>FS: 点击 Unfreeze
+    FS->>SSM: 解冻请求
+    SSM->>SSM: 更新全局冻结标志 {frozen: false, version: V+2}
+    SSM->>SSM: 批量下发预调整参数（如有）
+    SSM->>SC: 恢复物理引擎
+    par 并行恢复通知
+        SSM->>CB: 解冻通知 + 参数回显
+        SSM->>MAP: 解冻通知
+        SSM->>LPP: 解冻通知
+        SSM->>IR: 解冻通知
+    end
+    SC-->>MAP: 恢复实时位置广播
+    SC-->>IR: 恢复仪表数据广播
+    end
+</div>
+
+<div class="highlight-box">
+<strong>严格对照 2.1.4 原则一：</strong>上述序列图中，SSM 在更新全局冻结标志后才并行广播至所有工作区，各工作区消费数据前校验 version。若某工作区在 50ms 内未响应冻结确认，SSM 强制标记该工作区为"冻结未响应"并记录警告日志（对照 2.1.4 原则三降级行为）。这保证了"冻结/解冻标志"的强一致性。
+</div>
+
+<h3>录制/回放交互序列图</h3>
+<p>录制（Recording）与回放（Playback）是比冻结更复杂的操作——它不仅涉及状态的暂停，还涉及状态的<strong>持久化存储</strong>和<strong>按序恢复</strong>。</p>
+
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant CB as Control Board
+    participant MAP as Map
+    participant IR as Instruments Repeaters
+
+    rect rgb(219,234,254)
+    Note over INST,IR: 录制（Flight State Capture）
+    INST->>ADV: 进入 Recording → 选择参数组
+    ADV->>SSM: 录制请求 {captureProfile}
+    SSM->>SSM: 触发全局冻结（防止捕获过程中状态变更）
+    SSM->>SC: 读取全量状态
+    SC-->>SSM: 状态数据 {aircraft, env, airport, malf, lesson}
+    SSM->>SSM: 按 2.1.4 原则四顺序打包快照
+    SSM->>SSM: 写入持久化存储（临时捕获）
+    alt 教员选择永久保存
+        SSM->>SSM: 复制到永久存储区
+    end
+    SSM->>SSM: 解除冻结
+    SSM->>ADV: 捕获完成确认
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: 回放（Recall / Playback）
+    INST->>ADV: 选择已保存的状态
+    ADV->>SSM: 回放请求 {captureId}
+
+    SSM->>SSM: version += 1（恢复前）
+    SSM->>SC: 全局冻结
+    SC-->>SSM: 确认冻结
+
+    SSM->>SSM: 按 8 步顺序恢复：
+    Note over SSM: 1. 机场/跑道 → 2. 环境 → 3. 飞机 → 4. 故障 → 5. 课程 → 6. 通知 Map/IR → 7. 验证 → 8. 解冻
+
+    SSM->>SC: 恢复参考机场与跑道
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复环境参数
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复飞机物理状态
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复故障状态
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复课程状态
+    SC-->>SSM: 确认
+
+    SSM-->>MAP: 刷新地图
+    SSM-->>IR: 刷新仪表
+    SSM->>SSM: 全参数一致性验证
+
+    alt 验证通过
+        SSM->>SSM: version += 1（恢复后）
+        SSM->>SC: 解除冻结
+        SSM->>CB: 新状态已就绪
+        SC-->>MAP: 恢复实时广播
+        SC-->>IR: 恢复实时广播
+    else 验证失败
+        SSM->>SSM: 回滚到调用前快照
+        SSM->>CB: 提示"恢复失败，保持冻结"
+    end
+    end
+</div>
+
+<h3>全局状态快照的原子性约束</h3>
+<p>录制操作的核心挑战是：在捕获状态快照的过程中，模拟器核心仍在运行，如果不对状态变更加以控制，捕获到的快照将是"中间态"（如飞机位置已更新但环境参数尚未更新），导致回放时出现不一致。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">原子性策略</th><th style="width:38%">实现方式</th><th style="width:40%">适用场景与权衡</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>暂停-快照-恢复</strong></td>
+<td>录制前触发全局冻结 → 捕获快照 → 保存至存储 → 解冻</td>
+<td><strong>推荐方案。</strong>实现简单，与现有冻结机制复用；代价是录制瞬间有短暂冻结（约 100~300ms），对训练体验影响极小</td>
+</tr>
+<tr>
+<td><strong>复制-写时复制（COW）</strong></td>
+<td>Simulator Core 维护状态副本，录制引擎读取副本而不暂停主状态流</td>
+<td><strong>高复杂度方案。</strong>无冻结延迟，但要求物理引擎支持状态副本机制；若引擎为第三方闭源，可能不可行</td>
+</tr>
+<tr>
+<td><strong>环形缓冲区回溯</strong></td>
+<td>SSM 维护最近 N 秒的状态帧环形缓冲区，录制时回溯到请求时刻的状态帧</td>
+<td><strong>折中方案。</strong>无冻结延迟，但只能捕获"请求时刻"而非"当前时刻"状态；内存开销与缓冲区大小成正比</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>架构假设</strong><span class="confidence conf-med">中优先级</span><br/>
+推荐采用<strong>"暂停-快照-恢复"</strong>策略作为默认实现，原因：
+<ul>
+<li>与 2.1.4 原则一的"全局原子状态标志"机制完全复用，不引入新架构组件</li>
+<li>CAE IOS 原始手册中 Recording 操作在 Advanced 页面内，远离主训练界面，暗示录制不是高频实时操作，短暂冻结可接受</li>
+<li>若未来需要无冻结录制，可在 COW 或环形缓冲区方案成熟后平滑替换，不影响上层接口</li>
+</ul>
+</div>
+
+<h3>状态恢复顺序的严格验证（对照 2.1.4 原则四）</h3>
+<p>2.1.4 原则四定义了状态恢复的 8 步顺序约束。本节为 RF-06 的 Recall 流程建立严格的序列图，每步标注"必须完成才能进入下一步"的验证门。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:8%">步骤</th><th style="width:22%">恢复子系统</th><th style="width:35%">验证门（必须满足的条件）</th><th style="width:35%">失败行为</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>冻结模拟器</td><td>SC 确认物理引擎已暂停；所有工作区确认冻结</td><td>若某工作区未响应，强制冻结并记录警告；继续恢复流程但标记该工作区为"未同步"</td></tr>
+<tr><td>2</td><td>恢复参考机场与跑道</td><td>机场数据库中存在该 ICAO；跑道标识有效；地景加载成功</td><td>机场数据损坏或缺失 → 回滚到调用前快照，提示"机场数据异常，请联系维护"</td></tr>
+<tr><td>3</td><td>恢复环境参数</td><td>所有环境参数在物理包线内；Surface Wind 与 QNH 计算一致</td><td>参数超限 → 回滚或保持冻结，提示具体超限参数</td></tr>
+<tr><td>4</td><td>恢复飞机物理状态</td><td>GW = ZFW + Fuel；CG 在包线内；位置不陷入地形</td><td>等式不成立或地形碰撞 → 回滚，提示"飞机状态非法"</td></tr>
+<tr><td>5</td><td>恢复故障状态</td><td>所有故障代码在 Malfunction Registry 中存在；冲突检测通过</td><td>故障代码不存在 → 跳过该故障，记录日志，继续恢复其余状态</td></tr>
+<tr><td>6</td><td>恢复课程状态</td><td>步骤索引在有效范围；课程定义与当前加载课程一致</td><td>课程定义不匹配 → 仅恢复飞机/环境/故障状态，课程状态重置为初始</td></tr>
+<tr><td>7</td><td>通知 Map 和 Instruments 刷新</td><td>Map 渲染完成新场景；IR 显示与物理值一致</td><td>渲染超时（&gt;500ms）→ 保持冻结，提示"渲染未就绪"</td></tr>
+<tr><td>8</td><td>全参数一致性验证 + 解冻</td><td>所有子系统状态与快照一致；version 再次递增</td><td>一致性验证失败 → 回滚到调用前快照或保持冻结等待教员决策</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box danger">
+<strong>绝不允许"半恢复"状态：</strong>上述 8 步中任何一步失败，系统必须回滚到调用前快照或保持冻结。这是 2.1.4 原则四的硬性约束，也是飞行模拟器安全设计的底线——"飞机已恢复但环境未恢复"或"环境已恢复但故障未恢复"都是可能导致训练逻辑崩溃的危险中间态。
+</div>
+
+<h3>交互断点识别（RF-06）</h3>
+
+<div class="speculation-box">
+<strong>GAP-07：录制过程中的动态干预状态处理</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 未明确描述：如果教员在<strong>录制过程中</strong>触发冻结、注入故障或重新定位，这些事件是否应被纳入录制数据流？<br/><br/>
+<strong>架构补充建议：</strong>录制数据流应采用<strong>"时间戳事件日志 + 状态快照"</strong>的双轨格式：
+<ul>
+<li><strong>状态快照</strong>：按固定间隔（如 1Hz）捕获全量状态，用于回放时的状态恢复</li>
+<li><strong>事件日志</strong>：记录离散事件（冻结/解冻、故障注入/解除、重新定位、步骤执行）及其时间戳</li>
+<li>回放时，先恢复初始状态快照，再按事件日志的时间顺序重放离散事件，实现"状态 + 动作"的完整复现</li>
+</ul>
+</div>
+
+<!-- ==================== 2.2.6 ==================== -->
+<h2 id="sec-2-2-6">2.2.6 跨流程状态衔接与交互断点汇总</h2>
+
+<p>前五节分别推导了 RF-01~RF-06 的交互序列、状态机和断点。本节将所有推导结果汇总为三张总表，形成对后续 2.3（UI 控件体系规范）和 2.4（数据流与接口契约推导）的顶层输入。</p>
+
+<h3>六流程间状态传递契约总表</h3>
+<p>RF-01 作为主流程，与 RF-02~RF-06 之间存在多次调用/返回关系。以下表格定义了所有流程间衔接点的输入/输出契约：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:14%">源流程</th><th style="width:14%">目标流程</th><th style="width:28%">传递状态</th><th style="width:22%">数据格式（关键字段）</th><th style="width:22%">验证规则</th></tr>
+</thead>
+<tbody>
+<tr><td>RF-03</td><td>RF-02</td><td>初始化完成确认</td><td>{aircraft, env, airport, initVersion}</td><td>initVersion 必须递增；所有校验链通过</td></tr>
+<tr><td>RF-02</td><td>RF-04</td><td>课程执行上下文</td><td>{sessionSnapshot, stepIndex, courseId}</td><td>故障注入前自动冻结（可选）；课程状态不丢失</td></tr>
+<tr><td>RF-04</td><td>RF-02</td><td>故障状态更新</td><td>{malfList: [...], malfVersion}</td><td>故障同步完成后继续课程；若系统损坏需先执行 Reset</td></tr>
+<tr><td>RF-02</td><td>RF-05</td><td>位置监控请求</td><td>{currentPosition, flightPhase}</td><td>非着陆接地瞬间；非系统告警中</td></tr>
+<tr><td>RF-05</td><td>RF-02</td><td>重新定位完成</td><td>{newPosition, heading, repositionVersion}</td><td>repositionVersion 必须递增；Map 与 CB 位置一致</td></tr>
+<tr><td>RF-02/04/05</td><td>RF-06</td><td>冻结/录制请求</td><td>{freezeType, reason, sourceRF}</td><td>全局标志原子更新；所有工作区 50ms 内确认</td></tr>
+<tr><td>RF-06</td><td>RF-02/04/05</td><td>解冻/恢复完成</td><td>{stateVersion, resumePoint, sourceRF}</td><td>所有工作区确认；version 递增</td></tr>
+<tr><td>RF-01</td><td>RF-03~RF-06</td><td>子流程调用上下文</td><td>{entryPoint, callerState, returnTarget}</td><td>子流程完成后必须返回 callerState 指定的恢复点</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>交互断点汇总表</h3>
+<p>以下汇总了 2.2.2~2.2.5 中识别出的全部 7 个交互断点，按优先级排序：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:10%">编号</th><th style="width:12%">所属 RF</th><th style="width:28%">断点描述</th><th style="width:20%">当前 2.1 覆盖情况</th><th style="width:20%">补充建议</th><th style="width:10%">优先级</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>GAP-03</strong></td><td>RF-02</td><td>Freeplay 与 Autorun 步骤冲突时的优先级仲裁机制未定义</td><td>无优先级规则</td><td>SSM 增加步骤优先级仲裁器；Freeplay > 常规步骤</td><td><span class="confidence conf-high">高</span></td></tr>
+<tr><td><strong>GAP-04</strong></td><td>RF-02</td><td>Nested 课程跳转需要状态栈保存/恢复主课程上下文</td><td>无"课程状态栈"数据项</td><td>SSM 增加 Course State Stack（LIFO，最大深度 3）</td><td><span class="confidence conf-high">高</span></td></tr>
+<tr><td><strong>GAP-06</strong></td><td>RF-05</td><td>重新定位与冻结/课程执行的组合操作互斥规则未定义</td><td>无操作互斥机制</td><td>SSM 增加 Operation Mutex；重新定位期间禁止其他位置变更</td><td><span class="confidence conf-high">高</span></td></tr>
+<tr><td><strong>GAP-01</strong></td><td>RF-01</td><td>Debrief 阶段的事件标记机制在 2.1 中未定义</td><td>无"Event Marker"数据项</td><td>新增 Event Marker 类型 {timestamp, type, source, description, snapshotRef}</td><td><span class="confidence conf-med">中</span></td></tr>
+<tr><td><strong>GAP-02</strong></td><td>RF-01</td><td>Session Cleanup 后的全参数一致性验证机制未定义</td><td>无 Post-Session Validation</td><td>Reset 后增加自动全参数校验；失败保持冻结</td><td><span class="confidence conf-med">中</span></td></tr>
+<tr><td><strong>GAP-05</strong><td>RF-04</td><td>预位故障触发条件评估引擎的归属未明确</td><td>未明确触发器归属</td><td>建议由 Simulator Core 内部专用触发器引擎执行</td><td><span class="confidence conf-med">中</span></td></tr>
+<tr><td><strong>GAP-07</strong></td><td>RF-06</td><td>录制过程中动态干预（冻结/故障/重定位）的事件记录格式未定义</td><td>无录制事件日志规范</td><td>录制数据采用"状态快照 + 时间戳事件日志"双轨格式</td><td><span class="confidence conf-med">中</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>异常分支与降级路径决策矩阵</h3>
+<p>以下矩阵汇总了各 RF 在异常场景下的降级路径，是后续实现异常处理逻辑的参考：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:16%">主流程</th><th style="width:24%">异常场景</th><th style="width:18%">检测点</th><th style="width:24%">降级路径</th><th style="width:18%">最终状态</th></tr>
+</thead>
+<tbody>
+<tr><td>RF-03 初始化</td><td>Weight & CG 超出包线</td><td>SSM L2 业务校验</td><td>拒绝下发，返回 AIRCRAFT Tab 调整</td><td>未初始化，version 不变</td></tr>
+<tr><td>RF-03 初始化</td><td>机场数据库加载失败</td><td>SC L3 物理校验</td><td>中止初始化，通知维护人员</td><td>未初始化，跳转 Maintenance</td></tr>
+<tr><td>RF-02 课程执行</td><td>Freeplay 与 Autorun 冲突</td><td>SSM 优先级仲裁器</td><td>Freeplay 优先，挂起常规步骤</td><td>Freeplay 执行中，常规步骤挂起</td></tr>
+<tr><td>RF-02 课程执行</td><td>Nested 子课程加载失败</td><td>SSM Course State Stack</td><td>返回主课程，标记子课程失败</td><td>主课程从断点恢复</td></tr>
+<tr><td>RF-04 故障注入</td><td>故障库中不存在该代码</td><td>SSM Malfunction Registry 查询</td><td>步骤执行失败，提示教员检查课程配置</td><td>故障未注入，继续课程</td></tr>
+<tr><td>RF-04 故障解除</td><td>系统损坏（解除后参数未恢复）</td><td>SC 健康检查</td><td>提示执行对应 Reset；若 Reset 失败跳转 Maintenance</td><td>冻结或维护模式</td></tr>
+<tr><td>RF-05 重新定位</td><td>飞机陷入地形</td><td>SC 地形碰撞检测</td><td>拒绝位置更新，提示重新选择</td><td>位置未变更，保持冻结</td></tr>
+<tr><td>RF-05 重新定位</td><td>重新定位期间收到新的定位请求</td><td>SSM Operation Mutex</td><td>拒绝新请求，提示"重新定位进行中"</td><td>当前定位继续执行</td></tr>
+<tr><td>RF-06 状态调用</td><td>恢复过程中任一状态失败</td><td>SSM 8 步恢复验证门</td><td>回滚到调用前快照或保持冻结</td><td>冻结状态，等待教员决策</td></tr>
+<tr><td>RF-06 录制</td><td>录制文件损坏或存储满</td><td>Recording Engine 校验</td><td>保留已录制片段，提示错误</td><td>录制中断，已保存部分可用</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>对后续章节的输入</h3>
+<div class="highlight-box">
+<strong>对 2.3（UI 控件体系规范）的输入：</strong>
+<ul>
+<li><strong>冻结期间的 UI 行为</strong>：参数输入控件需支持"预调整值"与"当前生效值"的双值显示模式</li>
+<li><strong>故障注入确认</strong>：三种注入入口的 UI 反馈需统一（激活后红色高亮 + Footer 计数器 + Malfunctions Panel 同步）</li>
+<li><strong>重新定位进度指示</strong>：Footer Repo 等一键操作需要进度条或"操作中"状态提示，防止教员重复点击</li>
+<li><strong>Nested 课程切换动画</strong>：主课程 → 子课程切换时，Lesson Plan Profile 需有视觉过渡提示，避免教员误以为课程丢失</li>
+</ul>
+</div>
+
+<div class="highlight-box">
+<strong>对 2.4（数据流与接口契约推导）的输入：</strong>
+<ul>
+<li><strong>SSM 接口扩展</strong>：需定义步骤优先级仲裁、课程状态栈、操作互斥锁、事件标记的接口契约</li>
+<li><strong>Malfunction Registry 接口</strong>：需定义故障注册、查询、冲突检测、状态转换的 API</li>
+<li><strong>Recording Engine 接口</strong>：需定义状态快照格式、事件日志格式、持久化存储访问接口</li>
+<li><strong>8 步恢复顺序接口</strong>：需定义每步恢复的输入/输出、验证门、失败回滚的原子性保证</li>
+</ul>
+</div>
+
+<div class="highlight-box warn">
+<strong>约束重申：</strong>2.2 节建立的所有交互序列、状态传递契约和断点清单，是后续 2.3 和 2.4 的<strong>顶层约束</strong>。任何 UI 控件行为定义或接口契约推导，均不得违背本节定义的数据流方向、状态机转换和异常降级路径。
+</div>
+
+<!-- ==================== 附录 ==================== -->
+<h2 id="sec-2-2-appendix">附录：2.1 架构原则 → 2.2 交互推导映射表</h2>
+
+<p>以下表格将 <a href="ch1_1_components.html">1.1.4 ~ 1.1.11</a> 中总结的五大设计原则，具体化为 2.2 节的交互分析约束条件。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">设计原则</th><th style="width:35%">原则描述</th><th style="width:43%">对应的第 2.2 章架构决策</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>原则一：按认知模态分离</strong></td><td>离散参数与连续空间信息绝不混在同一面板</td><td><strong>2.2.5</strong> 中 Map 的 2D/3D 视图状态被定义为纯渲染层本地状态，不进入全局 Session State；<strong>2.2.4</strong> 中重新定位的四种方式按"空间直觉"（SLEW/Map）和"逻辑推理"（Airport Repo/Footer Repo）分类分析</td>
+</tr>
+<tr>
+<td><strong>原则二：按使用频率分层</strong></td><td>高频功能常驻主界面；低频功能独立隔离</td><td><strong>2.2.4</strong> 中三种故障注入入口按使用频率分层：MALF（标准化高频）→ Quick（即兴中频）→ Advanced（精细低频）；<strong>2.2.5</strong> 中 Footer Freeze（高频）与 Advanced Freeze（低频精细控制）的消息路径差异</td>
+</tr>
+<tr>
+<td><strong>原则三：按角色隔离</strong></td><td>不同用户角色的功能绝不混用</td><td><strong>2.2.4</strong> 中故障注入权限与维护锁定状态互斥；<strong>2.2.6</strong> 异常降级矩阵中，所有无法通过软件恢复的路径最终都降级到 Maintenance 角色域</td>
+</tr>
+<tr>
+<td><strong>原则四：同一模型，多重视图</strong></td><td>同一个领域对象设计多个正交视图</td><td><strong>2.2.3</strong> 中 LESSON PLAN Tab ↔ Lesson Plan Profile 的双向同步契约推导；当前步骤索引的单一事实来源为 SSM，CB 和 LPP 均为消费视图</td>
+</tr>
+<tr>
+<td><strong>原则五：应急通道设计</strong></td><td>常规层级导航在紧急场景下是致命的</td><td><strong>2.2.4</strong> 中 Footer Reposition（3 次点击直达）与 SLEW/Airport Repo（10+ 次操作）的交互代价对比；<strong>2.2.5</strong> 中 Footer Freeze（瞬时冻结）作为最高频应急操作的消息路径最短化设计</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Footer Nav -->
+<div class="footer-nav">
+<a class="prev" href="ch2_1_functional_architecture.html">← 上一节：2.1 功能架构全景图</a>
+<span></span>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'},
+  sequence:{useMaxWidth:true,diagramMarginX:10,diagramMarginY:10,actorMargin:60,width:150,height:65,boxMargin:10,boxTextMargin:5,noteMargin:10,messageMargin:35}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
