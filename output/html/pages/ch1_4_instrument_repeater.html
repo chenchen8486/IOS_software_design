@@ -1,13 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.3 维护页面（Maintenance Pages） — CAE IOS 教员台</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<style>
+﻿<style>
 
 :root{
   --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
@@ -60,8 +51,8 @@ a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
 .img-block img:hover{transform:scale(1.02)}
 .img-caption{font-size:13px;color:var(--text-secondary);margin-top:8px;font-style:italic}
 
-.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center}
-.img-row .img-block{flex:1;min-width:0;margin:0}
+.img-row{display:flex;gap:16px;margin:20px 0;justify-content:center;flex-wrap:wrap}
+.img-row .img-block{flex:1;min-width:0;margin:0;min-width:200px}
 .img-row .img-block img{max-height:200px}
 @media (max-width:768px){.img-row{flex-direction:column}}
 
@@ -89,7 +80,6 @@ th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%)
 tr:hover td{background:#f8fafc}
 tr:last-child td{border-bottom:none}
 td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:500;margin-right:4px}
-.tag-note{background:#f3f4f6;color:#4b5563}
 
 .mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
 .mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -115,182 +105,145 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 @media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
 
 </style>
-</head>
-<body>
-<aside class="sidebar">
-  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
-  <nav class="nav-tree">
-    <div class="nav-group">
-      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
-      <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
-<div class="nav-group">
-  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
-  <div class="nav-children collapsed">
-    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 LESSON PLAN Tab</a>
-<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 DOC Tab</a>
-<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 CURRENT CONDITIONS Tab</a>
-<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 AIRCRAFT Tab</a>
-<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
-<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
-<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
-  </div>
-</div>
-<a class="nav-link active" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
-<a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（INSTRUMENT REPEATER）</a>
-<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
-<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
-<a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程 Reference Flows</a>
-      </div>
-    </div>
-  </nav>
-</aside>
-<div class="layout">
-  <div class="main">
-    <div class="breadcrumb">
-    <a href="#">首页</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="#">第 1 章 软件操作</a>
-    <span class="breadcrumb-sep">/</span>
-    <span>1.3 维护页面（Maintenance Pages）</span>
-  </div>
-    <div class="content">
-      <h1>1.3 维护页面（Maintenance Pages）</h1>
-<p class="subtitle">对应原始手册：## 12. Maintenance Pages</p>
+
+
+<h1>1.4 仪表复示器工作区（INSTRUMENT REPEATER）</h1>
+<p class="subtitle">对应原始手册：## 13. INSTRUMENT REPEATER Workspace</p>
 <!-- 一、功能层级与界面总览 -->
 <h2>一、功能层级与界面总览</h2>
 <blockquote>
-<strong>工作区入口说明：</strong>维护页面（Maintenance Pages）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Maintenance / 维护」进入本界面。进入后，当前显示器将切换为维护页面主视图。
+<strong>工作区入口说明：</strong>仪表复示器（INSTRUMENT REPEATER）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Instr. Repeaters / 仪表复示器」进入本界面。进入后，当前显示器将切换为仪表复示器工作区，其顶部标题栏与底部页脚均与地图工作区/控制面板共用同一套组件。
     </blockquote>
 <h3>1.1 功能层级结构</h3>
-<p>本章为单一功能页面，无内部功能层级划分。</p>
+<div class="mermaid">
+graph TD
+    subgraph Header["Map Header / 地图标题"]
+        H1[Workspace Switcher<br/>工作区切换]
+        H2[IOS Configuration<br/>IOS配置]
+    end
+
+    subgraph Main["Main Section / 主区域"]
+        A[INSTRUMENTS Tab<br/>仪表选项卡]
+        B[Instrument View Mode Section<br/>仪表视图模式区域]
+    end
+
+    subgraph Footer["Map Footer / 地图页脚"]
+        F1[Flight Freeze<br/>飞行冻结]
+        F2[Resets / Freezes<br/>重置/冻结]
+        F3[Sim Controls / Volume<br/>模拟控制/音量]
+        F4[Reposition / Weather<br/>重新定位/天气]
+        F5[Help / Workspace<br/>帮助/工作区]
+    end
+
+    A --&gt; A1[Instrument List<br/>可用仪表列表]
+    B --&gt; B1[Selected Instrument Display<br/>选中仪表显示区]
+
+    A -.-&gt;|选中显示| B
+
+    style Header fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
+    style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Footer fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
+    </div>
 <h3>1.2 界面结构</h3>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr>
-</thead>
+<thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
 <tbody>
-<tr>
-<td>维护页面主视图<br/>Maintenance Pages Main View</td>
-<td>占据整个当前显示器工作区</td>
-<td>为维护人员提供执行模拟器维护任务的专用界面</td>
-</tr>
-<tr>
-<td>工作区切换按钮<br/>Workspace Button</td>
-<td>控制面板底部页脚右侧</td>
-<td>教员可通过点击该按钮并选择「维护」进入本工作区（详见 1.2.7 控制面板底部）</td>
-</tr>
+<tr><td>Map Header<br/>地图标题栏</td><td>顶部</td><td>与地图工作区标题栏相同，提供工作区切换、IOS 配置等功能入口</td></tr>
+<tr><td>INSTRUMENTS Tab<br/>仪表选项卡</td><td>主区域左侧/上部</td><td>列出驾驶舱中所有可在仪表视图模式下显示的可用仪表，点击进行选择</td></tr>
+<tr><td>Instrument View Mode Section<br/>仪表视图模式区域</td><td>主区域右侧/主体</td><td>显示在"仪表"选项卡中选中的座舱仪表画面，实时复示</td></tr>
+<tr><td>Map Footer<br/>地图页脚</td><td>底部</td><td>与控制面板底部（Control Board Footer）相同，提供飞行冻结、重置、工作区切换等快捷功能</td></tr>
 </tbody>
 </table>
 </div>
 <div class="img-row">
 <div class="img-block">
 <img alt="控制面板底部总览" src="./images/ch1_2_7_footer.jpg"/>
-<div class="img-caption">图 1：控制面板底部总览（Control Board Footer）</div>
+<p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
 </div>
 <div class="img-block">
 <img alt="工作区卷展菜单" src="./images/ch1_2_7_workspace_menu.jpg"/>
-<div class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</div>
+<p class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</p>
 </div>
 <div class="img-block">
-<img alt="维护页面主视图" src="./images/ch1_3_maintenance_pages.jpg"/>
-<div class="img-caption">图 3：维护页面主视图（Maintenance Pages）</div>
+<img alt="仪表复示器工作区总览" src="./images/ch1_4_instrument_repeater_workspace.jpg"/>
+<p class="img-caption">图 3：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
 </div>
 </div>
-<blockquote>
-<strong>访问限制说明：</strong>维护页面仅供维护人员使用，教员在日常训练场景中通常不需要进入该工作区。页面内容取决于 IOS 配置和模拟器型号。
-    </blockquote>
 <!-- 二、核心功能详解 -->
 <h2>二、核心功能详解</h2>
-<h3>2.1 维护页面属性总览</h3>
+<h3>2.1 仪表选项卡（INSTRUMENTS Tab）</h3>
+<p>触发方式：进入仪表复示器工作区后，主区域默认显示 <strong>INSTRUMENTS Tab</strong>。该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>属性</th><th>说明</th></tr>
-</thead>
+<thead><tr><th>属性</th><th>说明</th></tr></thead>
 <tbody>
-<tr>
-<td>功能定义</td>
-<td>为维护人员提供的专用工作区，用于执行各类模拟器维护任务</td>
-</tr>
-<tr>
-<td>呈现方式</td>
-<td>全屏工作区页面，替换当前显示器中的控制面板视图</td>
-</tr>
-<tr>
-<td>用户权限</td>
-<td>仅供维护人员使用，教员日常训练中无需访问</td>
-</tr>
-<tr>
-<td>配置依赖</td>
-<td>页面具体内容和可用维护任务取决于 IOS 配置及模拟器硬件型号</td>
-</tr>
-<tr>
-<td>边界行为</td>
-<td>进入维护页面后，常规训练控制功能被隐藏；完成维护后需手动切换回训练工作区</td>
-</tr>
+<tr><td>功能定义</td><td>列出驾驶舱中所有可被复示到 IOS 显示屏上的可用仪表</td></tr>
+<tr><td>呈现方式/交互方式</td><td>以列表形式呈现，点击仪表名称进行选择；选中后驱动右侧视图区域显示对应仪表</td></tr>
+<tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（注：需根据实际 IOS 配置确认）</td></tr>
+<tr><td>与其他功能关系</td><td>与 Instrument View Mode Section 为<strong>依赖关系</strong>，选择结果直接决定视图区域显示内容</td></tr>
+</tbody>
+</table>
+</div>
+<h3>2.2 仪表视图模式区域（Instrument View Mode Section）</h3>
+<p>触发方式：在 <strong>INSTRUMENTS Tab</strong> 中点击仪表名称后，该区域自动显示所选仪表的实时复示画面。无需额外操作。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>属性</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>功能定义</td><td>将驾驶舱中选定的仪表画面实时复示到 IOS 当前监视器上</td></tr>
+<tr><td>呈现方式/交互方式</td><td>只读显示区域，接收并渲染来自模拟器的仪表画面数据流</td></tr>
+<tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（注：具体帧率取决于模拟器实现）</td></tr>
+<tr><td>与其他功能关系</td><td>依赖 INSTRUMENTS Tab 的选择结果；与 Map Header / Footer 共享同一套工作区框架</td></tr>
 </tbody>
 </table>
 </div>
 <!-- 三、全局操作流程与推导 -->
 <h2>三、全局操作流程与推导</h2>
-<h3>3.1 维护页面访问操作流程全景图</h3>
+<h3>3.1 仪表复示器教员核心操作流程全景图</h3>
 <div class="mermaid">
 flowchart LR
-    Start([进入 IOS 训练系统]) --&gt; NeedMaint{需要执行<br/>维护任务?}
-    NeedMaint --&gt;|是| OpenFooter[点击 Workspace<br/>工作区按钮]
-    NeedMaint --&gt;|否| ContinueTraining[继续训练]
-    ContinueTraining --&gt; EndTrain([训练继续])
+    Start([进入仪表复示器工作区]) --&gt; OP_TYPE{选择操作类型}
 
-    OpenFooter --&gt; SelectMaint{选择<br/>Maintenance}
-    SelectMaint --&gt;|维护| EnterMaint[切换至<br/>维护页面]
-    SelectMaint --&gt;|其他工作区| SwitchOther[进入其他<br/>工作区]
-    SwitchOther --&gt; EndSwitch([工作区切换完成])
+    OP_TYPE --&gt;|选择仪表| INSTRUMENTS_ENTRY[查看 INSTRUMENTS Tab]
+    OP_TYPE --&gt;|不选择| NO_SELECT[不选择仪表]
 
-    EnterMaint --&gt; PerformTask[执行维护任务]
-    PerformTask --&gt; Complete{维护完成?}
-    Complete --&gt;|是| ReturnWorkspace[切换回<br/>训练工作区]
-    Complete --&gt;|否| PerformTask
+    subgraph INSTRUMENTS_FLOW["仪表选择与复示流程 — 2.1 / 2.2"]
+        INSTRUMENTS_ENTRY --&gt; Select{选择目标仪表}
+        Select --&gt; Load[系统加载仪表数据流]
+        Load --&gt; Display[仪表画面显示在 View Mode]
+        Display --&gt; Unsubscribe[取消旧仪表订阅]
+    end
 
-    ReturnWorkspace --&gt; EndMaint([维护流程结束])
+    NO_SELECT --&gt; End([训练就绪/复示完成])
+    Unsubscribe --&gt; End
 
-    style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
-    style EndTrain fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style EndMaint fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style EndSwitch fill:#d1fae5,stroke:#059669,stroke-width:2px
-    style EnterMaint fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style Start fill:#dbeafe,stroke:#2563eb
+    style End fill:#d1fae5,stroke:#059669
+    style OP_TYPE fill:#fef3c7,stroke:#d97706
+    style NO_SELECT fill:#fee2e2,stroke:#dc2626
     </div>
-<h3>3.2 工作区切换通用状态机</h3>
+<h3>3.2 仪表复示通用状态机</h3>
 <div class="mermaid">
 stateDiagram-v2
-    [*] --&gt; 训练工作区
-    训练工作区 --&gt; 工作区菜单打开中 : 点击Workspace按钮
-    工作区菜单打开中 --&gt; 维护页面 : 选择Maintenance
-    工作区菜单打开中 --&gt; 训练工作区 : 点击外部取消
-    工作区菜单打开中 --&gt; 其他工作区 : 选择其他选项
+    [*] --&gt; 空闲态 : 进入工作区时
+    空闲态 --&gt; 选择中 : 点击仪表列表时
+    选择中 --&gt; 显示中 : 系统加载完成时
+    显示中 --&gt; 选择中 : 切换其他仪表时
+    选择中 --&gt; 空闲态 : 取消选择或关闭时
+    显示中 --&gt; 空闲态 : 关闭工作区或切换工作区时
 
-    维护页面 --&gt; 维护任务执行中 : 开始维护操作
-    维护任务执行中 --&gt; 维护页面 : 完成或取消当前任务
-
-    维护页面 --&gt; 训练工作区 : 切换回训练工作区
-    其他工作区 --&gt; 训练工作区 : 切换回训练工作区
-
-    训练工作区 --&gt; [*]
+    显示中 --&gt; 冻结中 : 飞行冻结激活时
+    冻结中 --&gt; 显示中 : 飞行冻结解除时
     </div>
-<h4>状态说明</h4>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>状态</th><th>说明</th></tr>
-</thead>
+<thead><tr><th>状态</th><th>说明</th></tr></thead>
 <tbody>
-<tr><td>训练工作区</td><td>教员进行训练控制的常规状态，显示控制面板、地图等工作区之一</td></tr>
-<tr><td>工作区菜单打开中</td><td>点击 Workspace 按钮后，弹出工作区选择菜单的临时状态</td></tr>
-<tr><td>维护页面</td><td>当前显示器显示维护页面的专用界面</td></tr>
-<tr><td>维护任务执行中</td><td>维护人员正在使用维护页面执行具体维护操作</td></tr>
-<tr><td>其他工作区</td><td>教员切换到地图、课程计划剖面、仪表复示器或高级等工作区</td></tr>
+<tr><td>空闲态</td><td>进入仪表复示器工作区，尚未选择任何仪表；View Mode 区域为空或显示默认提示</td></tr>
+<tr><td>选择中</td><td>教员在 INSTRUMENTS Tab 中点击了某个仪表名称，系统正在加载对应数据流</td></tr>
+<tr><td>显示中</td><td>选中仪表的画面已成功在 View Mode 区域中实时复示</td></tr>
+<tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
 </tbody>
 </table>
 </div>
@@ -298,89 +251,50 @@ stateDiagram-v2
 <h4>3.3.1 关联依赖</h4>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>关联项</th><th>依赖关系</th></tr>
-</thead>
+<thead><tr><th>功能点</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
 <tbody>
-<tr>
-<td>Control Board Footer / 控制面板底部</td>
-<td><strong>强依赖</strong>：维护页面通过页脚的 Workspace 按钮进入，无独立入口</td>
-</tr>
-<tr>
-<td>IOS 配置</td>
-<td><strong>强依赖</strong>：维护页面的具体内容和可用任务由 IOS 配置文件决定</td>
-</tr>
-<tr>
-<td>模拟器硬件</td>
-<td><strong>弱依赖</strong>：不同模拟器型号的维护任务可能不同</td>
-</tr>
-<tr>
-<td>Lesson Plan / 课程计划</td>
-<td><strong>互斥</strong>：进入维护页面会中断当前训练会话的交互界面</td>
-</tr>
+<tr><td>Map Header</td><td>地图工作区（Map Workspace）</td><td>与地图工作区共用同一套标题栏组件，包含工作区切换器</td></tr>
+<tr><td>Map Footer</td><td>控制面板底部（Control Board Footer）</td><td>与 1.2.7 控制面板底部共用同一套页脚组件，功能完全一致</td></tr>
+<tr><td>仪表列表</td><td>IOS 配置</td><td>可复示的仪表数量和类型由 IOS 配置决定</td></tr>
+<tr><td>仪表画面</td><td>模拟器数据总线</td><td>需实时订阅对应仪表的渲染数据流</td></tr>
 </tbody>
 </table>
 </div>
 <h4>3.3.2 异常边界</h4>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>场景</th><th>行为</th></tr>
-</thead>
+<thead><tr><th>场景</th><th>边界行为</th></tr></thead>
 <tbody>
-<tr>
-<td>训练过程中误进入维护页面</td>
-<td>当前训练控制界面被替换，但模拟器运行状态通常不会自动终止；需手动切回控制面板继续训练</td>
-</tr>
-<tr>
-<td>维护页面未在当前 IOS 配置中启用</td>
-<td>Workspace 菜单中可能不显示 Maintenance 选项，或显示为禁用状态</td>
-</tr>
-<tr>
-<td>当前课程正在进行时切换</td>
-<td>课程计划可能继续在后台运行，但教员无法通过维护页面监控课程状态</td>
-</tr>
+<tr><td>无可复示仪表</td><td>INSTRUMENTS Tab 列表为空，显示默认空状态提示</td></tr>
+<tr><td>IOS 配置变更</td><td>可复示仪表列表应动态刷新；若当前显示仪表被移除则回退到空闲态</td></tr>
+<tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（注：具体行为取决于客户端实现策略）</td></tr>
+<tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
 </tbody>
 </table>
 </div>
 <h3>3.4 数据流与开发流程推导</h3>
 <h4>3.4.1 数据流</h4>
-<pre>教员点击 Workspace 按钮
-        ↓
-Workspace 菜单状态变更（UI 事件）
-        ↓
-选择 Maintenance
-        ↓
-IOS 工作区管理器切换当前显示器上下文
-        ↓
-加载维护页面 UI 组件与维护任务接口
-        ↓
-渲染维护页面主视图</pre>
+<pre><code>教员点击仪表名称
+    ↓
+UI 事件：instrument_select(instrument_id)
+    ↓
+前端状态变更：selected_instrument = instrument_id
+    ↓
+API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
+    ↓
+模拟器后端：建立数据通道，推送实时仪表渲染帧
+    ↓
+前端接收：WebSocket / 轮询更新 View Mode 画布
+    ↓
+画面呈现：教员在 IOS 监视器上看到复示仪表画面</code></pre>
 <h4>3.4.2 API 接口契约建议</h4>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>接口</th><th>方法</th><th>请求/响应</th><th>说明</th></tr>
-</thead>
+<thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
 <tbody>
-<tr>
-<td>切换工作区</td>
-<td>POST /api/v1/workspace/switch</td>
-<td>请求：{ workspace: "maintenance" }<br/>响应：{ success: true, currentWorkspace: "maintenance" }</td>
-<td>切换当前显示器到指定工作区</td>
-</tr>
-<tr>
-<td>获取可用工作区列表</td>
-<td>GET /api/v1/workspace/list</td>
-<td>响应：[{ id, name, enabled, icon }]</td>
-<td>返回当前 IOS 配置下可用的工作区</td>
-</tr>
-<tr>
-<td>获取维护任务列表</td>
-<td>GET /api/v1/maintenance/tasks</td>
-<td>响应：[{ id, name, category, requiredRole }]</td>
-<td>返回当前用户权限下可执行的维护任务</td>
-</tr>
+<tr><td><code>GET /api/v1/instruments</code></td><td>—</td><td>instruments[{id, name, category}]</td><td>500 CONFIG_READ_FAILED</td></tr>
+<tr><td><code>WS /api/v1/instrument/{id}/stream</code></td><td>instrument_id（路径参数）</td><td>实时二进制/JSON 帧数据流</td><td>404 INSTRUMENT_NOT_FOUND, 403 NO_PERMISSION</td></tr>
+<tr><td><code>POST /api/v1/instrument/unsubscribe</code></td><td>instrument_id</td><td>success, unsubscribed_id</td><td>400 NOT_SUBSCRIBED</td></tr>
 </tbody>
 </table>
 </div>
@@ -388,40 +302,16 @@ IOS 工作区管理器切换当前显示器上下文
 <h2>四、测试要点</h2>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr>
-</thead>
+<thead><tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr></thead>
 <tbody>
-<tr>
-<td>正向路径</td>
-<td>从控制面板点击 Workspace → 选择 Maintenance</td>
-<td>当前显示器成功切换为维护页面，页面加载无报错</td>
-</tr>
-<tr>
-<td>正向路径</td>
-<td>从维护页面切换回 Control Board</td>
-<td>成功返回控制面板，训练状态保持正常</td>
-</tr>
-<tr>
-<td>异常路径</td>
-<td>IOS 配置未启用维护页面</td>
-<td>Workspace 菜单中 Maintenance 选项隐藏或禁用</td>
-</tr>
-<tr>
-<td>异常路径</td>
-<td>课程执行过程中切换至维护页面</td>
-<td>模拟器不崩溃，课程状态不丢失，切回后可继续</td>
-</tr>
-<tr>
-<td>边界条件</td>
-<td>所有工作区来回切换</td>
-<td>状态上下文正确保留，无内存泄漏或 UI 残留</td>
-</tr>
-<tr>
-<td>权限测试</td>
-<td>非维护人员角色尝试访问维护任务</td>
-<td>维护任务列表为空或接口返回 403</td>
-</tr>
+<tr><td>正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
+<tr><td>正向路径</td><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
+<tr><td>异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
+<tr><td>异常路径</td><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
+<tr><td>边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
+<tr><td>边界条件</td><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
+<tr><td>联动测试</td><td>飞行冻结激活期间仪表复示</td><td>画面保持显示，行为符合模拟器冻结策略</td></tr>
+<tr><td>性能测试</td><td>多仪表同时复示（若配置支持）</td><td>帧率稳定，无卡顿，带宽占用在合理范围</td></tr>
 </tbody>
 </table>
 </div>
@@ -429,44 +319,38 @@ IOS 工作区管理器切换当前显示器上下文
 <h2>五、变更记录</h2>
 <div class="table-wrap">
 <table>
-<thead>
-<tr><th>日期</th><th>版本</th><th>变更内容</th></tr>
-</thead>
+<thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
 <tbody>
-<tr>
-<td>2026-06-05</td>
-<td>V1.0</td>
-<td>初始生成 1.3 维护页面 HTML，包含功能层级图、界面结构、操作流程、状态机与测试要点；配图来自原始手册 Figure 108</td>
-</tr>
+<tr><td>2026-06-05</td><td>V1.0</td><td>初始生成 ch1_4 仪表复示器工作区 HTML，含功能层级图、界面结构、核心功能详解、操作流程、状态机、API 契约建议及测试要点</td></tr>
+<tr><td>2026-06-08</td><td>V1.1</td><td>Redline Review 优化：1）修复 3.2 状态机 transition label 冒号语法错误（改为"时"连词）；2）修复 img-row 缺少 flex-wrap；3）重构 3.1 流程图消除 subgraph 内重复边，增加 OP_TYPE 决策点和"不选择"异常分支；4）2.1/2.2 补充触发方式说明；5）3.4.2 API 接口表格统一为四列格式（接口名/请求字段/响应字段/错误码）；6）测试要点去除 rowspan，增加独立「测试类型」列；7）统一"（待确认）"标记为规范注释格式</td></tr>
 </tbody>
 </table>
 </div>
 <!-- Footer Nav -->
 <div class="footer-nav">
-<a class="prev" href="ch1_2_7_control_board_footer.html">← 1.2.7 控制面板底部（Control Board Footer）</a>
-<a class="next" href="ch1_4_instrument_repeater.html">1.4 仪表复示器（INSTRUMENT REPEATER） →</a>
+<a class="prev" href="ch1_3_maintenance_pages.html">← 上一小节：1.3 维护页面</a>
+<a class="next" href="ch1_5_lesson_plan_profile.html">下一小节：1.5 课程计划配置工作区 →</a>
 </div>
-    </div>
-  </div>
-</div>
+
 <script>
 
-// Sidebar toggle
-function toggleNav(el){
+// Navigation toggle
+function toggleNav(el) {
   el.classList.toggle('collapsed');
   const children = el.nextElementSibling;
-  if(children && children.classList.contains('nav-children')){
+  if (children && children.classList.contains('nav-children')) {
     children.classList.toggle('collapsed');
   }
 }
 
-// Collapsible sections
-document.addEventListener('click', function(e){
-  const header = e.target.closest('.collapsible-header');
-  if(!header) return;
-  const col = header.parentElement;
-  col.classList.toggle('collapsed');
-});
+// Collapsible toggle
+function toggleCollapsible(el) {
+  const parent = el.parentElement;
+  parent.classList.toggle('collapsed');
+}
+
+// Mermaid init
+mermaid.initialize({ startOnLoad: true, theme: 'default' });
 
 // Image zoom
 (function(){
@@ -572,11 +456,8 @@ document.addEventListener('click', function(e){
   });
 })();
 
-// Mermaid init
-mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
-
-// Mermaid zoom/pan
-(function(){
+// Mermaid zoom + pan + wheel
+(function() {
   let zoomedEl = null;
   let scale = 1;
   let translateX = 0;
@@ -587,59 +468,60 @@ mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose'
   let lastX = 0;
   let lastY = 0;
 
-  function updateTransform(){
-    if(!zoomedEl) return;
+  function updateTransform() {
+    if (!zoomedEl) return;
     const svg = zoomedEl.querySelector('svg');
-    if(svg) svg.style.transform = 'translate(' + translateX + 'px,' + translateY + 'px) scale(' + scale + ')';
+    if (svg) svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
   }
 
-  document.addEventListener('click', function(e){
-    const mermaid = e.target.closest('.mermaid');
-    if(!mermaid){
-      if(zoomedEl && !e.target.closest('.mermaid.is-zoomed')){
+  document.addEventListener('click', function(e) {
+    const mermaidEl = e.target.closest('.mermaid');
+    if (!mermaidEl) {
+      if (zoomedEl && (e.target.classList.contains('mermaid-zoom-overlay') || e.target.closest('.mermaid-zoom-overlay'))) {
         zoomedEl.classList.remove('is-zoomed');
         const svg = zoomedEl.querySelector('svg');
-        if(svg) svg.style.transform = '';
+        if (svg) svg.style.transform = '';
         zoomedEl = null;
         document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
       }
       return;
     }
-    if(zoomedEl){
-      if(mermaid.classList.contains('is-zoomed')){
+    if (zoomedEl) {
+      if (mermaidEl.classList.contains('is-zoomed')) {
         const dx = Math.abs(e.clientX - dragStartX);
         const dy = Math.abs(e.clientY - dragStartY);
-        if(dx < 5 && dy < 5){
+        if (dx < 5 && dy < 5) {
           zoomedEl.classList.remove('is-zoomed');
           const svg = zoomedEl.querySelector('svg');
-          if(svg) svg.style.transform = '';
+          if (svg) svg.style.transform = '';
           zoomedEl = null;
           document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
         }
       }
       return;
     }
-    zoomedEl = mermaid;
+    zoomedEl = mermaidEl;
+    zoomedEl.classList.add('is-zoomed');
     scale = 1;
     translateX = 0;
     translateY = 0;
-    mermaid.classList.add('is-zoomed');
+    updateTransform();
     const overlay = document.createElement('div');
     overlay.className = 'mermaid-zoom-overlay';
     document.body.appendChild(overlay);
   });
 
-  document.addEventListener('wheel', function(e){
-    if(!zoomedEl) return;
+  document.addEventListener('wheel', function(e) {
+    if (!zoomedEl) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
     scale = Math.max(0.3, Math.min(5, scale + delta));
     updateTransform();
   }, { passive: false });
 
-  document.addEventListener('mousedown', function(e){
-    if(!zoomedEl) return;
-    if(e.target.closest('.mermaid.is-zoomed')){
+  document.addEventListener('mousedown', function(e) {
+    if (!zoomedEl) return;
+    if (e.target.closest('.mermaid.is-zoomed')) {
       isDragging = true;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
@@ -648,8 +530,8 @@ mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose'
     }
   });
 
-  document.addEventListener('mousemove', function(e){
-    if(!isDragging || !zoomedEl) return;
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging || !zoomedEl) return;
     translateX += e.clientX - lastX;
     translateY += e.clientY - lastY;
     lastX = e.clientX;
@@ -657,13 +539,15 @@ mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose'
     updateTransform();
   });
 
-  document.addEventListener('mouseup', function(){ isDragging = false; });
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
 
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && zoomedEl){
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && zoomedEl) {
       zoomedEl.classList.remove('is-zoomed');
       const svg = zoomedEl.querySelector('svg');
-      if(svg) svg.style.transform = '';
+      if (svg) svg.style.transform = '';
       zoomedEl = null;
       document.querySelectorAll('.mermaid-zoom-overlay').forEach(el => el.remove());
     }
@@ -671,5 +555,3 @@ mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose'
 })();
 
 </script>
-</body>
-</html>

@@ -1,13 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.8 参考流程 Reference Flows — CAE IOS 教员台</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<style>
+﻿<style>
 
 :root{
   --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
@@ -95,48 +86,9 @@ tr:last-child td{border-bottom:none}
 @media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
 
 </style>
-</head>
-<body>
-<aside class="sidebar">
-  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
-  <nav class="nav-tree">
-    <div class="nav-group">
-      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
-      <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
-<div class="nav-group">
-  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
-  <div class="nav-children collapsed">
-    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 LESSON PLAN Tab</a>
-<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 DOC Tab</a>
-<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 CURRENT CONDITIONS Tab</a>
-<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 AIRCRAFT Tab</a>
-<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
-<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
-<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
-  </div>
-</div>
-<a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
-<a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（INSTRUMENT REPEATER）</a>
-<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
-<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
-<a class="nav-link active" href="ch1_8_reference_flows.html">1.8 参考流程 Reference Flows</a>
-      </div>
-    </div>
-  </nav>
-</aside>
-<div class="layout">
-  <div class="main">
-    <div class="breadcrumb">
-    <a href="#">首页</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="#">第 1 章 软件操作</a>
-    <span class="breadcrumb-sep">/</span>
-    <span>1.8 参考流程 Reference Flows</span>
-  </div>
-    <div class="content">
-      <h1>1.8 参考流程 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">Reference Flows</span></h1>
+
+
+<h1>1.8 参考流程 <span style="font-size:18px;font-weight:400;color:var(--text-secondary)">Reference Flows</span></h1>
 <p class="subtitle">整理时间：2026-06-08  |  性质：基于第 1 章各工作区操作手册整合的参考流程  |  细化粒度：端到端流程串联 + 跨工作区联动</p>
 <blockquote>
 <strong>本章定位：</strong>本章不是对原始手册某一章节的直接翻译，而是基于 1.1 ~ 1.7 全部工作区操作手册中的功能定义、状态机与数据流推导，进行<strong>跨章节的流程整合与再创作</strong>。目标是为教员提供从训练准备到结束讲评的<strong>端到端标准操作参考（SOP）</strong>，同时为后续第 2 章软件架构设计提供跨模块交互的输入。
@@ -1079,9 +1031,7 @@ flowchart TD
 <a class="prev" href="ch1_7_advanced.html"><span>←</span><span>1.7 高级（Advanced）</span></a>
 <span></span>
 </div>
-    </div>
-  </div>
-</div>
+
 <script>
 
 mermaid.initialize({
@@ -1207,5 +1157,3 @@ function toggleNav(el){
 })();
 
 </script>
-</body>
-</html>

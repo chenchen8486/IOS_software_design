@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1.4 仪表复示器工作区（INSTRUMENT REPEATER）— CAE IOS 教员台</title>
+<title>1.4 仪表复示器工作区（INSTRUMENT REPEATER） — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
+
 :root{
   --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
   --accent:#059669;--danger:#dc2626;--warning:#d97706;
@@ -111,12 +112,10 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 
 @media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}.collapsible-body{display:block!important}}
 @media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+
 </style>
 </head>
 <body>
-<div class="layout">
-
-<!-- Sidebar -->
 <aside class="sidebar">
   <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
   <nav class="nav-tree">
@@ -124,223 +123,206 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
       <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
       <div class="nav-children">
         <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
-        <div class="nav-group">
-          <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
-          <div class="nav-children">
-            <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡（LESSON PLAN Tab）</a>
-            <a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡（DOC Tab）</a>
-            <a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡（CURRENT CONDITIONS Tab）</a>
-            <a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡（AIRCRAFT Tab）</a>
-            <a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
-            <a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
-            <a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
-          </div>
-        </div>
-        <a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
-        <a class="nav-link active" href="ch1_4_instrument_repeater.html">1.4 仪表复示器</a>
-        <a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile）</a>
-        <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-        
-        <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
-
-        <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程（Reference Flows）</a>
+<div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 LESSON PLAN Tab</a>
+<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 DOC Tab</a>
+<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 CURRENT CONDITIONS Tab</a>
+<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 AIRCRAFT Tab</a>
+<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（REFERENCE AIRPORT Tab）</a>
+<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</a>
+<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+  </div>
+</div>
+<a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+<a class="nav-link active" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（INSTRUMENT REPEATER）</a>
+<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
+<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+<a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程 Reference Flows</a>
       </div>
     </div>
   </nav>
 </aside>
-
-<!-- Main -->
-<main class="main">
-  <div class="breadcrumb">
-    <a href="#">首页</a><span class="breadcrumb-sep">/</span><a href="#">第 1 章 软件操作</a><span class="breadcrumb-sep">/</span><span>1.4 仪表复示器工作区</span>
+<div class="layout">
+  <div class="main">
+    <div class="breadcrumb">
+    <a href="#">首页</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">第 1 章 软件操作</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>1.4 仪表复示器工作区（INSTRUMENT REPEATER）</span>
   </div>
-
-  <div class="content">
-    <h1>1.4 仪表复示器工作区（INSTRUMENT REPEATER）</h1>
-    <p class="subtitle">对应原始手册：## 13. INSTRUMENT REPEATER Workspace</p>
-
-    <!-- 一、功能层级与界面总览 -->
-    <h2>一、功能层级与界面总览</h2>
-
-    <blockquote>
-      <strong>工作区入口说明：</strong>仪表复示器（INSTRUMENT REPEATER）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Instr. Repeaters / 仪表复示器」进入本界面。进入后，当前显示器将切换为仪表复示器工作区，其顶部标题栏与底部页脚均与地图工作区/控制面板共用同一套组件。
+    <div class="content">
+      <h1>1.4 仪表复示器工作区（INSTRUMENT REPEATER）</h1>
+<p class="subtitle">对应原始手册：## 13. INSTRUMENT REPEATER Workspace</p>
+<!-- 一、功能层级与界面总览 -->
+<h2>一、功能层级与界面总览</h2>
+<blockquote>
+<strong>工作区入口说明：</strong>仪表复示器（INSTRUMENT REPEATER）是 IOS 的一个独立工作区，并非弹窗。教员需通过<strong>控制面板底部页脚（1.2.7）最右侧的 Workspace 按钮</strong>打开工作区切换菜单，选择「Instr. Repeaters / 仪表复示器」进入本界面。进入后，当前显示器将切换为仪表复示器工作区，其顶部标题栏与底部页脚均与地图工作区/控制面板共用同一套组件。
     </blockquote>
-
-    <h3>1.1 功能层级结构</h3>
-    <div class="mermaid">
+<h3>1.1 功能层级结构</h3>
+<div class="mermaid">
 graph TD
     subgraph Header["Map Header / 地图标题"]
-        H1[Workspace Switcher<br>工作区切换]
-        H2[IOS Configuration<br>IOS配置]
+        H1[Workspace Switcher<br/>工作区切换]
+        H2[IOS Configuration<br/>IOS配置]
     end
 
     subgraph Main["Main Section / 主区域"]
-        A[INSTRUMENTS Tab<br>仪表选项卡]
-        B[Instrument View Mode Section<br>仪表视图模式区域]
+        A[INSTRUMENTS Tab<br/>仪表选项卡]
+        B[Instrument View Mode Section<br/>仪表视图模式区域]
     end
 
     subgraph Footer["Map Footer / 地图页脚"]
-        F1[Flight Freeze<br>飞行冻结]
-        F2[Resets / Freezes<br>重置/冻结]
-        F3[Sim Controls / Volume<br>模拟控制/音量]
-        F4[Reposition / Weather<br>重新定位/天气]
-        F5[Help / Workspace<br>帮助/工作区]
+        F1[Flight Freeze<br/>飞行冻结]
+        F2[Resets / Freezes<br/>重置/冻结]
+        F3[Sim Controls / Volume<br/>模拟控制/音量]
+        F4[Reposition / Weather<br/>重新定位/天气]
+        F5[Help / Workspace<br/>帮助/工作区]
     end
 
-    A --> A1[Instrument List<br>可用仪表列表]
-    B --> B1[Selected Instrument Display<br>选中仪表显示区]
+    A --&gt; A1[Instrument List<br/>可用仪表列表]
+    B --&gt; B1[Selected Instrument Display<br/>选中仪表显示区]
 
-    A -.->|选中显示| B
+    A -.-&gt;|选中显示| B
 
     style Header fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
     style Main fill:#dbeafe,stroke:#2563eb,stroke-width:2px
     style Footer fill:#e0e7ff,stroke:#4338ca,stroke-width:2px
     </div>
-
-    <h3>1.2 界面结构</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
-        <tbody>
-          <tr><td>Map Header<br>地图标题栏</td><td>顶部</td><td>与地图工作区标题栏相同，提供工作区切换、IOS 配置等功能入口</td></tr>
-          <tr><td>INSTRUMENTS Tab<br>仪表选项卡</td><td>主区域左侧/上部</td><td>列出驾驶舱中所有可在仪表视图模式下显示的可用仪表，点击进行选择</td></tr>
-          <tr><td>Instrument View Mode Section<br>仪表视图模式区域</td><td>主区域右侧/主体</td><td>显示在"仪表"选项卡中选中的座舱仪表画面，实时复示</td></tr>
-          <tr><td>Map Footer<br>地图页脚</td><td>底部</td><td>与控制面板底部（Control Board Footer）相同，提供飞行冻结、重置、工作区切换等快捷功能</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="img-row">
-      <div class="img-block">
-        <img src="./images/ch1_2_7_footer.jpg" alt="控制面板底部总览">
-        <p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
-      </div>
-      <div class="img-block">
-        <img src="./images/ch1_2_7_workspace_menu.jpg" alt="工作区卷展菜单">
-        <p class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</p>
-      </div>
-      <div class="img-block">
-        <img src="./images/ch1_4_instrument_repeater_workspace.jpg" alt="仪表复示器工作区总览">
-        <p class="img-caption">图 3：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
-      </div>
-    </div>
-
-    <!-- 二、核心功能详解 -->
-    <h2>二、核心功能详解</h2>
-
-    <h3>2.1 仪表选项卡（INSTRUMENTS Tab）</h3>
-    <p>触发方式：进入仪表复示器工作区后，主区域默认显示 <strong>INSTRUMENTS Tab</strong>。该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr><td>功能定义</td><td>列出驾驶舱中所有可被复示到 IOS 显示屏上的可用仪表</td></tr>
-          <tr><td>呈现方式/交互方式</td><td>以列表形式呈现，点击仪表名称进行选择；选中后驱动右侧视图区域显示对应仪表</td></tr>
-          <tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（注：需根据实际 IOS 配置确认）</td></tr>
-          <tr><td>与其他功能关系</td><td>与 Instrument View Mode Section 为<strong>依赖关系</strong>，选择结果直接决定视图区域显示内容</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>2.2 仪表视图模式区域（Instrument View Mode Section）</h3>
-    <p>触发方式：在 <strong>INSTRUMENTS Tab</strong> 中点击仪表名称后，该区域自动显示所选仪表的实时复示画面。无需额外操作。</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>属性</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr><td>功能定义</td><td>将驾驶舱中选定的仪表画面实时复示到 IOS 当前监视器上</td></tr>
-          <tr><td>呈现方式/交互方式</td><td>只读显示区域，接收并渲染来自模拟器的仪表画面数据流</td></tr>
-          <tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（注：具体帧率取决于模拟器实现）</td></tr>
-          <tr><td>与其他功能关系</td><td>依赖 INSTRUMENTS Tab 的选择结果；与 Map Header / Footer 共享同一套工作区框架</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 三、全局操作流程与推导 -->
-    <h2>三、全局操作流程与推导</h2>
-
-    <h3>3.1 仪表复示器教员核心操作流程全景图</h3>
-    <div class="mermaid">
+<h3>1.2 界面结构</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>区域/控件</th><th>位置</th><th>功能说明</th></tr></thead>
+<tbody>
+<tr><td>Map Header<br/>地图标题栏</td><td>顶部</td><td>与地图工作区标题栏相同，提供工作区切换、IOS 配置等功能入口</td></tr>
+<tr><td>INSTRUMENTS Tab<br/>仪表选项卡</td><td>主区域左侧/上部</td><td>列出驾驶舱中所有可在仪表视图模式下显示的可用仪表，点击进行选择</td></tr>
+<tr><td>Instrument View Mode Section<br/>仪表视图模式区域</td><td>主区域右侧/主体</td><td>显示在"仪表"选项卡中选中的座舱仪表画面，实时复示</td></tr>
+<tr><td>Map Footer<br/>地图页脚</td><td>底部</td><td>与控制面板底部（Control Board Footer）相同，提供飞行冻结、重置、工作区切换等快捷功能</td></tr>
+</tbody>
+</table>
+</div>
+<div class="img-row">
+<div class="img-block">
+<img alt="控制面板底部总览" src="./images/ch1_2_7_footer.jpg"/>
+<p class="img-caption">图 1：控制面板底部总览（Control Board Footer）</p>
+</div>
+<div class="img-block">
+<img alt="工作区卷展菜单" src="./images/ch1_2_7_workspace_menu.jpg"/>
+<p class="img-caption">图 2：工作区卷展菜单（Workspace Roll Up Menu）</p>
+</div>
+<div class="img-block">
+<img alt="仪表复示器工作区总览" src="./images/ch1_4_instrument_repeater_workspace.jpg"/>
+<p class="img-caption">图 3：仪表复示器工作区总览（INSTRUMENT REPEATER Workspace）</p>
+</div>
+</div>
+<!-- 二、核心功能详解 -->
+<h2>二、核心功能详解</h2>
+<h3>2.1 仪表选项卡（INSTRUMENTS Tab）</h3>
+<p>触发方式：进入仪表复示器工作区后，主区域默认显示 <strong>INSTRUMENTS Tab</strong>。该选项卡列出驾驶舱中所有可用的仪表，这些仪表可在仪表视图模式下显示。教员通过点击列表中的仪表名称来完成选择。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>属性</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>功能定义</td><td>列出驾驶舱中所有可被复示到 IOS 显示屏上的可用仪表</td></tr>
+<tr><td>呈现方式/交互方式</td><td>以列表形式呈现，点击仪表名称进行选择；选中后驱动右侧视图区域显示对应仪表</td></tr>
+<tr><td>边界行为</td><td>根据 IOS 配置，该工作区可编程用于查看和复示<strong>多个</strong>驾驶舱仪表；若无可复示仪表则列表为空（注：需根据实际 IOS 配置确认）</td></tr>
+<tr><td>与其他功能关系</td><td>与 Instrument View Mode Section 为<strong>依赖关系</strong>，选择结果直接决定视图区域显示内容</td></tr>
+</tbody>
+</table>
+</div>
+<h3>2.2 仪表视图模式区域（Instrument View Mode Section）</h3>
+<p>触发方式：在 <strong>INSTRUMENTS Tab</strong> 中点击仪表名称后，该区域自动显示所选仪表的实时复示画面。无需额外操作。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>属性</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>功能定义</td><td>将驾驶舱中选定的仪表画面实时复示到 IOS 当前监视器上</td></tr>
+<tr><td>呈现方式/交互方式</td><td>只读显示区域，接收并渲染来自模拟器的仪表画面数据流</td></tr>
+<tr><td>边界行为</td><td>未选择仪表时该区域为空或显示默认提示；画面刷新频率与模拟器帧率同步（注：具体帧率取决于模拟器实现）</td></tr>
+<tr><td>与其他功能关系</td><td>依赖 INSTRUMENTS Tab 的选择结果；与 Map Header / Footer 共享同一套工作区框架</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 三、全局操作流程与推导 -->
+<h2>三、全局操作流程与推导</h2>
+<h3>3.1 仪表复示器教员核心操作流程全景图</h3>
+<div class="mermaid">
 flowchart LR
-    Start([进入仪表复示器工作区]) --> OP_TYPE{选择操作类型}
+    Start([进入仪表复示器工作区]) --&gt; OP_TYPE{选择操作类型}
 
-    OP_TYPE -->|选择仪表| INSTRUMENTS_ENTRY[查看 INSTRUMENTS Tab]
-    OP_TYPE -->|不选择| NO_SELECT[不选择仪表]
+    OP_TYPE --&gt;|选择仪表| INSTRUMENTS_ENTRY[查看 INSTRUMENTS Tab]
+    OP_TYPE --&gt;|不选择| NO_SELECT[不选择仪表]
 
     subgraph INSTRUMENTS_FLOW["仪表选择与复示流程 — 2.1 / 2.2"]
-        INSTRUMENTS_ENTRY --> Select{选择目标仪表}
-        Select --> Load[系统加载仪表数据流]
-        Load --> Display[仪表画面显示在 View Mode]
-        Display --> Unsubscribe[取消旧仪表订阅]
+        INSTRUMENTS_ENTRY --&gt; Select{选择目标仪表}
+        Select --&gt; Load[系统加载仪表数据流]
+        Load --&gt; Display[仪表画面显示在 View Mode]
+        Display --&gt; Unsubscribe[取消旧仪表订阅]
     end
 
-    NO_SELECT --> End([训练就绪/复示完成])
-    Unsubscribe --> End
+    NO_SELECT --&gt; End([训练就绪/复示完成])
+    Unsubscribe --&gt; End
 
     style Start fill:#dbeafe,stroke:#2563eb
     style End fill:#d1fae5,stroke:#059669
     style OP_TYPE fill:#fef3c7,stroke:#d97706
     style NO_SELECT fill:#fee2e2,stroke:#dc2626
     </div>
-
-    <h3>3.2 仪表复示通用状态机</h3>
-    <div class="mermaid">
+<h3>3.2 仪表复示通用状态机</h3>
+<div class="mermaid">
 stateDiagram-v2
-    [*] --> 空闲态 : 进入工作区时
-    空闲态 --> 选择中 : 点击仪表列表时
-    选择中 --> 显示中 : 系统加载完成时
-    显示中 --> 选择中 : 切换其他仪表时
-    选择中 --> 空闲态 : 取消选择或关闭时
-    显示中 --> 空闲态 : 关闭工作区或切换工作区时
+    [*] --&gt; 空闲态 : 进入工作区时
+    空闲态 --&gt; 选择中 : 点击仪表列表时
+    选择中 --&gt; 显示中 : 系统加载完成时
+    显示中 --&gt; 选择中 : 切换其他仪表时
+    选择中 --&gt; 空闲态 : 取消选择或关闭时
+    显示中 --&gt; 空闲态 : 关闭工作区或切换工作区时
 
-    显示中 --> 冻结中 : 飞行冻结激活时
-    冻结中 --> 显示中 : 飞行冻结解除时
+    显示中 --&gt; 冻结中 : 飞行冻结激活时
+    冻结中 --&gt; 显示中 : 飞行冻结解除时
     </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>状态</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr><td>空闲态</td><td>进入仪表复示器工作区，尚未选择任何仪表；View Mode 区域为空或显示默认提示</td></tr>
-          <tr><td>选择中</td><td>教员在 INSTRUMENTS Tab 中点击了某个仪表名称，系统正在加载对应数据流</td></tr>
-          <tr><td>显示中</td><td>选中仪表的画面已成功在 View Mode 区域中实时复示</td></tr>
-          <tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>3.3 关联依赖与异常边界</h3>
-
-    <h4>3.3.1 关联依赖</h4>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>功能点</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
-        <tbody>
-          <tr><td>Map Header</td><td>地图工作区（Map Workspace）</td><td>与地图工作区共用同一套标题栏组件，包含工作区切换器</td></tr>
-          <tr><td>Map Footer</td><td>控制面板底部（Control Board Footer）</td><td>与 1.2.7 控制面板底部共用同一套页脚组件，功能完全一致</td></tr>
-          <tr><td>仪表列表</td><td>IOS 配置</td><td>可复示的仪表数量和类型由 IOS 配置决定</td></tr>
-          <tr><td>仪表画面</td><td>模拟器数据总线</td><td>需实时订阅对应仪表的渲染数据流</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h4>3.3.2 异常边界</h4>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>场景</th><th>边界行为</th></tr></thead>
-        <tbody>
-          <tr><td>无可复示仪表</td><td>INSTRUMENTS Tab 列表为空，显示默认空状态提示</td></tr>
-          <tr><td>IOS 配置变更</td><td>可复示仪表列表应动态刷新；若当前显示仪表被移除则回退到空闲态</td></tr>
-          <tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（注：具体行为取决于客户端实现策略）</td></tr>
-          <tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>3.4 数据流与开发流程推导</h3>
-
-    <h4>3.4.1 数据流</h4>
-    <pre><code>教员点击仪表名称
+<div class="table-wrap">
+<table>
+<thead><tr><th>状态</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>空闲态</td><td>进入仪表复示器工作区，尚未选择任何仪表；View Mode 区域为空或显示默认提示</td></tr>
+<tr><td>选择中</td><td>教员在 INSTRUMENTS Tab 中点击了某个仪表名称，系统正在加载对应数据流</td></tr>
+<tr><td>显示中</td><td>选中仪表的画面已成功在 View Mode 区域中实时复示</td></tr>
+<tr><td>冻结中</td><td>飞行冻结激活时，仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
+</tbody>
+</table>
+</div>
+<h3>3.3 关联依赖与异常边界</h3>
+<h4>3.3.1 关联依赖</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>功能点</th><th>依赖对象</th><th>依赖说明</th></tr></thead>
+<tbody>
+<tr><td>Map Header</td><td>地图工作区（Map Workspace）</td><td>与地图工作区共用同一套标题栏组件，包含工作区切换器</td></tr>
+<tr><td>Map Footer</td><td>控制面板底部（Control Board Footer）</td><td>与 1.2.7 控制面板底部共用同一套页脚组件，功能完全一致</td></tr>
+<tr><td>仪表列表</td><td>IOS 配置</td><td>可复示的仪表数量和类型由 IOS 配置决定</td></tr>
+<tr><td>仪表画面</td><td>模拟器数据总线</td><td>需实时订阅对应仪表的渲染数据流</td></tr>
+</tbody>
+</table>
+</div>
+<h4>3.3.2 异常边界</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>场景</th><th>边界行为</th></tr></thead>
+<tbody>
+<tr><td>无可复示仪表</td><td>INSTRUMENTS Tab 列表为空，显示默认空状态提示</td></tr>
+<tr><td>IOS 配置变更</td><td>可复示仪表列表应动态刷新；若当前显示仪表被移除则回退到空闲态</td></tr>
+<tr><td>模拟器断开连接</td><td>View Mode 区域显示连接中断提示或保留最后一帧画面（注：具体行为取决于客户端实现策略）</td></tr>
+<tr><td>飞行冻结激活</td><td>仪表画面继续显示，数据更新行为取决于模拟器冻结策略（注：需根据实际模拟器实现确认）</td></tr>
+</tbody>
+</table>
+</div>
+<h3>3.4 数据流与开发流程推导</h3>
+<h4>3.4.1 数据流</h4>
+<pre><code>教员点击仪表名称
     ↓
 UI 事件：instrument_select(instrument_id)
     ↓
@@ -353,61 +335,55 @@ API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
 前端接收：WebSocket / 轮询更新 View Mode 画布
     ↓
 画面呈现：教员在 IOS 监视器上看到复示仪表画面</code></pre>
-
-    <h4>3.4.2 API 接口契约建议</h4>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
-        <tbody>
-          <tr><td><code>GET /api/v1/instruments</code></td><td>—</td><td>instruments[{id, name, category}]</td><td>500 CONFIG_READ_FAILED</td></tr>
-          <tr><td><code>WS /api/v1/instrument/{id}/stream</code></td><td>instrument_id（路径参数）</td><td>实时二进制/JSON 帧数据流</td><td>404 INSTRUMENT_NOT_FOUND, 403 NO_PERMISSION</td></tr>
-          <tr><td><code>POST /api/v1/instrument/unsubscribe</code></td><td>instrument_id</td><td>success, unsubscribed_id</td><td>400 NOT_SUBSCRIBED</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 四、测试要点 -->
-    <h2>四、测试要点</h2>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr></thead>
-        <tbody>
-          <tr><td>正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
-          <tr><td>正向路径</td><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
-          <tr><td>异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
-          <tr><td>异常路径</td><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
-          <tr><td>边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
-          <tr><td>边界条件</td><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
-          <tr><td>联动测试</td><td>飞行冻结激活期间仪表复示</td><td>画面保持显示，行为符合模拟器冻结策略</td></tr>
-          <tr><td>性能测试</td><td>多仪表同时复示（若配置支持）</td><td>帧率稳定，无卡顿，带宽占用在合理范围</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 五、变更记录 -->
-    <h2>五、变更记录</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
-        <tbody>
-          <tr><td>2026-06-05</td><td>V1.0</td><td>初始生成 ch1_4 仪表复示器工作区 HTML，含功能层级图、界面结构、核心功能详解、操作流程、状态机、API 契约建议及测试要点</td></tr>
-          <tr><td>2026-06-08</td><td>V1.1</td><td>Redline Review 优化：1）修复 3.2 状态机 transition label 冒号语法错误（改为"时"连词）；2）修复 img-row 缺少 flex-wrap；3）重构 3.1 流程图消除 subgraph 内重复边，增加 OP_TYPE 决策点和"不选择"异常分支；4）2.1/2.2 补充触发方式说明；5）3.4.2 API 接口表格统一为四列格式（接口名/请求字段/响应字段/错误码）；6）测试要点去除 rowspan，增加独立「测试类型」列；7）统一"（待确认）"标记为规范注释格式</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Footer Nav -->
-    <div class="footer-nav">
-      <a class="prev" href="ch1_3_maintenance_pages.html">← 上一小节：1.3 维护页面</a>
-      <a class="next" href="ch1_5_lesson_plan_profile.html">下一小节：1.5 课程计划配置工作区 →</a>
-    </div>
-
-  </div>
-</main>
+<h4>3.4.2 API 接口契约建议</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>接口名</th><th>请求字段</th><th>响应字段</th><th>错误码</th></tr></thead>
+<tbody>
+<tr><td><code>GET /api/v1/instruments</code></td><td>—</td><td>instruments[{id, name, category}]</td><td>500 CONFIG_READ_FAILED</td></tr>
+<tr><td><code>WS /api/v1/instrument/{id}/stream</code></td><td>instrument_id（路径参数）</td><td>实时二进制/JSON 帧数据流</td><td>404 INSTRUMENT_NOT_FOUND, 403 NO_PERMISSION</td></tr>
+<tr><td><code>POST /api/v1/instrument/unsubscribe</code></td><td>instrument_id</td><td>success, unsubscribed_id</td><td>400 NOT_SUBSCRIBED</td></tr>
+</tbody>
+</table>
 </div>
-
+<!-- 四、测试要点 -->
+<h2>四、测试要点</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>测试类型</th><th>测试场景</th><th>期望结果</th></tr></thead>
+<tbody>
+<tr><td>正向路径</td><td>进入仪表复示器工作区，点击 INSTRUMENTS Tab 中某仪表</td><td>View Mode 区域正确显示该仪表实时画面</td></tr>
+<tr><td>正向路径</td><td>切换不同仪表</td><td>画面无残留，新仪表画面正确加载，旧仪表数据流已取消订阅</td></tr>
+<tr><td>异常路径</td><td>无可复示仪表配置</td><td>INSTRUMENTS Tab 显示空状态，不触发错误</td></tr>
+<tr><td>异常路径</td><td>模拟器连接中断</td><td>View Mode 给出友好提示（如"连接中断"），不崩溃</td></tr>
+<tr><td>边界条件</td><td>IOS 配置动态变更（添加/移除仪表）</td><td>列表自动刷新，当前显示仪表被移除时优雅回退</td></tr>
+<tr><td>边界条件</td><td>高频快速切换仪表</td><td>无内存泄漏，无画面撕裂，旧订阅正确清理</td></tr>
+<tr><td>联动测试</td><td>飞行冻结激活期间仪表复示</td><td>画面保持显示，行为符合模拟器冻结策略</td></tr>
+<tr><td>性能测试</td><td>多仪表同时复示（若配置支持）</td><td>帧率稳定，无卡顿，带宽占用在合理范围</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 五、变更记录 -->
+<h2>五、变更记录</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>日期</th><th>版本</th><th>变更内容</th></tr></thead>
+<tbody>
+<tr><td>2026-06-05</td><td>V1.0</td><td>初始生成 ch1_4 仪表复示器工作区 HTML，含功能层级图、界面结构、核心功能详解、操作流程、状态机、API 契约建议及测试要点</td></tr>
+<tr><td>2026-06-08</td><td>V1.1</td><td>Redline Review 优化：1）修复 3.2 状态机 transition label 冒号语法错误（改为"时"连词）；2）修复 img-row 缺少 flex-wrap；3）重构 3.1 流程图消除 subgraph 内重复边，增加 OP_TYPE 决策点和"不选择"异常分支；4）2.1/2.2 补充触发方式说明；5）3.4.2 API 接口表格统一为四列格式（接口名/请求字段/响应字段/错误码）；6）测试要点去除 rowspan，增加独立「测试类型」列；7）统一"（待确认）"标记为规范注释格式</td></tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Nav -->
+<div class="footer-nav">
+<a class="prev" href="ch1_3_maintenance_pages.html">← 上一小节：1.3 维护页面</a>
+<a class="next" href="ch1_5_lesson_plan_profile.html">下一小节：1.5 课程计划配置工作区 →</a>
+</div>
+    </div>
+  </div>
+</div>
 <script>
+
 // Navigation toggle
 function toggleNav(el) {
   el.classList.toggle('collapsed');
@@ -627,6 +603,7 @@ mermaid.initialize({ startOnLoad: true, theme: 'default' });
     }
   });
 })();
+
 </script>
 </body>
 </html>
