@@ -15,7 +15,7 @@
 
 **章节编号映射规则：**
 - HTML 文件名与导航树中的章号**保持一致**，而非直接照搬 `A320.md` 的原始章号
-- 当前项目中 `A320.md` 的「第 2 章 软件操作」在 HTML 导航树中显示为「第 1 章 软件操作」，因此对应文件名前缀为 `ch1_2_x`，而非 `ch2_2_x`
+- 当前项目中 `A320.md` 的「第 2 章 软件操作」在 HTML 导航树中显示为「第 1 章 CAE IOS功能详解」，因此对应文件名前缀为 `ch1_2_x`，而非 `ch2_2_x`
 - 后续若补充生成「第 1 章 教员台系统组成」的 HTML，需统一回溯调整所有已生成文件的章号前缀
 
 **禁止事项：**
@@ -165,7 +165,7 @@ NAV_GROUPS = {
 <nav class="nav-tree">
   <!-- 第 1 章分组 -->
   <div class="nav-group">
-    <div class="nav-toggle">第 1 章 软件操作</div>
+    <div class="nav-toggle">第 1 章 CAE IOS功能详解</div>
     <div class="nav-children">
       <a class="nav-link" href="ch1_1_...">1.1 ...</a>
       <div class="nav-group">
