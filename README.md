@@ -16,7 +16,14 @@ IOS_software_design/
 │   ├── 4_第2章设计草案.md
 │   └── 5_IOS工作区架构抽象逻辑分析.html
 ├── output/              # 最终产物输出目录
-│   └── html/            # HTML 可视化页面与细化 MD
+│   └── html/            # HTML 可视化页面
+│       ├── build.py     # HTML 构建脚本（自动生成导航、面包屑、active 高亮）
+│       ├── template.html # 公共骨架模板（head + sidebar 占位 + content 占位）
+│       ├── pages/       # 页面片段（源文件）：style + 正文 + script
+│       │   ├── ch1_1_components.html
+│       │   ├── ch1_2_1_lesson_plan_tab.html
+│       │   └── ...      # （新增页面只需在此创建片段，运行 build.py 即可）
+│       ├── ch1_1_components.html   # 生成产物（由 build.py 自动产出，禁止手动修改）
 │       ├── ch1_2_1_lesson_plan_tab.html
 │       ├── ch1_2_2_doc_tab.html
 │       ├── ch1_2_3_current_conditions_tab.html
@@ -29,6 +36,7 @@ IOS_software_design/
 │       ├── ch1_5_lesson_plan_profile.html
 │       ├── ch1_6_map_workspace.html
 │       ├── ch1_7_advanced.html
+│       ├── ch1_8_reference_flows.html
 │       └── images/      # HTML 配图统一归集目录
 ├── reference/           # 原始参考文档、解析产物与中文主文档
 │   ├── A320.md          # 中文主文档（用户整理，入口文档）
@@ -50,8 +58,9 @@ IOS_software_design/
 1. **`docs/1_需求描述与工作计划.md`**
    - 了解项目背景、原始资料位置、双文档对照逻辑、工作节奏。
 
-2. **`docs/3_HTML生成规范与转换规则.md`**
-   - 了解文件输出路径、图片处理规则、HTML 结构模板、内容红线、Checklist。
+2. **`docs/3_HTML生成规范与转换规则.md`** ⭐ **必读（构建机制已变更）**
+   - **第 2 章「HTML 构建架构」**：理解 `pages/` + `template.html` + `build.py` 的新工作流，严禁回到旧的内联硬编码 sidebar 模式
+   - 了解文件输出路径、图片处理规则、HTML 结构模板、内容红线、Checklist
 
 3. **`docs/2_A320_与_原始手册_章节映射表.md`**
    - 了解 A320.md 章节与原始手册章节的对应关系，确认目标章节的精确层级归属。
