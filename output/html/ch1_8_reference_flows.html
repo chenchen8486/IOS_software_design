@@ -196,7 +196,7 @@ tr:last-child td{border-bottom:none}
         <tr><th style="width:22%">数据主题</th><th style="width:20%">来源工作区</th><th style="width:20%">消费工作区</th><th style="width:38%">数据流说明</th></tr>
         <tr><td><strong>飞机重量与重心</strong></td><td>AIRCRAFT Tab</td><td>Map / Instruments Repeaters / Lesson Plan Profile</td><td>GW / GW CG / ZFW / Fuel 等参数在 AIRCRAFT Tab 输入后，实时同步至 Map（影响飞机图标姿态/性能包线显示）、Instruments Repeaters（影响相关仪表读数），Lesson Plan Profile 在涉及性能计算时使用</td></tr>
         <tr><td><strong>参考机场与跑道</strong></td><td>REFERENCE AIRPORT Tab</td><td>Map / CURRENT CONDITIONS / Lesson Plan Profile</td><td>机场/跑道选择变更后，Map 重新定位中心并加载对应地景；CURRENT CONDITIONS 中的跑道条件与该跑道绑定；Lesson Plan Profile 的 amber line 以参考机场为地理基准</td></tr>
-        <tr><td><strong>环境参数</strong></td><td>CURRENT CONDITIONS Tab / Advanced → Environment</td><td>Map / Lesson Plan Profile / Instruments Repeaters</td><td>风、云、能见度、QNH 等由 CURRENT CONDITIONS 管理主线状态；Advanced → Environment 可临时覆盖部分参数；Map 负责渲染可视化效果</td></tr>
+        <tr><td><strong>环境参数</strong></td><td>CURRENT CONDITIONS Tab / Advanced → Environment</td><td>Map / Lesson Plan Profile / Instruments Repeaters</td><td>风、云、能见度、QNH 等由 CURRENT CONDITIONS 管理主线状态；Advanced → Environment 可临时覆盖部分参数，<strong>覆盖具有瞬时最高优先级</strong>，但不会持久化到 CURRENT CONDITIONS 的配置中；执行 Environment Reset、ISA &amp; Winds Reset 或加载场景（Recall Scenario）时，Advanced 的覆盖将被清除；Map 负责渲染可视化效果</td></tr>
         <tr><td><strong>课程执行进度</strong></td><td>LESSON PLAN Tab / Autorun 引擎</td><td>Lesson Plan Profile / Footer</td><td>当前步骤索引、步骤状态（未执行/执行中/已完成）由 LESSON PLAN Tab 产生；Lesson Plan Profile 画布中高亮当前步骤；Footer 中的部分状态指示灯可能随步骤类型变化</td></tr>
         <tr><td><strong>故障状态</strong></td><td>AIRCRAFT Tab / Advanced → Failure / LESSON PLAN MALF</td><td>Footer / Map / Instruments Repeaters / Control Board Malfunction Section</td><td>故障被激活或预位后，状态写入全局故障注册表；Footer 指示灯更新；Map 中相关系统效果可能变化；Instruments Repeaters 中对应仪表显示故障指示</td></tr>
         <tr><td><strong>冻结/回放状态</strong></td><td>Footer / Advanced → Resets/Freezes / Advanced → Recording</td><td>全部工作区</td><td>冻结状态是全局事件，所有工作区收到暂停信号；录制/回放状态由 Recording 引擎管理，调用时恢复飞机与环境参数快照</td></tr>
@@ -206,6 +206,23 @@ tr:last-child td{border-bottom:none}
 
     <div class="highlight-box warn">
       <strong>逆向开发关键约束：</strong>上述数据流中存在几个<strong>单一事实来源（Single Source of Truth）</strong>：飞机物理状态由 AIRCRAFT Tab 主控；课程进度由 LESSON PLAN Tab 主控；全局冻结状态由 Footer/Advanced 主控。任何工作区在消费这些数据时都不应本地缓存后自成一派，否则会导致状态不一致。
+    </div>
+
+    <h3>1.5 课程前准备检查清单（Pre-Session Checklist）</h3>
+    <p>虽然 RF-01 的起点是「加载课程」，但在每次训练 session 开始前，教员应快速确认以下事项，以避免训练中途因系统状态异常而中断：</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:8%">序号</th><th style="width:22%">检查项</th><th style="width:35%">操作路径</th><th style="width:35%">通过标准</th></tr>
+        <tr><td>1</td><td><strong>Maintenance 告警</strong></td><td>Footer → Workspace → Maintenance</td><td>Maintenance 页面无红色/黄色告警；运动平台、视景系统、IOS 自身状态均正常</td></tr>
+        <tr><td>2</td><td><strong>Sim Controls 就绪</strong></td><td>Footer → Sim Controls 卷展菜单</td><td>Visual = On；Motion = Ready/On；Control Loading = Ready/On；Prime Smoke / Ceiling Lights 按需就绪</td></tr>
+        <tr><td>3</td><td><strong>UOM 单位制</strong></td><td>Control Board 右侧 → INSTRUCTOR STATION Sliding Panel</td><td>Metric/Imperial 设置与训练要求及学员习惯一致</td></tr>
+        <tr><td>4</td><td><strong>音量水平</strong></td><td>Footer → Volume</td><td>模拟声音清晰可闻，不刺耳；如需静音测试则确认静音按钮未误触</td></tr>
+        <tr><td>5</td><td><strong>全局冻结状态</strong></td><td>Footer → Flight Freeze 指示灯</td><td>未处于冻结状态（指示灯暗色）；如之前 session 结束后冻结未解除，先点击 Unfreeze</td></tr>
+        <tr><td>6</td><td><strong>故障清零</strong></td><td>AIRCRAFT Tab 底部 Malfunction Section / Footer → Clear All Malf.</td><td>无残留激活或预位故障；Footer 上 Clear All Malf. 按钮无红色标记</td></tr>
+      </table>
+    </div>
+    <div class="highlight-box">
+      <strong>操作建议：</strong>将上述检查清单打印或贴在教员台醒目位置。经验丰富的教员可在 <strong>60 秒内</strong>完成全部检查；新教员建议在前 10 次训练时严格逐项确认，形成肌肉记忆后再简化流程。
     </div>
 
     <!-- ==================== 二、RF-01 标准训练 Session 完整流程 ==================== -->
@@ -237,7 +254,10 @@ flowchart LR
     PreFlight[进入 Map Workspace<br/>确认机场/跑道/初始位置] --> PreCheck{位置/环境<br/>检查通过？}
     PreCheck -->|否| AdjustPos[通过 SLEW 或<br/>Reference Airport 调整]
     AdjustPos --> PreFlight
-    PreCheck -->|是| StartLesson[返回 LESSON PLAN Tab<br/>启动课程执行]
+    PreCheck -->|是| DocCheck{需要查阅<br/>航图/检查单？}
+    DocCheck -->|是| DocTab[进入 DOC Tab<br/>查阅所需文档]
+    DocCheck -->|否| StartLesson
+    DocTab --> StartLesson[返回 LESSON PLAN Tab<br/>启动课程执行]
 
     StartLesson --> ExecMode{执行模式}
     ExecMode -->|Autorun| AutoExec[系统自动执行<br/>课程步骤]
@@ -263,8 +283,11 @@ flowchart LR
     LessonComplete -->|否| Monitor
     LessonComplete -->|是| EndLesson[点击 End Lesson<br/>结束当前课程]
 
-    EndLesson --> Debrief[进入讲评阶段<br/>回放/分析训练数据]
-    Debrief --> Cleanup[复位模拟器状态<br/>准备下一课程或退出]
+    EndLesson --> Debrief1[使用 Recording 回放<br/>训练关键片段]
+    Debrief1 --> Debrief2[标记关键事件：<br/>故障注入点/冻结点/学员偏差]
+    Debrief2 --> Debrief3[在 Lesson Plan Profile<br/>对比实际剖面与标准 amber line]
+    Debrief3 --> Debrief4[生成讲评要点/<br/>打印关键屏幕截图]
+    Debrief4 --> Cleanup[复位模拟器状态<br/>准备下一课程或退出]
     Cleanup --> End([训练结束])
 
     style Start fill:#dbeafe,stroke:#2563eb,stroke-width:2px
@@ -282,15 +305,23 @@ flowchart LR
         <tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td>🔢 逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
         <tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td>🔢 逻辑推理："参数是否在包线内？数值是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
         <tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td>🗺️ 空间直觉："飞机在跑道哪一端？航向对不对？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
+        <tr><td><strong>文档查阅</strong></td><td>如需查阅机场图、SID/STAR 程序、检查单或 SOP，切换至 DOC Tab 快速浏览；文档查阅不改变模拟器状态，可随时进行</td><td>🔢 逻辑推理："这条跑道的离场程序是什么？限制高度多少？"</td><td><a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
         <tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td>📊 流程监控："课程是否按预期推进？是否需要干预？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
-        <tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数</td><td>🗺️ 空间直觉 + 📊 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a></td></tr>
+        <tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数；可随时返回 DOC Tab 查阅文档</td><td>🗺️ 空间直觉 + 📊 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
         <tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td>🔢 逻辑推理（参数修改）+ ⚡ 应激决策（快速响应）："需要注入什么？从哪个入口最快？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
-        <tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；如需复盘，使用 Recording 功能回放或分析训练数据</td><td>📊 流程监控 + 🔢 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+        <tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；使用 Recording 回放训练关键片段 → 标记关键事件（故障注入点/冻结点/学员偏差）→ 在 Lesson Plan Profile 对比实际剖面与标准 amber line → 生成讲评要点/打印关键屏幕截图</td><td>📊 流程监控 + 🔢 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
       </table>
     </div>
 
     <div class="highlight-box">
       <strong>架构衔接点说明：</strong>RF-01 主流程中存在两个关键的<strong>领域切换点</strong>：<strong>「动态干预」</strong>是从核心训练域（Control Board / Map / Lesson Plan）跳转到支撑域 Advanced 的应急通道；<strong>「冻结事件」</strong>则是从实时执行状态切换到状态保全状态的全局控制点。这两个衔接点是后续实现跨模块状态同步时必须重点设计的接口。
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>按认知模态分离</strong>：RF-01 中「位置确认」激活空间直觉（Map），「初始化检查」激活逻辑推理（Control Board Tabs），「实时监控」要求多模态并行扫描。<br>
+      • <strong>按使用频率分层</strong>：DOC Tab 被嵌入 Control Board 而非独立工作区，正是因为文档查阅是高频伴随行为，不应触发工作区切换的认知开销。<br>
+      • <strong>应急通道设计</strong>：动态干预和冻结事件都设计了绕过常规层级导航的直达入口（Footer / Advanced），体现了安全系统的设计底线。
     </div>
 
     <!-- ==================== 三、RF-02 课程执行参考流程 ==================== -->
@@ -345,6 +376,7 @@ flowchart LR
     <ul>
       <li><strong>切换视图</strong>：随时切换至 Map Workspace 或 Lesson Plan Profile，查看飞机位置与课程进度，不影响课程执行</li>
       <li><strong>点击 Go to Current</strong>：在 LESSON PLAN Tab 中快速定位到当前正在执行的步骤</li>
+      <li><strong>查阅文档</strong>：切换至 DOC Tab 查阅航图、检查单、SOP 或训练大纲；文档查阅不中断课程执行，可随时返回</li>
       <li><strong>注入故障</strong>：通过 Advanced → Failure 或 AIRCRAFT Tab 的 Malfunctions 按钮激活/预位故障</li>
       <li><strong>修改环境</strong>：通过 Advanced → Environment 修改天气、时间、灯光等参数（可能影响当前步骤的模拟条件）</li>
       <li><strong>冻结模拟器</strong>：通过 Footer 的 Freeze 按钮暂停训练，解冻后课程可继续</li>
@@ -401,6 +433,23 @@ flowchart LR
           </td>
         </tr>
       </table>
+    </div>
+
+    <h3>3.5 UPRT（异常姿态预防与恢复训练）特别说明</h3>
+    <p>UPRT（Upset Prevention and Recovery Training）是独立于常规 Malfunction 故障注入的特殊训练类型，通过 <strong>Advanced → UPRT</strong> 专门入口执行。其特点如下：</p>
+    <ul>
+      <li><strong>场景驱动</strong>：UPRT 提供基于机动（Maneuver Based）和基于场景（Scenario Based）两类训练脚本，教员可在 Data Summary 面板中实时监控关键参数（迎角、坡度、空速等）</li>
+      <li><strong>课程配合</strong>：UPRT 训练通常需要配合专门的 UPRT 课程计划使用，常规课程的 MALF 步骤不会自动触发 UPRT 场景</li>
+      <li><strong>与 RF-04 的关系</strong>：如需在常规训练中临时触发 UPRT 场景，应跳转至 Advanced → UPRT，而非 AIRCRAFT Tab 的 Malfunction Section</li>
+    </ul>
+    <div class="highlight-box warn">
+      <strong>安全提示：</strong>UPRT 场景可能触发大坡度、大迎角或失速状态，建议在执行前确认 Motion 和 Control Loading 系统已就绪，并提前告知学员训练性质。
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>同一模型，多重视图</strong>：LESSON PLAN Tab 与 Lesson Plan Profile 是同一课程数据的多重视图，RF-02 的核心价值在于教会教员根据认知目标（细节 vs 全局）选择合适视图。<br>
+      • <strong>应急通道设计</strong>：Freeplay 和 Nested 跳转打破了常规步骤序列，为教员提供了「绕过当前课程剧本」的直达能力，这与 Advanced 的应急哲学一致。
     </div>
 
     <!-- ==================== 四、RF-03 环境配置与飞机初始化流程 ==================== -->
@@ -471,6 +520,24 @@ flowchart LR
       <li><strong>环境参数的层次</strong>：Surface Wind 是 QNH 计算的基础输入之一；温度与 ISA 偏差影响气压高度修正</li>
     </ul>
 
+    <h3>4.3 场景保存与复用（Save/Recall Scenario）</h3>
+    <p>如需在多次训练中重复使用相同的环境配置（例如标准化 CAT II 进近训练、或特定风切变条件），教员可在 <strong>Advanced → Environment → Weather Region</strong> 中使用「保存场景（Save Scenario）」和「调用场景（Recall Scenario）」功能：</p>
+    <ul>
+      <li><strong>保存范围</strong>：海平面温度、中间层/对流层顶温度、QNH、地面/中间层/对流层顶风、云和能见度（注意：活跃风暴、微下击暴流、风切变、结冰条件<strong>不被保存</strong>）</li>
+      <li><strong>跨地形调用</strong>：从不同地形海拔位置调用时，地面温度和 QFE 会根据保留数据重新计算，以保持相同的大气剖面</li>
+      <li><strong>管理操作</strong>：已保存场景支持加载（Load）、另存为（Save As）和删除（Delete）</li>
+    </ul>
+    <div class="highlight-box">
+      <strong>效率提示：</strong>对于每周重复的标准化训练（如周一 CAT I、周三 CAT II、周五 Low Visibility），建议预先在 Advanced → Environment 中保存 3~5 个常用场景，每次训练前一键调用，可节省 3~5 分钟环境配置时间。
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>按认知模态分离</strong>：RF-03 是纯逻辑推理流程——每个步骤都是精确的数值输入与包线验证，不涉及空间直觉（Map）或流程监控（Lesson Plan）。<br>
+      • <strong>同一模型，多重视图</strong>：环境参数既可在 CURRENT CONDITIONS Tab 中逐步配置，也可通过 Advanced → Environment 的 Save/Recall 快速切换，后者是前者的「快捷方式视图」。<br>
+      • <strong>按使用频率分层</strong>：Save/Recall Scenario 属于「低频但省时」功能，被放在 Advanced 中而非 Control Board 主界面，避免了日常界面的认知噪声。
+    </div>
+
     <!-- ==================== 五、RF-04 故障注入与应急训练流程 ==================== -->
     <h2>五、RF-04 故障注入与应急训练流程</h2>
     <p class="area-map">
@@ -511,7 +578,10 @@ flowchart LR
     Continue --> SelectMethod
     Resolution -->|是| ResetMalf[解除故障<br/>恢复系统正常]
 
-    ResetMalf --> Verify[确认故障已清除<br/>模拟器参数恢复正常]
+    ResetMalf --> SysDamage{故障导致<br/>系统损坏？}
+    SysDamage -->|是| SysReset[使用 Footer/Advanced → Resets<br/>执行对应系统重置]
+    SysDamage -->|否| Verify
+    SysReset --> Verify[确认故障已清除<br/>模拟器参数恢复正常]
     Verify --> End([故障注入流程结束])
 
     style Start fill:#dbeafe,stroke:#2563eb
@@ -534,10 +604,39 @@ flowchart LR
     <ol>
       <li>在 AIRCRAFT Tab 底部的 Malfunction Section 中查看当前<strong>激活故障列表</strong></li>
       <li>点击目标故障旁的<strong>解除按钮</strong>（或 Toggle Fail 按钮返回正常态）</li>
+      <li><strong>检查系统损坏</strong>：若故障导致了系统异常（如液压泄漏、发动机超限、轮胎过热、电气故障等），解除故障后系统参数可能仍未恢复；此时应使用 Footer/Advanced → Resets 执行对应系统重置（如 Systems Reset、Hydraulics Reset、Engine EGT Reset 等）</li>
       <li>确认模拟器状态恢复正常（可在 Map Workspace 或 INSTRUMENT REPEATER 中观察仪表读数）</li>
       <li>如需一次性清除所有故障，使用 Malfunction Sliding Panel 中的<strong>「Clear All」</strong>功能</li>
       <li>对于预位但未触发的故障，可直接取消预位，无需额外恢复操作</li>
     </ol>
+
+    <h3>5.4 常见故障与系统损坏速查表</h3>
+    <p>以下表格帮助教员在解除故障后，快速判断是否需要执行额外的系统重置操作。<strong>系统损坏</strong>指故障解除后，相关系统参数（如液压压力、发动机 EGT、电气负载等）无法自动恢复到正常范围的状态。</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:25%">常见故障类型</th><th style="width:35%">可能损坏的系统/现象</th><th style="width:40%">推荐 Reset 类型（路径：Footer/Advanced → Resets）</th></tr>
+        <tr><td>液压泄漏、液压泵故障、液压系统失压</td><td>液压油量和/或油温偏离正常范围；操纵面响应迟缓</td><td>RESETS 滑动面板 → <strong>Hydraulics</strong>；或 Total Reset（如多处系统同时异常）</td></tr>
+        <tr><td>发动机火警、发动机超限（N1/N2/EGT）</td><td>EGT/ITT 持续红色、发动机参数无法自动恢复</td><td>RESETS 滑动面板 → <strong>Engine EGT/ITT</strong>；或 <strong>Engine Exceedance</strong>（需空速 &gt;80 节并保持 2 秒）</td></tr>
+        <tr><td>轮胎过热、爆胎、刹车失效</td><td>轮胎压力异常、刹车温度高于环境温度</td><td>RESETS 滑动面板 → <strong>Tire Pressure</strong>（同时重置刹车温度）；或 <strong>Brake Temp</strong></td></tr>
+        <tr><td>IDG 断开、电池耗尽、电气系统故障</td><td>电气负载异常、IDG 滑油/滑油温度报警、RAT 弹出</td><td>RESETS 滑动面板 → <strong>Electrics</strong>（重置电池充电、IDG 连接、IDG 滑油、收起 RAT）；或逐一使用 <strong>Recharge Batteries / IDG Connect / IDG Oil / Stow RAT</strong></td></tr>
+        <tr><td>空调失效、空调过热</td><td>空调温度无法回到正常范围</td><td>RESETS 滑动面板 → <strong>Air Conditioning</strong></td></tr>
+        <tr><td>燃油温度异常、燃油泄漏</td><td>燃油温度偏离环境温度过多</td><td>RESETS 滑动面板 → <strong>Fuel Temp.</strong></td></tr>
+        <tr><td>氧气系统故障、氧气耗尽</td><td>氧气瓶压力为零或过低</td><td>RESETS 滑动面板 → <strong>Oxygen</strong></td></tr>
+        <tr><td>翼尖刹车（WTB）触发</td><td>WTB 处于激活状态，扰流板/襟翼运动受限</td><td>RESETS 滑动面板 → <strong>WTB</strong></td></tr>
+        <tr><td>灭火瓶释放、火警测试后</td><td>灭火瓶压力为零</td><td>RESETS 滑动面板 → <strong>Fire Bottles</strong></td></tr>
+        <tr><td>发动机滑油泄漏、滑油温度异常</td><td>发动机滑油量和/或温度偏离正常范围</td><td>RESETS 滑动面板 → <strong>Engine Oil</strong></td></tr>
+      </table>
+    </div>
+    <div class="highlight-box">
+      <strong>操作建议：</strong>如果教员不确定哪个系统受损，可先执行 <strong>Systems Reset</strong>（重置所有可重置系统），再观察仪表读数。如果仍有个别系统异常，再使用 RESETS 滑动面板中的独立按钮精确重置。
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>应急通道设计</strong>：RF-04 的三种注入入口（课程 MALF / AIRCRAFT Tab / Advanced）构成了从「标准化」到「即兴」到「精细」的应急梯度，确保教员在任何时间压力下都能找到合适的操作路径。<br>
+      • <strong>按角色隔离</strong>：故障注入权限与维护锁定状态互斥，防止维护期间的误操作污染训练状态。<br>
+      • <strong>按认知模态分离</strong>：选择注入方式（逻辑推理）与监控机组处置（流程监控 + 应激决策）是两种认知模式，RF-04 的流程图将二者明确分离，避免教员在高压下同时处理策略选择和战术观察。
+    </div>
 
     <!-- ==================== 六、RF-05 地图监控与重新定位流程 ==================== -->
     <h2>六、RF-05 地图监控与重新定位流程</h2>
@@ -577,10 +676,12 @@ flowchart LR
 
     SelectMethod -->|SLEW 微调| Slew[使用 Advanced → Position<br/>或 REFERENCE AIRPORT<br/>中的 SLEW 功能]
     SelectMethod -->|机场重新定位| AirportRepo[REFERENCE AIRPORT Tab<br/>选择新机场/跑道/停机位]
+    SelectMethod -->|Footer 预设位置| FooterRepo[Footer → Reposition<br/>选择预设位置<br/>HOLD/TAXI/3nm/6nm/8nm等]
     SelectMethod -->|冻结后调整| FreezeRepo[点击 Footer Freeze<br/>冻结后调整位置]
 
     Slew --> VerifyPos[在 Map 中确认<br/>新位置正确]
     AirportRepo --> VerifyPos
+    FooterRepo --> VerifyPos
     FreezeRepo --> Unfreeze[解除冻结<br/>确认飞机在新位置]
     Unfreeze --> VerifyPos
 
@@ -595,14 +696,18 @@ flowchart LR
     style FreezeRepo fill:#fef3c7,stroke:#d97706
     </div>
 
-    <h3>6.2 重新定位的三种方式选择指南</h3>
+    <h3>6.2 重新定位的四种方式选择指南</h3>
     <div class="table-wrap">
       <table>
         <tr><th>方式</th><th>适用距离</th><th>精度</th><th>对训练的影响</th><th>操作入口</th></tr>
         <tr><td><strong>SLEW 微调</strong></td><td>短距离（机场范围内）</td><td>高（米级）</td><td>轻微扰动，可快速恢复</td><td>Advanced → Position / REFERENCE AIRPORT → SLEW</td></tr>
         <tr><td><strong>机场重新定位</strong></td><td>长距离（跨机场）</td><td>中（跑道/停机位级）</td><td>相当于重新初始化位置，环境参数可能需同步调整</td><td>REFERENCE AIRPORT Tab</td></tr>
+        <tr><td><strong>Footer 预设位置</strong></td><td>中短距离（参考跑道相对位置）</td><td>高（预设程序级）</td><td>一键直达常用位置，自动配置飞机姿态/襟翼/速度，效率最高</td><td>Footer → Reposition → HOLD / TAXI / 3nm / 6nm / 8nm / 12nm / 登机口等</td></tr>
         <tr><td><strong>冻结后调整</strong></td><td>任意</td><td>取决于调整方式</td><td>训练完全暂停，调整完成后从冻结点继续</td><td>Footer Freeze + 上述任意方式</td></tr>
       </table>
+    </div>
+    <div class="highlight-box">
+      <strong>效率对比：</strong>对于「从巡航快速切换到五边进近」这类高频场景，<strong>Footer Reposition 预设位置</strong>是最优解——3 次点击即可将飞机、襟翼、速度、高度一次性配置到位，而 SLEW 或 Airport Repo 需要 10+ 次操作。
     </div>
 
     <h3>6.3 地图监控的常规操作组合</h3>
@@ -612,7 +717,23 @@ flowchart LR
       <li><strong>巡航阶段</strong>：2D 视图 + 缩放至适当比例 + 风暴/天气覆盖层，监控航线与气象关系</li>
       <li><strong>进近阶段</strong>：3D 透视视图 + 机场符号 + ILS 指示器，监控飞机对准跑道与下滑道</li>
       <li><strong>着陆阶段</strong>：3D 视图 + 跑道灯光 + 自动范围，监控接地点与滑跑方向</li>
+      <li><strong>TCAS / 交通监控阶段</strong>：2D 视图 + Intruders 覆盖层 + Advanced → Intruders 配置冲突场景（TCAS / Random Traffic / Approach Traffic / ITP），监控空中交通间隔与冲突解脱</li>
     </ul>
+
+    <h3>6.4 FMS 内存保存与召回（FMS Memory Save/Recall）</h3>
+    <p>在进行跨机场重新定位或课程切换前，如需保留当前 FMS 飞行计划，可使用 <strong>Advanced → Recording → FMS Memory Save</strong>：</p>
+    <ul>
+      <li><strong>保存时机</strong>：建议在巡航阶段或完成 SID 后保存，避免在进近关键阶段操作</li>
+      <li><strong>召回时机</strong>：重新定位后如需恢复之前的飞行计划，使用 FMS Memory Recall</li>
+      <li><strong>注意事项</strong>：FMS Memory Save/Recall 仅保存飞行计划数据，不保存飞机物理状态或环境参数；如需保存完整状态，应使用 Flight State Capture（FSC）</li>
+    </ul>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>按认知模态分离</strong>：RF-05 是纯空间直觉流程——2D/3D 视图切换、缩放、平移、覆盖层选择都激活右脑空间认知，与 Control Board 的数值输入形成正交互补。<br>
+      • <strong>应急通道设计</strong>：Footer Reposition 预设位置是重新定位的「直达电梯」，将 10+ 步操作压缩为 3 次点击，体现了紧急场景下时间效率优先的设计哲学。<br>
+      • <strong>同一模型，多重视图</strong>：空中交通信息既在 Map 上以图标/航迹形式呈现，也在 Advanced → Intruders 中以参数表格形式呈现，教员可根据「态势感知」vs「精确配置」的需求自由切换。
+    </div>
 
     <!-- ==================== 七、RF-06 冻结、回放与录制操作流 ==================== -->
     <h2>七、RF-06 冻结、回放与录制操作流</h2>
@@ -703,7 +824,62 @@ flowchart LR
       </table>
     </div>
 
-    <h3>7.4 状态一致性设计说明</h3>
+    <h3>7.4 Footer 功能速查与场景映射</h3>
+    <p>RF-06 虽然以「冻结、回放与录制」命名，但 Footer 实际上承载了远比冻结更丰富的全局控制功能。以下表格将 Footer 各功能映射到典型训练场景，帮助教员在正确的时间使用正确的工具：</p>
+
+    <h4>7.4.1 Reset 类型选择决策表</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:18%">场景</th><th style="width:22%">推荐 Reset 类型</th><th style="width:60%">说明与边界行为</th></tr>
+        <tr><td><strong>环境参数混乱</strong><br/>（跑道湿滑、能见度异常、云层错误）</td><td>Environment Reset</td><td>恢复干燥跑道、能见度 40nm、RVR 9900ft、无云无雾无降水、时间加速因子重置；当所有条件已满足时该按钮禁用</td></tr>
+        <tr><td><strong>风/气压异常</strong><br/>（QNH 错误、风切变残留、ISA 偏差大）</td><td>ISA & Winds Reset</td><td>恢复海平面气压 1013.2mb、海平面温度 15°C、机场风 360/0° 磁/kt、无阵风无风切变无微暴流；当所有条件已满足时禁用</td></tr>
+        <tr><td><strong>飞机系统故障</strong><br/>（液压泄漏、电气故障、空调异常、发动机超限）</td><td>Systems Reset</td><td>重置「重置系统」分支下的所有可重置系统，并将温度重置为正常运行值；若存在活跃故障或特定系统被排除，则温度不重置</td></tr>
+        <tr><td><strong>需要完全重新开始</strong><br/>（当前训练状态已无法挽救）</td><td>Total Reset</td><td>执行坠机重置（若已坠机）、清除故障、清除失效站点、发动机超限重置、燃油使用指示器重置；自动包含 Systems Reset</td></tr>
+        <tr><td><strong>结束当前课程，准备下一课程</strong></td><td>Session Reset</td><td>最彻底的重置：结束课程 + 环境重置 + ISA & Winds + 清除所有飞行情景捕获 + 清除所有快照 + 自动包含 Total Reset；点击后弹出确认菜单</td></tr>
+        <tr><td><strong>单个系统未恢复</strong><br/>（如仅液压未恢复，其他正常）</td><td>RESETS 滑动面板<br/>（25 个独立按钮）</td><td>点击 Footer → Resets → More… 打开 RESETS 滑动面板，可单独重置 Hydraulics、Electrics、Fuel Temp、Brake Temp、Oxygen 等 25 个系统；每个按钮在目标系统已正常时自动禁用</td></tr>
+      </table>
+    </div>
+    <div class="highlight-box warn">
+      <strong>常见误区：</strong>很多教员在遇到任何问题时都习惯点「Total Reset」或「Session Reset」，这会丢失所有已保存的飞行状态捕获和快照。建议先判断问题范围——如果只是风异常，点 ISA & Winds Reset 即可，无需 Total Reset。
+    </div>
+
+    <h4>7.4.2 Freezes 类型详解</h4>
+    <p>Footer 的 Flight Freeze 只是最常用的一种冻结入口。点击 Footer → Freezes → More… 可打开 FREEZES 滑动面板，提供 10 种冻结控制选项：</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:20%">冻结类型</th><th style="width:40%">冻结范围</th><th style="width:40%">典型应用场景</th></tr>
+        <tr><td><strong>Total Freeze</strong></td><td>冻结所有飞行参数、飞行控制、运动系统（洗出除外）、所有飞机系统；通信继续，声音降低</td><td>需要完全暂停一切物理演化的场景</td></tr>
+        <tr><td><strong>Flight Freeze</strong></td><td>冻结俯仰、坡度、航向、空速、高度、位置、运动系统（洗出除外）；大多数飞机系统仍继续响应机组操作</td><td>最常用的冻结类型；适合教员观察当前状态后快速恢复</td></tr>
+        <tr><td><strong>Altitude Freeze</strong></td><td>仅冻结高度</td><td>让飞机保持当前高度继续飞行（如等待航线训练）</td></tr>
+        <tr><td><strong>Position Freeze</strong></td><td>冻结飞机在当前地理位置；飞机正常飞行</td><td>让飞机在原地盘旋而不位移（如绕场观察）</td></tr>
+        <tr><td><strong>Fuel Freeze</strong></td><td>燃油量指示器保持不活动；加油仍可进行</td><td>长时间训练不想消耗燃油时使用</td></tr>
+        <tr><td><strong>Attitude Freeze</strong></td><td>仅冻结飞机姿态</td><td>保持当前俯仰/坡度，让空速和高度自然变化</td></tr>
+        <tr><td><strong>Airspeed Freeze</strong></td><td>仅冻结空速</td><td>保持当前空速，让高度和姿态自然变化</td></tr>
+        <tr><td><strong>Link FLT FRZ to Rain Repellent</strong></td><td>将飞行冻结链接至驾驶舱防雨剂按钮（或门按钮）</td><td>教员需要在驾驶舱内快速触发冻结的物理快捷键</td></tr>
+      </table>
+    </div>
+    <div class="highlight-box">
+      <strong>边界行为注意：</strong>所有冻结类型在<strong>重新定位期间均禁用</strong>；解冻时均不会导致剧烈控制或运动变化（无论自动驾驶是否激活、解冻时操纵位置如何）。
+    </div>
+
+    <h4>7.4.3 Sim Controls 与其他 Footer 功能</h4>
+    <div class="table-wrap">
+      <table>
+        <tr><th style="width:18%">功能</th><th style="width:35%">作用</th><th style="width:47%">典型应用场景</th></tr>
+        <tr><td><strong>Visual</strong></td><td>激活/停用视觉系统</td><td>维护测试时关闭视景；夜间训练前确认视觉已开启</td></tr>
+        <tr><td><strong>Motion</strong></td><td>启动/停用运动系统</td><td>课前确认 Motion = Ready/On；若学员晕动症严重可临时关闭</td></tr>
+        <tr><td><strong>Control Loading</strong></td><td>启动/停用操纵载荷系统</td><td>与 Motion 同步检查；失效时按钮显示红色 Failed 状态</td></tr>
+        <tr><td><strong>Prime Smoke</strong></td><td>烟雾发生器系统预注/停用</td><td>需要模拟驾驶舱烟雾时先 Prime，就绪后常亮绿色</td></tr>
+        <tr><td><strong>Ceiling Lights</strong></td><td>点亮/熄灭驾驶舱天花板灯</td><td>夜间训练或需要教员观察学员面板时开启</td></tr>
+        <tr><td><strong>Weather Presets</strong></td><td>一键切换标准天气条件（CAVOK / CAT I~IIIC / 0/0 等）</td><td>比手动调参数快得多；适合标准化进近训练时快速切换天气</td></tr>
+        <tr><td><strong>Speed Up</strong></td><td>加速或减慢模拟时间</td><td>长时间巡航阶段加速；接近关键阶段前恢复常速</td></tr>
+        <tr><td><strong>Capture Flight</strong></td><td>将当前飞行状态捕获到指定槽位</td><td>进入关键机动前保存一个「回溯点」</td></tr>
+        <tr><td><strong>Clear All Malf.</strong></td><td>一键清除所有激活或预位故障</td><td>课程结束后快速清理；按钮红色标记显示当前故障数量</td></tr>
+        <tr><td><strong>Notifications</strong></td><td>查看模拟过程中发生的事件通知</td><td>训练结束后快速浏览异常事件列表，为讲评提供素材</td></tr>
+      </table>
+    </div>
+
+    <h3>7.5 状态一致性设计说明</h3>
     <p>冻结、录制、回放是全局性操作，必须保证<strong>所有工作区对同一状态达成共识</strong>。以下是逆向开发时需要重点实现的一致性约束：</p>
 
     <div class="table-wrap">
@@ -712,13 +888,14 @@ flowchart LR
         <tr>
           <td><strong>冻结（Freeze）</strong></td>
           <td>
-            冻结事件由 Footer 或 Advanced 发出后，应在<strong>同一帧内</strong>广播至模拟器核心、Map 渲染引擎、Lesson Plan 执行引擎和 Instruments Repeater 数据流。<strong>关键约束：</strong>
+            冻结事件由 Footer 或 Advanced 发出后，应由一个<strong>全局原子状态管理器</strong>接收并更新全局状态标志，随后触发同步事件。所有消费工作区（模拟器核心、Map 渲染引擎、Lesson Plan 执行引擎、Instruments Repeater 数据流）在<strong>下一个渲染循环或数据更新周期开始时</strong>，必须首先检查该全局标志；若标志为「冻结」，则停止更新自身状态并显示冻结瞬间的快照。<strong>关键约束：</strong>
             <ul style="margin:8px 0 0 18px">
               <li>模拟器核心暂停物理计算，但 UI 输入事件队列不应清空，允许教员在冻结期间浏览/修改参数</li>
               <li>Map 中飞机图标、环境动画（风暴、云层）必须同时静止，避免因渲染管线延迟导致"飞机停飞但云还在动"的异常</li>
               <li>LESSON PLAN 的执行计时器暂停，但当前步骤索引保持不变；解冻后从该步骤继续</li>
               <li>Instruments Repeater 中所有仪表读数保持在冻结瞬间值，不允许继续接收模拟器新数据</li>
             </ul>
+            <strong>实现策略建议（最终一致性）：</strong>对于无法做到严格实时同步的场景（如 Map 渲染与仪表数据流来自不同线程/进程），允许非关键视觉元素（如云层动画的细微变化）存在短暂的（&lt; 100ms）不一致；但所有关键状态（飞机位置、姿态、仪表读数、课程步骤索引）必须在冻结指令发出后的下一个数据更新周期内达成一致。建议在实现时引入一个<strong>全局 Session State Version</strong>，每次冻结/解冻/调用都递增版本号，各工作区消费状态时校验版本号，以检测和拒绝过期的异步更新。
           </td>
         </tr>
         <tr>
@@ -761,6 +938,13 @@ flowchart LR
 
     <div class="highlight-box warn">
       <strong>逆向开发警示：</strong>冻结/回放功能最容易出现的架构缺陷是<strong>"状态同步时序"问题</strong>——Map 渲染引擎、Instruments Repeater 数据流、Lesson Plan 执行引擎三者处理消息的速度不同，如果没有统一的状态版本号或全局时间戳，很容易出现"飞机已解冻但地图还在冻结"或"仪表已更新但课程进度没跟上"的不一致现象。建议在实现时引入一个<strong>全局 Session State Version</strong>，每次冻结/解冻/调用都递增版本号，各工作区消费状态时校验版本号。
+    </div>
+
+    <div class="highlight-box">
+      <strong>架构原则映射（基于 1.1 节）：</strong><br>
+      • <strong>按使用频率分层</strong>：Footer 将高频功能（Freeze、Reset、Sim Controls）常驻底部栏，中频功能（Reposition、Weather Presets、Capture Flight）放在中部，低频功能（Print、Help、Workspace 切换）放在右侧。这种布局符合 Fitts 定律——越常用的按钮越容易触及。<br>
+      • <strong>应急通道设计</strong>：Weather Presets 和 Footer Reposition 都是「绕过详细配置」的直达电梯。教员不需要在 CURRENT CONDITIONS 中逐项调整云高、能见度、跑道条件，只需点一下「CAT II」即可；不需要在 REFERENCE AIRPORT 中选择机场→跑道→停机位，只需点一下「3nm Short Final」即可。<br>
+      • <strong>按认知模态分离</strong>：冻结/回放涉及「时间维度」的认知——教员需要理解「过去的状态（Recording）」、「现在的状态（Freeze）」和「未来的状态（Recall）」。RF-06 通过流程图和状态一致性约束，将这一抽象的时间认知转化为可操作的界面步骤。
     </div>
 
     <!-- ==================== 八、按工作区索引的异常速查表 ==================== -->
@@ -823,6 +1007,7 @@ flowchart LR
         <tr><th>日期<br>Date</th><th>版本<br>Version</th><th>变更内容<br>Changes</th></tr>
         <tr><td>2026-06-08</td><td>V1.0</td><td>初始创建 1.8 参考流程（Reference Flows）。基于 1.1~1.7 全部工作区操作手册整合，包含 6 类参考流程（RF-01~RF-06）与异常处理参考流程。所有流程均以 Mermaid 流程图呈现，关键步骤关联至对应子章节 HTML。</td></tr>
         <tr><td>2026-06-09</td><td>V1.1</td><td>基于 5_IOS工作区架构抽象逻辑分析.html 进行全面架构化重构：(1) 新增 1.3「流程 × 工作区全局映射矩阵」与 1.4「核心数据流总览」；(2) 为 6 个 RF 补充前置/后置/异常退出条件；(3) 新增 RF-02 的 Tab 与 Profile 视图选择说明；(4) RF-01 阶段表新增「认知模式」列与架构衔接点说明；(5) 新增第八章「按工作区索引的异常速查表」；(6) RF-06 新增 7.4「状态一致性设计说明」；(7) 新增「附录 A：紧急快速决策树」；(8) RF-02 联动规则表新增「边界情况与降级行为」列。</td></tr>
+        <tr><td>2026-06-10</td><td>V1.2</td><td>基于 1.1 总纲与各子页面深度比对进行全面功能补全，并经过独立 API 盲审交叉验证后优化：(1) 新增 1.5「课程前准备检查清单（Pre-Session Checklist）」；(2) RF-01 流程图与阶段表补全 DOC Tab 文档查阅分支，Debrief 讲评阶段扩展为 4 步详细子流程；(3) RF-02 增加 UPRT 特别说明（3.5），教员干预点增加查阅文档；(4) RF-03 新增 4.3「场景保存与复用」及架构解读框；(5) RF-04 故障解除流程增加「系统损坏 → Resets」分支，新增 5.4「常见故障与系统损坏速查表」（覆盖 10 类故障与对应 Reset 映射）；(6) RF-05 重新定位方式从 3 种扩展为 4 种（增加 Footer 预设位置），地图监控增加 TCAS/交通监控阶段，新增 6.4「FMS 内存保存与召回」；(7) RF-06 原 7.4 扩展为 7.4~7.4.3，新增 Footer 功能速查、Reset 类型选择决策表（6 种场景）、Freezes 类型详解（10 种）、Sim Controls 与其他 Footer 功能速查表；(8) 为 RF-01~RF-06 各增加「架构原则映射（基于 1.1 节）」框；(9) 附录 A 决策树增加「查阅文档」路径；(10) 1.4 核心数据流总览补充 Advanced→Environment 覆盖优先级与失效条件说明；(11) RF-06 7.5 冻结一致性约束补充「全局原子状态管理器 + 最终一致性策略」实现建议。</td></tr>
       </table>
     </div>
 
@@ -854,6 +1039,8 @@ flowchart TD
     Q3 -->|改变环境| ModifyPath2[Advanced → Environment]
     Q3 -->|改变位置| RepoPath
     Q3 -->|注入故障| MalfPath
+    Q3 -->|查阅文档| DocPath[DOC Tab]
+    DocPath --> End5([文档查阅完成])
 
     RepoPath --> RepoChoice{距离与精度}
     RepoChoice -->|短距离微调| Slew[Advanced → Position<br/>或 REFERENCE AIRPORT → SLEW]
@@ -878,6 +1065,7 @@ flowchart TD
     style End2 fill:#d1fae5,stroke:#059669
     style End3 fill:#d1fae5,stroke:#059669
     style End4 fill:#d1fae5,stroke:#059669
+    style End5 fill:#d1fae5,stroke:#059669
     </div>
 
     <h3>A.1 决策树使用原则</h3>
