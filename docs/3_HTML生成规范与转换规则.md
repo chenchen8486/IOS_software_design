@@ -2,7 +2,7 @@
 
 > 基于 1.2.1 ~ 1.2.5（LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT Tab）的生成实践与踩坑复盘整理。
 > 目标：确保后续所有章节的 HTML 输出在结构、风格、准确性上保持一致。
-> 整理时间：2026-05-30，最后更新：2026-06-03
+> 整理时间：2026-05-30，最后更新：2026-06-10（V3.0 — 全局 CSS 剥离重构）
 
 ---
 
@@ -32,9 +32,10 @@
 
 | 文件/目录 | 职责 | 是否手动编辑 | 说明 |
 |----------|------|------------|------|
-| `output/html/pages/*.html` | **页面片段（源文件）** | ✅ 是 | 只包含该页面的 `style` + `正文` + `script` |
-| `output/html/template.html` | **公共骨架模板** | ❌ 否 | 由 `build.py` 读取，含 head 占位符、sidebar 占位符、breadcrumb 占位符 |
-| `output/html/build.py` | **构建脚本** | ⚠️ 仅配置 | 自动扫描 `pages/` 目录，批量生成完整 HTML |
+| `output/html/pages/*.html` | **页面片段（源文件）** | ✅ 是 | 只包含该页面的 **特有** `style` + `正文` + `script`。严禁包含全局样式（如 `:root`、`.sidebar`、`.content` 基础排版等） |
+| `output/html/template.html` | **公共骨架模板** | ⚠️ 仅调整占位符 | 由 `build.py` 读取，定义页面骨架与占位符（`{{GLOBAL_STYLES}}`、`{{PAGE_STYLES}}`、`{{SIDEBAR}}` 等） |
+| `output/html/static/global.css` | **全局公共样式** | ⚠️ 仅调整主题/布局 | 定义 `:root` 变量、布局骨架（`.sidebar`、`.nav-*`、`.breadcrumb`）、基础排版（`.content h1~h4`、表格、页脚导航）、响应式媒体查询。由 `build.py` 统一注入所有页面 |
+| `output/html/build.py` | **构建脚本** | ⚠️ 仅配置 | 自动扫描 `pages/` 目录，读取 `global.css`，批量生成完整 HTML |
 | `output/html/ch*.html` | **生成产物** | ❌ 否 | 运行 `python build.py` 后自动生成/覆盖，**禁止手动修改** |
 
 ### 2.2 新增页面的标准流程
@@ -88,6 +89,59 @@ NAV_GROUPS = {
 
 - 现有 `output/html/ch*.html` 已全部由 `build.py` 重新生成
 - 若发现某页面内容异常，**应修改 `pages/` 下的源文件后重新运行 `build.py`**，而非直接修改 `output/html/` 下的生成文件（修改会被下次构建覆盖）
+
+### 2.6 全局 CSS 与页面特有样式的职责边界（V3.0 新增）
+
+**全局样式（`static/global.css`）已包含以下内容，页面片段中严禁重复定义：**
+
+| 类别 | 包含的选择器 | 说明 |
+|------|-------------|------|
+| CSS 变量 | `:root` | 主题色、阴影、圆角、布局尺寸等全部变量 |
+| 基础重置 | `*`, `html`, `body`, `a` | 盒模型、字体、背景色、链接色 |
+| 布局骨架 | `.layout`, `.sidebar`, `.sidebar-header`, `.nav-*`, `.main`, `.breadcrumb` | 侧边栏、导航树、面包屑的全部样式 |
+| 基础排版 | `.content`, `.content h1~h4`, `.content p`, `.content ul/ol`, `.content li`, `.content blockquote`, `.content code/pre` | 内容区域的基础字体、边距、颜色 |
+| 表格基础 | `table`, `th,td`, `tr:hover`, `tr:last-child` | 表格宽度、边框、表头渐变、悬停效果 |
+| 页脚导航 | `.footer-nav`, `.footer-nav a`, `.footer-nav .prev/.next` | 页面底部上一页/下一页导航 |
+| 滚动条 | `::-webkit-scrollbar*` | 自定义滚动条样式 |
+| 响应式 | `@media print`, `@media (max-width:768px)` | 打印适配与移动端适配（仅限全局布局） |
+
+**页面片段 `<style>` 中只应保留以下特有样式：**
+
+- 该页面**独有**的组件（如 ch1_1 的 `.arch-block`、`.arch-grid`、`.highlight-box`）
+- 该页面使用的**可选组件**（如 `.img-block`、`.img-row`、`.img-zoom-overlay`、`.mermaid`、`.collapsible`、`.tag-*`）
+- 该页面**特有**的 @media 规则（如 ch1_2_4 的 `.img-grid` 响应式断点）
+- 对全局样式的**合理覆盖**（但应使用更具体的选择器，避免直接覆盖全局选择器）
+
+**反面示例（❌ 不要这样做）：**
+
+```html
+<style>
+  /* 错误：这些全局样式已存在于 static/global.css，不需要重复 */
+  :root{ --primary:#2563eb; }
+  .sidebar{ width:280px; }
+  .content h1{ font-size:32px; }
+  .nav-link{ color:var(--text-secondary); }
+
+  /* 正确：只保留页面特有的样式 */
+  .my-custom-component{ ... }
+</style>
+```
+
+**新建页面时的样式决策流程：**
+
+1. 检查 `static/global.css` — 确认你需要的选择器是否已存在
+2. 如果已存在，**不要**在页面片段中重复定义
+3. 如果不存在，判断它是"全局通用"还是"页面特有"
+   - 如果是全局通用（如新增了一种按钮样式 `.btn-primary`），应添加到 `static/global.css`
+   - 如果是页面特有（如 ch1_X 的专属图表样式），保留在页面片段的 `<style>` 中
+
+### 2.7 build.py 配置项说明
+
+| 配置项 | 位置 | 用途 | 修改频率 |
+|--------|------|------|----------|
+| `NAV_GROUPS` | `build.py` 顶部 | 定义无独立页面的二级分组标题 | 新增二级分组时 |
+| `CHAPTER_TITLES` | `build.py` 顶部 | 定义章节号与导航顶层标题映射 | 新增章节时 |
+| `PAGE_TITLE_FALLBACKS` | `build.py` 顶部 | 无 `<h1>` 页面的标题兜底 | 极少使用（建议所有页面都写 `<h1>`） |
 
 ---
 

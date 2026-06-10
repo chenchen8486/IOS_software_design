@@ -33,6 +33,12 @@ NAV_GROUPS: Dict[str, str] = {
     # "ch2_1": "2.1 系统配置",
 }
 
+# 章节标题映射（根据 chapter 号自动生成顶层导航标题）
+CHAPTER_TITLES: Dict[int, str] = {
+    1: "第 1 章 软件操作",
+    # 2: "第 2 章 软件架构与交互设计",
+}
+
 # 无 <h1> 标签页面的标题兜底（优先从 <h1> 提取，无则回退到此处）
 PAGE_TITLE_FALLBACKS: Dict[str, str] = {
     "ch1_1_components.html": "1.1 IOS组成部分与设计哲学",
@@ -44,14 +50,15 @@ PAGE_TITLE_FALLBACKS: Dict[str, str] = {
 HTML_DIR = Path(__file__).parent.resolve()
 PAGES_DIR = HTML_DIR / "pages"
 TEMPLATE_FILE = HTML_DIR / "template.html"
+GLOBAL_CSS_FILE = HTML_DIR / "static" / "global.css"
 
 
 def parse_page(page_path: Path) -> Tuple[str, str, str, str]:
-    """解析页面片段，返回 (styles, content, scripts, title)。"""
+    """解析页面片段，返回 (page_styles, content, scripts, title)。"""
     text = page_path.read_text(encoding="utf-8-sig")
 
-    # 提取 <style>...</style>
-    styles = "\n".join(re.findall(r"<style>.*?</style>", text, re.DOTALL))
+    # 提取 <style>...</style>（页面特有样式）
+    page_styles = "\n".join(re.findall(r"<style>.*?</style>", text, re.DOTALL))
 
     # 提取 <script>...</script>
     scripts = "\n".join(re.findall(r"<script>.*?</script>", text, re.DOTALL))
@@ -69,7 +76,7 @@ def parse_page(page_path: Path) -> Tuple[str, str, str, str]:
         # 无 <h1> 时回退到兜底配置或文件名
         title = PAGE_TITLE_FALLBACKS.get(page_path.name, page_path.stem)
 
-    return styles, content, scripts, title
+    return page_styles, content, scripts, title
 
 
 def parse_chapter_key(filename: str) -> Tuple[int, int, Optional[int]]:
@@ -80,9 +87,13 @@ def parse_chapter_key(filename: str) -> Tuple[int, int, Optional[int]]:
         ch1_2_1_lesson.html     -> (1, 2, 1)
         ch1_10_3_xxx.html       -> (1, 10, 3)
     """
-    m = re.match(r"ch(\d+)_(\d+)(?:_(\d+))?_", filename)
+    m = re.match(r"ch(\d+)_(\d+)(?:_(\d+))?_(\w+)", filename)
     if not m:
-        return (99, 99, 99)  # 未识别放到最后
+        print(
+            f"[警告] 文件名 '{filename}' 不符合 chX_Y_Z_xxx.html 规范，将被排在导航末尾",
+            file=sys.stderr,
+        )
+        return (99, 99, 99)
     chapter = int(m.group(1))
     section = int(m.group(2))
     subsection = int(m.group(3)) if m.group(3) else None
@@ -149,7 +160,7 @@ def build_nav_tree(pages_info: List[Tuple[Path, str, str]]) -> List[dict]:
         children = groups[gk]
         group_title = NAV_GROUPS.get(gk, gk)
         # 分组的排序键：取该分组的章节号，小节设为 0
-        g_chapter, g_section, _ = parse_chapter_key(gk + "_.html")
+        g_chapter, g_section, _ = parse_chapter_key(gk + "_dummy.html")
         group_sort_key = (g_chapter, g_section, 0, "")
         tree_nodes.append(
             (
@@ -171,6 +182,27 @@ def build_nav_tree(pages_info: List[Tuple[Path, str, str]]) -> List[dict]:
 
     tree_nodes.sort(key=lambda x: x[0])
     return [node for _, node in tree_nodes]
+
+
+def get_chapter_title(nav_tree: List[dict]) -> str:
+    """根据导航树动态推导顶层章节标题。"""
+    chapters = set()
+    for node in nav_tree:
+        if node["type"] == "leaf":
+            chapter, _, _ = parse_chapter_key(node["href"])
+            if chapter != 99:
+                chapters.add(chapter)
+        elif node["type"] == "group":
+            for child in node["children"]:
+                chapter, _, _ = parse_chapter_key(child["href"])
+                if chapter != 99:
+                    chapters.add(chapter)
+
+    if not chapters:
+        return "文档导航"
+
+    min_chapter = min(chapters)
+    return CHAPTER_TITLES.get(min_chapter, f"第 {min_chapter} 章")
 
 
 def render_sidebar(nav_tree: List[dict], current_href: str) -> str:
@@ -203,8 +235,9 @@ def render_sidebar(nav_tree: List[dict], current_href: str) -> str:
             f'</div>'
         )
 
-    # 顶层固定为"第 1 章 软件操作"（可扩展为动态）
-    # 自动推导章节标题：取所有叶子节点的 chapter 最小值
+    # 动态推导章节标题
+    chapter_title = get_chapter_title(nav_tree)
+
     top_level_html = "\n".join(
         render_group(n, 0) if n["type"] == "group" else render_leaf(n, 0)
         for n in nav_tree
@@ -217,7 +250,7 @@ def render_sidebar(nav_tree: List[dict], current_href: str) -> str:
         '  <nav class="nav-tree">\n'
         '    <div class="nav-group">\n'
         '      <div class="nav-toggle" onclick="toggleNav(this)">'
-        '<span class="arrow">▼</span><span>第 1 章 软件操作</span></div>\n'
+        f'<span class="arrow">▼</span><span>{chapter_title}</span></div>\n'
         '      <div class="nav-children">\n'
         f'        {top_level_html}\n'
         '      </div>\n'
@@ -247,9 +280,12 @@ def render_breadcrumb(nav_tree: List[dict], current_href: str) -> str:
             if parent_title:
                 break
 
+    # 动态推导面包屑中的章节标题
+    chapter_title = get_chapter_title(nav_tree)
+
     parts = ['<a href="#">首页</a>']
     parts.append('<span class="breadcrumb-sep">/</span>')
-    parts.append('<a href="#">第 1 章 软件操作</a>')
+    parts.append(f'<a href="#">{chapter_title}</a>')
     if parent_title:
         parts.append('<span class="breadcrumb-sep">/</span>')
         parts.append(f'<a href="#">{parent_title}</a>')
@@ -270,6 +306,14 @@ def build() -> None:
 
     template = TEMPLATE_FILE.read_text(encoding="utf-8-sig")
 
+    # 读取全局 CSS
+    global_styles = ""
+    if GLOBAL_CSS_FILE.exists():
+        global_css = GLOBAL_CSS_FILE.read_text(encoding="utf-8-sig")
+        global_styles = f"<style>\n{global_css}\n</style>"
+    else:
+        print(f"[警告] 全局 CSS 文件不存在: {GLOBAL_CSS_FILE}", file=sys.stderr)
+
     # 扫描页面
     page_files = sorted(PAGES_DIR.glob("*.html"))
     if not page_files:
@@ -286,14 +330,15 @@ def build() -> None:
 
     built_count = 0
     for pf, title, filename in pages_info:
-        styles, content, scripts, _ = parse_page(pf)
+        page_styles, content, scripts, _ = parse_page(pf)
 
         sidebar = render_sidebar(nav_tree, filename)
         breadcrumb = render_breadcrumb(nav_tree, filename)
 
         page_html = (
             template.replace("{{TITLE}}", title)
-            .replace("{{HEAD_EXTRA}}", styles)
+            .replace("{{GLOBAL_STYLES}}", global_styles)
+            .replace("{{PAGE_STYLES}}", page_styles)
             .replace("{{SIDEBAR}}", sidebar)
             .replace("{{BREADCRUMB}}", breadcrumb)
             .replace("{{CONTENT}}", content)

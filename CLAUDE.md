@@ -15,6 +15,17 @@
 - **零硬编码**：禁止在代码中直接写入文件路径、图像名、超参数或数据库地址，一切配置通过参数传入或抽离至 `config/`。
 - **目录洁癖**：禁止在根目录随意生成脚本、图片或缓存，中间产物统一归入 `temp/` 或 `outputs/`。
 - **严格分层**：遵循职责单一原则，严格隔离逻辑层与表现层。
+- **HTML 构建架构铁律（不可绕过）**：本项目采用 Template + Python 构建架构，任何涉及 HTML 修改的操作必须严格遵守以下路径，否则修改会被覆盖或无效：
+
+  | 操作目标 | ✅ 必须修改的文件 | ❌ 严禁直接修改的文件 | 修改后必须执行 |
+  |---|---|---|---|
+  | 增删改某页面正文（文字、图片、表格、Mermaid 图表） | `output/html/pages/ch*.html` | `output/html/ch*.html`（生成产物） | `python output/html/build.py` |
+  | 调整某页面特有样式 | `output/html/pages/ch*.html` 内的 `<style>` | `output/html/ch*.html` | `python output/html/build.py` |
+  | 调整全局样式（字体、颜色、布局、sidebar 外观） | `output/html/template.html` | 任何 `output/html/ch*.html` | `python output/html/build.py` |
+  | 调整导航结构（新增分组、修改章节标题映射） | `output/html/build.py` 顶部的 `NAV_GROUPS` | 任何 `output/html/ch*.html` | `python output/html/build.py` |
+  | 新增一个全新页面 | 新建 `output/html/pages/chX_Y_xxx.html` | 任何地方手动复制粘贴完整 HTML | `python output/html/build.py` |
+
+  > **记忆口诀**：只碰 `pages/` 和 `build.py`，绝不碰 `ch*.html`；改完必跑 `build.py`。`output/html/ch*.html` 是只读生成产物，每次运行 `build.py` 会被完全覆盖，任何手动修改都会丢失。
 
 ## 4. 编码风格与质量铁律
 
