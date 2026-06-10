@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
-
 :root{
   --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
   --accent:#059669;--danger:#dc2626;--warning:#d97706;
@@ -116,7 +115,6 @@ tr:last-child td{border-bottom:none}
 
 @media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}}
 @media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}.arch-grid{grid-template-columns:1fr}.arch-grid .label{text-align:left}}
-
 </style>
 </head>
 <body>
@@ -159,12 +157,632 @@ tr:last-child td{border-bottom:none}
     <span>1.1 IOS组成部分与设计哲学</span>
   </div>
     <div class="content">
-      5 个 Tabs 承载的离散参数表格与控件（LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT）
+      <article class="content">
+<h1>1.1 IOS组成部分与设计哲学</h1>
+<p class="subtitle">原始手册对应：## 3.1 IOS Workspaces + ## 3.2 UI Controls  |  整理时间：2026-05-30</p>
+<blockquote>
+<strong>本章定位：</strong>1.1 节是对 IOS 软件界面整体组成与交互控件的抽象概述。所有子页面（1.2.x ~ 1.7）均建立在本节定义的工作区与控件体系之上。
+    </blockquote>
+<!-- ==================== 1.1.1 IOS工作区 ==================== -->
+<h2 id="sec-1-1-1">1.1.1 IOS工作区</h2>
+<p>IOS 工作区软件界面由以下六大工作区组成，每个工作区承担不同的训练控制职责：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th style="width:24%">工作区</th>
+<th style="width:76%">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>控制面板（Control Board）</strong></td>
+<td>
+              • 包含与本机场（ownship）相关的所有参数，是访问本机场参数的主要途径，允许直接在面板上更改数值（例如，调整燃油重量）；<br/>
+              • 包含滑动面板（参考 1.2.6）：例如，用于激活和预位故障；<br/>
+              • 包含一个通用页脚（参考 1.2.7）：提供对常用命令的快速访问；<br/>
+              • 包含 5 个标签页（Tabs）：LESSON PLAN、DOCS、CURRENT CONDITIONS、AIRCRAFT、REFERENCE AIRPORT，以及教员台滑动面板（INSTRUCTOR STATION Sliding Panel）
+            </td>
+</tr>
+<tr>
+<td><strong>地图（Map）</strong></td>
+<td>
+              • 包含与环境相关的元素；<br/>
+              • 具有 2D/3D 地图可视模式；<br/>
+              • 包含环境特征（如风暴、导航台 Navaids stations、模拟的入侵者或交通 simulated intruders or traffic）；<br/>
+              • 显示起飞/进近/跑道、飞机轨迹以及飞行管理系统（FMS）航线
+            </td>
+</tr>
+<tr>
+<td><strong>课程计划剖面（Lesson Plan Profile）</strong></td>
+<td>
+              • 包含与课程相关的所有元素；<br/>
+              • 监控和控制课程的执行；<br/>
+              • 显示在课程计划编辑器中创建的课程；<br/>
+              • 允许教员自动执行某个步骤，而不是输入单个命令
+            </td>
+</tr>
+<tr>
+<td><strong>复示仪表（Instruments Repeaters）</strong></td>
+<td>允许教员选择将哪些座舱仪表复示或显示在 IOS（教员操作台）显示屏上</td>
+</tr>
+<tr>
+<td><strong>维护（Maintenance）</strong></td>
+<td>提供相关页面，允许维护人员执行各种模拟机维护任务</td>
+</tr>
+<tr>
+<td><strong>高级（Advanced）</strong></td>
+<td>
+              • 具备快速访问按钮，允许教员进行如下操作：<br/>
+              • 修改飞机、位置和环境参数；<br/>
+              • 执行各种类型的冻结和重置；<br/>
+              • 触发故障；<br/>
+              • 访问附加页面
+            </td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>切换当前 IOS 工作区通过控制面板底部（Control Board Footer）上的 <strong>Workspace</strong> 按钮完成。点击该按钮会显示一个工作区卷动菜单（Workspace rollup menu），其中列出所有可用工作区。</p>
+<p>下图展示了 IOS 中最核心的<strong>控制面板（Control Board）</strong>界面布局。教员通过该工作区可直接修改飞机参数、激活滑动面板，并访问底部快捷命令栏。</p>
+<div class="img-block">
+<img alt="控制面板整体界面" src="./images/ch1_2_6_control_board_overview.png"/>
+<div class="img-caption">图 1：IOS 控制面板（Control Board）整体界面 — 包含参数面板、滑动面板入口与底部快捷栏</div>
+</div>
+<!-- ==================== 1.1.2 用户交互 ==================== -->
+<h2 id="sec-1-1-2">1.1.2 用户交互（User Interface Controls）</h2>
+<p>用来控制各种软件定义的变化量的 UI 交互方式。以下控件遍布于 IOS 各工作区中，是教员与模拟器交互的基础语言。</p>
+<h3>基础控件</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th style="width:22%">控件类型</th>
+<th style="width:35%">交互方式</th>
+<th style="width:43%">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>滑动面板（Sliding Panel）</strong></td>
+<td>从左侧滑入，左滑/点击外部关闭</td>
+<td>主要子页面形式，数据通常即时生效</td>
+</tr>
+<tr>
+<td><strong>文本输入框（Text Field）</strong></td>
+<td>点击激活对应键盘</td>
+<td>部分支持 <strong>Wheel Picker</strong>（长按/上下滑动呼出）</td>
+</tr>
+<tr>
+<td><strong>只读字段（Read Only Field）</strong></td>
+<td>无需操作</td>
+<td>仅显示状态</td>
+</tr>
+<tr>
+<td><strong>指示灯（Indicators）</strong></td>
+<td>无需操作</td>
+<td>显示组件的当前状态</td>
+</tr>
+<tr>
+<td><strong>按钮（Button）</strong></td>
+<td>点击激活，亮浅蓝色</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>滚动菜单（Roll-up Menu）</strong></td>
+<td>点击展开，选择后生效，点击外部取消</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>轮选器（Wheel Picker）</strong></td>
+<td>长按/滑动参数呼出</td>
+<td>绿勾确认，红叉取消</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>选择类控件</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th style="width:22%">类型</th>
+<th style="width:35%">特性</th>
+<th style="width:43%">视觉反馈</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Toggle Normal</strong><br/>普通切换</td>
+<td>普通切换</td>
+<td>正常态 → 激活态（亮蓝）</td>
+</tr>
+<tr>
+<td><strong>Toggle Fail</strong><br/>故障切换</td>
+<td>激活后为红色，触发故障并记录到 Malfunctions 区域与 Footer；再次点击解除</td>
+<td>激活后红色高亮</td>
+</tr>
+<tr>
+<td><strong>Action Button</strong><br/>瞬时动作</td>
+<td>激活后亮数秒，返回正常态或禁用态</td>
+<td>短暂高亮后恢复</td>
+</tr>
+<tr>
+<td><strong>Expandable Button</strong><br/>展开滑动面板</td>
+<td>点击展开关联滑动面板</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Radio Button</strong><br/>单选按钮</td>
+<td>互斥选择</td>
+<td>选中项高亮</td>
+</tr>
+<tr>
+<td><strong>Checkbox</strong><br/>复选框</td>
+<td>独立开关</td>
+<td>勾选/取消勾选</td>
+</tr>
+<tr>
+<td><strong>Slider</strong><br/>滑块</td>
+<td>最小值~最大值调节</td>
+<td>滑块位置实时反馈</td>
+</tr>
+<tr>
+<td><strong>Keypad</strong><br/>键盘</td>
+<td>数字/字符输入</td>
+<td>绿勾确认，红叉取消</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ==================== 1.1.3 参数选择 ==================== -->
+<h2 id="sec-1-1-3">1.1.3 参数选择与数据输入</h2>
+<p>在 IOS 中，几乎所有参数的修改都遵循统一的输入范式：点击参数文本字段 → 弹出对应输入控件 → 确认/取消。以下表格详细列出了各类输入控件的行为与交互细节。</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th style="width:28%">输入控件</th>
+<th style="width:72%">说明与交互细节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quick Access Buttons<br/>（快速访问按钮）</strong></td>
+<td>
+              点击快速访问按钮会显示相应的滑动面板。例如：DL、UL、VHF、Weight&amp;CG、Services&amp;Doors、Malfunctions、Circuit Breakers、Fail Summary 等按钮。
+            </td>
+</tr>
+<tr>
+<td><strong>Dropdown Buttons<br/>（下拉按钮）</strong></td>
+<td>
+              点击下拉按钮会展开特定项目的选择项，选择后生效。
+            </td>
+</tr>
+<tr>
+<td><strong>Selection Buttons<br/>（选择按钮）— 普通切换</strong></td>
+<td>
+              具有三种状态：<strong>正常状态</strong>、<strong>激活状态</strong>、<strong>禁用状态</strong>。点击后在正常态与激活态（亮蓝）之间切换。
+            </td>
+</tr>
+<tr>
+<td><strong>Selection Buttons<br/>（选择按钮）— 故障切换</strong></td>
+<td>
+              具有两种状态：<strong>正常状态</strong>、<strong>激活状态</strong>（红色）。一旦触发，故障将被控制面板记录，并显示在故障部分、控制面板底部以及故障滑动面板中。从红色激活状态再次点击可取消故障。
+            </td>
+</tr>
+<tr>
+<td><strong>Selection Buttons<br/>（选择按钮）— 操作按钮</strong></td>
+<td>
+              具有三种状态：<strong>正常状态</strong>、<strong>激活状态</strong>（持续数秒）、<strong>禁用状态</strong>。点击后按钮会亮起数秒，随后返回正常状态或禁用状态，取决于各种条件。
+            </td>
+</tr>
+<tr>
+<td><strong>Expandable Buttons<br/>（扩展按钮）</strong></td>
+<td>
+              点击可展开按钮会显示关联的滑动面板。
+            </td>
+</tr>
+<tr>
+<td><strong>Radio Buttons<br/>（单选按钮）</strong></td>
+<td>
+              点击单选按钮允许教员从预定义的选项集中<strong>仅选择一项</strong>。这些按钮是互斥的。
+            </td>
+</tr>
+<tr>
+<td><strong>Checkbox<br/>（复选框）</strong></td>
+<td>
+              复选框是一种切换功能，用于选择或取消选择特定项目。
+            </td>
+</tr>
+<tr>
+<td><strong>Sliders<br/>（滑块）</strong></td>
+<td>
+              滑块也可称为滑块控件或滚动条。它们有多种形式，但都允许将特定项目从最小值调整到最大值。
+            </td>
+</tr>
+<tr>
+<td><strong>Wheel Picker<br/>（轮选器）</strong></td>
+<td>
+              适用于重量、时间、日期、机场、跑道、跑道条件、表面风、温度、天气、海平面气压等参数。<br/><br/>
+              根据 IOS 控制面板的配置，某些参数可通过滚轮选择器进行调整。要激活特定项目的滚轮选择器，请按以下步骤操作：<br/>
+              • 选择一个特定参数；<br/>
+              • 按住该参数直至显示滚轮选择器，或上下滑动该参数以显示滚轮选择器；<br/>
+              • 滚动选择项并选择。<br/><br/>
+<strong>绿色对勾</strong>确认输入，<strong>红色叉号</strong>取消输入。
+            </td>
+</tr>
+<tr>
+<td><strong>Keypad<br/>（键盘）</strong></td>
+<td>
+              许多参数可通过键盘进行调整。在键盘中输入数值时，既可以使用滑块，也可以使用键盘按键。<br/><br/>
+<strong>绿色对勾</strong>确认输入，<strong>红色叉号</strong>取消输入。
+            </td>
+</tr>
+<tr>
+<td><strong>Interactive Graphs<br/>（交互式图表）</strong></td>
+<td>
+              交互式图表中部分图表具有交互功能，允许教员通过直接触摸图表上的元素来更改数值。<br/><br/>
+              例如，在 Slew 图表中，教员可以移动图表上的「+」符号，滑块和文本字段将根据图表上新的「+」位置自动更新。
+            </td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>控件截图示例</h3>
+<p>以下截图展示了 1.1.3 节中各类参数输入控件在 IOS 界面中的实际呈现效果（均来自原始手册）：</p>
+<!-- 第一行：快速访问与展开类 -->
+<div class="img-row">
+<div class="img-block">
+<div class="img-pic"><img alt="快速访问按钮" src="./images/ch1_1_3_quick_access_buttons.jpg"/></div>
+<div class="img-caption">图 2：快速访问按钮（Quick Access Buttons）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="下拉按钮" src="./images/ch1_1_3_dropdown_button.jpg"/></div>
+<div class="img-caption">图 3：下拉按钮（Dropdown Button）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="扩展按钮" src="./images/ch1_1_3_expandable_button.jpg"/></div>
+<div class="img-caption">图 4：扩展按钮（Expandable Button）</div>
+</div>
+</div>
+<!-- 第二行：选择按钮类 -->
+<div class="img-row">
+<div class="img-block">
+<div class="img-pic"><img alt="普通切换按钮" src="./images/ch1_1_3_toggle_normal.jpg"/></div>
+<div class="img-caption">图 5：普通切换按钮（Toggle Normal）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="操作按钮" src="./images/ch1_1_3_action_button.jpg"/></div>
+<div class="img-caption">图 6：操作按钮（Action Button）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="单选按钮" src="./images/ch1_1_3_radio_button.jpg"/></div>
+<div class="img-caption">图 7：单选按钮（Radio Button）</div>
+</div>
+</div>
+<!-- 第三行：开关、滑块与轮选器 -->
+<div class="img-row">
+<div class="img-block">
+<div class="img-pic"><img alt="复选框" src="./images/ch1_1_3_checkbox.jpg"/></div>
+<div class="img-caption">图 8：复选框（Checkbox）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="滑块" src="./images/ch1_1_3_slider.jpg"/></div>
+<div class="img-caption">图 9：滑块（Slider）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="轮选器" src="./images/ch1_1_3_wheel_picker.jpg"/></div>
+<div class="img-caption">图 10：轮选器（Wheel Picker）</div>
+</div>
+</div>
+<!-- 第四行：键盘、轮选器可调参数与交互图表 -->
+<div class="img-row">
+<div class="img-block">
+<div class="img-pic"><img alt="键盘" src="./images/ch1_1_3_keypad.jpg"/></div>
+<div class="img-caption">图 11：键盘（Keypad）</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="轮选器可调参数" src="./images/ch1_1_3_wheel_picker_adjustable.jpg"/></div>
+<div class="img-caption">图 12：轮选器 — 可调参数示例</div>
+</div>
+<div class="img-block">
+<div class="img-pic"><img alt="交互式图表" src="./images/ch1_1_3_interactive_graphs.jpg"/></div>
+<div class="img-caption">图 13：交互式图表（Interactive Graphs）</div>
+</div>
+</div>
+<!-- ==================== 1.1.4 IOS 六大工作区架构抽象逻辑分析 ==================== -->
+<blockquote>
+<strong>文档定位：</strong>本文档从软件架构与领域建模视角，解析 CAE IOS 教员台为何将繁杂的功能抽象为六大工作区（Workspaces），揭示其背后的设计哲学、关注点分离原则与认知心理学逻辑。供后续系统重构、功能扩展或新平台设计时参考。
+</blockquote>
+<!-- ==================== 一、顶层抽象维度 ==================== -->
+<h2 id="sec-1-1-4">1.1.4 抽象的顶层维度：对象 → 环境 → 流程 → 监控 → 运维 → 干预</h2>
+<p>原始手册虽然没有明言，但六大模块的划分暗合了一条清晰的认知链——<strong>从"训练什么"到"如何保障"</strong>。这不是简单的功能列表平铺，而是对航空训练场景的<strong>领域驱动建模（Domain-Driven Modeling）</strong>。</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th style="width:18%">模块</th>
+<th style="width:22%">核心关注点</th>
+<th style="width:60%">抽象逻辑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Control Board<br/>控制面板</strong></td>
+<td>本机（Ownship）实时参数</td>
+<td><strong>训练对象</strong>——所有与"这架飞机此刻状态"相关的参数。它是整个系统的<strong>聚合根（Aggregate Root）</strong>，其他工作区围绕它展开或从它派生。</td>
+</tr>
+<tr>
+<td><strong>Map<br/>地图</strong></td>
+<td>空间与环境</td>
+<td><strong>训练场景</strong>——飞机所处的物理世界（天气、地形、交通、导航台）。与 Control Board 形成"对象-场景"正交关系。</td>
+</tr>
+<tr>
+<td><strong>Lesson Plan Profile<br/>课程计划剖面</strong></td>
+<td>课程执行时间线</td>
+<td><strong>训练剧本</strong>——按阶段推进的预定义流程。它将训练活动从"手动即兴"提升为"可编排、可复现、可评估"的结构化脚本。</td>
+</tr>
+<tr>
+<td><strong>Instruments Repeaters<br/>复示仪表</strong></td>
+<td>座舱仪表复示</td>
+<td><strong>观察窗口</strong>——教员视角的飞行状态可视化。解决"教员在 IOS 屏幕上看到什么"的问题，与学员座舱仪表形成镜像。</td>
+</tr>
+<tr>
+<td><strong>Maintenance<br/>维护</strong></td>
+<td>模拟器硬件/软件维护</td>
+<td><strong>系统运维</strong>——保障设备正常运行的后台功能。通过<strong>角色隔离</strong>，避免维护操作污染训练界面。</td>
+</tr>
+<tr>
+<td><strong>Advanced<br/>高级</strong></td>
+<td>快速干预与故障注入</td>
+<td><strong>高级干预</strong>——打破常规流程的应急/特殊操作。为<strong>时间敏感场景</strong>提供"绕过层级导航的直达电梯"。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-box">
+<strong>设计洞察：</strong>前四个模块（Control Board、Map、Lesson Plan Profile、Instruments Repeaters）是<strong>教员在单次训练中高频切换的核心四件套</strong>；后两个（Maintenance、Advanced）是<strong>低频但必要的专业功能</strong>。把 Maintenance 和 Advanced 单独拎出来，避免了它们污染日常教员的认知空间，这是典型的<strong>按使用频率分层（Frequency-Based Layering）</strong>策略。
+</div>
+<!-- ==================== 二、Control Board 为什么是枢纽 ==================== -->
+<h2 id="sec-1-1-5">1.1.5 Control Board 为什么是"枢纽"？</h2>
+<p>原始文档有一句话非常关键：</p>
+<blockquote>
+Changing the current IOS workspace is performed through a <strong>Workspace button on the Control Board footer</strong>. Tapping this button displays a Workspace rollup menu that shows all available workspaces.
+</blockquote>
+<p>这意味着 <strong>Control Board 是默认锚点（Home Base）</strong>，其他所有工作区都要从它出发切换。这不是 UI 上的偶然，而是架构上的必然，原因有三：</p>
+<h3>Ownship 是一切的核心</h3>
+<p>在飞行训练中，教员的绝大多数操作都是围绕"这架飞机"展开的——改重量、调天气、注故障、重新定位。Control Board 把所有这些参数按 <strong>Tabs</strong>（LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT）聚合在一起，本质上是把<strong>飞机状态管理</strong>做成了一个领域驱动设计中的<strong>聚合根（Aggregate Root）</strong>。</p>
+<h3>复合容器设计：三层解耦</h3>
+<p>Control Board 不只是 5 个 Tabs 的平铺，它是一个 <strong>"主体面板 + 侧边滑动层 + 底部快捷栏"</strong> 的三层结构：</p>
+<div class="arch-block">
+<h4>Control Board 三层架构</h4>
+<div class="arch-grid">
+<div class="label">主体面板<br/>(Main Panel)</div>
+<div class="content">5 个 Tabs 承载的离散参数表格与控件（LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT）</div>
+<div class="label">侧边滑动层<br/>(Sliding Panel)</div>
+<div class="content">从左侧滑入的子页面（如 Malfunctions、Weight &amp; CG、SLEW 等），用于"在不离上下文的情况下深入编辑"</div>
+<div class="label">底部快捷栏<br/>(Footer)</div>
+<div class="content">冻结、重置、模拟控制、音量、工作区切换等高频全局命令，确保"随时可以操作"</div>
+</div>
+</div>
+<div class="highlight-box warn">
+<strong>两种 Sliding Panel 的设计意图对比：</strong>上述"侧边滑动层"描述的是 Control Board 内部<strong>功能性的 Sliding Panel</strong>（如 Malfunctions、Weight &amp; CG、SLEW 等），它们由各个 Tab 内部的 expandable buttons 触发，与当前功能上下文强相关。而<strong>1.2.6 教员台滑动面板（INSTRUCTOR STATION Sliding Panel）</strong>是一个<strong>系统级的全局面板</strong>，由 Control Board 右侧边缘的 Expand Button 触发，承载的是与当前功能上下文无关的全局设置（单位制 UOM、IOS 配置切换、结束会话）。两者的核心区别在于：前者改变"模拟器状态"（飞机故障、重量分布），后者改变"教员工具的自身设置"（显示单位、系统配置）。</div>
+<p>这种设计让<strong>"当前正在看什么"</strong>（Tabs）和<strong>"随时可以做什么"</strong>（Footer 的快速冻结/重置/切换工作区）<strong>解耦</strong>了。教员不需要离开当前上下文就能执行高频命令。</p>
+<h3>Tabs 的内部也是按"信息域"正交划分</h3>
+<p>Control Board 的 5 个 Tabs 同样遵循关注点分离：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Tab</th><th>信息域</th><th>设计意图</th></tr>
+</thead>
+<tbody>
+<tr><td>LESSON PLAN</td><td>训练流程域</td><td>课程阶段与步骤的管理入口</td></tr>
+<tr><td>DOCS</td><td>知识参考域</td><td>训练过程中需要查阅的文档（航图、检查单、SOP）</td></tr>
+<tr><td>CURRENT CONDITIONS</td><td>即时环境域</td><td>飞机当前所处的大气与环境状态（云层、结冰、湍流、风）</td></tr>
+<tr><td>AIRCRAFT</td><td>飞机物理域</td><td>飞机自身参数（重量、重心、燃油、通信、故障）</td></tr>
+<tr><td>REFERENCE AIRPORT</td><td>地面基准域</td><td>参考机场、跑道、重新定位、地面操作</td></tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-box">
+<strong>关键洞察：</strong>DOCS 被放在 Control Board 内部而非独立工作区，是因为文档查阅是<strong>训练过程中的高频伴随行为</strong>（教员需要边改参数边看航图），而不是一个需要全屏沉浸的独立任务。
+</div>
+<!-- ==================== 三、Map 与 Control Board 为何分离 ==================== -->
+<h2 id="sec-1-1-6">1.1.6 为什么把 Map 和 Control Board 分开？</h2>
+<p>这是一个容易混淆的点：Map 上也能看到飞机位置、航迹、FMS 航线，那为什么不合并到 Control Board 里？</p>
+<p><strong>原始文档给出的答案是：信息模态不同。</strong></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>维度</th><th>Control Board</th><th>Map</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>信息类型</strong></td><td>离散参数（数值、状态、选项）</td><td>连续空间信息（坐标、轨迹、区域、矢量）</td></tr>
+<tr><td><strong>交互方式</strong></td><td>点击、输入、选择、切换</td><td>拖拽、缩放、平移、框选、径向菜单</td></tr>
+<tr><td><strong>认知模式</strong></td><td>逻辑推理（"把重量改成 65 吨"）</td><td>空间直觉（"把飞机拖到五边进近起始点"）</td></tr>
+<tr><td><strong>视觉占比</strong></td><td>表格化、高密度文本</td><td>大面积图形渲染、2D/3D 透视</td></tr>
+<tr><td><strong>原始手册定位</strong></td><td>## 4. Control Board Workspace</td><td>## 15. Map Workspace</td></tr>
+</tbody>
+</table>
+</div>
+<p>如果把两者硬塞进一个面板，会导致：</p>
+<ul>
+<li>参数输入区被地图压缩，触控精度下降；</li>
+<li>地图的可视化被表格化参数打断，空间感知断裂；</li>
+<li>教员在"精确输入数值"和"感知空间态势"两种认知模式之间频繁切换，增加心智负担。</li>
+</ul>
+<div class="highlight-box">
+<strong>架构原则：</strong>Map 是一个独立工作区，但它和 Control Board 通过<strong>数据联动</strong>保持同步。例如你在 Map 上 Slew 拖动飞机，Control Board 上的位置参数会同步更新；你在 Control Board 上修改参考机场，Map 会自动重新定位到该机场。这是典型的 <strong>"同一领域模型，多个正交表现层"</strong> 设计。
+</div>
+<!-- ==================== 四、Lesson Plan Profile 的剖面抽象 ==================== -->
+<h2 id="sec-1-1-7">1.1.7 Lesson Plan Profile 的"剖面"抽象</h2>
+<p>原始文档 ## 14.1 有一句话：</p>
+<blockquote>
+The training elements such as training phases and associated steps are presented <strong>over a flight profile (amber line)</strong>.
+</blockquote>
+<p>这揭示了 Lesson Plan Profile 的本质——<strong>它不是 Control Board 里 LESSON PLAN Tab 的重复，而是同一套课程数据的不同可视化模态。</strong></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>视图</th><th>形式</th><th>适用场景</th><th>认知优势</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LESSON PLAN Tab</strong><br/>（在 Control Board 内）</td>
+<td>纵向滚动列表</td>
+<td>精确查看某一步骤的详情，逐步执行</td>
+<td>细节导向（Detail-Oriented）</td>
+</tr>
+<tr>
+<td><strong>Lesson Plan Profile</strong><br/>（独立工作区）</td>
+<td>横向飞行剖面图</td>
+<td>一眼看清整个课程的完整结构、阶段关系和当前进度</td>
+<td>全局导向（Overview-Oriented）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>这是一种典型的 <strong>"同一领域模型，多种表现层（Multiple Presentations of a Single Domain Model）"</strong> 设计。教员根据认知需求自由选择：</p>
+<ul>
+<li><strong>要细节</strong> → 去 Control Board 的 LESSON PLAN Tab，可以逐步点击 Execute、Skip、Go to Current；</li>
+<li><strong>要全局</strong> → 去 Lesson Plan Profile，可以看到 amber line 上所有阶段的相对位置、时间轴和依赖关系。</li>
+</ul>
+<div class="highlight-box">
+<strong>设计启示：</strong>在构建类似系统时，不要问"用户需要一个课程管理页面吗"，而要问"用户在不同认知负荷下需要什么样的课程信息呈现"。同一个领域对象（Lesson Plan），值得为其设计多个正交视图。
+</div>
+<!-- ==================== 五、Advanced 的快速访问哲学 ==================== -->
+<h2 id="sec-1-1-8">1.1.8 Advanced 的"快速访问"哲学</h2>
+<p>Advanced 工作区在原始文档 ## 16 章有大量子页面：飞机、位置、环境、入侵者、通信、故障、UPRT、重置/冻结、录制。这些功能其实<strong>在 Control Board 或 Map 里都有入口</strong>（比如故障在 AIRCRAFT Tab 的 Malfunctions Sliding Panel 里，环境在 REFERENCE AIRPORT Tab 里）。</p>
+<p>那为什么要重复造一个 Advanced？</p>
+<p>原始文档 ## 16 章开头说：</p>
+<blockquote>
+Features <strong>quick access buttons</strong> allowing the instructor to: Modify Aircraft, Position and Environment parameters; Perform various types of freeze and resets; Trigger failures; Access additional pages.
+</blockquote>
+<p><strong>关键词是 "quick access"。</strong> Advanced 的设计意图是<strong>绕过层级导航的"直达电梯"</strong>。</p>
+<h3>场景推演：为什么需要 Advanced</h3>
+<p>假设一个紧急训练场景：教员突然发现学员偏离航线，需要立即执行以下组合拳：</p>
+<ol>
+<li>注入风切变（Wind Shear）</li>
+<li>冻结飞机位置（Position Freeze）</li>
+<li>呼叫塔台（ATC Comm）</li>
+</ol>
+<p>如果全部通过 Control Board 操作：</p>
+<pre><code>AIRCRAFT Tab → Malfunctions Sliding Panel → 找到 Windshear → 激活
+→ Footer → Freezes → More → Position Freeze
+→ 还要想办法打开通信……</code></pre>
+<p><strong>黄花菜都凉了。</strong></p>
+<p>Advanced 把所有"可能需要快速组合拳"的操作<strong>扁平化</strong>到一个界面：</p>
+<pre><code>Advanced → Environment → Wind Shear（一步直达）
+Advanced → Resets/Freezes → Position Freeze（一步直达）
+Advanced → Comms → ATC（一步直达）</code></pre>
+<div class="highlight-box warn">
+<strong>架构原则：</strong>Advanced 不是 Control Board 的"简化版"，而是 Control Board 的<strong>"应急版"</strong>。它的界面设计目标不是"组织所有功能"，而是"<strong>在 3 秒内找到并执行关键操作</strong>"。因此它允许功能重复，以换取时间效率。
+</div>
+<!-- ==================== 六、Maintenance 的角色隔离 ==================== -->
+<h2 id="sec-1-1-9">1.1.9 Maintenance 的角色隔离</h2>
+<p>Maintenance 工作区是六大模块中最容易被低估的一个。原始文档 ## 12 章描述它：</p>
+<blockquote>
+Offers pages that allows maintenance personnel to perform various simulator maintenance tasks.
+</blockquote>
+<p>它的抽象逻辑非常纯粹：<strong>按角色隔离（Role-Based Isolation）</strong>。</p>
+<p>维护人员与教员是两个完全不同的用户角色：</p>
+<ul>
+<li><strong>教员</strong>关心的是"如何让训练更有效"——调参数、注故障、推进课程；</li>
+<li><strong>维护人员</strong>关心的是"设备是否正常"——校准传感器、测试运动平台、更新软件配置。</li>
+</ul>
+<p>如果把维护功能混在 Control Board 里，会导致：</p>
+<ul>
+<li>教员误触维护功能，破坏模拟器校准状态；</li>
+<li>维护人员需要在繁杂的训练界面中寻找专业工具；</li>
+<li>权限管理复杂化（需要动态隐藏/显示维护按钮）。</li>
+</ul>
+<p>将其独立为一个工作区，并通常配合<strong>物理权限控制</strong>（如维护密码、独立登录），是最干净的设计方案。</p>
+<!-- ==================== 七、抽象背后的工程启示 ==================== -->
+<h2 id="sec-1-1-10">1.1.10 抽象背后的工程启示：领域模型还原</h2>
+<p>把这六个模块还原成软件架构语言，CAE 实际上做了一次<strong>航空模拟训练领域的领域建模（Domain Modeling）</strong>：</p>
+<pre><code>┌─────────────────────────────────────────────┐
+│              IOS 教员台系统                    │
+├─────────────────┬───────────────────────────┤
+│   核心训练域     │  Control Board (Ownship)  │
+│  (Core Domain)   │  Map (Environment/Space)  │
+│                  │  Lesson Plan (Time/Flow)  │
+│                  │  Instruments (View/Monitor)│
+├─────────────────┼───────────────────────────┤
+│   支撑保障域     │  Maintenance (System Ops) │
+│  (Support Domain)│  Advanced (Fast Override) │
+└─────────────────┴───────────────────────────┘
+</code></pre>
+<h3>核心训练域的四模块正交关系</h3>
+<p>Control Board、Map、Lesson Plan Profile、Instruments Repeaters 四个模块遵循 <strong>"对象-场景-流程-监控"</strong> 的正交分解。它们之间的关系不是层级包含，而是<strong>数据联动、职责独立</strong>：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>模块 A</th><th>模块 B</th><th>联动关系</th></tr>
+</thead>
+<tbody>
+<tr><td>Control Board</td><td>Map</td><td>修改参考机场/位置 → Map 重新定位；Map 上 Slew 拖动 → Control Board 参数同步更新</td></tr>
+<tr><td>Control Board</td><td>Lesson Plan Profile</td><td>执行课程步骤 → Profile 上进度标记移动；Profile 上跳转到某阶段 → Control Board 同步显示该步骤详情</td></tr>
+<tr><td>Control Board</td><td>Instruments Repeaters</td><td>修改飞机姿态/速度/高度 → Repeater 上对应仪表实时变化</td></tr>
+<tr><td>Map</td><td>Instruments Repeaters</td><td>Map 上显示飞机位置/航迹 → Repeater 上显示对应航向/高度指示</td></tr>
+</tbody>
+</table>
+</div>
+<h3>支撑保障域的两模块设计原则</h3>
+<ul>
+<li><strong>Maintenance</strong>：遵循 <strong>"角色隔离"</strong>（Role Isolation）——维护人员与教员完全分离，避免误操作。</li>
+<li><strong>Advanced</strong>：遵循 <strong>"高频捷径"</strong>（Power-User Shortcut）——为时间敏感场景提供绕过常规层级的快速通道，允许功能重复以换取时间效率。</li>
+</ul>
+<h3>从六大模块到软件设计原则</h3>
+<div class="highlight-box">
+<strong>原则一：按认知模态分离（Cognitive Modality Separation）</strong><br/>
+离散参数（Control Board）与连续空间（Map）绝不混在一个面板，因为它们激活的是人脑不同的认知区域（左脑逻辑 vs. 右脑空间直觉）。
+</div>
+<div class="highlight-box">
+<strong>原则二：按使用频率分层（Frequency-Based Layering）</strong><br/>
+高频功能（Control Board、Map）常驻主界面；低频功能（Maintenance、Advanced）独立隔离，减少认知噪声。
+</div>
+<div class="highlight-box">
+<strong>原则三：按角色隔离（Role-Based Isolation）</strong><br/>
+不同用户角色的功能绝不混用。Maintenance 独立工作区 + 权限控制，是最干净的安全边界。
+</div>
+<div class="highlight-box">
+<strong>原则四：同一模型，多重视图（Multiple Views of One Model）</strong><br/>
+Lesson Plan 在 Tab 中是列表视图，在 Profile 中是剖面视图。不要强迫用户在"看细节"和"看全局"之间做取舍。
+</div>
+<div class="highlight-box">
+<strong>原则五：应急通道设计（Emergency Bypass Design）</strong><br/>
+Advanced 的存在证明：常规层级导航（Tab → Sliding Panel → Sub-section）在紧急场景下是致命的。为关键操作预留"直达电梯"是安全系统的设计底线。
+</div>
+<!-- ==================== 八、总结 ==================== -->
+<h2 id="sec-1-1-11">1.1.11 总结：这不是功能分组，而是认知建模</h2>
+<p>回到最初的问题：CAE 为什么把这六个模块这样划分？</p>
+<p><strong>答案不是"把功能列表分成六份"，而是"先定义了训练场景中教员的认知模型，再把功能映射到这个模型上"。</strong></p>
+<p>当你使用这套系统时，会感觉到"它懂我怎么工作"，而不是"我在适应它的菜单"。这种体验的背后，是架构师对以下问题的深刻理解：</p>
+<ol>
+<li><strong>教员在训练中关心什么？</strong> → 飞机、环境、流程、仪表 → 四个核心工作区。</li>
+<li><strong>教员在什么情况下会抓狂？</strong> → 紧急场景找不到按钮 → Advanced 扁平化设计。</li>
+<li><strong>谁不应该看到这个按钮？</strong> → 维护人员 vs. 教员 → Maintenance 独立隔离。</li>
+<li><strong>教员需要同时看到多少信息？</strong> → 细节 vs. 全局 → Lesson Plan 双视图设计。</li>
+<li><strong>信息以什么形态呈现最自然？</strong> → 数字表格 vs. 空间地图 → Control Board 与 Map 分离。</li>
+</ol>
+<div class="highlight-box danger">
+<strong>对后续开发的警示：</strong>如果我们只是机械地把这六个模块翻译成代码，而不理解背后的认知建模逻辑，那么当需要新增功能（比如"AI 助教"、"多人协同训练"、"VR 沉浸式监控"）时，就会面临"这个功能该塞到哪里"的困境。只有理解了<strong>"对象-场景-流程-监控-运维-干预"</strong>这条认知链，才能在扩展时保持架构的一致性与教员的认知流畅性。
+</div>
+<hr style="margin:40px 0;border:none;border-top:1px solid var(--border)"/>
+<p style="font-size:13px;color:var(--text-secondary)">
+<strong>文档版本：</strong>V1.0  |  <strong>创建时间：</strong>2026-06-09  |  <strong>来源：</strong>基于 CAE IOS 使用手册原始文档（## 3.1 ~ ## 16）的架构推演与领域建模分析  |  <strong>关联文档：</strong><a href="./2_A320_与_原始手册_章节映射表.md">章节映射表</a>、<a href="../output/html/ch1_1_components.html">1.1 IOS组成部分与设计哲学 HTML</a>
+</p>
+<!-- Footer Nav -->
+<div class="footer-nav">
+<span></span>
+<a class="next" href="ch1_2_1_lesson_plan_tab.html">下一节：1.2.1 课程计划选项卡 →</a>
+</div>
+</article>
     </div>
   </div>
 </div>
 <script>
-
 // Sidebar toggle
 function toggleNav(el){
   el.classList.toggle('collapsed');
@@ -273,7 +891,6 @@ document.addEventListener('keydown', function(e){
     imgZoomOverlay = null;
   }
 });
-
 </script>
 </body>
 </html>
