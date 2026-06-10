@@ -137,9 +137,9 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
   <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
   <nav class="nav-tree">
     <div class="nav-group">
-      <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
-      <div class="nav-children">
-        <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
+  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 软件操作</span></div>
+  <div class="nav-children">
+    <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
 <div class="nav-group">
   <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
   <div class="nav-children">
@@ -158,8 +158,14 @@ td .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;
 <a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
 <a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
 <a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程 Reference Flows</a>
-      </div>
-    </div>
+  </div>
+</div>
+<div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件架构与交互设计</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a>
+  </div>
+</div>
   </nav>
 </aside>
 <div class="layout">
@@ -518,11 +524,12 @@ stateDiagram-v2
 <script>
 
 // Navigation toggle
-function toggleNav(el) {
+function toggleNav(el){
   el.classList.toggle('collapsed');
   const children = el.nextElementSibling;
-  if (children && children.classList.contains('nav-children')) {
+  if(children && children.classList.contains('nav-children')){
     children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
   }
 }
 

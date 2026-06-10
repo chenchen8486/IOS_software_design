@@ -493,9 +493,10 @@ document.addEventListener('keydown',function(e){
 
 function toggleNav(el){
   el.classList.toggle('collapsed');
-  const children=el.nextElementSibling;
+  const children = el.nextElementSibling;
   if(children && children.classList.contains('nav-children')){
     children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
   }
 }
 

@@ -656,7 +656,10 @@ Advanced 的存在证明：常规层级导航（Tab → Sliding Panel → Sub-se
 function toggleNav(el){
   el.classList.toggle('collapsed');
   const children = el.nextElementSibling;
-  if(children) children.classList.toggle('collapsed');
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
 }
 
 // Image zoom

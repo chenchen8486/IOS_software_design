@@ -262,11 +262,12 @@ API 请求：订阅仪表数据流 SUBSCRIBE /instrument/{id}/stream
 <script>
 
 // Navigation toggle
-function toggleNav(el) {
+function toggleNav(el){
   el.classList.toggle('collapsed');
   const children = el.nextElementSibling;
-  if (children && children.classList.contains('nav-children')) {
+  if(children && children.classList.contains('nav-children')){
     children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
   }
 }
 

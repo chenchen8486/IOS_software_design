@@ -1,0 +1,672 @@
+﻿<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+@media print{.mermaid{page-break-inside:avoid}}
+</style>
+
+<h1>2.1 功能架构全景图</h1>
+<p class="subtitle">原始手册对应：第 1 章全部工作区（1.1 ~ 1.7）+ 1.8 参考流程  |  性质：基于操作手册的逆向架构推导  |  置信度：中~高</p>
+
+<div class="speculation-box">
+<strong>内容性质声明：</strong>本章（第 2 章）所有内容均基于 CAE IOS 操作手册的界面现象、操作步骤与状态流转进行<strong>逆向推导</strong>，并非 CAE 官方技术白皮书或 API 文档。所有"架构假设"、"接口推测"与"数据流推导"均标注了置信度，供后续软件开发参考，不构成最终技术设计约束。
+</div>
+
+<!-- ==================== 2.1.1 ==================== -->
+<h2 id="sec-2-1-1">2.1.1 六大工作区功能分层与依赖关系</h2>
+
+<p>基于 <a href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a> 中对六大工作区的定义，以及 1.1.4 ~ 1.1.11 的架构抽象逻辑分析，可将 IOS 教员台的功能模块划分为<strong>核心训练域（Core Domain）</strong>与<strong>支撑保障域（Support Domain）</strong>两大层级。所有工作区最终均与<strong>模拟器核心（Simulator Core）</strong>交互，但交互模式（读写、只读、快速干预）存在本质差异。</p>
+
+<h3>功能架构全景图</h3>
+<div class="mermaid">
+graph TD
+    subgraph CD["核心训练域 Core Domain"]
+        CB["Control Board<br/>控制面板"]
+        MAP["Map<br/>地图"]
+        LPP["Lesson Plan Profile<br/>课程计划剖面"]
+        IR["Instruments Repeaters<br/>复示仪表"]
+    end
+
+    subgraph SD["支撑保障域 Support Domain"]
+        ADV["Advanced<br/>高级"]
+        MAINT["Maintenance<br/>维护"]
+    end
+
+    SC["Simulator Core<br/>物理引擎 / 飞行动力学 / 声音系统"]
+
+    CB <-->|"飞机状态<br/>位置/姿态/重量/燃油"| SC
+    MAP <-->|"地形/天气/航迹<br/>空间数据请求"| SC
+    IR -->|"仪表数据订阅"| SC
+    LPP -->|"课程步骤执行指令"| CB
+    ADV -->|"快速干预<br/>故障/冻结/重置"| SC
+    ADV -->|"参数修改"| CB
+    MAINT -->|"校准/诊断<br/>系统测试"| SC
+
+    CB <-->|"参考机场/跑道/位置"| MAP
+    CB <-->|"课程步骤详情"| LPP
+    CB <-->|"飞机状态广播"| IR
+    MAP <-->|"位置/航迹同步"| IR
+    ADV -.->|"环境参数推送"| MAP
+    ADV -.->|"故障状态"| CB
+
+    style CB fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style MAP fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style LPP fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style IR fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style ADV fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style MAINT fill:#fee2e2,stroke:#dc2626,stroke-width:2px,stroke-dasharray: 5 5
+    style SC fill:#e2e8f0,stroke:#475569,stroke-width:3px
+</div>
+
+<h3>核心训练域四模块正交关系</h3>
+<p>核心训练域的四个模块遵循 <strong>"对象-场景-流程-监控"</strong> 的正交分解，彼此之间不是层级包含关系，而是通过数据联动保持职责独立：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">模块</th><th style="width:22%">核心关注点</th><th style="width:30%">抽象逻辑</th><th style="width:30%">与模拟器核心的交互模式</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Control Board</strong></td>
+<td>本机实时参数</td>
+<td>训练对象——所有与"这架飞机此刻状态"相关的参数，是系统的<strong>聚合根</strong></td>
+<td>双向读写：修改参数后下发至模拟器核心；核心状态变化实时反馈到面板</td>
+</tr>
+<tr>
+<td><strong>Map</strong></td>
+<td>空间与环境</td>
+<td>训练场景——飞机所处的物理世界（天气、地形、交通、导航台）</td>
+<td>双向读写：Slew 拖动飞机位置回写核心；核心推送飞机位置/航迹至地图渲染</td>
+</tr>
+<tr>
+<td><strong>Lesson Plan Profile</strong></td>
+<td>课程执行时间线</td>
+<td>训练剧本——按阶段推进的预定义流程，将训练活动结构化为可编排脚本</td>
+<td>间接交互：通过 Control Board 的 LESSON PLAN Tab 向核心下发步骤指令</td>
+</tr>
+<tr>
+<td><strong>Instruments Repeaters</strong></td>
+<td>座舱仪表复示</td>
+<td>观察窗口——教员视角的飞行状态可视化，与学员座舱仪表形成镜像</td>
+<td>只读订阅：从模拟器核心接收仪表数据，不反向影响模拟器状态</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>架构假设</strong><span class="confidence conf-high">高置信度</span><br/>
+Instruments Repeaters 被设计为<strong>纯消费端</strong>，这是从原始手册中 "allows the instructor to select which cockpit instruments to repeat or display" 的描述推导而来——教员只选择"看哪些仪表"，从不通过这些仪表反向控制飞机。这种设计保证了仪表显示不会干扰模拟器核心的物理计算。
+</div>
+
+<h3>支撑保障域两模块设计原则</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">模块</th><th style="width:22%">设计原则</th><th style="width:30%">功能定位</th><th style="width:30%">与核心训练域的关系</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Advanced</strong></td>
+<td>高频捷径<br/>(Power-User Shortcut)</td>
+<td>为时间敏感场景提供绕过常规层级的快速通道，允许功能重复以换取时间效率</td>
+<td>功能覆盖 Control Board 和 Map 中的子集，但交互路径更短；直接操作模拟器核心或修改 Control Board 参数</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>角色隔离<br/>(Role-Based Isolation)</td>
+<td>维护人员执行模拟器校准、系统测试、软件更新等后台任务</td>
+<td>与核心训练域物理/逻辑隔离，通常配合独立权限控制；维护操作不应影响当前训练状态</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box warn">
+<strong>关键洞察：</strong>Advanced 不是 Control Board 的"简化版"，而是其<strong>"应急版"</strong>。它的设计目标不是"组织所有功能"，而是"在 3 秒内找到并执行关键操作"。因此它允许功能重复（如冻结/重置同时在 Footer 和 Advanced 中存在），以换取时间效率。详见 <a href="ch1_1_components.html">1.1.8 Advanced 的快速访问哲学</a>。
+</div>
+
+<!-- ==================== 2.1.2 ==================== -->
+<h2 id="sec-2-1-2">2.1.2 核心数据流向图</h2>
+
+<p>教员在 IOS 上的每一次操作，最终都遵循一条完整的数据链路：<strong>教员操作 → UI 控件层 → 状态管理层 → 模拟器核心 → 反馈渲染 → 教员感知</strong>。以下数据流向图展示了这条链路的完整闭环，以及录制/回放/快照等持久化分支。</p>
+
+<h3>端到端数据流全景</h3>
+<div class="mermaid">
+flowchart LR
+    subgraph UI["UI 层"]
+        INST["教员操作<br/>点击/输入/选择/拖拽"]
+        CTRL["UI 控件层<br/>Sliding Panel / Wheel Picker / Toggle / Keypad"]
+    end
+
+    subgraph STATE["状态管理层"]
+        SM["Session State Manager<br/>全局状态管理器"]
+        VER["State Version Control<br/>状态版本控制"]
+    end
+
+    subgraph CORE["模拟器核心层"]
+        PHY["物理引擎<br/>飞行动力学"]
+        ENV["环境引擎<br/>天气/地形/时间"]
+        SND["声音系统"]
+    end
+
+    subgraph OUT["输出与持久化层"]
+        RND["渲染引擎<br/>Map / 仪表 / 视景"]
+        REC["持久化<br/>录制/快照/FMS内存"]
+    end
+
+    INST --> CTRL
+    CTRL -->|"参数变更事件"| SM
+    SM -->|"原子状态更新"| VER
+    SM -->|"飞控指令"| PHY
+    SM -->|"环境参数"| ENV
+    PHY -->|"物理状态广播"| RND
+    ENV -->|"环境状态广播"| RND
+    PHY -->|"飞行数据"| SND
+    SM -->|"状态快照"| REC
+    REC -->|"回放/调用"| SM
+    RND -->|"视觉/听觉反馈"| INST
+    VER -->|"版本校验"| SM
+
+    style SM fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style VER fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style PHY fill:#e2e8f0,stroke:#475569,stroke-width:2px
+    style ENV fill:#e2e8f0,stroke:#475569,stroke-width:2px
+    style REC fill:#f3e8ff,stroke:#9333ea,stroke-width:2px
+</div>
+
+<h3>数据流分层说明</h3>
+<div class="arch-block">
+<h4>UI 层 → 状态管理层</h4>
+<p>教员通过 <a href="ch1_1_components.html">1.1.2 / 1.1.3</a> 中定义的控件体系与系统交互。所有参数修改（无论来自 Control Board 的 Wheel Picker、Map 的 Slew 拖拽，还是 Advanced 的快速按钮）均被抽象为统一的<strong>参数变更事件（Parameter Change Event）</strong>，携带以下元数据：</p>
+<ul>
+<li>参数标识符（Parameter ID）</li>
+<li>目标值（Target Value）</li>
+<li>来源工作区（Source Workspace）</li>
+<li>是否需要确认（Require Confirmation）</li>
+<li>生效时机（即时 / 冻结后 / 下一帧）</li>
+</ul>
+</div>
+
+<div class="arch-block">
+<h4>状态管理层 → 模拟器核心层</h4>
+<p>Session State Manager 是所有工作区与模拟器核心之间的<strong>唯一协调者</strong>。它的核心职责包括：</p>
+<ul>
+<li><strong>状态仲裁</strong>：当多个工作区同时修改同一参数时（如 Control Board 和 Advanced 同时修改风速），按"最后写入优先"或"工作区优先级"规则仲裁</li>
+<li><strong>版本控制</strong>：每次冻结/解冻/状态调用/课程跳转时递增全局 State Version，各工作区消费数据前校验版本号，拒绝过期更新</li>
+<li><strong>批量下发</strong>：对于状态调用（Recall）等批量恢复场景，按"机场 → 环境 → 飞机 → 故障 → 课程"的顺序原子化下发，避免中间态被渲染</li>
+</ul>
+</div>
+
+<div class="speculation-box">
+<strong>架构假设</strong><span class="confidence conf-med">中置信度</span><br/>
+Session State Manager 的存在是从 <a href="ch1_8_reference_flows.html">1.8</a> 中"冻结/录制/回放的跨工作区影响"以及"状态一致性设计"章节推导而来的。原始手册并未明确提及一个"中心状态管理器"，但跨工作区的状态同步行为（如冻结时所有仪表同时静止）暗示了某种集中式协调机制的存在。具体实现可能是集中式状态管理（Redux/Vuex 风格），也可能是基于事件总线的分布式协调——待第 4 章技术选型后确定。
+</div>
+
+<div class="arch-block">
+<h4>模拟器核心层 → 输出层</h4>
+<p>模拟器核心完成物理计算后，将结果推送至各消费端：</p>
+<ul>
+<li><strong>Map 渲染引擎</strong>：接收飞机位置、航迹、环境特征（风暴、入侵者）数据</li>
+<li><strong>Instruments Repeater 数据流</strong>：接收姿态、空速、高度、航向等仪表数据</li>
+<li><strong>Control Board 反馈</strong>：当前参数值回显（如 Weight & CG 修改后的新重心位置）</li>
+<li><strong>声音系统</strong>：引擎声音、风切变警告、TCAS 告警等音频输出</li>
+</ul>
+</div>
+
+<!-- ==================== 2.1.3 ==================== -->
+<h2 id="sec-2-1-3">2.1.3 跨工作区共享数据与状态同步机制</h2>
+
+<p>六大工作区并非完全独立，多个工作区共享同一批底层数据。理解这些共享关系是设计状态同步机制的前提。以下两张表格分别展示了<strong>数据依赖矩阵</strong>和<strong>状态同步规则</strong>。</p>
+
+<h3>跨工作区数据依赖矩阵</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">数据类别</th><th style="width:22%">数据项</th><th style="width:30%">共享该数据的工作区</th><th style="width:30%">数据所有者</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>飞机物理状态</strong></td><td>位置、姿态、速度、重量、重心、燃油</td><td>Control Board, Map, Instruments Repeaters, Advanced</td><td>模拟器核心（物理引擎）</td></tr>
+<tr><td><strong>参考机场与跑道</strong></td><td>机场 ICAO、跑道标识、跑道条件</td><td>Control Board (REFERENCE AIRPORT Tab), Map, Lesson Plan Profile</td><td>Control Board（教员输入或课程加载）</td></tr>
+<tr><td><strong>环境参数</strong></td><td>风、温度、QNH、能见度、云层、降水</td><td>Control Board (CURRENT CONDITIONS Tab), Map, Advanced (Environment)</td><td>Control Board / Advanced（教员输入）</td></tr>
+<tr><td><strong>课程状态</strong></td><td>当前步骤索引、阶段列表、执行进度</td><td>Control Board (LESSON PLAN Tab), Lesson Plan Profile</td><td>Lesson Plan Profile（课程引擎）</td></tr>
+<tr><td><strong>故障状态</strong></td><td>激活故障列表、预位故障列表</td><td>Control Board (AIRCRAFT Tab / Malfunctions Panel), Advanced (Failures)</td><td>Control Board（教员触发）</td></tr>
+<tr><td><strong>冻结状态</strong></td><td>冻结类型、冻结/解冻标志</td><td>全部 6 个工作区 + 模拟器核心</td><td>Footer / Advanced（教员触发）</td></tr>
+<tr><td><strong>时间加速因子</strong></td><td>Speed Up 倍率</td><td>Footer, 模拟器核心</td><td>Footer</td></tr>
+<tr><td><strong>FMS 航线数据</strong></td><td>飞行计划、航路点、进近程序</td><td>Map, Control Board (REFERENCE AIRPORT Tab), Lesson Plan Profile</td><td>FMS 系统（模拟器核心子模块）</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>状态同步规则表</h3>
+<p>当某一工作区修改了共享数据，变更应按照以下规则传播到其他工作区：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:16%">变更源</th><th style="width:20%">被修改的数据</th><th style="width:32%">受影响工作区</th><th style="width:32%">同步行为</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Control Board<br/>REFERENCE AIRPORT</strong></td>
+<td>参考机场 / 跑道</td>
+<td>Map, Lesson Plan Profile</td>
+<td>Map 自动重新定位至新机场；Lesson Plan 中涉及该机场的阶段参数更新</td>
+</tr>
+<tr>
+<td><strong>Map<br/>Slew 拖动</strong></td>
+<td>飞机位置 / 航向</td>
+<td>Control Board (AIRCRAFT / REFERENCE AIRPORT), Instruments Repeaters</td>
+<td>Control Board 上位置/航向参数实时同步更新；Repeater 仪表读数同步变化</td>
+</tr>
+<tr>
+<td><strong>Control Board<br/>CURRENT CONDITIONS</strong></td>
+<td>风 / 温度 / QNH / 能见度</td>
+<td>Map, Advanced</td>
+<td>Map 上风暴/云层/风向标注更新；Advanced → Environment 面板数值同步</td>
+</tr>
+<tr>
+<td><strong>Lesson Plan Profile</strong></td>
+<td>当前执行步骤</td>
+<td>Control Board (LESSON PLAN Tab), Map</td>
+<td>Control Board 上步骤高亮跳转；Map 上航线高亮当前阶段航路点</td>
+</tr>
+<tr>
+<td><strong>Advanced<br/>Failures</strong></td>
+<td>激活故障</td>
+<td>Control Board (AIRCRAFT Tab / Malfunctions Panel / Footer)</td>
+<td>Malfunctions Panel 中故障状态更新；Footer 故障计数器更新；若故障影响仪表，Repeater 同步显示</td>
+</tr>
+<tr>
+<td><strong>Footer / Advanced<br/>Freeze</strong></td>
+<td>全局冻结标志</td>
+<td>全部工作区 + 模拟器核心</td>
+<td>所有工作区停止接收新状态，保持冻结瞬间快照；UI 输入事件队列不清空，允许浏览/预修改参数</td>
+</tr>
+<tr>
+<td><strong>Footer<br/>Reset</strong></td>
+<td>环境 / 系统 / 总重置</td>
+<td>Control Board, Map, Instruments Repeaters</td>
+<td>被重置的参数恢复默认值，所有关联工作区同步刷新；重置期间通常隐含冻结保护</td>
+</tr>
+<tr>
+<td><strong>Advanced<br/>Recording / Recall</strong></td>
+<td>状态快照（全量）</td>
+<td>全部工作区</td>
+<td>Recall 时按"机场→环境→飞机→故障→课程"顺序原子恢复；每个恢复步骤完成后通知对应工作区刷新</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>同步机制设计要点：</strong>对于"飞机物理状态"这类由模拟器核心拥有的数据，推荐采用<strong>发布-订阅（Pub-Sub）模式</strong>——核心作为 Publisher，各工作区作为 Subscriber，核心按固定频率（如 30Hz 或 60Hz）广播状态更新。对于"参考机场"这类由教员输入的数据，推荐采用<strong>事件驱动（Event-Driven）模式</strong>——变更源触发事件，Session State Manager 转发至所有关注该数据的工作区。
+</div>
+
+<!-- ==================== 2.1.4 ==================== -->
+<h2 id="sec-2-1-4">2.1.4 状态一致性设计原则</h2>
+
+<p>冻结、回放、状态调用是 IOS 中影响范围最大的三类全局操作。它们必须保证<strong>所有工作区对同一状态达成共识</strong>，否则将出现"飞机已停飞但仪表还在动"或"Map 已跳转但 Control Board 仍显示旧机场"等严重不一致。本节将 <a href="ch1_8_reference_flows.html">1.8 的 7.5 状态一致性设计</a> 升级为系统级设计原则。</p>
+
+<h3>原则一：全局原子状态标志</h3>
+<p>所有全局性操作（冻结/解冻、状态调用、课程跳转）应由一个<strong>全局原子状态管理器</strong>接收并更新全局状态标志，随后触发同步事件。各消费工作区在<strong>下一个渲染循环或数据更新周期开始时</strong>，必须首先检查该全局标志；若标志为"全局变更中"，则停止更新自身状态并等待变更完成通知。</p>
+
+<h3>原则二：State Version 版本控制</h3>
+<p>建议在实现时引入一个<strong>全局 Session State Version</strong>（单调递增的整数或时间戳），每次冻结/解冻/调用/课程跳转都递增版本号。各工作区消费状态时校验版本号，以检测和拒绝过期的异步更新。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">操作类型</th><th style="width:20%">版本号变化</th><th style="width:60%">版本号用途</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>冻结 (Freeze)</strong></td><td>Version += 1</td><td>所有工作区在消费新数据前检查版本号；若版本号未变，继续显示缓存快照；若版本号增加，确认进入冻结态</td></tr>
+<tr><td><strong>解冻 (Unfreeze)</strong></td><td>Version += 1</td><td>标记状态恢复流动；各工作区重新开始消费模拟器核心推送的实时数据</td></tr>
+<tr><td><strong>状态调用 (Recall)</strong></td><td>Version += 1（恢复前）<br/>Version += 1（恢复后）</td><td>恢复前递增防止旧数据覆盖恢复中的中间态；恢复完成后再次递增通知所有工作区"新状态已就绪"</td></tr>
+<tr><td><strong>课程跳转 (Go to Step)</strong></td><td>Version += 1</td><td>课程步骤索引变更属于逻辑状态跳变，需要 Map 和 Control Board 同步更新高亮和参数</td></tr>
+<tr><td><strong>重新定位 (Reposition)</strong></td><td>Version += 1</td><td>飞机位置/机场/跑道的原子变更；Map、Control Board、Instruments 必须同时刷新</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>原则三：最终一致性策略与允许偏差</h3>
+<p>对于无法做到严格实时同步的场景（如 Map 渲染与仪表数据流来自不同线程/进程），允许非关键视觉元素存在短暂的（&lt; 100ms）不一致；但所有关键状态必须在操作指令发出后的下一个数据更新周期内达成一致。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">状态类别</th><th style="width:25%">一致性要求</th><th style="width:25%">最大允许偏差</th><th style="width:30%">降级行为</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>飞机位置 / 姿态 / 高度</strong></td><td>强一致性</td><td>0ms（同一帧）</td><td>不允许偏差；若 Map 与 Repeater 显示不一致，优先以 Repeater 为准（因为 Repeater 直接订阅物理引擎）</td></tr>
+<tr><td><strong>冻结/解冻标志</strong></td><td>强一致性</td><td>&lt; 50ms</td><td>若某工作区未在时限内响应冻结，强制冻结并记录警告日志</td></tr>
+<tr><td><strong>环境参数（风/温度/QNH）</strong></td><td>强一致性</td><td>&lt; 100ms</td><td>Control Board 显示的值视为权威来源；Map 上的天气图层允许短暂过渡动画</td></tr>
+<tr><td><strong>课程步骤索引</strong></td><td>强一致性</td><td>&lt; 100ms</td><td>Control Board 与 Profile 必须同步高亮；若不一致，暂停课程执行等待对齐</td></tr>
+<tr><td><strong>云层 / 降水动画</strong></td><td>最终一致性</td><td>&lt; 500ms</td><td>允许 Map 上云层图层的淡入淡出过渡；不影响训练逻辑正确性</td></tr>
+<tr><td><strong>仪表指针动画</strong></td><td>最终一致性</td><td>&lt; 200ms</td><td>允许指针平滑插值；物理值本身必须严格一致</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>架构假设</strong><span class="confidence conf-low">低置信度</span><br/>
+上述"State Version 版本控制"机制是从跨工作区状态同步的<strong>需求侧</strong>推导的假设性设计方案。原始手册并未提及任何版本号机制，但"冻结时所有工作区必须同时静止"这一可观测行为，强烈暗示了某种集中式协调或版本校验的存在。具体实现形式（集中式状态管理器 vs. 分布式事件总线 vs. 共享内存锁）待第 4 章技术选型后确定。
+</div>
+
+<h3>原则四：状态恢复的顺序约束</h3>
+<p>状态调用（Recall）和重新定位（Reposition）涉及多个子系统的批量更新，必须遵循严格的恢复顺序，以避免中间态被渲染或物理引擎进入非法状态：</p>
+<ol>
+<li><strong>冻结模拟器</strong>——防止恢复过程中飞机继续飞行</li>
+<li><strong>恢复参考机场与跑道</strong>（REFERENCE AIRPORT）——确定地理基准</li>
+<li><strong>恢复环境参数</strong>（CURRENT CONDITIONS）——确定大气基准</li>
+<li><strong>恢复飞机物理状态</strong>（AIRCRAFT）——确定对象状态</li>
+<li><strong>恢复故障状态</strong>（Malfunctions）——确定系统异常态</li>
+<li><strong>恢复课程状态</strong>（LESSON PLAN，可选）——确定流程位置</li>
+<li><strong>通知 Map 和 Instruments Repeaters 刷新</strong></li>
+<li><strong>解冻并继续训练</strong></li>
+</ol>
+<div class="highlight-box warn">
+<strong>失败回滚策略：</strong>如果调用过程中任一状态恢复失败（如机场数据损坏、环境参数超限），系统应回滚到调用前的快照，或保持在冻结状态等待教员决策。绝不允许"半恢复"状态进入训练流程。
+</div>
+
+<!-- ==================== 2.1.5 ==================== -->
+<h2 id="sec-2-1-5">2.1.5 安全边界与权限模型</h2>
+
+<p>IOS 教员台不仅是训练工具，也是一台价值数亿元的飞行模拟器的控制中枢。安全边界设计必须保证：维护操作不会污染训练状态，教员的误操作有降级保护，急停信号能够无条件中断一切物理运动。</p>
+
+<h3>安全边界架构图</h3>
+<div class="mermaid">
+graph TD
+    subgraph IZ["教员操作域 Instructor Zone"]
+        direction LR
+        CBZ["Control Board"]
+        MAPZ["Map"]
+        LPPZ["Lesson Plan"]
+        IRZ["Instruments"]
+        ADVZ["Advanced"]
+    end
+
+    MZ["维护域<br/>Maintenance Zone"]
+    ESTOP["急停按钮<br/>E-Stop<br/>硬件信号<br/>最高优先级"]
+    PERM["权限校验层<br/>密码 / 角色 / 物理锁"]
+    SCZ["Simulator Core"]
+
+    IZ -->|"读写操作"| SCZ
+    MZ -->|"维护指令<br/>只读监控"| SCZ
+    ESTOP -->|"硬中断"| SCZ
+    PERM --> MZ
+    PERM -.->|"角色校验"| IZ
+
+    ESTOP -.->|"中断通知"| IZ
+    ESTOP -.->|"中断通知"| MZ
+
+    style IZ fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style MZ fill:#fee2e2,stroke:#dc2626,stroke-width:2px,stroke-dasharray: 5 5
+    style ESTOP fill:#fef2f2,stroke:#dc2626,stroke-width:4px
+    style PERM fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style SCZ fill:#e2e8f0,stroke:#475569,stroke-width:3px
+</div>
+
+<h3>权限模型三层结构</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">层级</th><th style="width:25%">控制机制</th><th style="width:57%">说明与边界行为</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L1 物理层</strong></td>
+<td>硬件急停按钮<br/>运动平台物理锁<br/>驾驶舱门控</td>
+<td>急停按钮的信号建议直连模拟器核心的运动与视景系统，绕过所有软件层，确保即使 IOS 软件崩溃也能安全停机。IOS 在急停触发后应保持 UI 响应以记录故障现象，但禁止任何可能恢复运动的操作。</td>
+</tr>
+<tr>
+<td><strong>L2 角色层</strong></td>
+<td>Maintenance 独立工作区<br/>登录密码 / 权限令牌<br/>功能可见性控制</td>
+<td>Maintenance 工作区与核心训练域物理隔离。维护人员登录后，教员的训练 session 通常应被暂停或保存后退出，避免维护校准过程中教员误操作。维护功能（如运动平台测试、传感器校准）在教员角色下完全不可见。</td>
+</tr>
+<tr>
+<td><strong>L3 操作域层</strong></td>
+<td>Footer Reset 确认对话框<br/>Session Reset 二次确认<br/>冻结期间的参数修改延迟生效</td>
+<td>教员在日常训练中的高风险操作（如 Total Reset、Session Reset）通过软件层面的确认对话框进行防护。冻结期间允许修改参数，但修改在解冻后才生效，避免教员在冻结时误改参数导致解冻后飞机状态跳变。</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>架构假设</strong><span class="confidence conf-med">中置信度</span><br/>
+急停按钮的信号集成方式（GPIO 直连模拟器核心 vs. 通过 IOS 软件层转发）是原始手册未涉及的关键技术问题。上图假设为"硬件直连 + 软件通知"的双通道模式：物理信号直接切断运动/视景电源或发送至运动控制器，同时向 IOS 发送一个状态位以便 UI 记录和显示。若实际系统中急停完全绕过 IOS，则 IOS 只能通过运动系统的状态反馈间接感知急停事件。
+</div>
+
+<h3>安全边界交互规则</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">场景</th><th style="width:35%">规则</th><th style="width:43%">预期行为</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>急停触发</strong></td>
+<td>最高优先级；中断一切物理运动和视景渲染</td>
+<td>所有工作区显示急停状态；Footer 中 Motion / Visual 状态变为 Off / Failed；教员可浏览参数但无法修改任何可能影响安全的状态；维护人员可进入诊断界面</td>
+</tr>
+<tr>
+<td><strong>维护模式进入</strong></td>
+<td>需独立认证；当前训练 session 必须保存或结束</td>
+<td>系统自动执行 Session Save（如有）；切换至 Maintenance 工作区；核心训练域所有控件禁用或隐藏；维护操作日志独立记录，不与训练日志混合</td>
+</tr>
+<tr>
+<td><strong>维护期间教员误登录</strong></td>
+<td>角色校验失败；拒绝访问维护功能</td>
+<td>系统提示"当前处于维护模式，教员账户无法登录"；或允许登录但仅进入只读监控视图</td>
+</tr>
+<tr>
+<td><strong>冻结期间修改参数</strong></td>
+<td>允许修改 UI 值，但延迟至解冻后下发</td>
+<td>Control Board 和 Advanced 中参数显示修改后的值，但标注"待解冻后生效"；解冻瞬间所有待生效参数按优先级批量下发至模拟器核心</td>
+</tr>
+<tr>
+<td><strong>Reset 级联影响</strong></td>
+<td>Reset 操作隐含冻结保护；恢复完成后自动解冻</td>
+<td>点击 Total Reset 时，系统自动冻结 → 执行重置序列 → 验证所有子系统状态正常 → 自动解冻。若重置过程中某系统恢复失败，保持冻结并提示教员。</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- ==================== 附录 ==================== -->
+<h2 id="sec-2-1-appendix">附录：ch1_1 设计原则 → ch2 架构决策映射表</h2>
+
+<p>以下表格将 <a href="ch1_1_components.html">1.1.4 ~ 1.1.11</a> 中总结的五大设计原则，具体化为第 2 章的架构约束条件。每一条原则都直接影响了 2.1.1 ~ 2.1.5 中的某个关键设计决策。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">设计原则</th><th style="width:35%">原则描述</th><th style="width:43%">对应的第 2 章架构决策</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>原则一：按认知模态分离</strong><br/>(Cognitive Modality Separation)</td>
+<td>离散参数与连续空间信息绝不混在同一面板，因为它们激活人脑不同的认知区域</td>
+<td><strong>2.1.1</strong> 中 Control Board 与 Map 被定义为两个独立工作区，各自拥有独立的渲染管线和数据流；<strong>2.1.2</strong> 中 UI 控件层将离散参数输入（Wheel Picker / Keypad）与空间交互（Slew / 拖拽）抽象为不同的事件类型</td>
+</tr>
+<tr>
+<td><strong>原则二：按使用频率分层</strong><br/>(Frequency-Based Layering)</td>
+<td>高频功能常驻主界面；低频功能独立隔离，减少认知噪声</td>
+<td><strong>2.1.1</strong> 中核心训练域四模块为高频工作区，支撑保障域两模块为低频工作区；<strong>2.1.5</strong> 中 Maintenance 通过角色隔离进一步降低教员界面的认知负担</td>
+</tr>
+<tr>
+<td><strong>原则三：按角色隔离</strong><br/>(Role-Based Isolation)</td>
+<td>不同用户角色的功能绝不混用，通过独立工作区 + 权限控制实现干净的安全边界</td>
+<td><strong>2.1.5</strong> 中 Maintenance 被定义为独立操作域，配备 L2 角色层权限校验；急停按钮（L1 物理层）独立于所有软件角色，确保任何角色都能无条件触发</td>
+</tr>
+<tr>
+<td><strong>原则四：同一模型，多重视图</strong><br/>(Multiple Views of One Model)</td>
+<td>同一个领域对象值得为其设计多个正交视图，不强迫用户在"看细节"和"看全局"之间做取舍</td>
+<td><strong>2.1.3</strong> 中课程状态被 Control Board（列表视图）和 Lesson Plan Profile（剖面视图）共享，状态同步规则确保两者始终显示同一套课程数据；<strong>2.1.2</strong> 中 Session State Manager 作为单一事实来源，向多个视图分发一致的数据</td>
+</tr>
+<tr>
+<td><strong>原则五：应急通道设计</strong><br/>(Emergency Bypass Design)</td>
+<td>常规层级导航在紧急场景下是致命的，必须为关键操作预留"直达电梯"</td>
+<td><strong>2.1.1</strong> 中 Advanced 被定义为 Control Board 的"应急版"，直接操作模拟器核心或修改 Control Board 参数；<strong>2.1.5</strong> 中急停按钮（E-Stop）是最高级别的应急通道，完全绕过所有软件层级</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>对后续章节的输入：</strong>2.1 节建立的功能架构全景图、数据依赖矩阵和状态同步规则，是后续 <strong>2.2（端到端交互完整性流程）</strong>、<strong>2.3（UI 控件体系规范）</strong>、<strong>2.4（数据流与接口契约推导）</strong>的顶层约束。任何跨工作区的流程设计、控件行为定义或接口推测，均不得违背本节定义的数据所有权和同步规则。
+</div>
+
+<!-- Footer Nav -->
+<div class="footer-nav">
+<span></span>
+<a class="next" href="ch2_2_interaction_integrity.html">下一节：2.2 端到端交互完整性流程 →</a>
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>

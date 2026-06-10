@@ -36,7 +36,7 @@ NAV_GROUPS: Dict[str, str] = {
 # 章节标题映射（根据 chapter 号自动生成顶层导航标题）
 CHAPTER_TITLES: Dict[int, str] = {
     1: "第 1 章 软件操作",
-    # 2: "第 2 章 软件架构与交互设计",
+    2: "第 2 章 软件架构与交互设计",
 }
 
 # 无 <h1> 标签页面的标题兜底（优先从 <h1> 提取，无则回退到此处）
@@ -184,8 +184,13 @@ def build_nav_tree(pages_info: List[Tuple[Path, str, str]]) -> List[dict]:
     return [node for _, node in tree_nodes]
 
 
-def get_chapter_title(nav_tree: List[dict]) -> str:
-    """根据导航树动态推导顶层章节标题。"""
+def get_chapter_title(nav_tree: List[dict], current_href: str) -> str:
+    """根据当前页面动态推导顶层章节标题。"""
+    current_chapter, _, _ = parse_chapter_key(current_href)
+    if current_chapter != 99:
+        return CHAPTER_TITLES.get(current_chapter, f"第 {current_chapter} 章")
+
+    # 兜底：从导航树中找最小章节号
     chapters = set()
     for node in nav_tree:
         if node["type"] == "leaf":
@@ -206,7 +211,7 @@ def get_chapter_title(nav_tree: List[dict]) -> str:
 
 
 def render_sidebar(nav_tree: List[dict], current_href: str) -> str:
-    """渲染侧边栏 HTML，自动设置 active 与 collapsed。"""
+    """渲染侧边栏 HTML，按章节分组，自动设置 active 与 collapsed。"""
 
     def render_leaf(node: dict, level: int = 0) -> str:
         cls = "nav-link"
@@ -235,26 +240,58 @@ def render_sidebar(nav_tree: List[dict], current_href: str) -> str:
             f'</div>'
         )
 
-    # 动态推导章节标题
-    chapter_title = get_chapter_title(nav_tree)
+    def get_node_chapter(node: dict) -> int:
+        """从导航节点解析所属章节号。"""
+        if node["type"] == "leaf":
+            chapter, _, _ = parse_chapter_key(node["href"])
+            return chapter
+        elif node["type"] == "group" and node.get("children"):
+            chapter, _, _ = parse_chapter_key(node["children"][0]["href"])
+            return chapter
+        return 99
 
-    top_level_html = "\n".join(
-        render_group(n, 0) if n["type"] == "group" else render_leaf(n, 0)
-        for n in nav_tree
-    )
+    # 按章节号对导航节点分组
+    chapter_nodes: Dict[int, List[dict]] = {}
+    for node in nav_tree:
+        ch = get_node_chapter(node)
+        chapter_nodes.setdefault(ch, []).append(node)
+
+    current_chapter, _, _ = parse_chapter_key(current_href)
+
+    # 渲染每个章节的独立折叠组
+    chapter_htmls = []
+    for ch in sorted(chapter_nodes.keys()):
+        nodes = chapter_nodes[ch]
+        inner_html = "\n".join(
+            render_group(n, 0) if n["type"] == "group" else render_leaf(n, 0)
+            for n in nodes
+        )
+
+        chapter_title = CHAPTER_TITLES.get(ch, f"第 {ch} 章")
+        is_current = ch == current_chapter
+
+        toggle_cls = "nav-toggle"
+        children_cls = "nav-children"
+        if not is_current:
+            toggle_cls += " collapsed"
+            children_cls += " collapsed"
+
+        chapter_htmls.append(
+            f'<div class="nav-group">\n'
+            f'  <div class="{toggle_cls}" onclick="toggleNav(this)">'
+            f'<span class="arrow">▼</span><span>{chapter_title}</span></div>\n'
+            f'  <div class="{children_cls}">\n    {inner_html}\n  </div>\n'
+            f'</div>'
+        )
+
+    top_level_html = "\n".join(chapter_htmls)
 
     sidebar_html = (
         '<aside class="sidebar">\n'
         '  <div class="sidebar-header">'
         '<h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>\n'
         '  <nav class="nav-tree">\n'
-        '    <div class="nav-group">\n'
-        '      <div class="nav-toggle" onclick="toggleNav(this)">'
-        f'<span class="arrow">▼</span><span>{chapter_title}</span></div>\n'
-        '      <div class="nav-children">\n'
-        f'        {top_level_html}\n'
-        '      </div>\n'
-        '    </div>\n'
+        f'    {top_level_html}\n'
         '  </nav>\n'
         '</aside>'
     )
@@ -281,7 +318,7 @@ def render_breadcrumb(nav_tree: List[dict], current_href: str) -> str:
                 break
 
     # 动态推导面包屑中的章节标题
-    chapter_title = get_chapter_title(nav_tree)
+    chapter_title = get_chapter_title(nav_tree, current_href)
 
     parts = ['<a href="#">首页</a>']
     parts.append('<span class="breadcrumb-sep">/</span>')

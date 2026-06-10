@@ -143,6 +143,53 @@ NAV_GROUPS = {
 | `CHAPTER_TITLES` | `build.py` 顶部 | 定义章节号与导航顶层标题映射 | 新增章节时 |
 | `PAGE_TITLE_FALLBACKS` | `build.py` 顶部 | 无 `<h1>` 页面的标题兜底 | 极少使用（建议所有页面都写 `<h1>`） |
 
+### 2.8 侧边栏导航分组规则（多章节折叠容器）
+
+> 新增时间：2026-06-10（随 ch2_1 生成同步引入）
+
+`build.py` 在生成侧边栏时，**按章节号（chapter）自动将页面分组为多个独立的可折叠容器**，而非将所有页面混在一个章节下。
+
+**行为规则：**
+
+| 规则 | 说明 |
+|------|------|
+| 分组依据 | 从文件名 `ch{X}_...` 解析章节号 `X`，相同章号的页面归入同一分组 |
+| 分组标题 | 取 `CHAPTER_TITLES[X]`；若未命中，回退为「第 X 章」 |
+| 展开/折叠策略 | **当前页面所在章节自动展开**，其余章节自动折叠（`collapsed`） |
+| 内部排序 | 同一章节内的页面按文件名字典序升序排列；`NAV_GROUPS` 定义的二级分组在章节内部生效 |
+| 二级分组 | `NAV_GROUPS` 仅在同一章节内部生效，不会跨章节聚合 |
+
+**侧边栏 HTML 结构示意（两章场景）：**
+
+```html
+<nav class="nav-tree">
+  <!-- 第 1 章分组 -->
+  <div class="nav-group">
+    <div class="nav-toggle">第 1 章 软件操作</div>
+    <div class="nav-children">
+      <a class="nav-link" href="ch1_1_...">1.1 ...</a>
+      <div class="nav-group">
+        <div class="nav-toggle collapsed">1.2 控制面板工作区</div>
+        <div class="nav-children collapsed">...1.2.x...</div>
+      </div>
+      <!-- ... 其他 1.x 页面 ... -->
+    </div>
+  </div>
+  <!-- 第 2 章分组 -->
+  <div class="nav-group">
+    <div class="nav-toggle collapsed">第 2 章 ...</div>
+    <div class="nav-children collapsed">
+      <a class="nav-link" href="ch2_1_...">2.1 ...</a>
+    </div>
+  </div>
+</nav>
+```
+
+**维护注意事项：**
+- 新增章节时，务必在 `CHAPTER_TITLES` 中补充对应章节标题，否则分组标题会回退为「第 X 章」
+- 章节号不连续（如只有第 1 章和第 3 章）不影响功能，中间空缺的章节号不会生成空分组
+- 面包屑中的章节标题同样基于当前页面文件名解析，与侧边栏分组标题保持一致
+
 ---
 
 ## 3. 图片处理规则
