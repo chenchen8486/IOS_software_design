@@ -105,9 +105,10 @@ tr:last-child td{border-bottom:none}
 .category-header h3{margin:0;font-size:16px;color:var(--text);font-weight:600}
 .category-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
 .category-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
-.category.collapsed .toggle-icon{transform:rotate(-90deg)}
-.category-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
-.category:not(.collapsed) .category-body{display:block}
+details.category:not([open]) .toggle-icon{transform:rotate(-90deg)}
+.category-body{padding:0 18px 18px;border-top:1px solid var(--border)}
+details.category > summary{list-style:none}
+details.category > summary::-webkit-details-marker{display:none}
 .index-table{width:100%;border-collapse:collapse;font-size:14px}
 .index-table th{text-align:left;padding:10px 12px;background:#f8fafc;font-weight:600;color:var(--text-secondary);font-size:13px;border-bottom:1px solid var(--border);white-space:nowrap}
 .index-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
@@ -182,7 +183,7 @@ tr:last-child td{border-bottom:none}
   </div>
     <div class="content">
       <h1>1.9 索引</h1>
-<p class="subtitle">性质：全术语检索与快速定位入口  |  覆盖范围：第 1 章全部页面（1.1 ~ 1.8）及第 2 章已发布页面  |  更新方式：随新增页面同步扩充</p>
+<p class="subtitle">性质：全术语检索与快速定位入口  |  覆盖范围：第 1 章全部页面（1.1 ~ 1.8）  |  更新方式：随新增页面同步扩充</p>
 <blockquote>
 <strong>本章定位：</strong>本章是 IOS 教员台软件手册的<strong>术语总索引与快速定位入口</strong>，按逻辑类别归集所有在 1.1 ~ 1.8 各章节中出现的<strong>软件界面术语、航空专业术语、缩略语及架构概念</strong>。每个条目均给出中文定义、英文原文及关联 HTML 页面链接，方便开发人员和教员快速检索概念来源。
 </blockquote>
@@ -205,15 +206,15 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <!-- ==================== 一、工作区与界面组件 ==================== -->
-<div class="category" id="cat-workspace">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-workspace" open>
+<summary class="category-header">
 <h3><span class="tag-cat cat-ui">UI</span>工作区与界面组件</h3>
 <span class="count">16</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">控制面板 <span class="term-en">Control Board</span></td>
@@ -297,19 +298,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 二、软件交互操作 ==================== -->
-<div class="category collapsed" id="cat-interaction">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-interaction">
+<summary class="category-header">
 <h3><span class="tag-cat cat-op">OP</span>软件交互操作</h3>
 <span class="count">10</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">SLEW 位移 <span class="term-en">Slew</span></td>
@@ -363,19 +365,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 三、课程与训练管理 ==================== -->
-<div class="category collapsed" id="cat-lesson">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-lesson">
+<summary class="category-header">
 <h3><span class="tag-cat cat-lesson">LESSON</span>课程与训练管理</h3>
 <span class="count">18</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">课程计划 <span class="term-en">Lesson Plan</span></td>
@@ -469,19 +472,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 四、飞机系统与性能参数 ==================== -->
-<div class="category collapsed" id="cat-aircraft">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-aircraft">
+<summary class="category-header">
 <h3><span class="tag-cat cat-ac">AC</span>飞机系统与性能参数</h3>
 <span class="count">22</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">总重 GW <span class="term-en">Gross Weight</span></td>
@@ -595,19 +599,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 五、机场与导航设施 ==================== -->
-<div class="category collapsed" id="cat-airport">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-airport">
+<summary class="category-header">
 <h3><span class="tag-cat cat-nav">NAV</span>机场与导航设施</h3>
 <span class="count">20</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">参考机场 <span class="term-en">Reference Airport</span></td>
@@ -711,19 +716,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 六、环境与气象 ==================== -->
-<div class="category collapsed" id="cat-env">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-env">
+<summary class="category-header">
 <h3><span class="tag-cat cat-env">ENV</span>环境与气象</h3>
 <span class="count">22</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">外界大气温度 OAT <span class="term-en">Outside Air Temperature</span></td>
@@ -837,19 +843,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 七、故障与应急处置 ==================== -->
-<div class="category collapsed" id="cat-malf">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-malf">
+<summary class="category-header">
 <h3><span class="tag-cat cat-malf">MALF</span>故障与应急处置</h3>
 <span class="count">14</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">故障 MALF <span class="term-en">Malfunction</span></td>
@@ -923,19 +930,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 八、通信与空管 ==================== -->
-<div class="category collapsed" id="cat-comm">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-comm">
+<summary class="category-header">
 <h3><span class="tag-cat cat-com">COMM</span>通信与空管</h3>
 <span class="count">10</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">自动终端信息服务 ATIS <span class="term-en">Automatic Terminal Information Service</span></td>
@@ -989,19 +997,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 九、状态与控制模式 ==================== -->
-<div class="category collapsed" id="cat-state">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-state">
+<summary class="category-header">
 <h3><span class="tag-cat cat-state">STATE</span>状态与控制模式</h3>
 <span class="count">18</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">飞行冻结 <span class="term-en">Flight Freeze</span></td>
@@ -1095,19 +1104,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 十、地图与可视化 ==================== -->
-<div class="category collapsed" id="cat-map">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-map">
+<summary class="category-header">
 <h3><span class="tag-cat cat-map">MAP</span>地图与可视化</h3>
 <span class="count">14</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">2D/3D 视图 <span class="term-en">2D/3D View</span></td>
@@ -1181,19 +1191,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 十一、架构与数据流 ==================== -->
-<div class="category collapsed" id="cat-arch">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-arch">
+<summary class="category-header">
 <h3><span class="tag-cat cat-arch">ARCH</span>架构与数据流</h3>
 <span class="count">10</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<thead><tr><th scope="col" style="width:25%">术语</th><th scope="col" style="width:45%">定义</th><th scope="col" style="width:30%">关联页面</th></tr></thead>
 <tbody>
 <tr>
 <td class="term">参考流程 RF <span class="term-en">Reference Flow</span></td>
@@ -1247,19 +1258,20 @@ tr:last-child td{border-bottom:none}
 </tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
 <!-- ==================== 十二、缩略语表 ==================== -->
-<div class="category collapsed" id="cat-acronym">
-<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<details class="category" id="cat-acronym">
+<summary class="category-header">
 <h3><span class="tag-cat cat-arch">ACR</span>缩略语速查表</h3>
-<span class="count">30</span>
+<span class="count">37</span>
 <span class="toggle-icon">▼</span>
-</div>
+</summary>
 <div class="category-body">
 <table class="index-table">
-<thead><tr><th style="width:18%">缩略语</th><th style="width:35%">英文全称</th><th style="width:47%">中文释义</th></tr></thead>
+<thead><tr><th scope="col" style="width:18%">缩略语</th><th scope="col" style="width:35%">英文全称</th><th scope="col" style="width:47%">中文释义</th></tr></thead>
 <tbody>
 <tr><td class="term">AC</td><td class="def">Aircraft</td><td class="def">飞机/航空器</td></tr>
 <tr><td class="term">ADS</td><td class="def">Automatic Dependent Surveillance</td><td class="def">自动相关监视</td></tr>
@@ -1300,13 +1312,14 @@ tr:last-child td{border-bottom:none}
 <tr><td class="term">ZFW</td><td class="def">Zero Fuel Weight</td><td class="def">零燃油重量</td></tr>
 </tbody>
 </table>
+<p style="text-align:right;font-size:12px;margin-top:8px"><a href="#nav-top">↑ 返回导航</a></p>
 </div>
-</div>
+</details>
 
-<p style="margin-top:24px;color:var(--text-secondary);font-size:13px;text-align:center">— 索引覆盖 1.1 ~ 1.8 全部页面及第 2 章已发布页面，后续随章节扩展持续更新 —</p>
+<p style="margin-top:24px;color:var(--text-secondary);font-size:13px;text-align:center">— 索引覆盖 1.1 ~ 1.8 全部页面，后续随章节扩展持续更新 —</p>
     </div>
   </div>
 </div>
-
+<script>(function(){function o(){var h=window.location.hash;if(!h)return;var t=document.querySelector(h);if(t&&t.tagName==='DETAILS')t.open=true}window.addEventListener('DOMContentLoaded',o);window.addEventListener('hashchange',o)})();</script>
 </body>
 </html>
