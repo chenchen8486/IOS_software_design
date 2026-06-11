@@ -1,0 +1,658 @@
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+.collapsible{border:1px solid var(--border);border-radius:var(--radius);margin:16px 0;overflow:hidden;background:var(--surface)}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.collapsible-header h4{margin:0;text-transform:none;letter-spacing:0;font-size:15px;color:var(--text);font-weight:600}
+.collapsible-header .badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.collapsible-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.collapsible.collapsed .toggle-icon{transform:rotate(-90deg)}
+.collapsible-body{padding:18px;border-top:1px solid var(--border);display:none}
+.collapsible:not(.collapsed) .collapsible-body{display:block}
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-warn{background:#fef3c7;color:#92400e}
+.tag-danger{background:#fee2e2;color:#991b1b}
+@media print{.collapsible-body{display:block!important}}
+@media print{.mermaid{page-break-inside:avoid}}
+</style>
+
+<h1>2.3 UI 控件体系规范</h1>
+<p class="subtitle">原始手册对应：ch1_1（1.1.2 ~ 1.1.3 控件定义）+ ch1_2_1 ~ ch1_2_7 / ch1_7 全部控件用例  |  性质：跨工作区归纳与逆向推导  |  置信度：高</p>
+
+<div class="speculation-box">
+<strong>内容性质声明：</strong>本节基于 <a href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a> 中对 UI 控件的原始定义，以及在 <a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> ~ <a href="ch1_2_7_control_board_footer.html">1.2.7</a>、<a href="ch1_7_advanced.html">1.7</a> 等全部 HTML 中观察到的控件实际用例进行<strong>归纳、抽象与规范化</strong>。所有"状态机"和"输入范式"均为从界面现象反向推导的通用模式，非 CAE 官方控件规范。
+</div>
+
+<!-- ==================== 2.3.1 ==================== -->
+<h2 id="sec-2-3-1">2.3.1 基础控件库完整清单</h2>
+
+<p>通过对 ch1 全部 HTML 的跨文件检索，可将 IOS 中实际出现的交互控件归纳为 <strong>三大族、十四种具体类型</strong>。以下分类体系覆盖了从 Control Board 到 Advanced、从 Footer 到 Map 的全部交互元素。</p>
+
+<h3>控件分类体系总览</h3>
+<div class="mermaid">
+graph TD
+    ROOT["IOS 控件库总览<br/>UI Component Library"]
+    ROOT --> BASIC["基础控件族<br/>Basic Controls"]
+    ROOT --> SELECT["选择类控件族<br/>Selection Controls"]
+    ROOT --> CONTAINER["容器类控件族<br/>Container Controls"]
+
+    BASIC --> B1["Button 按钮族<br/>Action / Toggle / Expandable / Quick Access"]
+    BASIC --> B2["Text Field 文本字段<br/>Parameter Input / Read Only"]
+    BASIC --> B3["Slider 滑块<br/>连续值调节"]
+
+    SELECT --> S1["Wheel Picker 轮选器<br/>离散值快速选择"]
+    SELECT --> S2["Radio / Checkbox<br/>单选与复选"]
+    SELECT --> S3["Dropdown / Roll-up<br/>下拉与卷展菜单"]
+    SELECT --> S4["Keypad 键盘<br/>精确数值输入"]
+    SELECT --> S5["Interactive Graph<br/>交互式图表"]
+
+    CONTAINER --> C1["Tab 选项卡<br/>页面内视图切换"]
+    CONTAINER --> C2["Sliding Panel 滑动面板<br/>侧边弹出详情层"]
+    CONTAINER --> C3["Quick Access Bar<br/>底部快速访问栏"]
+
+    style ROOT fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style BASIC fill:#ecfdf5,stroke:#059669,stroke-width:2px
+    style SELECT fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style CONTAINER fill:#f3e8ff,stroke:#9333ea,stroke-width:2px
+</div>
+
+<h3>基础控件族（Basic Controls）</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">控件名</th><th style="width:22%">英文</th><th style="width:20%">类型</th><th style="width:40%">状态定义与交互规则</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>动作按钮</strong></td>
+<td>Action Button</td>
+<td>瞬时触发</td>
+<td><strong>正常态</strong>（灰底）→ 点击瞬时触发 → 自动回弹至正常态。无持久状态。典型：Execute、End Lesson、Send Uplink、Capture Flight</td>
+</tr>
+<tr>
+<td><strong>切换按钮</strong></td>
+<td>Toggle Button</td>
+<td>双稳态切换</td>
+<td><strong>正常态</strong>（灰底）↔ <strong>激活态</strong>（浅蓝底/高亮）。点击即切换，无需额外确认。典型：Flight Freeze、Fuel Freeze、Chocks、Jacked、External Pneumatic、Stop Bar、Marshaller</td>
+</tr>
+<tr>
+<td><strong>故障切换</strong></td>
+<td>Toggle Fail</td>
+<td>双稳态切换（故障语义）</td>
+<td>与 Toggle 按钮形态相同，但语义为"正常/故障"两种状态。典型：VHF Ground Fault、HF Ground Fault、SATCOM/GES Fault</td>
+</tr>
+<tr>
+<td><strong>扩展按钮</strong></td>
+<td>Expandable Button</td>
+<td>触发弹出容器</td>
+<td><strong>正常态</strong> → 点击展开 Sliding Panel → 按钮保持高亮或不变（视具体实现）。典型：控制面板右侧 Expand Button、各 Tab 中展开滑动面板的入口按钮</td>
+</tr>
+<tr>
+<td><strong>快速访问按钮</strong></td>
+<td>Quick Access Button</td>
+<td>快捷导航/触发</td>
+<td>与 Action Button 类似，但位置固定在 Quick Access Bar 或 Advanced Toolbar 中，承担高频捷径功能。典型：DL/UL、VHF、Weight&CG、Malfunctions、Failures</td>
+</tr>
+<tr>
+<td><strong>参数输入文本字段</strong></td>
+<td>Parameter Input Text Field</td>
+<td>数值/文本输入入口</td>
+<td><strong>只读显示态</strong>（当前值）→ 点击 → 弹出 Keypad / Wheel Picker / Sliding Panel。字段本身不直接编辑，仅作为入口。典型：ASL、IAS、GW、Airport ICAO、Surface Wind</td>
+</tr>
+<tr>
+<td><strong>只读字段</strong></td>
+<td>Read Only Field</td>
+<td>纯信息展示</td>
+<td>仅显示计算结果或系统状态，不可点击编辑。典型：GW CG（自动计算）、Performance Data 中的 V1/VR/V2</td>
+</tr>
+<tr>
+<td><strong>滑块</strong></td>
+<td>Slider</td>
+<td>连续值调节</td>
+<td><strong>最小值端</strong> → 拖拽 → <strong>最大值端</strong>，支持实时预览。典型：Position Slew Rate Slider（1~5 档）、Keypad 内的数值滑块、Intruder Number Slider</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3>选择类控件族（Selection Controls）</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">控件名</th><th style="width:22%">英文</th><th style="width:20%">类型</th><th style="width:40%">状态定义与交互规则</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>轮选器</strong></td>
+<td>Wheel Picker</td>
+<td>离散值滚动选择</td>
+<td><strong>隐藏态</strong> → 长按/上下滑动参数字段 → <strong>呼出态</strong>（滚轮浮层）→ 滚动选择 → 松手即生效（部分参数）或需确认。典型：Time（黎明/白天/黄昏/夜间）、Airport、Runway、Visibility、Temperature、Precipitation</td>
+</tr>
+<tr>
+<td><strong>单选按钮</strong></td>
+<td>Radio Button</td>
+<td>多选一互斥</td>
+<td>同一组内仅允许一个激活态（蓝底白点），点击另一项自动取消前项。典型：Weather Presets（CAVOK/CAT I/II/III）、ICING 等级（轻度/中度/重度）、TURBULENCE 类型（CLEAR AIR/THUNDERSTORM/LOW LEVEL）</td>
+</tr>
+<tr>
+<td><strong>复选框</strong></td>
+<td>Checkbox</td>
+<td>多选组合</td>
+<td>独立开关项，可多选。典型：Auto Match Reference Airport（INSTRUCTOR STATION Sliding Panel）、地图覆盖层选项</td>
+</tr>
+<tr>
+<td><strong>下拉按钮</strong></td>
+<td>Dropdown Button</td>
+<td>展开列表选择</td>
+<td><strong>收起态</strong> → 点击展开下拉列表 → 选择目标项 → 列表自动收起并生效。典型：Preferences 中的力单位/重量单位/环境单位、Taxi Lights（0~5）、City Lights（0~5）</td>
+</tr>
+<tr>
+<td><strong>卷展菜单</strong></td>
+<td>Roll-up Menu</td>
+<td>底部向上展开菜单</td>
+<td>与 Dropdown 形态相似，但展开方向为从下向上（常见于 Footer 区域）。典型：Help Roll-up Menu（11.13）、Workspace Switcher Menu</td>
+</tr>
+<tr>
+<td><strong>键盘</strong></td>
+<td>Keypad</td>
+<td>精确数值输入面板</td>
+<td><strong>关闭态</strong> → 点击参数字段 → <strong>打开态</strong> → 数字按键输入 / 滑块调节 → 绿勾确认 / 红叉取消 → 关闭。典型：GW Keypad、Wind Keypad、Temp Keypad、QNH Keypad、Flight Level Keypad</td>
+</tr>
+<tr>
+<td><strong>交互式图表</strong></td>
+<td>Interactive Graph</td>
+<td>图形化参数编辑</td>
+<td>在坐标系内拖拽节点或曲线来修改参数，实时反馈数值变化。典型：Weight & CG 包线图、UPRT 的 Alpha-Beta 图、V-n 图</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3>容器类控件族（Container Controls）</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">控件名</th><th style="width:22%">英文</th><th style="width:20%">类型</th><th style="width:40%">状态定义与交互规则</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>选项卡</strong></td>
+<td>Tab</td>
+<td>页面内视图切换容器</td>
+<td><strong>当前态</strong>（高亮下划线/底色）与 <strong>非当前态</strong>（灰底）。点击切换内容区域，不触发全局状态变更。典型：Control Board 的 5 个 Tabs（LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT）、Sliding Panel 内的子 Tabs（LOG / NEW UPLINK / CONNECTIVITY CONTROL）</td>
+</tr>
+<tr>
+<td><strong>滑动面板</strong></td>
+<td>Sliding Panel</td>
+<td>侧边弹出详情层</td>
+<td><strong>收起态</strong>（完全隐藏，仅 Expand Button 可见）→ 点击 Expand Button → <strong>展开态</strong>（从右侧滑入，覆盖主内容区）→ 内部操作 → 点击关闭按钮/点击外部区域 → <strong>收起态</strong>。典型：Malfunctions、Weight & Balance、Airport & Reposition、Clouds、ICING、TURBULENCE、INSTRUCTOR STATION</td>
+</tr>
+<tr>
+<td><strong>快速访问栏</strong></td>
+<td>Quick Access Bar</td>
+<td>底部常驻快捷栏</td>
+<td>始终可见，承载高频操作按钮。典型：Control Board Footer（冻结/重置/模拟控制/音量/工作区切换）、Advanced Toolbar（飞机/位置/环境/入侵者/通信/故障/UPRT/重置/录制）</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>控件计数统计：</strong>截至 ch1 全部 HTML 完成时，IOS 教员台界面中共出现 <strong>14 种可复用控件类型</strong>，其中基础控件族 4 种、选择类控件族 7 种、容器类控件族 3 种。Sliding Panel 作为容器控件，在 10+ 个不同功能模块中被复用，是 IOS 中最高频的容器模式。
+</div>
+
+<!-- ==================== 2.3.2 ==================== -->
+<h2 id="sec-2-3-2">2.3.2 控件状态机统一规范</h2>
+
+<p>所有 IOS 控件在交互过程中均遵循一个<strong>通用的四态流转模式</strong>。本节先定义通用模板，再为三种最复杂的控件（Sliding Panel、Keypad、Wheel Picker）绘制独立状态机。</p>
+
+<h3>通用控件状态机模板</h3>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle: 页面加载完成
+    Idle --> Active: 用户点击/触摸
+    Active --> Modified: 值已修改未确认
+    Modified --> Committed: 点击确认或失去焦点
+    Modified --> Idle: 点击取消或ESC
+    Committed --> Idle: 生效完成
+
+    Active --> Disabled: 控件被禁用
+    Disabled --> Idle: 禁用解除
+
+    Committed --> FrozenBuffered: 冻结期间提交
+    FrozenBuffered --> Committed: 解冻后批量生效
+    FrozenBuffered --> Idle: 取消预调整
+</div>
+
+<h4>状态说明</h4>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">状态</th><th style="width:42%">说明</th><th style="width:40%">典型控件表现</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Idle 空闲态</strong></td><td>控件未被交互，显示当前生效值</td><td>Text Field 显示当前参数值；Toggle 显示正常/激活状态；Sliding Panel 完全收起</td></tr>
+<tr><td><strong>Active 激活态</strong></td><td>用户已点击/触摸控件，进入可编辑状态</td><td>Text Field 高亮边框；Keypad 弹出；Wheel Picker 呼出；Radio Button 高亮候选项</td></tr>
+<tr><td><strong>Modified 已修改态</strong></td><td>用户已输入/选择新值，但尚未确认</td><td>Keypad 中数字已输入但绿勾未点击；Slider 已拖拽但松手未确认；参数显示"待生效"提示</td></tr>
+<tr><td><strong>Committed 已确认态</strong></td><td>用户点击确认，值已提交至状态管理层</td><td>Keypad 关闭，主界面字段更新为新值；Toggle 切换完成</td></tr>
+<tr><td><strong>Disabled 禁用态</strong></td><td>控件在当前条件下不可用</td><td>按钮灰色不可点击；字段置灰；飞机移动时 Chocks/Jacked 禁用</td></tr>
+<tr><td><strong>FrozenBuffered 冻结缓冲态</strong></td><td>冻结期间用户预调整了参数，但变更未下发</td><td>字段显示预调整值与当前值的差异高亮；解冻瞬间批量生效</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="collapsible">
+<div class="collapsible-header">
+<h4>Sliding Panel 专用状态机 <span class="badge">复杂控件</span></h4>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="collapsible-body">
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Collapsed: 初始/关闭后
+    Collapsed --> Expanding: 点击 Expand Button
+    Expanding --> Expanded: 面板滑入完成
+    Expanded --> TabSwitching: 点击顶部 Tab
+    TabSwitching --> Expanded: 内容切换完成
+    Expanded --> Editing: 用户修改面板内参数
+    Editing --> Expanded: 确认/取消后
+    Expanded --> Collapsed: 点击关闭/点击外部区域
+    Expanded --> Collapsed: 切换至其他工作区
+
+    Editing --> FrozenBuffered: 全局冻结触发
+    FrozenBuffered --> Editing: 解冻后继续编辑
+    FrozenBuffered --> Expanded: 取消预调整
+</div>
+<p><strong>关键约束：</strong>Sliding Panel 展开期间，主面板内容<strong>不可操作</strong>（模态或半模态遮罩）；面板内参数修改遵循通用状态机的 Idle → Active → Modified → Committed 流程。</p>
+</div>
+</div>
+
+<div class="collapsible">
+<div class="collapsible-header">
+<h4>Keypad 专用状态机 <span class="badge">复杂控件</span></h4>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="collapsible-body">
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Closed: 初始
+    Closed --> Opened: 点击参数字段
+    Opened --> Inputting: 用户按键或拖拽滑块
+    Inputting --> Validated: 输入通过范围校验
+    Inputting --> Invalid: 输入超出范围
+    Invalid --> Inputting: 修正输入
+    Validated --> Committed: 点击绿勾确认
+    Validated --> Closed: 点击红叉取消
+    Invalid --> Closed: 点击红叉取消
+    Committed --> Closed: 参数生效
+
+    Opened --> FrozenBuffered: 冻结触发
+    Inputting --> FrozenBuffered: 冻结触发
+    FrozenBuffered --> Committed: 解冻后自动提交
+    FrozenBuffered --> Closed: 取消预调整
+</div>
+<p><strong>关键约束：</strong>Keypad 的 L1 前端校验（范围/格式）必须在用户输入时<strong>即时拦截</strong>，阻止非法字符录入；L2 业务校验（如 GW = ZFW + Fuel）在绿勾点击时执行，失败则提示错误并保持在 Inputting 态。</p>
+</div>
+</div>
+
+<div class="collapsible">
+<div class="collapsible-header">
+<h4>Wheel Picker 专用状态机 <span class="badge">复杂控件</span></h4>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="collapsible-body">
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Hidden: 初始
+    Hidden --> Visible: 长按/上下滑动参数字段
+    Visible --> Scrolling: 用户滚动滚轮
+    Scrolling --> Selected: 松手或点击目标项
+    Selected --> Hidden: 即时生效参数
+    Selected --> Confirming: 需确认参数
+    Confirming --> Hidden: 确认生效
+    Confirming --> Hidden: 取消回退
+    Visible --> Hidden: 点击外部区域取消
+</div>
+<p><strong>关键约束：</strong>Wheel Picker 分为两类参数——<strong>A 类即时生效</strong>（如 Weather Presets、Time 的黎明/白天/黄昏/夜间），松手即修改全局状态；<strong>B 类需确认</strong>（部分数值型参数），滚轮选择后仍需点击确认按钮才生效。两类行为在控件层面应统一标识（如 B 类在滚轮旁显示绿勾/红叉）。</p>
+</div>
+</div>
+
+<!-- ==================== 2.3.3 ==================== -->
+<h2 id="sec-2-3-3">2.3.3 参数输入范式统一规范</h2>
+
+<p>IOS 中教员的绝大多数操作可抽象为同一套<strong>参数输入范式</strong>。本节将该范式标准化，为后续软件开发提供可直接参考的交互规范。</p>
+
+<h3>统一输入范式流程图</h3>
+<div class="mermaid">
+flowchart LR
+    Start([参数待修改]) --> Click[点击参数字段]
+    Click --> Popup{弹出控件类型}
+
+    Popup -->|离散枚举值| WP[Wheel Picker<br/>Radio / Checkbox]
+    Popup -->|连续数值| SL[Slider<br/>Interactive Graph]
+    Popup -->|精确数值| KP[Keypad]
+    Popup -->|复合配置| SP[Sliding Panel<br/>多控件组合]
+    Popup -->|即时切换| TG[Toggle Button]
+
+    WP --> Confirm{确认方式}
+    SL --> Confirm
+    KP --> Confirm
+    SP --> Confirm
+    TG --> Instant[即时生效]
+
+    Confirm -->|即时生效| ApplyA[参数立即下发]
+    Confirm -->|需确认| ApplyB[绿勾确认后下发]
+    Confirm -->|冻结缓冲| Buffer[待解冻后批量下发]
+    Confirm -->|取消| Cancel[回退到原值]
+
+    ApplyA --> End([生效完成])
+    ApplyB --> End
+    Buffer --> End
+    Cancel --> End
+    Instant --> End
+</div>
+
+<h3>参数类型 → 推荐控件映射表</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">参数类型</th><th style="width:22%">推荐控件</th><th style="width:18%">确认方式</th><th style="width:18%">取消方式</th><th style="width:22%">生效时机</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>离散枚举</strong><br/>（如天气预设、时间段）</td><td>Wheel Picker / Radio Button</td><td>松手即确认<br/>或点击选中</td><td>点击外部区域<br/>或滚动回原值</td><td>即时生效</td></tr>
+<tr><td><strong>布尔开关</strong><br/>（如冻结、轮挡、灯光）</td><td>Toggle Button / Checkbox</td><td>点击即切换</td><td>再次点击切换回原状态</td><td>即时生效</td></tr>
+<tr><td><strong>精确数值</strong><br/>（如重量、温度、风速）</td><td>Keypad（数字键盘+滑块）</td><td>绿勾按钮</td><td>红叉按钮</td><td>确认后即时生效；冻结期间缓冲</td></tr>
+<tr><td><strong>连续数值</strong><br/>（如亮度、速率、数量）</td><td>Slider</td><td>拖拽松手</td><td>拖拽回原位</td><td>松手生效或实时生效</td></tr>
+<tr><td><strong>复合配置</strong><br/>（如飞机重量平衡、云层）</td><td>Sliding Panel<br/>（内部多控件组合）</td><td>面板内各控件独立确认</td><td>面板关闭按钮</td><td>各子控件按自身规则生效</td></tr>
+<tr><td><strong>图形化参数</strong><br/>（如重心包线、航迹）</td><td>Interactive Graph</td><td>拖拽节点松手</td><td>撤销/重置按钮</td><td>松手生效或需二次确认</td></tr>
+<tr><td><strong>层级选择</strong><br/>（如单位制、灯光等级）</td><td>Dropdown Button</td><td>点击目标项</td><td>点击外部区域收起</td><td>选择后立即生效</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box warn">
+<strong>范式一致性声明：</strong>上述映射表中，<strong>Keypad 的"绿勾确认 / 红叉取消"模式</strong>是 IOS 中最标准的参数输入闭环。所有需要精确数值输入的场景（Weight、Wind、Temp、QNH、Time 等）均遵循此模式，这是跨工作区保持教员认知一致性的关键设计。
+</div>
+
+<!-- ==================== 2.3.4 ==================== -->
+<h2 id="sec-2-3-4">2.3.4 跨工作区控件复用映射</h2>
+
+<p>同一控件类型在多个工作区中出现时，其行为应当保持一致，以降低教员的学习成本和认知负担。本节通过对照 ch1 全部 HTML 中的实际用例，建立复用映射并标注差异。</p>
+
+<h3>复用映射总表</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:14%">控件</th><th style="width:28%">出现页面</th><th style="width:18%">行为一致性</th><th style="width:40%">差异备注</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wheel Picker</strong></td>
+<td>1.2.3 当前条件<br/>1.2.5 参考机场</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>触发方式统一为"长按/上下滑动参数字段"；呼出后滚动选择。在 1.2.3 中用于 ASL/IAS/Mach/Heading，在 1.2.5 中用于 Airport/Runway/Time/Visibility 等 12+ 个字段，交互范式完全相同</td>
+</tr>
+<tr>
+<td><strong>Keypad</strong></td>
+<td>1.2.3 当前条件<br/>1.2.4 飞机<br/>1.2.5 参考机场<br/>1.7 高级</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>统一采用"数字按键 + 滑块 + 绿勾确认 + 红叉取消"四件套布局。1.2.4 中 GW/CG/ZFW/Fuel 键盘与 1.2.5 中 Temp/QNH/Time 键盘的交互逻辑完全一致。1.7 中 Flight Level Keypad 增加动态最大值限制，属于参数差异而非控件行为差异</td>
+</tr>
+<tr>
+<td><strong>Toggle Button</strong></td>
+<td>1.2.4 飞机<br/>1.2.7 Footer<br/>1.7 高级</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>统一为"正常态（灰底）↔ 激活态（浅蓝高亮）"，点击即切换。1.2.4 中的 Fuel Freeze、Chocks、Jacked 与 1.2.7 中的 Flight Freeze、Sim Controls 以及 1.7 中的 Stop Bar、Marshaller 形态与行为完全一致</td>
+</tr>
+<tr>
+<td><strong>Sliding Panel</strong></td>
+<td>1.2.3 / 1.2.4 / 1.2.5 / 1.2.6 / 1.7</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>统一结构：顶部标题栏（含关闭按钮）+ 内容区（多 Tab 或参数表格）+ 底部可选操作按钮。展开动画均为从右侧滑入。1.2.6 INSTRUCTOR STATION Sliding Panel 与功能型 Sliding Panel 在结构上完全相同，仅内容不同</td>
+</tr>
+<tr>
+<td><strong>Dropdown Button</strong></td>
+<td>1.2.6 教员台<br/>1.7 高级</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>统一为"点击展开下拉列表 → 选择目标项 → 列表自动收起并即时生效"。1.2.6 中的 UOM 单位下拉与 1.7 中的 Taxi/City Lights 亮度下拉交互范式相同</td>
+</tr>
+<tr>
+<td><strong>Quick Access Button</strong></td>
+<td>1.2.4 飞机<br/>1.7 高级 Toolbar</td>
+<td><span class="tag-pill tag-aux">基本一致</span></td>
+<td>1.2.4 AIRCRAFT Tab 底部的 Quick Access Bar（DL/UL/VHF/Weight&CG 等）与 1.7 Advanced Toolbar 的按钮在视觉和交互上一致。差异在于 1.7 中部分按钮（如 Environment）点击后打开的是完整子页面而非 Sliding Panel，属于功能入口差异而非控件行为差异</td>
+</tr>
+<tr>
+<td><strong>Radio Button</strong></td>
+<td>1.2.3 当前条件<br/>1.2.4 飞机<br/>1.7 高级</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>统一为组内互斥单选。1.2.3 ICING 等级（轻度/中度/重度）、TURBULENCE 类型（CLEAR AIR/THUNDERSTORM/LOW LEVEL）与 1.2.4 Weight & CG 中的 QuickSets（轻/中/重）以及 1.7 中部分配置选项，形态与互斥逻辑完全一致</td>
+</tr>
+<tr>
+<td><strong>Roll-up Menu</strong></td>
+<td>1.2.7 Footer</td>
+<td><span class="tag-pill tag-main">一致</span></td>
+<td>仅在 Footer 区域出现（Help、Workspace）。展开方向为从下向上，与 Dropdown 的从上向下形成互补，但交互逻辑（点击展开→选择→收起）一致</td>
+</tr>
+<tr>
+<td><strong>Interactive Graph</strong></td>
+<td>1.2.4 飞机<br/>1.7 UPRT</td>
+<td><span class="tag-pill tag-aux">基本一致</span></td>
+<td>1.2.4 中的 Weight & CG 包线图支持拖拽调整重心，1.7 UPRT 中的 Alpha-Beta 图和 V-n 图为只读监控。差异在于<strong>读写权限</strong>——同一控件类型在训练控制场景下可编辑，在监控讲评场景下只读，属于合理场景差异</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>复用一致性结论：</strong>ch1 全部 HTML 中观察到的 9 种主要跨工作区控件，<strong>7 种行为完全一致</strong>，2 种（Quick Access Button、Interactive Graph）存在<strong>合理场景差异</strong>，未发现需要标记为"设计缺陷"的控件行为不一致项。这说明 IOS 的控件体系在全局层面保持了较高的一致性。
+</div>
+
+<!-- ==================== 2.3.5 ==================== -->
+<h2 id="sec-2-3-5">2.3.5 设计原则 → 控件设计决策映射</h2>
+
+<p>以下表格将 <a href="ch1_1_components.html">1.1.4 ~ 1.1.11</a> 中总结的五大设计原则，具体化为 2.3 控件体系规范的约束条件。每一条原则都直接影响了控件类型的选择、布局和行为定义。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">设计原则</th><th style="width:35%">原则描述</th><th style="width:43%">对应的控件设计决策</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>原则一：按认知模态分离</strong><br/>(Cognitive Modality Separation)</td>
+<td>离散参数与连续空间信息绝不混在同一面板，因为它们激活人脑不同的认知区域</td>
+<td><strong>2.3.3 映射表：</strong>离散枚举参数（天气预设、时间段）强制使用 Wheel Picker / Radio Button；连续数值参数（亮度、速率）强制使用 Slider；精确数值（重量、温度）强制使用 Keypad。禁止在单个输入流程中混合使用认知模态冲突的控件（如不允许在 Keypad 中同时拖拽地图）</td>
+</tr>
+<tr>
+<td><strong>原则二：按使用频率分层</strong><br/>(Frequency-Based Layering)</td>
+<td>高频功能常驻主界面；低频功能独立隔离，减少认知噪声</td>
+<td><strong>2.3.1 容器控件：</strong>高频操作（冻结/重置/工作区切换）使用 Footer 的 Toggle / Roll-up Menu，常驻可见；中频操作（修改飞机/环境参数）使用 Sliding Panel，点击即达但不常驻；低频操作（UOM 设置、配置切换）使用 INSTRUCTOR STATION Sliding Panel，需要两步才能触及</td>
+</tr>
+<tr>
+<td><strong>原则三：按角色隔离</strong><br/>(Role-Based Isolation)</td>
+<td>不同用户角色的功能绝不混用，通过独立工作区 + 权限控制实现干净的安全边界</td>
+<td><strong>2.3.4 复用映射：</strong>Maintenance 工作区的控件体系与核心训练域完全隔离，教员界面的控件规范不覆盖维护界面。Control Board 中的 Toggle / Keypad 等控件在 Maintenance 模式下不可见，避免角色越界</td>
+</tr>
+<tr>
+<td><strong>原则四：同一模型，多重视图</strong><br/>(Multiple Views of One Model)</td>
+<td>同一个领域对象值得为其设计多个正交视图，不强迫用户在"看细节"和"看全局"之间做取舍</td>
+<td><strong>2.3.1 容器控件：</strong>课程状态同时提供 LESSON PLAN Tab（列表视图，Step-by-Step 控制）和 Lesson Plan Profile（剖面视图，全局进度概览），两者共享同一套底层数据模型，但使用不同的容器控件（Tab vs 独立工作区）。Weight & CG 同时提供 Keypad（精确数值输入）和 Interactive Graph（图形化包线拖拽），满足不同认知偏好</td>
+</tr>
+<tr>
+<td><strong>原则五：应急通道设计</strong><br/>(Emergency Bypass Design)</td>
+<td>常规层级导航在紧急场景下是致命的，必须为关键操作预留"直达电梯"</td>
+<td><strong>2.3.1 基础控件：</strong>Flight Freeze / Total Reset / Clear All Malf. 等最高频应急操作使用 Footer 的 Toggle / Action Button 常驻显示，<strong>无需进入任何 Sliding Panel 或 Tab</strong>。Advanced Toolbar 的 Quick Access Button 提供 Control Board 功能的直达入口（如 Failure、Environment），交互路径从 3 步缩短至 1 步</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>对后续章节的输入：</strong>2.3 节建立的控件库清单、状态机模板、参数输入范式和复用映射，是 <strong>2.4（数据流与接口契约推导）</strong> 的 UI 层输入——接口设计中的请求字段、事件类型和状态码应与控件状态机的各态（Idle/Active/Modified/Committed/Disabled/FrozenBuffered）一一对应。
+</div>
+
+<!-- Footer Nav -->
+<div class="footer-nav">
+<a class="prev" href="ch2_2_interaction_integrity.html">← 2.2 端到端交互完整性流程</a>
+<a class="next" href="ch2_4_dataflow_api_deduction.html">2.4 数据流与接口契约推导 →</a>
+</div>
+
+<script>
+// Mermaid init
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Collapsible sections
+document.addEventListener('click', function(e){
+  const header = e.target.closest('.collapsible-header');
+  if(!header) return;
+  const col = header.parentElement;
+  col.classList.toggle('collapsed');
+});
+
+// Mermaid zoom/pan
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
