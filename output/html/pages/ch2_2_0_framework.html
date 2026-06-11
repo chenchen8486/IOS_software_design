@@ -1,0 +1,283 @@
+﻿<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+/* area-map 推导边界条（借鉴 ch1.8） */
+.area-map{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px;padding:8px 12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.area-map strong{color:var(--primary-dark)}
+
+/* arch-grid 架构信息网格（借鉴 ch1.1） */
+.arch-grid{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;margin-top:16px}
+.arch-grid .label{font-weight:600;color:var(--text-secondary);text-align:right;padding-top:2px}
+.arch-grid .content{color:var(--text)}
+@media (max-width:768px){.arch-grid{grid-template-columns:1fr}.arch-grid .label{text-align:left}}
+
+/* tag-pill 视觉标签（借鉴 ch1.8） */
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-warn{background:#fef3c7;color:#92400e}
+.tag-danger{background:#fee2e2;color:#991b1b}
+.tag-none{color:var(--text-secondary);font-size:12px}
+
+/* 折叠分类面板（借鉴 ch1.9，简化版） */
+.gap-category{margin:16px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.gap-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.gap-header h4{margin:0;font-size:15px;color:var(--text);font-weight:600}
+.gap-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.gap-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.gap-category.collapsed .toggle-icon{transform:rotate(-90deg)}
+.gap-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
+.gap-category:not(.collapsed) .gap-body{display:block}
+@media print{.gap-body{display:block!important}}
+
+@media print{.mermaid{page-break-inside:avoid}}
+
+/* 序列图 + 右侧图例 并排布局 */
+.seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
+.seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
+.seq-legend{flex:0 0 150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;line-height:1.7}
+.seq-legend-title{font-weight:600;color:var(--primary-dark);margin-bottom:8px;font-size:13px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.seq-legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--text-secondary)}
+.seq-line-solid{display:inline-block;width:18px;border-bottom:2px solid #334155}
+.seq-line-dashed{display:inline-block;width:18px;border-bottom:2px dashed #94a3b8}
+.seq-box{display:inline-block;width:14px;height:8px;border:1px dashed #94a3b8;border-radius:2px}
+.seq-diamond{display:inline-block;width:8px;height:8px;border:1px solid #94a3b8;transform:rotate(45deg)}
+.seq-loop{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-par{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-color{display:inline-block;width:12px;height:12px;border:1px solid transparent;border-radius:3px;flex-shrink:0}
+@media(max-width:900px){
+  .seq-pair{flex-direction:column}
+  .seq-legend{flex:0 0 auto;width:100%;display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px}
+  .seq-legend-title{width:100%;margin-bottom:4px;padding-bottom:4px}
+  .seq-legend-item{margin:2px 0;white-space:nowrap}
+}
+</style>
+
+<h1>2.2.1 交互完整性分析框架</h1>
+
+<div class="speculation-box">
+<strong>内容性质声明：</strong>本章所有内容均基于 <a href="ch1_8_reference_flows.html">1.8 参考流程（RF-01 ~ RF-06）</a> 中的操作步骤与状态流转，在 <a href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a> 定义的约束下进行<strong>交互完整性验证与推导</strong>。所有"交互断点"与"状态传递契约"均标注了置信度，供后续软件开发参考，不构成最终技术设计约束。
+</div>
+
+<p><a href="ch1_8_reference_flows.html">1.8 参考流程</a> 从<strong>操作手册视角</strong>回答了"教员在训练中应该如何操作"——它用流程图（Flowchart）描述了 6 个端到端流程的操作步骤、认知模式和效率技巧。而 2.2 节的任务是从<strong>软件架构视角</strong>回答另一个问题：<strong>"系统为了支撑这些操作，各工作区之间必须发生怎样的交互？"</strong></p>
+
+<p>这种视角转换的核心价值在于<strong>识别交互断点</strong>——即操作手册中明确描述了某个行为，但 2.1 的架构推导中尚未为其分配数据流、同步机制或状态管理逻辑。每一个断点都是后续软件实现中必须填补的架构缺口。</p>
+
+<div class="highlight-box warn">
+<strong>⚠️ 架构实体来源声明：</strong>原始 CAE IOS 手册是<strong>操作手册</strong>，面向教员描述"如何点击按钮"，不会定义任何软件内部模块。本节出现的 <strong>Session State Manager（SSM）</strong> 和 <strong>Simulator Core（SC）</strong> 均为<strong>架构推导产物</strong>，而非原始文档中的实体——SSM 是为了解释"全局冻结同步、跨面板参数一致、Freeplay 冲突仲裁"这三个现象而假设的<strong>逻辑协调层</strong>；SC 是对手册中"模拟器/主机/物理计算"的<strong>架构抽象命名</strong>。两者都是当前阶段的<strong>占位符</strong>，后续软件实现中的真实模块命名、进程边界乃至职责拆分都可能与之不同。
+</div>
+
+<h3>分析方法论：四步法</h3>
+<p>将操作手册流程转化为架构交互模型的标准方法如下：</p>
+<ol>
+<li><strong>提取工作区与数据变更</strong>：从 ch1_8 的每个 RF 中，识别出"涉及哪些工作区"、"修改了哪些数据项"、"触发了哪些状态转换"。</li>
+<li><strong>对照 2.1 数据依赖矩阵</strong>：将步骤 1 中提取的数据变更，逐一映射到 <a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 跨工作区数据依赖矩阵</a>，确认数据所有者、共享范围和同步规则是否已定义。</li>
+<li><strong>推导跨工作区消息序列</strong>：使用 Mermaid Sequence Diagram 描述消息的发送方、接收方、方向（请求/响应/广播）、同步属性（同步调用 vs 异步通知）以及数据负载。</li>
+<li><strong>识别交互断点</strong>：若某一步操作在 ch1_8 中有描述，但在 2.1 中找不到对应的数据流或同步机制，则标记为交互断点（Interaction Gap），并推导最小可行的架构补充。</li>
+</ol>
+
+<div class="highlight-box">
+<strong>约束红线：</strong>2.2 节的所有推导必须以 <a href="ch2_1_functional_architecture.html">2.1</a> 定义的数据所有权和同步规则为约束。任何与 2.1 矛盾的推导都必须被视为错误并修正，而非推翻 2.1 的结论。
+</div>
+
+<h3>符号约定与图例</h3>
+<p>本节统一使用以下符号体系描述跨工作区交互：</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">符号/术语</th><th style="width:35%">含义</th><th style="width:43%">示例</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>实线箭头 →</strong></td><td>同步请求/响应</td><td>Instructor → CB：点击 Execute，CB 等待 Session State Manager 确认后才更新 UI</td></tr>
+<tr><td><strong>虚线箭头 --→</strong></td><td>异步通知/广播</td><td>Simulator Core --→ Map：物理引擎按 30Hz 广播飞机位置更新</td></tr>
+<tr><td><strong>红色边框节点</strong></td><td>强一致性要求（&lt; 100ms，零偏差）</td><td>冻结/解冻标志、飞机位置/姿态</td></tr>
+<tr><td><strong>橙色边框节点</strong></td><td>最终一致性要求（允许短暂偏差）</td><td>云层动画、仪表指针插值</td></tr>
+<tr><td><strong>虚线框 rect</strong></td><td>子流程调用/引用</td><td>RF-01 中调用 RF-03 初始化子流程</td></tr>
+<tr><td><strong>GAP-XX</strong></td><td>交互断点编号</td><td>GAP-01：Debrief 阶段的事件标记机制在 2.1 中未定义</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Sequence Diagram 参与者命名</h3>
+<p>为了与 2.1.1 的功能架构全景图保持一致，Mermaid Sequence Diagram 中的参与者（Actor）命名如下：</p>
+<div class="arch-block">
+<h4>架构实体与 Sequence Diagram 别名映射</h4>
+<div class="arch-grid">
+<div class="label">Instructor<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">INST（教员）</span></div>
+<div class="content">人类操作者，所有交互序列的起点</div>
+<div class="label">Control Board<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">CB（控制面板）</span></div>
+<div class="content">聚合根，承载 AIRCRAFT / CURRENT CONDITIONS / REFERENCE AIRPORT / LESSON PLAN 等 Tabs</div>
+<div class="label">Map<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">MAP（地图）</span></div>
+<div class="content">空间渲染与交互，SLEW 拖动回写</div>
+<div class="label">Lesson Plan Profile<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">LPP（课程计划剖面）</span></div>
+<div class="content">课程数据的可视化剖面视图</div>
+<div class="label">Instruments Repeaters<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">IR（复示仪表）</span></div>
+<div class="content">只读消费端，订阅物理引擎数据</div>
+<div class="label">Advanced<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">ADV（高级）</span></div>
+<div class="content">应急快速通道，直接操作核心或修改 CB 参数</div>
+<div class="label">Footer / Instructor Station<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">FS（底部快捷栏）</span></div>
+<div class="content">全局控制网关，冻结/重置/时间控制/工作区切换</div>
+<div class="label">Session State Manager<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SSM（状态管理器）</span></div>
+<div class="content">全局状态协调者，仲裁、版本控制、批量下发</div>
+<div class="label">Simulator Core<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SC（模拟器核心）</span></div>
+<div class="content">物理引擎、环境引擎、声音系统、FMS 子模块</div>
+</div>
+</div>
+
+<div class="highlight-box warn">
+<strong>重要约定：</strong>在 Sequence Diagram 中，<strong>SSM（Session State Manager）</strong>被显式画为独立参与者，而非隐式内嵌于某个工作区中。这强调了 2.1.2 中提出的核心假设——SSM 是所有工作区与模拟器核心之间的<strong>唯一协调者</strong>。所有跨工作区的状态变更（即使是看似"直接"的联动，如 Map Slew → CB 位置更新）在架构层面都建议经过 SSM 转发，以保证版本控制和仲裁逻辑的统一性。
+</div>
+
+
+<div class="footer-nav">
+<a class="prev" href="ch2_1_functional_architecture.html"><span>←</span><span>2.1 功能架构全景图</span></a>
+<a class="next" href="ch2_2_1_rf01_session.html"><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span><span>→</span></a>
+</div>
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'},
+  sequence:{useMaxWidth:true,diagramMarginX:10,diagramMarginY:10,actorMargin:60,width:150,height:65,boxMargin:10,boxTextMargin:5,noteMargin:10,messageMargin:35}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>

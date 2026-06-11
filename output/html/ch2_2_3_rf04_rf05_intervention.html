@@ -1,0 +1,751 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性 — CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+/* ==========================================
+   CAE IOS 教员台 — 全局公共样式
+   职责：定义全局 CSS 变量、布局骨架、基础排版、通用组件
+   注意：此文件由 build.py 统一注入到每个生成页面
+   ========================================== */
+
+/* ─── CSS 变量 ─── */
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+
+/* ─── 基础重置 ─── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+
+/* ─── 布局骨架 ─── */
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+
+/* Main & Breadcrumb */
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+
+/* ─── 内容区域基础排版 ─── */
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+/* ─── 表格基础 ─── */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+
+/* ─── 页脚导航 ─── */
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+/* ─── 滚动条 ─── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+/* ─── 响应式 ─── */
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+
+</style>
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+/* area-map 推导边界条（借鉴 ch1.8） */
+.area-map{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px;padding:8px 12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.area-map strong{color:var(--primary-dark)}
+
+/* arch-grid 架构信息网格（借鉴 ch1.1） */
+.arch-grid{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;margin-top:16px}
+.arch-grid .label{font-weight:600;color:var(--text-secondary);text-align:right;padding-top:2px}
+.arch-grid .content{color:var(--text)}
+@media (max-width:768px){.arch-grid{grid-template-columns:1fr}.arch-grid .label{text-align:left}}
+
+/* tag-pill 视觉标签（借鉴 ch1.8） */
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-warn{background:#fef3c7;color:#92400e}
+.tag-danger{background:#fee2e2;color:#991b1b}
+.tag-none{color:var(--text-secondary);font-size:12px}
+
+/* 折叠分类面板（借鉴 ch1.9，简化版） */
+.gap-category{margin:16px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.gap-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.gap-header h4{margin:0;font-size:15px;color:var(--text);font-weight:600}
+.gap-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.gap-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.gap-category.collapsed .toggle-icon{transform:rotate(-90deg)}
+.gap-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
+.gap-category:not(.collapsed) .gap-body{display:block}
+@media print{.gap-body{display:block!important}}
+
+@media print{.mermaid{page-break-inside:avoid}}
+
+/* 序列图 + 右侧图例 并排布局 */
+.seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
+.seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
+.seq-legend{flex:0 0 150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;line-height:1.7}
+.seq-legend-title{font-weight:600;color:var(--primary-dark);margin-bottom:8px;font-size:13px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.seq-legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--text-secondary)}
+.seq-line-solid{display:inline-block;width:18px;border-bottom:2px solid #334155}
+.seq-line-dashed{display:inline-block;width:18px;border-bottom:2px dashed #94a3b8}
+.seq-box{display:inline-block;width:14px;height:8px;border:1px dashed #94a3b8;border-radius:2px}
+.seq-diamond{display:inline-block;width:8px;height:8px;border:1px solid #94a3b8;transform:rotate(45deg)}
+.seq-loop{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-par{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-color{display:inline-block;width:12px;height:12px;border:1px solid transparent;border-radius:3px;flex-shrink:0}
+@media(max-width:900px){
+  .seq-pair{flex-direction:column}
+  .seq-legend{flex:0 0 auto;width:100%;display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px}
+  .seq-legend-title{width:100%;margin-bottom:4px;padding-bottom:4px}
+  .seq-legend-item{margin:2px 0;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 CAE IOS功能详解</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
+<div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 Lesson Plan Tab</a>
+<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 Doc Tab</a>
+<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 Current Conditions Tab</a>
+<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 Aircraft Tab</a>
+<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（Reference Airport Tab）</a>
+<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（Instructor Station Sliding Panel）</a>
+<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+  </div>
+</div>
+<a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+<a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（Instrument Repeater）</a>
+<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
+<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+<a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程</a>
+<a class="nav-link" href="ch1_9_index.html">1.9 索引</a>
+  </div>
+</div>
+<div class="nav-group">
+  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件架构逆向分析</span></div>
+  <div class="nav-children">
+    <a class="nav-link" href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a>
+<div class="nav-group">
+  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 端到端交互完整性流程</span></div>
+  <div class="nav-children">
+    <a class="nav-link" href="ch2_2_0_framework.html">2.2.1 交互完整性分析框架</a>
+<a class="nav-link" href="ch2_2_1_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
+<a class="nav-link" href="ch2_2_2_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
+<a class="nav-link active" href="ch2_2_3_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
+<a class="nav-link" href="ch2_2_4_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link" href="ch2_2_5_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
+  </div>
+</div>
+<a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
+  </div>
+</div>
+  </nav>
+</aside>
+<div class="layout">
+  <div class="main">
+    <div class="breadcrumb">
+    <a href="#">首页</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">第 2 章 软件架构逆向分析</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">2.2 端到端交互完整性流程</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span>
+  </div>
+    <div class="content">
+      <h1>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</h1>
+<h2 id="sec-2-2-4">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</h2>
+<p class="area-map">
+<strong>推导来源：</strong>RF-04 故障注入与应急训练 + RF-05 地图监控与重新定位 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（故障状态 / 飞机物理状态域）、<a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 原则一</a>（全局原子状态标志） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-05</span> <span class="tag-pill tag-danger">GAP-06</span>
+</p>
+<p>RF-04（故障注入）和 RF-05（重新定位）都是训练进行中的<strong>动态干预</strong>操作，它们打破了 RF-02 的常规执行节奏，对状态一致性有极高的实时性要求。本节推导它们的交互序列，并识别与冻结、课程执行等状态的组合约束。</p>
+
+<h3>故障注入交互序列图（三种入口统一建模）</h3>
+<p>ch1_8 描述了三种故障注入入口（课程 MALF、AIRCRAFT Tab 底部、Advanced/INSTRUCTOR STATION），但从架构视角看，它们最终都应汇聚到一个统一的<strong>故障注册表（Malfunction Registry）</strong>中，再由 SSM 协调广播。</p>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 入口 A：课程 MALF</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 入口 B：快速注入</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 入口 C：Advanced</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,242,242);border-color:#fca5a5"></span> 统一汇聚 / 冲突检测</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant FS as Footer
+    participant IR as Instruments Repeaters
+    participant MAP as Map
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: 入口 A：课程步骤 MALF
+    SC->>SC: 课程引擎执行到 MALF 步骤
+    SC->>SSM: 故障注入请求 {malfCode, source: lesson}
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: 入口 B：AIRCRAFT Tab 快速注入
+    INST->>CB: 点击 Toggle Fail（AIRCRAFT Tab 底部）
+    CB->>SSM: 故障注入请求 {malfCode, source: quick}
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,MAP: 入口 C：Advanced / INSTRUCTOR STATION
+    INST->>ADV: 选择故障类型与参数
+    ADV->>SSM: 故障注入请求 {malfCode, params, source: advanced}
+    end
+
+    rect rgb(254,242,242)
+    Note over INST,MAP: 统一汇聚与广播
+    SSM->>SSM: 写入 Malfunction Registry
+    SSM->>SSM: 冲突检测：同一故障是否已激活？
+    alt 冲突（已激活）
+        SSM->>CB: 忽略重复注入，提示"故障已存在"
+    else 无冲突
+        SSM->>SC: 下发故障定义
+        SC-->>SSM: 故障状态确认 {malfId, state: active/armed}
+        SSM->>CB: Malfunctions Panel 更新
+        SSM->>FS: Footer 故障计数器 + 指示灯更新
+        SSM-->>IR: 仪表故障指示更新
+        SSM-->>MAP: 相关系统效果更新（如液压故障影响运动）
+    end
+    end
+</div>
+</div>
+
+<h3>故障状态机（Armed → Active → Reset）的架构推导</h3>
+<p>ch1_8 的 5.1 节描述了故障的生命周期，但将其映射到 2.1 的架构中，需要明确状态转换的触发者和数据流路径。</p>
+
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle: 系统启动
+    Idle --> Armed: 教员预位故障
+    Armed --> Active: 触发条件满足
+    Armed --> Active: 教员手动触发
+    Active --> Reset: 教员解除故障
+    Active --> SysDamage: 故障导致系统损坏
+    SysDamage --> Reset: 执行对应系统 Reset
+    Reset --> Idle: 系统健康检查通过
+    Reset --> SysDamage: 健康检查失败（需二次 Reset）
+
+    classDef idle fill:#f1f5f9,stroke:#64748b
+    classDef armed fill:#fef3c7,stroke:#d97706
+    classDef active fill:#fee2e2,stroke:#dc2626
+    classDef damage fill:#fef2f2,stroke:#991b1b
+    classDef reset fill:#dbeafe,stroke:#2563eb
+
+    class Idle idle
+    class Armed armed
+    class Active active
+    class SysDamage damage
+    class Reset reset
+
+    note right of Idle
+        Malfunction Registry 中无该故障记录
+    end note
+
+    note right of Armed
+        故障定义已写入 Registry，
+        等待触发条件评估
+    end note
+
+    note right of Active
+        故障已影响 Simulator Core，
+        状态广播至所有工作区
+    end note
+
+    note right of SysDamage
+        故障解除后系统参数
+        未自动恢复（如 EGT 超限）
+    end note
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">状态转换</th><th style="width:25%">触发者</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
+</thead>
+<tbody>
+<tr><td>Idle → Armed</td><td>教员（三种入口）</td><td>CB/ADV -> SSM -> Malfunction Registry</td><td>最终一致性；预位不立即影响物理状态</td></tr>
+<tr><td>Armed → Active</td><td>触发条件引擎 / 教员手动</td><td>SC 触发器评估 -> SSM -> SC 故障生效 -> SSM 广播</td><td>强一致性（&lt;50ms）；故障生效后所有工作区必须同步</td></tr>
+<tr><td>Active → Reset</td><td>教员解除 / 课程步骤自动解除</td><td>CB/ADV -> SSM -> SC 故障解除 -> SSM 广播</td><td>强一致性；解除后仪表和 Footer 指示灯必须同步熄灭</td></tr>
+<tr><td>Active → SysDamage</td><td>Simulator Core（物理引擎内部）</td><td>SC -> SSM：系统健康告警</td><td>强一致性；损坏状态必须立即通知教员</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="speculation-box">
+<strong>GAP-05：预位故障触发条件评估的归属</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 描述预位故障等待"预设触发条件（如高度、速度、时间）"，但 2.1 架构中未明确<strong>触发条件评估引擎</strong>的归属。<br/><br/>
+<strong>架构补充建议：</strong>触发条件评估建议由 <strong>Simulator Core 内部的专用触发器引擎</strong>执行，而非 SSM。原因：触发条件通常与物理状态（高度、速度、位置）强耦合，由物理引擎内部评估可避免跨进程通信延迟。当触发条件满足时，触发器引擎向 SSM 发送"Armed → Active"事件，SSM 负责后续的广播同步。
+</div>
+
+<h3>系统损坏 → Reset 级联的异常分支设计</h3>
+<p>ch1_8 的 5.4 节提供了详细的故障→Reset 映射表。将其转化为架构交互序列，需要明确<strong>"谁检测损坏、谁执行 Reset、谁验证恢复"</strong>的分工。</p>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item" style="color:var(--text-secondary);font-style:italic">本图未使用 rect 颜色分组</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant CB as Control Board
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant FS as Footer
+    participant IR as Instruments Repeaters
+
+    CB->>SSM: 教员解除故障 {malfId}
+    SSM->>SC: 故障解除指令
+    SC->>SC: 移除故障影响
+    SC-->>SSM: 故障已移除
+
+    SSM->>SC: 请求系统健康检查
+    SC->>SC: 评估各子系统参数
+    alt 健康检查通过
+        SC-->>SSM: 全部正常
+        SSM->>CB: 清除 Malfunctions Panel
+        SSM->>FS: 清除故障指示灯
+        SSM-->>IR: 仪表恢复正常显示
+    else 健康检查失败（系统损坏）
+        SC-->>SSM: 损坏报告 {systemId, damageType}
+        SSM->>CB: 提示"系统损坏，需要 Reset"
+        CB-->>INST: 显示损坏详情（省略 INST 以简化图）
+
+        CB->>SSM: 教员执行对应 Reset
+        SSM->>SC: Reset 指令 {resetType}
+        SC->>SC: 重置子系统参数
+        SC-->>SSM: Reset 完成
+
+        SSM->>SC: 二次健康检查
+        alt 二次检查通过
+            SC-->>SSM: 正常
+            SSM->>CB: 系统恢复正常
+        else 二次检查仍失败
+            SC-->>SSM: 持续异常
+            SSM->>CB: 提示"请切换至 Maintenance 诊断"
+            SSM->>FS: 全局告警状态
+        end
+    end
+</div>
+</div>
+
+<div class="highlight-box warn">
+<strong>级联 Reset 的架构原则：</strong>故障解除 ≠ 系统恢复。架构上必须将"故障状态移除"和"系统健康恢复"视为两个独立阶段，中间由<strong>强制健康检查</strong>连接。这避免了教员误以为"解除故障就万事大吉"，而实际上液压压力或发动机 EGT 仍处于异常区间。
+</div>
+
+<h3>重新定位交互序列图（四种方式统一建模）</h3>
+<p>RF-05 的四种重新定位方式在教员视角差异显著，但在架构视角下，它们都可以抽象为<strong>"位置变更请求 → 物理引擎更新 → 全工作区广播"</strong>的统一模式，差异仅在于变更源的精度和触发路径。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:18%">方式</th><th style="width:30%">变更源路径</th><th style="width:22%">精度/范围</th><th style="width:30%">架构特性</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SLEW 微调</strong></td>
+<td>MAP（拖拽）→ SSM → SC；或 ADV → SSM → SC</td>
+<td>米级，机场范围内</td>
+<td>高频低延迟；Map 渲染与物理更新允许最终一致性（&lt;200ms）</td>
+</tr>
+<tr>
+<td><strong>Airport Repo</strong></td>
+<td>CB（REFERENCE AIRPORT）→ SSM → SC</td>
+<td>跑道/停机位级，跨机场</td>
+<td>中频；触发环境参数联动（跑道条件绑定）；需重新加载地景</td>
+</tr>
+<tr>
+<td><strong>Footer Repo</strong></td>
+<td>FS → SSM → SC</td>
+<td>预设程序级（HOLD/TAXI/3nm/6nm 等）</td>
+<td>最高效率；一键配置飞机姿态/襟翼/速度/高度；SSM 需按优先级批量下发</td>
+</tr>
+<tr>
+<td><strong>Freeze + Repo</strong></td>
+<td>FS（Freeze）→ SSM → 上述任一方式 → FS（Unfreeze）</td>
+<td>任意</td>
+<td>组合操作；SSM 需维护操作互斥锁，禁止冻结期间其他全局状态变更</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> SLEW 微调</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> Airport / Footer Repo</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant CB as Control Board
+    participant FS as Footer
+    participant ADV as Advanced
+    participant MAP as Map
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant IR as Instruments Repeaters
+
+    rect rgb(219,234,254)
+    Note over INST,IR: SLEW 微调
+    INST->>MAP: 拖拽飞机图标
+    MAP->>SSM: 位置增量 {deltaX, deltaY, deltaH}
+    SSM->>SC: 更新飞机位置
+    SC-->>SSM: 新位置确认
+    SSM->>CB: 同步位置/航向参数
+    SSM-->>IR: 仪表数据更新
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,IR: Airport Repo / Footer Repo
+    INST->>CB: 选择新机场/跑道（或 FS 预设位置）
+    CB->>SSM: 位置变更请求 {targetType, targetParams}
+    SSM->>SC: 原子位置更新
+    SC-->>SSM: 位置确认 + FMS 航线重算
+    SSM->>CB: REFERENCE AIRPORT 参数更新
+    SSM-->>MAP: 视图中心切换 + 航迹更新
+    SSM-->>IR: 仪表数据更新
+    end
+</div>
+</div>
+
+<h3>2D/3D 视图状态：纯渲染层状态</h3>
+<p>RF-05 中的 2D/3D 视图切换、缩放级别、覆盖层选择等操作，从架构视角看属于<strong>纯渲染层状态</strong>，不影响模拟器核心的物理计算，也不应进入全局 Session State。</p>
+
+<div class="highlight-box">
+<strong>架构推导结论：</strong>Map 的视图状态（2D/3D、缩放、覆盖层开关）应作为 <strong>Map 工作区的本地状态</strong>管理，理由如下：
+<ul>
+<li>视图切换不改变模拟器核心状态，无跨工作区同步需求</li>
+<li>教员可能使用多个显示设备，每个设备的 Map 视图独立（如主屏 3D、副屏 2D）</li>
+<li>视图状态纳入全局 Session State 会增加不必要的状态版本开销</li>
+</ul>
+<strong>例外：</strong>如果视图状态需要被 Recording 捕获并在回放时恢复（如"教员当时在看 3D 进近视图"），则应在录制数据包中作为<strong>附属元数据</strong>保存，但不纳入核心状态管理。
+</div>
+
+<h3>FMS Memory Save/Recall 的数据流推导</h3>
+<p>FMS Memory 功能允许教员保存和召回飞行计划，但其边界在 ch1_8 中被明确限定：<strong>仅保存飞行计划数据，不保存飞机物理状态或环境参数</strong>。</p>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> FMS Memory Save</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> FMS Memory Recall</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as 教员
+    participant ADV as Advanced
+    participant SSM as Session State Manager
+    participant SC as Simulator Core
+    participant MAP as Map
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: FMS Memory Save
+    INST->>ADV: 点击 FMS Memory Save
+    ADV->>SSM: 保存请求
+    SSM->>SC: 读取当前 FMS 飞行计划
+    SC-->>SSM: 飞行计划数据 {waypoints, approach, SID/STAR}
+    SSM->>SSM: 持久化至 FMS Memory 存储区
+    SSM->>ADV: 保存成功确认
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: FMS Memory Recall
+    INST->>ADV: 选择已保存的 FMS Memory
+    ADV->>SSM: 召回请求 {memoryId}
+    SSM->>SSM: 从存储区读取飞行计划
+    SSM->>SC: 写入 FMS 子模块
+    SC->>SC: 重新计算航线
+    SC-->>SSM: 航线确认
+    SSM-->>MAP: FMS 航线覆盖层更新
+    SSM->>ADV: 召回完成
+    end
+</div>
+</div>
+
+<div class="highlight-box warn">
+<strong>边界约束：</strong>FMS Memory Save/Recall <strong>不触发 State Version 递增</strong>，也不影响飞机位置/姿态/环境参数。因为它操作的是 FMS 子模块内部的飞行计划数据，而非全局 Session State。这与 Flight State Capture（FSC）有本质区别——FSC 保存的是全量状态，Recall 时必须遵循 2.1.4 原则四的 8 步恢复顺序。
+</div>
+
+<h3>交互断点识别（RF-04/05）</h3>
+
+<div class="speculation-box">
+<strong>GAP-06：重新定位操作互斥锁</strong><span class="confidence conf-high">高优先级</span><br/>
+ch1_8 6.2 节提到"冻结后调整"是一种重新定位方式，但未明确说明<strong>冻结期间是否允许其他全局状态变更</strong>（如课程执行推进、故障注入、环境参数修改）。<br/><br/>
+<strong>架构补充建议：</strong>Session State Manager 需维护一个<strong>操作互斥锁（Operation Mutex）</strong>，规则如下：
+<ul>
+<li>重新定位操作期间（从请求到确认），禁止其他工作区修改飞机位置/姿态/航向</li>
+<li>冻结期间允许重新定位，但重新定位完成后必须再次确认才能解冻</li>
+<li>课程执行引擎在重新定位期间可继续运行（如 Autorun 步骤计时），但 SIM 步骤的物理效果应延迟至重新定位确认后生效</li>
+</ul>
+</div>
+
+
+<div class="footer-nav">
+<a class="prev" href="ch2_2_2_rf02_rf03_execution.html"><span>←</span><span>2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</span></a>
+<a class="next" href="ch2_2_4_rf06_freeze.html"><span>2.2.5 RF-06 冻结、回放与录制交互完整性</span><span>→</span></a>
+</div>
+    </div>
+  </div>
+</div>
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'},
+  sequence:{useMaxWidth:true,diagramMarginX:10,diagramMarginY:10,actorMargin:60,width:150,height:65,boxMargin:10,boxTextMargin:5,noteMargin:10,messageMargin:35}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
+</body>
+</html>

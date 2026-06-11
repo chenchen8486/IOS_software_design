@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2.2.6 跨流程状态衔接与交互断点汇总 — CAE IOS 教员台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+/* ==========================================
+   CAE IOS 教员台 — 全局公共样式
+   职责：定义全局 CSS 变量、布局骨架、基础排版、通用组件
+   注意：此文件由 build.py 统一注入到每个生成页面
+   ========================================== */
+
+/* ─── CSS 变量 ─── */
+:root{
+  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
+  --accent:#059669;--danger:#dc2626;--warning:#d97706;
+  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
+  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
+}
+
+/* ─── 基础重置 ─── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+
+/* ─── 布局骨架 ─── */
+.layout{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
+.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
+.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.sidebar-header p{font-size:12px;color:var(--text-secondary)}
+.nav-tree{padding:12px}
+.nav-group{margin-bottom:4px}
+.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
+.nav-toggle:hover{background:var(--primary-light)}
+.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
+.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
+.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
+.nav-children.collapsed{max-height:0}
+.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
+.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
+.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
+
+/* Main & Breadcrumb */
+.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
+.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
+.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
+
+/* ─── 内容区域基础排版 ─── */
+.content{max-width:1000px;margin:0 auto;padding:32px}
+.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
+.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
+.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
+.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
+.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
+.content p{margin-bottom:14px}
+.content ul,.content ol{margin:12px 0 12px 22px}
+.content li{margin-bottom:6px}
+.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
+.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
+.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
+.content pre code{background:transparent;padding:0;color:inherit}
+
+/* ─── 表格基础 ─── */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+tr:last-child td{border-bottom:none}
+
+/* ─── 页脚导航 ─── */
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+
+/* ─── 滚动条 ─── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+/* ─── 响应式 ─── */
+@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}}
+@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
+
+</style>
+<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+/* area-map 推导边界条（借鉴 ch1.8） */
+.area-map{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px;padding:8px 12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.area-map strong{color:var(--primary-dark)}
+
+/* arch-grid 架构信息网格（借鉴 ch1.1） */
+.arch-grid{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;margin-top:16px}
+.arch-grid .label{font-weight:600;color:var(--text-secondary);text-align:right;padding-top:2px}
+.arch-grid .content{color:var(--text)}
+@media (max-width:768px){.arch-grid{grid-template-columns:1fr}.arch-grid .label{text-align:left}}
+
+/* tag-pill 视觉标签（借鉴 ch1.8） */
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-warn{background:#fef3c7;color:#92400e}
+.tag-danger{background:#fee2e2;color:#991b1b}
+.tag-none{color:var(--text-secondary);font-size:12px}
+
+/* 折叠分类面板（借鉴 ch1.9，简化版） */
+.gap-category{margin:16px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.gap-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.gap-header h4{margin:0;font-size:15px;color:var(--text);font-weight:600}
+.gap-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.gap-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.gap-category.collapsed .toggle-icon{transform:rotate(-90deg)}
+.gap-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
+.gap-category:not(.collapsed) .gap-body{display:block}
+@media print{.gap-body{display:block!important}}
+
+@media print{.mermaid{page-break-inside:avoid}}
+
+/* 序列图 + 右侧图例 并排布局 */
+.seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
+.seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
+.seq-legend{flex:0 0 150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;line-height:1.7}
+.seq-legend-title{font-weight:600;color:var(--primary-dark);margin-bottom:8px;font-size:13px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.seq-legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--text-secondary)}
+.seq-line-solid{display:inline-block;width:18px;border-bottom:2px solid #334155}
+.seq-line-dashed{display:inline-block;width:18px;border-bottom:2px dashed #94a3b8}
+.seq-box{display:inline-block;width:14px;height:8px;border:1px dashed #94a3b8;border-radius:2px}
+.seq-diamond{display:inline-block;width:8px;height:8px;border:1px solid #94a3b8;transform:rotate(45deg)}
+.seq-loop{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-par{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-color{display:inline-block;width:12px;height:12px;border:1px solid transparent;border-radius:3px;flex-shrink:0}
+@media(max-width:900px){
+  .seq-pair{flex-direction:column}
+  .seq-legend{flex:0 0 auto;width:100%;display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px}
+  .seq-legend-title{width:100%;margin-bottom:4px;padding-bottom:4px}
+  .seq-legend-item{margin:2px 0;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
+  <nav class="nav-tree">
+    <div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 CAE IOS功能详解</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
+<div class="nav-group">
+  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
+  <div class="nav-children collapsed">
+    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 Lesson Plan Tab</a>
+<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 Doc Tab</a>
+<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 Current Conditions Tab</a>
+<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 Aircraft Tab</a>
+<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（Reference Airport Tab）</a>
+<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（Instructor Station Sliding Panel）</a>
+<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
+  </div>
+</div>
+<a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
+<a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（Instrument Repeater）</a>
+<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
+<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
+<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
+<a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程</a>
+<a class="nav-link" href="ch1_9_index.html">1.9 索引</a>
+  </div>
+</div>
+<div class="nav-group">
+  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件架构逆向分析</span></div>
+  <div class="nav-children">
+    <a class="nav-link" href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a>
+<div class="nav-group">
+  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 端到端交互完整性流程</span></div>
+  <div class="nav-children">
+    <a class="nav-link" href="ch2_2_0_framework.html">2.2.1 交互完整性分析框架</a>
+<a class="nav-link" href="ch2_2_1_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
+<a class="nav-link" href="ch2_2_2_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
+<a class="nav-link" href="ch2_2_3_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
+<a class="nav-link" href="ch2_2_4_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link active" href="ch2_2_5_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
+  </div>
+</div>
+<a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
+  </div>
+</div>
+  </nav>
+</aside>
+<div class="layout">
+  <div class="main">
+    <div class="breadcrumb">
+    <a href="#">首页</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">第 2 章 软件架构逆向分析</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">2.2 端到端交互完整性流程</a>
+    <span class="breadcrumb-sep">/</span>
+    <span>2.2.6 跨流程状态衔接与交互断点汇总</span>
+  </div>
+    <div class="content">
+      <h1>2.2.6 跨流程状态衔接与交互断点汇总</h1>
+<h2 id="sec-2-2-6">2.2.6 跨流程状态衔接与交互断点汇总</h2>
+<p class="area-map">
+<strong>推导来源：</strong>2.2.2 ~ 2.2.5 全部交互序列推导结果 &nbsp;|&nbsp; <strong>输入约束：</strong>六流程间状态传递契约、7 个交互断点、异常降级矩阵 &nbsp;|&nbsp; <strong>下游输出：</strong>2.3 UI 控件体系规范、2.4 数据流与接口契约推导
+</p>
+<p>2.2.2 ~ 2.2.5 分别推导了 RF-01~RF-06 的交互序列、状态机和断点。本节将所有推导结果汇总为三张总表，形成对后续 2.3（UI 控件体系规范）和 2.4（数据流与接口契约推导）的顶层输入。</p>
+
+<h3>六流程间状态传递契约总表</h3>
+<p>RF-01 作为主流程，与 RF-02~RF-06 之间存在多次调用/返回关系。以下表格定义了所有流程间衔接点的输入/输出契约：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:14%">源流程</th><th style="width:14%">目标流程</th><th style="width:28%">传递状态</th><th style="width:22%">数据格式（关键字段）</th><th style="width:22%">验证规则</th></tr>
+</thead>
+<tbody>
+<tr><td>RF-03</td><td>RF-02</td><td>初始化完成确认</td><td>{aircraft, env, airport, initVersion}</td><td>initVersion 必须递增；所有校验链通过</td></tr>
+<tr><td>RF-02</td><td>RF-04</td><td>课程执行上下文</td><td>{sessionSnapshot, stepIndex, courseId}</td><td>故障注入前自动冻结（可选）；课程状态不丢失</td></tr>
+<tr><td>RF-04</td><td>RF-02</td><td>故障状态更新</td><td>{malfList: [...], malfVersion}</td><td>故障同步完成后继续课程；若系统损坏需先执行 Reset</td></tr>
+<tr><td>RF-02</td><td>RF-05</td><td>位置监控请求</td><td>{currentPosition, flightPhase}</td><td>非着陆接地瞬间；非系统告警中</td></tr>
+<tr><td>RF-05</td><td>RF-02</td><td>重新定位完成</td><td>{newPosition, heading, repositionVersion}</td><td>repositionVersion 必须递增；Map 与 CB 位置一致</td></tr>
+<tr><td>RF-02/04/05</td><td>RF-06</td><td>冻结/录制请求</td><td>{freezeType, reason, sourceRF}</td><td>全局标志原子更新；所有工作区 50ms 内确认</td></tr>
+<tr><td>RF-06</td><td>RF-02/04/05</td><td>解冻/恢复完成</td><td>{stateVersion, resumePoint, sourceRF}</td><td>所有工作区确认；version 递增</td></tr>
+<tr><td>RF-01</td><td>RF-03~RF-06</td><td>子流程调用上下文</td><td>{entryPoint, callerState, returnTarget}</td><td>子流程完成后必须返回 callerState 指定的恢复点</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>交互断点汇总表</h3>
+<p>以下汇总了 2.2.2~2.2.5 中识别出的全部 7 个交互断点，按优先级分组展示。点击面板标题可展开/收起详情：</p>
+
+<div class="gap-category" id="gap-high">
+<div class="gap-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h4><span class="tag-pill tag-danger">高优先级</span> &nbsp;GAP-03 / GAP-04 / GAP-06</h4>
+<span class="count">3</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="gap-body">
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>编号</th><th>所属 RF</th><th>断点描述</th><th>补充建议</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>GAP-03</strong></td><td>RF-02</td><td>Freeplay 与 Autorun 步骤冲突时的优先级仲裁机制未定义</td><td>SSM 增加步骤优先级仲裁器；Freeplay > 常规步骤</td></tr>
+<tr><td><strong>GAP-04</strong></td><td>RF-02</td><td>Nested 课程跳转需要状态栈保存/恢复主课程上下文</td><td>SSM 增加 Course State Stack（LIFO，最大深度 3）</td></tr>
+<tr><td><strong>GAP-06</strong></td><td>RF-05</td><td>重新定位与冻结/课程执行的组合操作互斥规则未定义</td><td>SSM 增加 Operation Mutex；重新定位期间禁止其他位置变更</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="gap-category collapsed" id="gap-med">
+<div class="gap-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h4><span class="tag-pill tag-warn">中优先级</span> &nbsp;GAP-01 / GAP-02 / GAP-05 / GAP-07</h4>
+<span class="count">4</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="gap-body">
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>编号</th><th>所属 RF</th><th>断点描述</th><th>补充建议</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>GAP-01</strong></td><td>RF-01</td><td>Debrief 阶段的事件标记机制在 2.1 中未定义</td><td>新增 Event Marker 类型 {timestamp, type, source, description, snapshotRef}</td></tr>
+<tr><td><strong>GAP-02</strong></td><td>RF-01</td><td>Session Cleanup 后的全参数一致性验证机制未定义</td><td>Reset 后增加自动全参数校验；失败保持冻结</td></tr>
+<tr><td><strong>GAP-05</strong></td><td>RF-04</td><td>预位故障触发条件评估引擎的归属未明确</td><td>建议由 Simulator Core 内部专用触发器引擎执行</td></tr>
+<tr><td><strong>GAP-07</strong></td><td>RF-06</td><td>录制过程中动态干预（冻结/故障/重定位）的事件记录格式未定义</td><td>录制数据采用"状态快照 + 时间戳事件日志"双轨格式</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<h3>异常分支与降级路径决策矩阵</h3>
+<p>以下矩阵汇总了各 RF 在异常场景下的降级路径，是后续实现异常处理逻辑的参考：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:16%">主流程</th><th style="width:24%">异常场景</th><th style="width:18%">检测点</th><th style="width:24%">降级路径</th><th style="width:18%">最终状态</th></tr>
+</thead>
+<tbody>
+<tr><td>RF-03 初始化</td><td>Weight & CG 超出包线</td><td>SSM L2 业务校验</td><td>拒绝下发，返回 AIRCRAFT Tab 调整</td><td>未初始化，version 不变</td></tr>
+<tr><td>RF-03 初始化</td><td>机场数据库加载失败</td><td>SC L3 物理校验</td><td>中止初始化，通知维护人员</td><td>未初始化，跳转 Maintenance</td></tr>
+<tr><td>RF-02 课程执行</td><td>Freeplay 与 Autorun 冲突</td><td>SSM 优先级仲裁器</td><td>Freeplay 优先，挂起常规步骤</td><td>Freeplay 执行中，常规步骤挂起</td></tr>
+<tr><td>RF-02 课程执行</td><td>Nested 子课程加载失败</td><td>SSM Course State Stack</td><td>返回主课程，标记子课程失败</td><td>主课程从断点恢复</td></tr>
+<tr><td>RF-04 故障注入</td><td>故障库中不存在该代码</td><td>SSM Malfunction Registry 查询</td><td>步骤执行失败，提示教员检查课程配置</td><td>故障未注入，继续课程</td></tr>
+<tr><td>RF-04 故障解除</td><td>系统损坏（解除后参数未恢复）</td><td>SC 健康检查</td><td>提示执行对应 Reset；若 Reset 失败跳转 Maintenance</td><td>冻结或维护模式</td></tr>
+<tr><td>RF-05 重新定位</td><td>飞机陷入地形</td><td>SC 地形碰撞检测</td><td>拒绝位置更新，提示重新选择</td><td>位置未变更，保持冻结</td></tr>
+<tr><td>RF-05 重新定位</td><td>重新定位期间收到新的定位请求</td><td>SSM Operation Mutex</td><td>拒绝新请求，提示"重新定位进行中"</td><td>当前定位继续执行</td></tr>
+<tr><td>RF-06 状态调用</td><td>恢复过程中任一状态失败</td><td>SSM 8 步恢复验证门</td><td>回滚到调用前快照或保持冻结</td><td>冻结状态，等待教员决策</td></tr>
+<tr><td>RF-06 录制</td><td>录制文件损坏或存储满</td><td>Recording Engine 校验</td><td>保留已录制片段，提示错误</td><td>录制中断，已保存部分可用</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>对后续章节的输入</h3>
+<div class="highlight-box">
+<strong>对 2.3（UI 控件体系规范）的输入：</strong>
+<ul>
+<li><strong>冻结期间的 UI 行为</strong>：参数输入控件需支持"预调整值"与"当前生效值"的双值显示模式</li>
+<li><strong>故障注入确认</strong>：三种注入入口的 UI 反馈需统一（激活后红色高亮 + Footer 计数器 + Malfunctions Panel 同步）</li>
+<li><strong>重新定位进度指示</strong>：Footer Repo 等一键操作需要进度条或"操作中"状态提示，防止教员重复点击</li>
+<li><strong>Nested 课程切换动画</strong>：主课程 → 子课程切换时，Lesson Plan Profile 需有视觉过渡提示，避免教员误以为课程丢失</li>
+</ul>
+</div>
+
+<div class="highlight-box">
+<strong>对 2.4（数据流与接口契约推导）的输入：</strong>
+<ul>
+<li><strong>SSM 接口扩展</strong>：需定义步骤优先级仲裁、课程状态栈、操作互斥锁、事件标记的接口契约</li>
+<li><strong>Malfunction Registry 接口</strong>：需定义故障注册、查询、冲突检测、状态转换的 API</li>
+<li><strong>Recording Engine 接口</strong>：需定义状态快照格式、事件日志格式、持久化存储访问接口</li>
+<li><strong>8 步恢复顺序接口</strong>：需定义每步恢复的输入/输出、验证门、失败回滚的原子性保证</li>
+</ul>
+</div>
+
+<div class="highlight-box warn">
+<strong>约束重申：</strong>2.2 节建立的所有交互序列、状态传递契约和断点清单，是后续 2.3 和 2.4 的<strong>顶层约束</strong>。任何 UI 控件行为定义或接口契约推导，均不得违背本节定义的数据流方向、状态机转换和异常降级路径。
+</div>
+
+<!-- ==================== 附录 ==================== -->
+<h2 id="sec-2-2-appendix">附录：2.1 架构原则 → 2.2 交互推导映射表</h2>
+
+<p>以下表格将 <a href="ch1_1_components.html">1.1.4 ~ 1.1.11</a> 中总结的五大设计原则，具体化为 2.2 节的交互分析约束条件。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">设计原则</th><th style="width:35%">原则描述</th><th style="width:43%">对应的第 2.2 章架构决策</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>原则一：按认知模态分离</strong></td><td>离散参数与连续空间信息绝不混在同一面板</td><td><strong>2.2.4</strong> 中 Map 的 2D/3D 视图状态被定义为纯渲染层本地状态，不进入全局 Session State；<strong>2.2.4</strong> 中重新定位的四种方式按"空间直觉"（SLEW/Map）和"逻辑推理"（Airport Repo/Footer Repo）分类分析</td>
+</tr>
+<tr>
+<td><strong>原则二：按使用频率分层</strong></td><td>高频功能常驻主界面；低频功能独立隔离</td><td><strong>2.2.4</strong> 中三种故障注入入口按使用频率分层：MALF（标准化高频）→ Quick（即兴中频）→ Advanced（精细低频）；<strong>2.2.5</strong> 中 Footer Freeze（高频）与 Advanced Freeze（低频精细控制）的消息路径差异</td>
+</tr>
+<tr>
+<td><strong>原则三：按角色隔离</strong></td><td>不同用户角色的功能绝不混用</td><td><strong>2.2.4</strong> 中故障注入权限与维护锁定状态互斥；<strong>2.2.6</strong> 异常降级矩阵中，所有无法通过软件恢复的路径最终都降级到 Maintenance 角色域</td>
+</tr>
+<tr>
+<td><strong>原则四：同一模型，多重视图</strong></td><td>同一个领域对象设计多个正交视图</td><td><strong>2.2.3</strong> 中 LESSON PLAN Tab ↔ Lesson Plan Profile 的双向同步契约推导；当前步骤索引的单一事实来源为 SSM，CB 和 LPP 均为消费视图</td>
+</tr>
+<tr>
+<td><strong>原则五：应急通道设计</strong></td><td>常规层级导航在紧急场景下是致命的</td><td><strong>2.2.4</strong> 中 Footer Reposition（3 次点击直达）与 SLEW/Airport Repo（10+ 次操作）的交互代价对比；<strong>2.2.5</strong> 中 Footer Freeze（瞬时冻结）作为最高频应急操作的消息路径最短化设计</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="footer-nav">
+<a class="prev" href="ch2_2_4_rf06_freeze.html"><span>←</span><span>2.2.5 RF-06 冻结、回放与录制交互完整性</span></a>
+<a class="next" href="ch2_3_ui_component_spec.html"><span>2.3 UI 控件体系规范</span><span>→</span></a>
+</div>
+<hr style="margin:40px 0;border:none;border-top:1px solid var(--border)"/>
+<p style="font-size:13px;color:var(--text-secondary)">
+<strong>文档版本：</strong>V1.0 &nbsp;|&nbsp; <strong>创建时间：</strong>2026-06-10 &nbsp;|&nbsp; <strong>上游依赖：</strong><a href="ch1_8_reference_flows.html">1.8 参考流程</a>、<a href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a> &nbsp;|&nbsp; <strong>下游输出：</strong>2.3 UI 控件体系规范、2.4 数据流与接口契约推导 &nbsp;|&nbsp; <strong>性质：</strong>基于操作手册的架构交互推导 &nbsp;|&nbsp; <strong>置信度：</strong>中~高
+</p>
+    </div>
+  </div>
+</div>
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'},
+  sequence:{useMaxWidth:true,diagramMarginX:10,diagramMarginY:10,actorMargin:60,width:150,height:65,boxMargin:10,boxTextMargin:5,noteMargin:10,messageMargin:35}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>
+</body>
+</html>
