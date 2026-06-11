@@ -87,7 +87,7 @@
 <p>这种视角转换的核心价值在于<strong>识别交互断点</strong>——即操作手册中明确描述了某个行为，但 2.1 的架构推导中尚未为其分配数据流、同步机制或状态管理逻辑。每一个断点都是后续软件实现中必须填补的架构缺口。</p>
 
 <div class="highlight-box warn">
-<strong>⚠️ 架构实体来源声明：</strong>原始 CAE IOS 手册是<strong>操作手册</strong>，面向教员描述"如何点击按钮"，不会定义任何软件内部模块。本节出现的 <strong>Session State Manager（SSM）</strong> 和 <strong>Simulator Core（SC）</strong> 均为<strong>架构推导产物</strong>，而非原始文档中的实体——SSM 是为了解释"全局冻结同步、跨面板参数一致、Freeplay 冲突仲裁"这三个现象而假设的<strong>逻辑协调层</strong>；SC 是对手册中"模拟器/主机/物理计算"的<strong>架构抽象命名</strong>。两者都是当前阶段的<strong>占位符</strong>，后续软件实现中的真实模块命名、进程边界乃至职责拆分都可能与之不同。
+<strong>⚠️ 架构实体来源声明：</strong>原始 CAE IOS 手册是<strong>操作手册</strong>，面向教员描述"如何点击按钮"，不会定义任何软件内部模块。本节出现的 <strong>Session State Manager（SSM）</strong> 和 <strong>Simulator Core（SC）</strong> 均为<strong>架构推导产物</strong>，而非原始文档中的实体。SSM 是 IOS 教员台内部待实现的<strong>逻辑协调层</strong>；SC 是 IOS 所连接<strong>外部模拟器主机系统</strong>的<strong>接口抽象</strong>（非内部模块，亦非硬件）。详见下文「核心推导架构实体详解」。
 </div>
 
 <h3>分析方法论：四步法</h3>
@@ -112,7 +112,7 @@
 </thead>
 <tbody>
 <tr><td><strong>实线箭头 →</strong></td><td>同步请求/响应</td><td>Instructor → CB：点击 Execute，CB 等待 Session State Manager 确认后才更新 UI</td></tr>
-<tr><td><strong>虚线箭头 --→</strong></td><td>异步通知/广播</td><td>Simulator Core --→ Map：物理引擎按 30Hz 广播飞机位置更新</td></tr>
+<tr><td><strong>虚线箭头 --→</strong></td><td>异步通知/广播</td><td>SC（外部模拟器主机）--→ Map：模拟器按 30Hz 向 IOS 广播飞机位置更新</td></tr>
 <tr><td><strong>红色边框节点</strong></td><td>强一致性要求（&lt; 100ms，零偏差）</td><td>冻结/解冻标志、飞机位置/姿态</td></tr>
 <tr><td><strong>橙色边框节点</strong></td><td>最终一致性要求（允许短暂偏差）</td><td>云层动画、仪表指针插值</td></tr>
 <tr><td><strong>虚线框 rect</strong></td><td>子流程调用/引用</td><td>RF-01 中调用 RF-03 初始化子流程</td></tr>
@@ -142,19 +142,92 @@
 <div class="content">全局控制网关，冻结/重置/时间控制/工作区切换</div>
 <div class="label">Session State Manager<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SSM（状态管理器）</span></div>
 <div class="content">全局状态协调者，仲裁、版本控制、批量下发</div>
-<div class="label">Simulator Core<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SC（模拟器核心）</span></div>
-<div class="content">物理引擎、环境引擎、声音系统、FMS 子模块</div>
+<div class="label">Simulator Core<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SC（模拟器核心接口）</span></div>
+<div class="content">外部模拟器主机系统（Simulator Host）的接口抽象，IOS 教员台通过它下发参数并接收物理状态反馈</div>
 </div>
 </div>
 
-<div class="highlight-box warn">
-<strong>重要约定：</strong>在 Sequence Diagram 中，<strong>SSM（Session State Manager）</strong>被显式画为独立参与者，而非隐式内嵌于某个工作区中。这强调了 2.1.2 中提出的核心假设——SSM 是所有工作区与模拟器核心之间的<strong>唯一协调者</strong>。所有跨工作区的状态变更（即使是看似"直接"的联动，如 Map Slew → CB 位置更新）在架构层面都建议经过 SSM 转发，以保证版本控制和仲裁逻辑的统一性。
+<h3 id="sec-ssm-sc-detail">核心推导架构实体详解</h3>
+<p>本节对两个架构推导产物——<strong>Session State Manager（SSM）</strong>与 <strong>Simulator Core（SC）</strong>——做专题深入说明。后续 2.2.2 ~ 2.2.5 的所有序列图均默认读者已理解本节定义的模块边界与交互契约。</p>
+
+<div class="arch-block">
+<h4>Session State Manager（SSM）——全局状态协调者</h4>
+<div class="arch-grid">
+<div class="label">职责定位</div>
+<div class="content">所有工作区与模拟器核心之间的<strong>唯一协调层</strong>，承担状态仲裁、版本控制、批量下发与冲突消解四大职责。SSM 不直接面向教员展示 UI，而是作为"幕后中枢"保证跨工作区数据的一致性。</div>
+<div class="label">核心职责</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>状态仲裁与版本控制：</strong>每次状态变更递增 State Version，所有工作区按版本号刷新；管理冻结/解冻、故障激活、重新定位等原子状态标志</li>
+<li><strong>课程生命周期：</strong>课程加载、步骤推进、执行模式切换（Autorun / Step-by-Step）、终止与重置</li>
+<li><strong>L2 业务校验与批量下发：</strong>跨参数等式验证（如 GW = ZFW + Fuel）、包线约束、依赖顺序校验；校验通过后打包广播至所有相关视图</li>
+<li><strong>冲突消解与失败回滚：</strong>Freeplay / Nested 优先级裁决、课程状态栈（LIFO）管理；L2 失败回滚至上一次合法状态，L3 失败回滚至 SC 上一次通过校验的快照</li>
+<li><strong>持久化契约：</strong>Save/Recall Scenario 时过滤"瞬时模拟状态"，仅持久化"教员输入的配置参数"</li>
+</ul>
+</div>
+<div class="label">与 2.1 的对应关系</div>
+<div class="content">SSM 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2 三层数据流</a> 中<strong>状态管理层</strong>的具体化，也是 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> 中"单一事实来源"机制的执行者。</div>
+</div>
 </div>
 
+<div class="arch-block">
+<h4>Simulator Core（SC）——外部模拟器主机接口抽象</h4>
+<div class="arch-grid">
+<div class="label">职责定位</div>
+<div class="content">SC 是 <strong>IOS 教员台软件的外部边界</strong>，代表 IOS 所连接的<strong>远端模拟器主机系统（Simulator Host）</strong>。它<strong>不是 IOS 内部的软件模块，也不是硬件设备</strong>，而是架构层面为标识"跨进程/跨网络边界"而引入的<strong>接口抽象</strong>。所有涉及飞机物理状态变更、环境参数计算、视景驱动、声音合成的请求，都必须通过 SC 离开 IOS 教员台，进入外部模拟器系统执行。</div>
+<div class="label">为什么需要 SC</div>
+<div class="content">从 IOS 教员台软件的架构视角看，物理仿真和视景渲染是<strong>外部能力</strong>——IOS 不负责解算六自由度动力学，也不直接渲染三维地景。但 IOS 必须<strong>驱动</strong>这些外部能力（如设置飞机重量、选择机场、注入故障）并<strong>消费</strong>其输出（如接收飞机位置、仪表数据、环境状态）。SC 的存在就是为了在序列图中标识："这条消息离开 IOS 边界，进入外部模拟器系统"。</div>
+<div class="label">SC 背后的真实系统</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>物理仿真主机：</strong>运行飞行模型（六自由度动力学、气动包线、重量与重心计算、燃油消耗）</li>
+<li><strong>视景系统（IG）：</strong>负责三维地景渲染、云与能见度、天气现象（风暴、微下击暴流、风切变、结冰）</li>
+<li><strong>声音系统：</strong>引擎声、告警音、环境音的生成与混合</li>
+<li><strong>航电与 FMS：</strong>飞行计划计算、导航信号生成、自动驾驶仪逻辑</li>
+<li><strong>机场/地形数据库：</strong>跑道几何、登机口位置、地形高程</li>
+</ul>
+</div>
+<div class="label">SC 对 IOS 的可见行为</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>下发接口：</strong>IOS 通过 SC 向外部模拟器发送参数变更（飞机重量、机场选择、环境配置、故障注入、冻结指令）</li>
+<li><strong>反馈接口：</strong>SC 向 IOS 回传参数确认、物理校验结果（L3 校验：地形碰撞、起飞可行性）、状态快照</li>
+<li><strong>广播接口：</strong>SC 以固定频率（如 30Hz）向 IOS 推送飞机位置/姿态/仪表数据，供 Map、Instruments Repeaters 消费</li>
+</ul>
+</div>
+<div class="label">与 2.1 的对应关系</div>
+<div class="content">SC 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2</a> 中<strong>模拟器核心层</strong>的接口抽象，对应数据依赖矩阵中"飞机物理状态"、"环境参数"等强一致性数据项的<strong>外部所有者</strong>。从 IOS 软件架构看，SC 是<strong>必须对接的外部系统边界</strong>，而非内部实现单元。</div>
+</div>
+</div>
+
+<div class="arch-block">
+<h4>SSM ↔ SC 协作模式</h4>
+<div class="arch-grid">
+<div class="label">数据流向</div>
+<div class="content"><strong>下行（SSM → SC）：</strong>教员通过工作区发起的参数变更、执行模式切换、冻结/解冻指令、故障注入请求，均经 SSM 校验后下发至 SC。<br/><strong>上行（SC → SSM）：</strong>SC 完成参数确认、物理校验结果、步骤自动推进状态、周期广播数据，均回传至 SSM，由 SSM 决定如何分发到各工作区。</div>
+<div class="label">边界原则</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>SC 不直接面向工作区：</strong>任何工作区不得绕过 SSM 直接调用 SC，以保证版本控制和仲裁逻辑的统一性</li>
+<li><strong>SSM 不替代 SC 的计算：</strong>SSM 只做业务级校验（L2），不做物理仿真（L3）；物理可行性判断必须交由 SC</li>
+<li><strong>状态变更必须经过 SSM：</strong>即使是看似"直接"的联动（如 Map Slew → CB 位置更新），架构层面也建议经过 SSM 转发，以记录版本与处理冲突</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="highlight-box danger">
+<strong>⚠️ 开发归属与实现优先级（必读）：</strong>后续 IOS 教员台软件开发必须明确区分 SSM 与 SC 的归属边界，避免资源错配：
+<ul style="margin:8px 0 0;padding-left:18px">
+<li><strong>SSM 是 IOS 教员台内部的核心开发模块：</strong>全局状态协调、仲裁、版本控制、批量下发、冲突消解、课程生命周期管理——这些能力不存在于外部系统，必须由 IOS 教员台软件自行实现。SSM 的设计与实现是后续开发阶段的<strong>高优先级核心任务</strong>，其接口定义直接影响全部 6 大工作区的数据流与状态一致性。</li>
+<li><strong>SC 是外部模拟器主机系统的接口抽象：</strong>IOS 教员台不需要实现物理仿真、视景渲染或声音合成，但需要开发与 SC 对接的<strong>接口适配层</strong>（协议封装、数据转换、网络通信、异常降级）。SC 的接口规格应以供应商提供的模拟器主机 SDK/协议文档为输入，而非自行推导。</li>
+<li><strong>开发风险提醒：</strong>若后续开发中忽略 SSM 的统一协调职责，让各工作区直接处理状态同步和冲突仲裁，将导致代码高度耦合、状态一致性难以维护、Freeplay/Nested 等高级特性无法实现。SSM 必须在架构设计早期确立，而非在业务代码中被动补全。</li>
+</ul>
+</div>
 
 <div class="footer-nav">
 <a class="prev" href="ch2_1_functional_architecture.html"><span>←</span><span>2.1 功能架构全景图</span></a>
-<a class="next" href="ch2_2_1_rf01_session.html"><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span><span>→</span></a>
+<a class="next" href="ch2_2_2_rf01_session.html"><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span><span>→</span></a>
 </div>
 <script>
 mermaid.initialize({

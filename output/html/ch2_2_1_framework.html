@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.2.2 RF-01 标准训练 Session 交互序列与状态机 — CAE IOS 教员台</title>
+<title>2.2.1 交互完整性分析框架 — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -210,12 +210,12 @@ tr:last-child td{border-bottom:none}
 <div class="nav-group">
   <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 端到端交互完整性流程</span></div>
   <div class="nav-children">
-    <a class="nav-link" href="ch2_2_0_framework.html">2.2.1 交互完整性分析框架</a>
-<a class="nav-link active" href="ch2_2_1_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
-<a class="nav-link" href="ch2_2_2_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
-<a class="nav-link" href="ch2_2_3_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
-<a class="nav-link" href="ch2_2_4_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
-<a class="nav-link" href="ch2_2_5_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
+    <a class="nav-link active" href="ch2_2_1_framework.html">2.2.1 交互完整性分析框架</a>
+<a class="nav-link" href="ch2_2_2_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
+<a class="nav-link" href="ch2_2_3_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
+<a class="nav-link" href="ch2_2_4_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
+<a class="nav-link" href="ch2_2_5_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link" href="ch2_2_6_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
   </div>
 </div>
 <a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
@@ -232,194 +232,161 @@ tr:last-child td{border-bottom:none}
     <span class="breadcrumb-sep">/</span>
     <a href="#">2.2 端到端交互完整性流程</a>
     <span class="breadcrumb-sep">/</span>
-    <span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span>
+    <span>2.2.1 交互完整性分析框架</span>
   </div>
     <div class="content">
-      <h1>2.2.2 RF-01 标准训练 Session 交互序列与状态机</h1>
-<h2 id="sec-2-2-2">2.2.2 RF-01 标准训练 Session 交互序列与状态机</h2>
-<p class="area-map">
-<strong>推导来源：</strong>RF-01 标准训练 Session 完整流程 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>、<a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-01</span> <span class="tag-pill tag-warn">GAP-02</span>
-</p>
-<p>RF-01 是覆盖训练完整生命周期的<strong>主流程</strong>，从加载课程到结束讲评，横跨全部 6 大工作区。本节将其转化为跨工作区的消息序列图，并验证每个阶段在 2.1 架构中的覆盖情况。</p>
+      <h1>2.2.1 交互完整性分析框架</h1>
 
-<h3>主流程交互序列图</h3>
-<p>下图展示了 RF-01 主干路径的跨工作区消息序列。为控制图表复杂度，RF-02~RF-06 子流程的详细内部序列在各自小节中展开，此处以<strong>虚线框（ref）</strong>引用。</p>
-
-<div class="seq-pair">
-<div class="seq-legend">
-  <div class="seq-legend-title">符号约定</div>
-  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
-  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
-  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
-  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
-  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
-  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
-
-  <div class="seq-legend-color">
-    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 关键流程节点</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 教员配置 / 干预</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 自动运行 / 监控</div>
-  </div>
-</div>
-<div class="mermaid">
-sequenceDiagram
-    autonumber
-    participant INST as 教员
-    participant CB as Control Board
-    participant FS as Footer
-    participant SSM as Session State Manager
-    participant LPP as Lesson Plan Profile
-    participant MAP as Map
-    participant ADV as Advanced
-    participant SC as Simulator Core
-    participant IR as Instruments Repeaters
-
-    rect rgb(219,234,254)
-    Note over INST,IR: 阶段一：课程加载与初始化检查
-    INST->>CB: 1. 进入 LESSON PLAN Tab，选择课程
-    CB->>SSM: 课程加载请求 {courseId}
-    SSM->>SC: 加载课程定义
-    SC-->>SSM: 课程数据 {phases, steps, params}
-    SSM->>CB: 课程加载完成 {version+=1}
-    SSM-->>LPP: 同步课程结构（剖面数据）
-    CB-->>INST: 显示课程大纲与步骤列表
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,IR: 阶段二：环境配置与飞机初始化（引用 RF-03）
-    INST->>CB: 2. 进入 AIRCRAFT / REF AIRPORT / CC Tabs
-    CB->>SSM: 参数变更事件（多轮）
-    SSM->>SC: 下发飞机/环境/机场参数
-    SC-->>SSM: 参数确认 / 校验结果
-    SSM->>CB: 参数生效回显 {version+=1}
-    SSM-->>MAP: 机场/环境数据推送
-    MAP-->>INST: 渲染地图与地景
-    end
-
-    rect rgb(219,234,254)
-    Note over INST,IR: 阶段三：位置确认与课程启动
-    INST->>MAP: 3. 切换至 Map，确认位置/跑道
-    MAP-->>INST: 显示飞机位置与航迹
-    INST->>CB: 4. 返回 LESSON PLAN Tab
-    INST->>CB: 5. 选择 Autorun / Step-by-Step
-    CB->>SSM: 课程执行模式 {mode}
-    SSM->>SC: 启动课程引擎
-    SC-->>SSM: 课程状态 {stepIndex, state}
-    SSM->>CB: 步骤高亮更新
-    SSM-->>LPP: 剖面进度同步
-    end
-
-    rect rgb(220,252,231)
-    Note over INST,IR: 阶段四：实时监控循环
-    loop 训练进行中
-        SC-->>MAP: 飞机位置/航迹广播
-        SC-->>IR: 仪表数据广播
-        SC-->>CB: 参数状态回显
-        MAP-->>INST: 地图渲染
-        IR-->>INST: 仪表显示
-    end
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,IR: 阶段五：动态干预（引用 RF-04 / RF-05）
-    alt 故障注入
-        INST->>ADV: 6a. 进入 Advanced → Failure
-        ADV->>SSM: 故障激活/预位请求
-        SSM->>SC: 注入故障
-        SC-->>SSM: 故障状态确认
-        SSM->>CB: Malfunctions Panel 更新
-        SSM->>FS: Footer 故障计数器更新
-    else 重新定位
-        INST->>MAP: 6b. SLEW 拖动 / Airport Repo
-        MAP->>SSM: 位置变更事件
-        SSM->>SC: 更新飞机位置
-        SSM->>CB: 位置参数同步
-    end
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,IR: 阶段六：冻结与状态保全（引用 RF-06）
-    INST->>FS: 7. 点击 Freeze
-    FS->>SSM: 全局冻结请求 {freezeType}
-    SSM->>SC: 暂停物理引擎
-    SSM->>CB: 冻结状态通知
-    SSM->>MAP: 冻结状态通知
-    SSM->>IR: 冻结状态通知
-    SSM->>LPP: 冻结状态通知
-    Note over CB,LPP: 全部工作区保持冻结瞬间快照
-    end
-
-    rect rgb(219,234,254)
-    Note over INST,IR: 阶段七：结束与讲评
-    INST->>CB: 8. 点击 End Lesson
-    CB->>SSM: 课程终止请求
-    SSM->>SC: 停止课程引擎
-    SSM->>CB: 课程状态重置
-    SSM-->>LPP: 清除进度高亮
-    INST->>ADV: 9. 回放 Recording
-    ADV->>SSM: 回放请求
-    SSM->>SC: 按序恢复状态快照
-    SC-->>SSM: 恢复完成
-    SSM->>CB: 显示回放状态
-    end
-</div>
+<div class="speculation-box">
+<strong>内容性质声明：</strong>本章所有内容均基于 <a href="ch1_8_reference_flows.html">1.8 参考流程（RF-01 ~ RF-06）</a> 中的操作步骤与状态流转，在 <a href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a> 定义的约束下进行<strong>交互完整性验证与推导</strong>。所有"交互断点"与"状态传递契约"均标注了置信度，供后续软件开发参考，不构成最终技术设计约束。
 </div>
 
-<h3>领域切换点的状态传递契约</h3>
-<p>RF-01 中存在三个关键的<strong>领域切换点</strong>（Domain Handoff），即主流程临时进入子流程（RF-03~RF-06）的衔接位置。每个切换点都必须定义清晰的输入/输出状态契约，否则子流程返回后主流程将失去上下文。</p>
+<p><a href="ch1_8_reference_flows.html">1.8 参考流程</a> 从<strong>操作手册视角</strong>回答了"教员在训练中应该如何操作"——它用流程图（Flowchart）描述了 6 个端到端流程的操作步骤、认知模式和效率技巧。而 2.2 节的任务是从<strong>软件架构视角</strong>回答另一个问题：<strong>"系统为了支撑这些操作，各工作区之间必须发生怎样的交互？"</strong></p>
 
+<p>这种视角转换的核心价值在于<strong>识别交互断点</strong>——即操作手册中明确描述了某个行为，但 2.1 的架构推导中尚未为其分配数据流、同步机制或状态管理逻辑。每一个断点都是后续软件实现中必须填补的架构缺口。</p>
+
+<div class="highlight-box warn">
+<strong>⚠️ 架构实体来源声明：</strong>原始 CAE IOS 手册是<strong>操作手册</strong>，面向教员描述"如何点击按钮"，不会定义任何软件内部模块。本节出现的 <strong>Session State Manager（SSM）</strong> 和 <strong>Simulator Core（SC）</strong> 均为<strong>架构推导产物</strong>，而非原始文档中的实体。SSM 是 IOS 教员台内部待实现的<strong>逻辑协调层</strong>；SC 是 IOS 所连接<strong>外部模拟器主机系统</strong>的<strong>接口抽象</strong>（非内部模块，亦非硬件）。详见下文「核心推导架构实体详解」。
+</div>
+
+<h3>分析方法论：四步法</h3>
+<p>将操作手册流程转化为架构交互模型的标准方法如下：</p>
+<ol>
+<li><strong>提取工作区与数据变更</strong>：从 ch1_8 的每个 RF 中，识别出"涉及哪些工作区"、"修改了哪些数据项"、"触发了哪些状态转换"。</li>
+<li><strong>对照 2.1 数据依赖矩阵</strong>：将步骤 1 中提取的数据变更，逐一映射到 <a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 跨工作区数据依赖矩阵</a>，确认数据所有者、共享范围和同步规则是否已定义。</li>
+<li><strong>推导跨工作区消息序列</strong>：使用 Mermaid Sequence Diagram 描述消息的发送方、接收方、方向（请求/响应/广播）、同步属性（同步调用 vs 异步通知）以及数据负载。</li>
+<li><strong>识别交互断点</strong>：若某一步操作在 ch1_8 中有描述，但在 2.1 中找不到对应的数据流或同步机制，则标记为交互断点（Interaction Gap），并推导最小可行的架构补充。</li>
+</ol>
+
+<div class="highlight-box">
+<strong>约束红线：</strong>2.2 节的所有推导必须以 <a href="ch2_1_functional_architecture.html">2.1</a> 定义的数据所有权和同步规则为约束。任何与 2.1 矛盾的推导都必须被视为错误并修正，而非推翻 2.1 的结论。
+</div>
+
+<h3>符号约定与图例</h3>
+<p>本节统一使用以下符号体系描述跨工作区交互：</p>
 <div class="table-wrap">
 <table>
 <thead>
-<tr><th style="width:18%">切换点</th><th style="width:28%">源状态（进入子流程前）</th><th style="width:28%">目标状态（子流程完成后）</th><th style="width:26%">契约验证规则</th></tr>
+<tr><th style="width:22%">符号/术语</th><th style="width:35%">含义</th><th style="width:43%">示例</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>A：课程加载 → RF-03 初始化</strong></td><td>{courseLoaded: true, stepIndex: 0, aircraft: default, env: default, airport: null}</td><td>{initComplete: true, aircraft: validated, env: validated, airport: validated, version: N}</td><td>version 必须递增；所有校验链通过；GW = ZFW + Fuel 等式成立</td></tr>
-<tr><td><strong>B：实时监控 → RF-04 故障注入</strong></td><td>{sessionRunning: true, stepIndex: K, malfList: []}</td><td>{malfList: [...], malfVersion: M, sessionRunning: true}</td><td>故障状态必须在 50ms 内同步至所有工作区；课程执行状态不丢失</td></tr>
-<tr><td><strong>C：实时监控 → RF-05 重新定位</strong></td><td>{position: P0, heading: H0, flightPhase: F}</td><td>{position: P1, heading: H1, flightPhase: F, repositionVersion: R}</td><td>重新定位期间课程执行状态暂停或保持；非着陆接地瞬间允许重新定位</td></tr>
-<tr><td><strong>D：任意阶段 → RF-06 冻结</strong></td><td>{sessionRunning: true, ...allState}</td><td>{freezeFlag: true, frozenSnapshot: S, version: V+1}</td><td>冻结瞬间捕获全量状态快照；所有工作区在 50ms 内响应；解冻后 version 再次递增</td></tr>
+<tr><td><strong>实线箭头 →</strong></td><td>同步请求/响应</td><td>Instructor → CB：点击 Execute，CB 等待 Session State Manager 确认后才更新 UI</td></tr>
+<tr><td><strong>虚线箭头 --→</strong></td><td>异步通知/广播</td><td>SC（外部模拟器主机）--→ Map：模拟器按 30Hz 向 IOS 广播飞机位置更新</td></tr>
+<tr><td><strong>红色边框节点</strong></td><td>强一致性要求（&lt; 100ms，零偏差）</td><td>冻结/解冻标志、飞机位置/姿态</td></tr>
+<tr><td><strong>橙色边框节点</strong></td><td>最终一致性要求（允许短暂偏差）</td><td>云层动画、仪表指针插值</td></tr>
+<tr><td><strong>虚线框 rect</strong></td><td>子流程调用/引用</td><td>RF-01 中调用 RF-03 初始化子流程</td></tr>
+<tr><td><strong>GAP-XX</strong></td><td>交互断点编号</td><td>GAP-01：Debrief 阶段的事件标记机制在 2.1 中未定义</td></tr>
 </tbody>
 </table>
 </div>
 
-<h3>架构覆盖验证矩阵</h3>
-<p>将 RF-01 的每个阶段与 <a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a> 和 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> 进行交叉验证：</p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th style="width:16%">RF-01 阶段</th><th style="width:22%">涉及数据项</th><th style="width:20%">2.1.3 覆盖情况</th><th style="width:20%">2.1.4 一致性要求</th><th style="width:22%">验证结论</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>课程加载</strong></td><td>课程状态（阶段列表、步骤定义）</td><td><span class="tag-pill tag-main">已覆盖</span>（Lesson Plan Profile 所有者）</td><td>课程步骤索引：强一致性</td><td><span class="tag-pill tag-main">通过</span>。加载后 stepIndex=0 必须同步至 CB 和 LPP</td></tr>
-<tr><td><strong>初始化检查</strong></td><td>飞机物理状态、环境参数、参考机场</td><td><span class="tag-pill tag-main">已覆盖</span>（SC/CB 所有者）</td><td>环境参数：强一致性（&lt;100ms）</td><td><span class="tag-pill tag-main">通过</span>。参数校验链需要 2.1.4 原则一的"全局原子状态标志"支撑</td></tr>
-<tr><td><strong>位置确认</strong></td><td>飞机位置、航向、FMS 航线</td><td><span class="tag-pill tag-main">已覆盖</span>（SC 所有者）</td><td>飞机位置/姿态：强一致性（0ms）</td><td><span class="tag-pill tag-main">通过</span>。Map 渲染允许最终一致性，但物理值必须严格一致</td></tr>
-<tr><td><strong>课程执行</strong></td><td>当前步骤索引、执行模式</td><td><span class="tag-pill tag-main">已覆盖</span>（LPP/CB 共享）</td><td>课程步骤索引：强一致性（&lt;100ms）</td><td><span class="tag-pill tag-main">通过</span>。CB 与 LPP 必须同步高亮</td></tr>
-<tr><td><strong>实时监控</strong></td><td>飞机物理状态（持续广播）</td><td><span class="tag-pill tag-main">已覆盖</span>（SC 所有者，Pub-Sub）</td><td>仪表指针动画：最终一致性（&lt;200ms）</td><td><span class="tag-pill tag-main">通过</span>。IR 作为只读消费端，允许指针平滑插值</td></tr>
-<tr><td><strong>动态干预</strong></td><td>故障状态、环境参数、飞机位置</td><td><span class="tag-pill tag-main">已覆盖</span>（CB/ADV 所有者）</td><td>故障状态：强一致性（&lt;50ms）</td><td><span class="tag-pill tag-main">通过</span>。故障激活后 Footer 计数器和 CB Malfunctions Panel 必须实时更新</td></tr>
-<tr><td><strong>冻结/解冻</strong></td><td>全局冻结标志</td><td><span class="tag-pill tag-main">已覆盖</span>（FS/ADV 所有者）</td><td>冻结/解冻标志：强一致性（&lt;50ms）</td><td><span class="tag-pill tag-main">通过</span>。2.1.4 原则一已定义全局原子状态标志机制</td></tr>
-<tr><td><strong>结束与讲评</strong></td><td>课程日志、录制片段、事件标记</td><td><span class="tag-pill tag-warn">部分缺失</span>（事件标记未定义）</td><td>状态恢复：强一致性</td><td><span class="tag-pill tag-warn">断点</span>。见下方 GAP-01 / GAP-02</td></tr>
-</tbody>
-</table>
+<h3>Sequence Diagram 参与者命名</h3>
+<p>为了与 2.1.1 的功能架构全景图保持一致，Mermaid Sequence Diagram 中的参与者（Actor）命名如下：</p>
+<div class="arch-block">
+<h4>架构实体与 Sequence Diagram 别名映射</h4>
+<div class="arch-grid">
+<div class="label">Instructor<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">INST（教员）</span></div>
+<div class="content">人类操作者，所有交互序列的起点</div>
+<div class="label">Control Board<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">CB（控制面板）</span></div>
+<div class="content">聚合根，承载 AIRCRAFT / CURRENT CONDITIONS / REFERENCE AIRPORT / LESSON PLAN 等 Tabs</div>
+<div class="label">Map<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">MAP（地图）</span></div>
+<div class="content">空间渲染与交互，SLEW 拖动回写</div>
+<div class="label">Lesson Plan Profile<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">LPP（课程计划剖面）</span></div>
+<div class="content">课程数据的可视化剖面视图</div>
+<div class="label">Instruments Repeaters<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">IR（复示仪表）</span></div>
+<div class="content">只读消费端，订阅物理引擎数据</div>
+<div class="label">Advanced<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">ADV（高级）</span></div>
+<div class="content">应急快速通道，直接操作核心或修改 CB 参数</div>
+<div class="label">Footer / Instructor Station<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">FS（底部快捷栏）</span></div>
+<div class="content">全局控制网关，冻结/重置/时间控制/工作区切换</div>
+<div class="label">Session State Manager<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SSM（状态管理器）</span></div>
+<div class="content">全局状态协调者，仲裁、版本控制、批量下发</div>
+<div class="label">Simulator Core<br/><span style="font-size:12px;font-weight:400;color:var(--text-secondary)">SC（模拟器核心接口）</span></div>
+<div class="content">外部模拟器主机系统（Simulator Host）的接口抽象，IOS 教员台通过它下发参数并接收物理状态反馈</div>
+</div>
 </div>
 
-<h3>交互断点识别（RF-01）</h3>
+<h3 id="sec-ssm-sc-detail">核心推导架构实体详解</h3>
+<p>本节对两个架构推导产物——<strong>Session State Manager（SSM）</strong>与 <strong>Simulator Core（SC）</strong>——做专题深入说明。后续 2.2.2 ~ 2.2.5 的所有序列图均默认读者已理解本节定义的模块边界与交互契约。</p>
 
-<div class="speculation-box">
-<strong>GAP-01：Debrief 阶段的事件标记机制</strong><span class="confidence conf-med">中优先级</span><br/>
-ch1_8 描述教员在讲评阶段需要"标记关键事件（故障注入点/冻结点/学员偏差）"，但 2.1 的数据依赖矩阵中没有定义<strong>Event Marker</strong>这类数据项。架构补充建议：增加一个轻量级的 Event Marker 类型，包含 {timestamp, type, sourceWorkspace, description, snapshotRef}，由 SSM 在事件发生时自动生成，教员可在 Debrief 阶段审阅和手动补充标注。
+<div class="arch-block">
+<h4>Session State Manager（SSM）——全局状态协调者</h4>
+<div class="arch-grid">
+<div class="label">职责定位</div>
+<div class="content">所有工作区与模拟器核心之间的<strong>唯一协调层</strong>，承担状态仲裁、版本控制、批量下发与冲突消解四大职责。SSM 不直接面向教员展示 UI，而是作为"幕后中枢"保证跨工作区数据的一致性。</div>
+<div class="label">核心职责</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>状态仲裁与版本控制：</strong>每次状态变更递增 State Version，所有工作区按版本号刷新；管理冻结/解冻、故障激活、重新定位等原子状态标志</li>
+<li><strong>课程生命周期：</strong>课程加载、步骤推进、执行模式切换（Autorun / Step-by-Step）、终止与重置</li>
+<li><strong>L2 业务校验与批量下发：</strong>跨参数等式验证（如 GW = ZFW + Fuel）、包线约束、依赖顺序校验；校验通过后打包广播至所有相关视图</li>
+<li><strong>冲突消解与失败回滚：</strong>Freeplay / Nested 优先级裁决、课程状态栈（LIFO）管理；L2 失败回滚至上一次合法状态，L3 失败回滚至 SC 上一次通过校验的快照</li>
+<li><strong>持久化契约：</strong>Save/Recall Scenario 时过滤"瞬时模拟状态"，仅持久化"教员输入的配置参数"</li>
+</ul>
+</div>
+<div class="label">与 2.1 的对应关系</div>
+<div class="content">SSM 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2 三层数据流</a> 中<strong>状态管理层</strong>的具体化，也是 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> 中"单一事实来源"机制的执行者。</div>
+</div>
 </div>
 
-<div class="speculation-box">
-<strong>GAP-02：Session Cleanup 后的状态验证机制</strong><span class="confidence conf-med">中优先级</span><br/>
-ch1_8 描述 Cleanup 阶段需要"复位模拟器状态，准备下一课程"，但 2.1 中未定义<strong>Post-Session Validation</strong>步骤。架构补充建议：在 Total Reset 或 Session Reset 后，SSM 应自动执行一次全参数一致性校验（飞机是否回默认值、环境是否回 ISA、故障是否清零、冻结是否解除），校验失败时保持冻结并提示教员，避免"半复位"状态进入下一课程。
+<div class="arch-block">
+<h4>Simulator Core（SC）——外部模拟器主机接口抽象</h4>
+<div class="arch-grid">
+<div class="label">职责定位</div>
+<div class="content">SC 是 <strong>IOS 教员台软件的外部边界</strong>，代表 IOS 所连接的<strong>远端模拟器主机系统（Simulator Host）</strong>。它<strong>不是 IOS 内部的软件模块，也不是硬件设备</strong>，而是架构层面为标识"跨进程/跨网络边界"而引入的<strong>接口抽象</strong>。所有涉及飞机物理状态变更、环境参数计算、视景驱动、声音合成的请求，都必须通过 SC 离开 IOS 教员台，进入外部模拟器系统执行。</div>
+<div class="label">为什么需要 SC</div>
+<div class="content">从 IOS 教员台软件的架构视角看，物理仿真和视景渲染是<strong>外部能力</strong>——IOS 不负责解算六自由度动力学，也不直接渲染三维地景。但 IOS 必须<strong>驱动</strong>这些外部能力（如设置飞机重量、选择机场、注入故障）并<strong>消费</strong>其输出（如接收飞机位置、仪表数据、环境状态）。SC 的存在就是为了在序列图中标识："这条消息离开 IOS 边界，进入外部模拟器系统"。</div>
+<div class="label">SC 背后的真实系统</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>物理仿真主机：</strong>运行飞行模型（六自由度动力学、气动包线、重量与重心计算、燃油消耗）</li>
+<li><strong>视景系统（IG）：</strong>负责三维地景渲染、云与能见度、天气现象（风暴、微下击暴流、风切变、结冰）</li>
+<li><strong>声音系统：</strong>引擎声、告警音、环境音的生成与混合</li>
+<li><strong>航电与 FMS：</strong>飞行计划计算、导航信号生成、自动驾驶仪逻辑</li>
+<li><strong>机场/地形数据库：</strong>跑道几何、登机口位置、地形高程</li>
+</ul>
+</div>
+<div class="label">SC 对 IOS 的可见行为</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>下发接口：</strong>IOS 通过 SC 向外部模拟器发送参数变更（飞机重量、机场选择、环境配置、故障注入、冻结指令）</li>
+<li><strong>反馈接口：</strong>SC 向 IOS 回传参数确认、物理校验结果（L3 校验：地形碰撞、起飞可行性）、状态快照</li>
+<li><strong>广播接口：</strong>SC 以固定频率（如 30Hz）向 IOS 推送飞机位置/姿态/仪表数据，供 Map、Instruments Repeaters 消费</li>
+</ul>
+</div>
+<div class="label">与 2.1 的对应关系</div>
+<div class="content">SC 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2</a> 中<strong>模拟器核心层</strong>的接口抽象，对应数据依赖矩阵中"飞机物理状态"、"环境参数"等强一致性数据项的<strong>外部所有者</strong>。从 IOS 软件架构看，SC 是<strong>必须对接的外部系统边界</strong>，而非内部实现单元。</div>
+</div>
 </div>
 
+<div class="arch-block">
+<h4>SSM ↔ SC 协作模式</h4>
+<div class="arch-grid">
+<div class="label">数据流向</div>
+<div class="content"><strong>下行（SSM → SC）：</strong>教员通过工作区发起的参数变更、执行模式切换、冻结/解冻指令、故障注入请求，均经 SSM 校验后下发至 SC。<br/><strong>上行（SC → SSM）：</strong>SC 完成参数确认、物理校验结果、步骤自动推进状态、周期广播数据，均回传至 SSM，由 SSM 决定如何分发到各工作区。</div>
+<div class="label">边界原则</div>
+<div class="content">
+<ul style="margin:0;padding-left:18px">
+<li><strong>SC 不直接面向工作区：</strong>任何工作区不得绕过 SSM 直接调用 SC，以保证版本控制和仲裁逻辑的统一性</li>
+<li><strong>SSM 不替代 SC 的计算：</strong>SSM 只做业务级校验（L2），不做物理仿真（L3）；物理可行性判断必须交由 SC</li>
+<li><strong>状态变更必须经过 SSM：</strong>即使是看似"直接"的联动（如 Map Slew → CB 位置更新），架构层面也建议经过 SSM 转发，以记录版本与处理冲突</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="highlight-box danger">
+<strong>⚠️ 开发归属与实现优先级（必读）：</strong>后续 IOS 教员台软件开发必须明确区分 SSM 与 SC 的归属边界，避免资源错配：
+<ul style="margin:8px 0 0;padding-left:18px">
+<li><strong>SSM 是 IOS 教员台内部的核心开发模块：</strong>全局状态协调、仲裁、版本控制、批量下发、冲突消解、课程生命周期管理——这些能力不存在于外部系统，必须由 IOS 教员台软件自行实现。SSM 的设计与实现是后续开发阶段的<strong>高优先级核心任务</strong>，其接口定义直接影响全部 6 大工作区的数据流与状态一致性。</li>
+<li><strong>SC 是外部模拟器主机系统的接口抽象：</strong>IOS 教员台不需要实现物理仿真、视景渲染或声音合成，但需要开发与 SC 对接的<strong>接口适配层</strong>（协议封装、数据转换、网络通信、异常降级）。SC 的接口规格应以供应商提供的模拟器主机 SDK/协议文档为输入，而非自行推导。</li>
+<li><strong>开发风险提醒：</strong>若后续开发中忽略 SSM 的统一协调职责，让各工作区直接处理状态同步和冲突仲裁，将导致代码高度耦合、状态一致性难以维护、Freeplay/Nested 等高级特性无法实现。SSM 必须在架构设计早期确立，而非在业务代码中被动补全。</li>
+</ul>
+</div>
 
 <div class="footer-nav">
-<a class="prev" href="ch2_2_0_framework.html"><span>←</span><span>2.2.1 交互完整性分析框架</span></a>
-<a class="next" href="ch2_2_2_rf02_rf03_execution.html"><span>2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</span><span>→</span></a>
+<a class="prev" href="ch2_1_functional_architecture.html"><span>←</span><span>2.1 功能架构全景图</span></a>
+<a class="next" href="ch2_2_2_rf01_session.html"><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span><span>→</span></a>
 </div>
     </div>
   </div>

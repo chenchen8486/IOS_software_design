@@ -83,6 +83,10 @@
 </p>
 <p>RF-06 是 IOS 中<strong>影响范围最大</strong>的全局操作流程。冻结操作会同时停止所有工作区的状态更新；录制/回放操作涉及全量状态快照的持久化与恢复。本节严格对照 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性设计原则</a>，推导其交互序列与原子性约束。</p>
 
+<div class="highlight-box">
+<strong>前置阅读提示：</strong>本节涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
+</div>
+
 <h3>冻结/解冻交互序列图</h3>
 <p>冻结是唯一的<strong>全局广播型</strong>操作——它必须被全部 6 个工作区和模拟器核心同时感知。2.1.4 原则一要求"全局原子状态标志"由单一协调者管理，此处即 Session State Manager。</p>
 
@@ -354,8 +358,8 @@ ch1_8 未明确描述：如果教员在<strong>录制过程中</strong>触发冻
 
 
 <div class="footer-nav">
-<a class="prev" href="ch2_2_3_rf04_rf05_intervention.html"><span>←</span><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span></a>
-<a class="next" href="ch2_2_5_summary.html"><span>2.2.6 跨流程状态衔接与交互断点汇总</span><span>→</span></a>
+<a class="prev" href="ch2_2_4_rf04_rf05_intervention.html"><span>←</span><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span></a>
+<a class="next" href="ch2_2_6_summary.html"><span>2.2.6 跨流程状态衔接与交互断点汇总</span><span>→</span></a>
 </div>
 <script>
 mermaid.initialize({

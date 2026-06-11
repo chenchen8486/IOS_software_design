@@ -83,6 +83,10 @@
 </p>
 <p>RF-02（课程执行）和 RF-03（初始化）是 RF-01 主流程中<strong>最紧密耦合</strong>的两个子流程。RF-03 的输出（初始化完成确认）是 RF-02 的前置条件；RF-02 执行过程中又可能中断进入 RF-04/RF-05/RF-06。本节推导它们各自的交互序列，以及衔接处的状态契约。</p>
 
+<div class="highlight-box">
+<strong>前置阅读提示：</strong>本节序列图涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
+</div>
+
 <h3>课程执行交互序列图</h3>
 <p>RF-02 的两种执行模式在架构层面有本质差异：<strong>Autorun</strong> 模式下课程引擎自动推进，教员处于"监控者"角色；<strong>Step-by-Step</strong> 模式下教员的每次点击 Execute 都是一次显式的人机交互事件。</p>
 
@@ -364,8 +368,8 @@ sequenceDiagram
 
 
 <div class="footer-nav">
-<a class="prev" href="ch2_2_1_rf01_session.html"><span>←</span><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span></a>
-<a class="next" href="ch2_2_3_rf04_rf05_intervention.html"><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
+<a class="prev" href="ch2_2_2_rf01_session.html"><span>←</span><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span></a>
+<a class="next" href="ch2_2_4_rf04_rf05_intervention.html"><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
 </div>
 <script>
 mermaid.initialize({
