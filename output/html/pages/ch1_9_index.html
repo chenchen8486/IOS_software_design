@@ -1,0 +1,1161 @@
+<style>
+.index-nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;padding:12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.index-nav a{display:inline-block;padding:4px 10px;background:#fff;border-radius:6px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all .15s}
+.index-nav a:hover{background:var(--primary);color:#fff}
+.category{margin:24px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.category-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.category-header h3{margin:0;font-size:16px;color:var(--text);font-weight:600}
+.category-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.category-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.category.collapsed .toggle-icon{transform:rotate(-90deg)}
+.category-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
+.category:not(.collapsed) .category-body{display:block}
+.index-table{width:100%;border-collapse:collapse;font-size:14px}
+.index-table th{text-align:left;padding:10px 12px;background:#f8fafc;font-weight:600;color:var(--text-secondary);font-size:13px;border-bottom:1px solid var(--border);white-space:nowrap}
+.index-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.index-table tr:last-child td{border-bottom:none}
+.index-table .term{font-weight:600;color:var(--primary-dark);white-space:nowrap}
+.index-table .term-en{color:var(--text-secondary);font-size:12px;font-weight:400}
+.index-table .def{color:var(--text);line-height:1.5}
+.index-table .refs{display:flex;flex-wrap:wrap;gap:4px}
+.index-table .refs a{display:inline-block;padding:2px 8px;border-radius:4px;background:var(--primary-light);color:var(--primary-dark);font-size:12px;text-decoration:none;font-weight:500;white-space:nowrap}
+.index-table .refs a:hover{background:var(--primary);color:#fff}
+.tag-cat{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px}
+.cat-ui{background:#dbeafe;color:#1e40af}
+.cat-op{background:#d1fae5;color:#065f46}
+.cat-lesson{background:#fef3c7;color:#92400e}
+.cat-ac{background:#fee2e2;color:#991b1b}
+.cat-nav{background:#ede9fe;color:#5b21b6}
+.cat-env{background:#ecfdf5;color:#065f46}
+.cat-malf{background:#fef2f2;color:#991b1b}
+.cat-com{background:#e0e7ff;color:#3730a3}
+.cat-state{background:#f3f4f6;color:#374151}
+.cat-map{background:#ecfeff;color:#155e75}
+.cat-arch{background:#fff7ed;color:#9a3412}
+@media print{.category-body{display:block!important}}
+</style>
+
+
+<h1>1.9 索引</h1>
+<p class="subtitle">性质：全术语检索与快速定位入口  |  覆盖范围：第 1 章全部页面（1.1 ~ 1.8）及第 2 章已发布页面  |  更新方式：随新增页面同步扩充</p>
+<blockquote>
+<strong>本章定位：</strong>本章是 IOS 教员台软件手册的<strong>术语总索引与快速定位入口</strong>，按逻辑类别归集所有在 1.1 ~ 1.8 各章节中出现的<strong>软件界面术语、航空专业术语、缩略语及架构概念</strong>。每个条目均给出中文定义、英文原文及关联 HTML 页面链接，方便开发人员和教员快速检索概念来源。
+</blockquote>
+
+<!-- ==================== 快速字母导航 ==================== -->
+<h2 id="nav-top">类别快速导航</h2>
+<div class="index-nav">
+<a href="#cat-workspace">工作区与界面</a>
+<a href="#cat-interaction">交互操作</a>
+<a href="#cat-lesson">课程与训练</a>
+<a href="#cat-aircraft">飞机系统与性能</a>
+<a href="#cat-airport">机场与导航</a>
+<a href="#cat-env">环境与气象</a>
+<a href="#cat-malf">故障与应急</a>
+<a href="#cat-comm">通信与空管</a>
+<a href="#cat-state">状态与控制</a>
+<a href="#cat-map">地图与可视化</a>
+<a href="#cat-arch">架构与数据流</a>
+<a href="#cat-acronym">缩略语表</a>
+</div>
+
+<!-- ==================== 一、工作区与界面组件 ==================== -->
+<div class="category" id="cat-workspace">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-ui">UI</span>工作区与界面组件</h3>
+<span class="count">16</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">控制面板 <span class="term-en">Control Board</span></td>
+<td class="def">IOS 核心工作区，包含 5 个 Tab、滑动面板入口与底部快捷栏，是访问本机参数的主要途径</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">地图工作区 <span class="term-en">Map Workspace</span></td>
+<td class="def">独立工作区，提供 2D/3D 地图可视模式，显示飞机轨迹、导航台、风暴、FMS 航线等环境元素</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">课程计划配置工作区 <span class="term-en">Lesson Plan Profile</span></td>
+<td class="def">独立工作区，以图形化飞行剖面（琥珀色线）展示课程训练元素，监控执行进度</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">仪表复示器 <span class="term-en">Instrument Repeater</span></td>
+<td class="def">独立工作区，允许教员选择将哪些座舱仪表复示到 IOS 显示屏上</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_4_instrument_repeater.html">1.4</a></td>
+</tr>
+<tr>
+<td class="term">维护页面 <span class="term-en">Maintenance Pages</span></td>
+<td class="def">仅供维护人员使用的独立工作区，用于执行模拟器维护任务</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_3_maintenance_pages.html">1.3</a></td>
+</tr>
+<tr>
+<td class="term">高级工具栏 <span class="term-en">Advanced Toolbar</span></td>
+<td class="def">独立工作区，提供 9 组快速访问按钮，可修改飞机/位置/环境参数、触发故障、录制等</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">选项卡 <span class="term-en">Tab</span></td>
+<td class="def">Control Board 顶部的五个主选项卡：LESSON PLAN / DOCS / CURRENT CONDITIONS / AIRCRAFT / REFERENCE AIRPORT</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td>
+</tr>
+<tr>
+<td class="term">滑动面板 <span class="term-en">Sliding Panel</span></td>
+<td class="def">从左侧滑入的子页面形式，点击外部或左滑关闭，数据通常即时生效</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">教员台滑动面板 <span class="term-en">INSTRUCTOR STATION Sliding Panel</span></td>
+<td class="def">位于控制面板右侧边缘的全局设置入口，包含单位制设置与结束会话按钮</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td>
+</tr>
+<tr>
+<td class="term">页脚 / 底部 <span class="term-en">Footer</span></td>
+<td class="def">Control Board 底部快捷命令栏，包含冻结、重置、模拟控制、音量、工作区切换等</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">卷展菜单 <span class="term-en">Roll-up Menu</span></td>
+<td class="def">点击展开、选择后生效、点击外部取消的下拉式菜单控件</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">滚轮选择器 <span class="term-en">Wheel Picker</span></td>
+<td class="def">长按或上下滑动参数呼出的轮盘式选择器，绿勾确认、红叉取消</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">径向菜单 <span class="term-en">Radial Menu</span></td>
+<td class="def">地图主区域中围绕光标/飞机/导航台/机场/风暴弹出的扇形快捷操作菜单</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">展开按钮 <span class="term-en">Expand Button</span></td>
+<td class="def">控制面板右侧边缘的垂直长条形按钮，点击展开 INSTRUCTOR STATION 滑动面板</td>
+<td class="refs"><a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td>
+</tr>
+<tr>
+<td class="term">工作区切换按钮 <span class="term-en">Workspace Button</span></td>
+<td class="def">Footer 最右侧按钮，点击后显示工作区卷展菜单，用于切换六大工作区</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">地图标题栏 <span class="term-en">Map Header</span></td>
+<td class="def">地图工作区与课程计划配置工作区顶部共享的信息栏，显示重量与平衡、性能数据、通信、故障等</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 二、软件交互操作 ==================== -->
+<div class="category collapsed" id="cat-interaction">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-op">OP</span>软件交互操作</h3>
+<span class="count">10</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">SLEW 位移 <span class="term-en">Slew</span></td>
+<td class="def">在保持飞机姿态不变的前提下，瞬时改变飞机的空间位置（海拔、空速、马赫、航向），常用于快速重新定位</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">滑动 <span class="term-en">Slide</span></td>
+<td class="def">Sliding Panel 的展开/收起动作，也可指地图或列表的横向/纵向滑动浏览</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">点击 <span class="term-en">Tap</span></td>
+<td class="def">最常用的交互方式，用于激活按钮、弹出面板、选择选项等</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">长按 <span class="term-en">Long Press</span></td>
+<td class="def">长按参数字段可呼出滚轮选择器（Wheel Picker）或激活特殊菜单</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">缩放 <span class="term-en">Zoom</span></td>
+<td class="def">地图工作区中通过右侧工具栏的 +/- 按钮或手势改变地图显示比例</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">平移 <span class="term-en">Pan</span></td>
+<td class="def">在地图主区域中拖拽移动视野，查看不同地理区域</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">自动范围 <span class="term-en">Auto Range</span></td>
+<td class="def">地图工具栏功能，自动调整地图缩放级别以完整显示当前航线或目标对象</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">切换 <span class="term-en">Toggle</span></td>
+<td class="def">两种状态之间的切换操作（如 Toggle Normal 正常切换、Toggle Fail 故障切换）</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">瞬时动作按钮 <span class="term-en">Action Button</span></td>
+<td class="def">激活后亮数秒即返回正常态的按钮，用于触发一次性动作</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">展开按钮 <span class="term-en">Expandable Button</span></td>
+<td class="def">点击后展开关联滑动面板的按钮类型</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 三、课程与训练管理 ==================== -->
+<div class="category collapsed" id="cat-lesson">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-lesson">LESSON</span>课程与训练管理</h3>
+<span class="count">18</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">课程计划 <span class="term-en">Lesson Plan</span></td>
+<td class="def">由 CAE Slick 网页编辑器预先编制好的训练脚本，包含训练阶段、步骤与触发条件</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">训练阶段 <span class="term-en">Training Phase</span></td>
+<td class="def">课程计划中的顶层分组单元，如 Preflight、Ascend、On Route、Descend、Final Ground</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">课程步骤 <span class="term-en">Lesson Step</span></td>
+<td class="def">训练阶段下的具体操作单元，分为 NOTE、SIM、MALF 等类型</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">训练会话 <span class="term-en">Session</span></td>
+<td class="def">从登录 IOS 到结束讲评的完整训练周期，包含多个课程或自由练习</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">场景 <span class="term-en">Scenario</span></td>
+<td class="def">一组预设的飞机状态与环境参数的集合，可保存和调用以快速恢复特定训练起点</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">自动运行 <span class="term-en">Autorun</span></td>
+<td class="def">课程执行模式之一，系统自动按顺序执行课程步骤，无需教员逐个点击 Execute</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">逐步运行 <span class="term-en">Step-by-Step</span></td>
+<td class="def">课程执行模式之一，每个步骤需教员手动确认后才执行</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td>
+</tr>
+<tr>
+<td class="term">执行 <span class="term-en">Execute</span></td>
+<td class="def">将选中的课程步骤指令下发至模拟器，触发对应的飞机状态变更或故障注入</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">跳过条件 <span class="term-en">Skip Condition</span></td>
+<td class="def">当步骤带有触发条件时，教员可选择跳过条件直接执行该步骤</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td>
+</tr>
+<tr>
+<td class="term">调到当前 <span class="term-en">Go to Current</span></td>
+<td class="def">将课程执行位置跳转至当前正在执行的步骤</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td>
+</tr>
+<tr>
+<td class="term">自由练习 <span class="term-en">Freeplay</span></td>
+<td class="def">无固定步骤序列号的特殊课程元素，可在课程任意时间点触发</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">嵌套课程 <span class="term-en">Nested Lesson</span></td>
+<td class="def">在主干课程中嵌入的子课程，同样无固定序列号，可随时触发</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">琥珀色线 <span class="term-en">Amber Line</span></td>
+<td class="def">Lesson Plan Profile 画布视图中覆盖的飞行剖面线，由 CAE Slick 编辑器定义，代表理想飞行轨迹</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">画布视图 <span class="term-en">Canvas View</span></td>
+<td class="def">Lesson Plan Profile 的图形化横向可滚动视图，显示训练阶段与步骤覆盖在琥珀色剖面线上</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">列表视图 <span class="term-en">List View</span></td>
+<td class="def">Lesson Plan Profile 的纵向可滚动列表，与画布视图显示相同元素</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">时间线 <span class="term-en">Time Line</span></td>
+<td class="def">Lesson Plan Profile 中展示课程各阶段在时间维度上分布的横向时间轴</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">时间区域 <span class="term-en">Time Section</span></td>
+<td class="def">Lesson Plan Profile 中显示课程计划总时间具体数值的区域，与时间线配合使用</td>
+<td class="refs"><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+<tr>
+<td class="term">NOTE / SIM / MALF <span class="term-en">Lesson Element Types</span></td>
+<td class="def">课程元素的三种基本类型：注释（NOTE）、模拟条件（SIM）、故障（MALF）</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_5_lesson_plan_profile.html">1.5</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 四、飞机系统与性能参数 ==================== -->
+<div class="category collapsed" id="cat-aircraft">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-ac">AC</span>飞机系统与性能参数</h3>
+<span class="count">22</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">总重 GW <span class="term-en">Gross Weight</span></td>
+<td class="def">飞机总重量，包含机身、乘客、货物与燃油之和</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">零燃油重量 ZFW <span class="term-en">Zero Fuel Weight</span></td>
+<td class="def">飞机不含燃油时的重量，即机身、乘客与货物之和</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">重心 CG <span class="term-en">Center of Gravity</span></td>
+<td class="def">飞机重量合力作用点，以 % MAC（平均气动弦百分比）表示</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">燃油 <span class="term-en">Fuel</span></td>
+<td class="def">飞机携带的航空燃油总重量，按飞机燃油分配计划分配到各油箱</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">安定面配平 <span class="term-en">Stab Trim</span></td>
+<td class="def">水平安定面的配平设定值，影响飞机纵向平衡</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">襟翼 <span class="term-en">Flaps</span></td>
+<td class="def">机翼后缘增升装置的位置设定</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">决断速度 V1 <span class="term-en">Decision Speed</span></td>
+<td class="def">起飞决断速度，超过此速度后必须继续起飞，中断起飞可能导致冲出跑道</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">抬轮速度 VR <span class="term-en">Rotation Speed</span></td>
+<td class="def">起飞时开始拉杆抬轮的速度</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">安全速度 V2 <span class="term-en">Safety Speed</span></td>
+<td class="def">起飞安全速度，单发失效后需达到此速度才能安全爬升</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">参考速度 VREF <span class="term-en">Reference Speed</span></td>
+<td class="def">进近参考速度，通常基于着陆构型的失速速度乘以一定系数</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">海拔高度 ASL <span class="term-en">Above Sea Level</span></td>
+<td class="def">飞机相对于平均海平面的高度</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">指示空速 IAS <span class="term-en">Indicated Airspeed</span></td>
+<td class="def">飞机空速管测得的未经修正的空速表读数</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">马赫数 <span class="term-en">Mach</span></td>
+<td class="def">飞机真空速与当地音速之比</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">航向 <span class="term-en">Heading</span></td>
+<td class="def">飞机机头所指的方向，通常以磁北为基准的度数表示</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">真空速 TAS <span class="term-en">True Airspeed</span></td>
+<td class="def">飞机相对于周围空气的真实速度</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">地速 GS <span class="term-en">Ground Speed</span></td>
+<td class="def">飞机相对于地面的实际速度，等于真空速与风速的矢量合成</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">垂直速度 VS <span class="term-en">Vertical Speed</span></td>
+<td class="def">飞机高度变化的速率，通常以英尺/分钟表示</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">数据链 DL <span class="term-en">Data Link</span></td>
+<td class="def">飞机与地面站之间的数字通信链路，用于传输飞行计划、气象等信息</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">上行链路 UL <span class="term-en">Uplink</span></td>
+<td class="def">从地面站向飞机发送的数据链消息方向</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">甚高频通信 VHF <span class="term-en">VHF Communication</span></td>
+<td class="def">飞机无线电通信的主要频段，用于与 ATC 进行语音和数据通信</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">断路器 CB <span class="term-en">Circuit Breaker</span></td>
+<td class="def">飞机电气系统的过流保护装置，教员可在 IOS 中手动跳闸/复位以模拟电气故障</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">重量与平衡 <span class="term-en">Weight &amp; Balance</span></td>
+<td class="def">管理飞机重量分布与重心位置，确保在允许包线内</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 五、机场与导航设施 ==================== -->
+<div class="category collapsed" id="cat-airport">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-nav">NAV</span>机场与导航设施</h3>
+<span class="count">20</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">参考机场 <span class="term-en">Reference Airport</span></td>
+<td class="def">当前训练场景所依据的机场，其环境参数（风、能见度、跑道等）作为训练基准</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">目的地机场 <span class="term-en">Destination Airport</span></td>
+<td class="def">训练航线计划中的目标降落机场</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">ICAO 代码 <span class="term-en">ICAO Code</span></td>
+<td class="def">国际民用航空组织制定的四位字母机场代码（如 KJFK、CYUL）</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">跑道 <span class="term-en">Runway</span></td>
+<td class="def">机场内供飞机起降的硬化道面，以磁方位编号（如 09L/27R）</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">跑道入口 <span class="term-en">Threshold</span></td>
+<td class="def">跑道的实际可用起始端，飞机在此开始着陆滑跑</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">跑道视程 RVR <span class="term-en">Runway Visual Range</span></td>
+<td class="def">在跑道中心线上飞行员能看清跑道标志或灯光的最大距离</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">仪表着陆系统 ILS <span class="term-en">Instrument Landing System</span></td>
+<td class="def">提供水平（航向道）和垂直（下滑道）引导的精密进近助航设备</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">甚高频全向信标 VOR <span class="term-en">VHF Omnidirectional Range</span></td>
+<td class="def">地基无线电导航台，提供以台站为中心的 360 度方位信息</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">无方向信标 NDB <span class="term-en">Non-Directional Beacon</span></td>
+<td class="def">中低频地基无线电导航台，配合机载 ADF 接收机使用</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">导航台 <span class="term-en">Navaid</span></td>
+<td class="def">导航辅助设施的统称，包括 VOR、NDB、ILS 等</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">航路点 <span class="term-en">Waypoint</span></td>
+<td class="def">FMS 航线中用于定义航迹的几何点，可以是有名航点或地理坐标</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">标准终端进场航线 STAR <span class="term-en">Standard Terminal Arrival Route</span></td>
+<td class="def">从航路结构过渡到终端区的标准仪表进场程序</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">标准仪表离场 SID <span class="term-en">Standard Instrument Departure</span></td>
+<td class="def">从起飞跑道过渡到航路结构的标准仪表离场程序</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">等待程序 <span class="term-en">Holding</span></td>
+<td class="def">在指定导航台上空按标准航线形状（通常为矩形）盘旋等待的飞行程序</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">进近 <span class="term-en">Approach</span></td>
+<td class="def">从巡航高度下降至着陆的飞行阶段，包括精密进近与非精密进近</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">复飞 <span class="term-en">Missed Approach / Go-around</span></td>
+<td class="def">进近过程中因无法安全着陆而中止进近、重新爬升的程序</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">飞行管理系统 FMS <span class="term-en">Flight Management System</span></td>
+<td class="def">机载综合导航与性能管理系统，管理航线、性能计算与自动驾驶引导</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">快速设置 <span class="term-en">Quickset</span></td>
+<td class="def">FMS 中用于快速保存/调用常用配置（如起飞性能参数）的功能</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">重新定位 <span class="term-en">Reposition</span></td>
+<td class="def">将飞机快速移动至预设位置（如跑道入口、登机口、等待点）的操作</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">推出 <span class="term-en">Pushback</span></td>
+<td class="def">飞机从登机位后退至滑行道的地面操作</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 六、环境与气象 ==================== -->
+<div class="category collapsed" id="cat-env">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-env">ENV</span>环境与气象</h3>
+<span class="count">22</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">外界大气温度 OAT <span class="term-en">Outside Air Temperature</span></td>
+<td class="def">飞机所处位置的实际大气温度</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">国际标准大气 ISA <span class="term-en">International Standard Atmosphere</span></td>
+<td class="def">国际公认的理想大气模型，海平面温度 15°C，气压 1013.25 hPa</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">ISA 偏差 <span class="term-en">ISA Deviation</span></td>
+<td class="def">实际大气温度与 ISA 模型预测温度之间的差值</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">修正海平面气压 QNH <span class="term-en">QNH</span></td>
+<td class="def">将观测到的场面气压修正至海平面后的气压值，用于高度表拨正</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">场面气压 QFE <span class="term-en">QFE</span></td>
+<td class="def">机场跑道入口处的实际气压，拨正后高度表在跑道上显示为零</td>
+<td class="refs"><a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td>
+</tr>
+<tr>
+<td class="term">地面风 <span class="term-en">Surface Wind</span></td>
+<td class="def">参考机场跑道附近的地面风向与风速</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">飞机处风 <span class="term-en">A/C Wind</span></td>
+<td class="def">飞机当前所在位置的风向与风速</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">阵风 <span class="term-en">Gust</span></td>
+<td class="def">风速在短时间内突然增大再减小的现象</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">湍流 <span class="term-en">Turbulence</span></td>
+<td class="def">大气中不规则的空气运动，导致飞机颠簸</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">风切变 <span class="term-en">Windshear</span></td>
+<td class="def">风向或风速在短距离内发生剧烈变化的现象，对起飞和着陆危害极大</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">微暴流 <span class="term-en">Microburst</span></td>
+<td class="def">一种强烈的下沉气流，到达地面后向四周扩散，产生剧烈的风切变</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">能见度 <span class="term-en">Visibility</span></td>
+<td class="def">在白天能看清和不模糊地辨认明显和不发光物体的最大距离</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">降水 <span class="term-en">Precipitation</span></td>
+<td class="def">大气中水汽凝结后以液态或固态形式降落到地面的现象（雨、雪、冰雹等）</td>
+<td class="refs"><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">云层 <span class="term-en">Clouds</span></td>
+<td class="def">大气中水汽凝结形成的可见悬浮体，按高度分为高云、中云、低云</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">云底 / 云顶 <span class="term-en">Cloud Base / Top</span></td>
+<td class="def">云层下缘/上缘的高度，通常以 ASL（海拔）或 AGL（离地）表示</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">雾 <span class="term-en">Fog</span></td>
+<td class="def">近地面空气中水汽凝结导致能见度小于 1 km 的天气现象</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">结冰 <span class="term-en">Icing</span></td>
+<td class="def">飞机表面或大气中过冷水滴冻结形成冰层的现象</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">天气预设 <span class="term-en">Weather Preset</span></td>
+<td class="def">预定义的环境参数组合（如 CAVOK、CAT I、0/0 等），一键应用</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a><a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td>
+</tr>
+<tr>
+<td class="term">CAVOK <span class="term-en">Ceiling And Visibility OK</span></td>
+<td class="def">晴空条件：无云底低于 5000 ft，无积雨云，能见度 ≥ 10 km，无降水等</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">仪表着陆等级 CAT <span class="term-en">Category I/II/III</span></td>
+<td class="def">按决断高度和跑道视程划分的精密进近等级，CAT IIIC 为全自动着陆</td>
+<td class="refs"><a href="ch1_2_3_current_conditions_tab.html">1.2.3</a></td>
+</tr>
+<tr>
+<td class="term">航路天气 <span class="term-en">En Route Weather</span></td>
+<td class="def">飞机在巡航阶段远离机场时使用的默认天气条件</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">天气区域 <span class="term-en">Weather Region</span></td>
+<td class="def">Advanced 工作区中可为最多 5 个不同机场/航路区域分别配置天气参数</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 七、故障与应急处置 ==================== -->
+<div class="category collapsed" id="cat-malf">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-malf">MALF</span>故障与应急处置</h3>
+<span class="count">14</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">故障 MALF <span class="term-en">Malfunction</span></td>
+<td class="def">模拟的飞机系统或部件失效状态，由教员在 IOS 中主动触发</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">预位故障 <span class="term-en">Armed Malfunction</span></td>
+<td class="def">已设置触发条件但尚未激活的故障，满足条件后自动注入</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">激活故障 <span class="term-en">Active Malfunction</span></td>
+<td class="def">已注入模拟器并正在产生影响的故障状态</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">故障总结 <span class="term-en">Fail Summary</span></td>
+<td class="def">汇总显示所有已激活和预位故障的概览面板</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td>
+</tr>
+<tr>
+<td class="term">注入 <span class="term-en">Inject</span></td>
+<td class="def">将预设故障状态写入模拟器，使其开始影响飞机系统</td>
+<td class="refs"><a href="ch1_2_4_aircraft_tab.html">1.2.4</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">触发 <span class="term-en">Trigger</span></td>
+<td class="def">激活预位故障的条件满足事件（如达到特定高度/速度）</td>
+<td class="refs"><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">异常姿态预防与恢复训练 UPRT <span class="term-en">Upset Prevention and Recovery Training</span></td>
+<td class="def">训练飞行员识别和改出飞机异常姿态（如失速、螺旋）的专项训练模块</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">空中防撞系统 TCAS <span class="term-en">Traffic Collision Avoidance System</span></td>
+<td class="def">机载交通警戒与防撞系统，提供邻近飞机冲突告警和避让建议</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">入侵者 <span class="term-en">Intruder</span></td>
+<td class="def">在 TCAS 场景中模拟的邻近飞机，用于训练冲突避让</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">随机交通 <span class="term-en">Random Traffic</span></td>
+<td class="def">在地图中随机生成的模拟空中交通，用于增加训练真实感</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">进近交通 <span class="term-en">Approach Traffic</span></td>
+<td class="def">在进近区域模拟的空中交通序列，用于训练进近排序</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">同航迹程序 ITP <span class="term-en">In-Trail Procedure</span></td>
+<td class="def">大洋/偏远空域中无雷达覆盖时，飞机间保持纵向间隔的程序</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">中断起飞 <span class="term-en">Aborted / Rejected Takeoff</span></td>
+<td class="def">起飞滑跑过程中因故障等原因决定中止起飞的操作</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">跑道感知与咨询系统 RAAS <span class="term-en">Runway Awareness and Advisory System</span></td>
+<td class="def">向机组提供跑道相关语音咨询（如"On runway"、"Approaching runway"）的系统</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 八、通信与空管 ==================== -->
+<div class="category collapsed" id="cat-comm">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-com">COMM</span>通信与空管</h3>
+<span class="count">10</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">自动终端信息服务 ATIS <span class="term-en">Automatic Terminal Information Service</span></td>
+<td class="def">机场自动广播的当前天气、跑道、通波等信息的语音/数据服务</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">空中交通管制 ATC <span class="term-en">Air Traffic Control</span></td>
+<td class="def">管理空中交通的地面管制服务，包括放行、地面、塔台、离场、进近等席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">放行许可 <span class="term-en">Clearance Delivery</span></td>
+<td class="def">ATC 中负责发布起飞前放行许可的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">地面管制 <span class="term-en">Ground Control</span></td>
+<td class="def">ATC 中负责机场场面车辆/飞机滑行管制的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">塔台 <span class="term-en">Tower</span></td>
+<td class="def">ATC 中负责跑道运行（起飞/着陆许可）的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">离场管制 <span class="term-en">Departure</span></td>
+<td class="def">ATC 中负责起飞后初始爬升阶段管制的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">进近管制 <span class="term-en">Approach (ATC)</span></td>
+<td class="def">ATC 中负责进场/进近阶段管制的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">区域管制 <span class="term-en">Control (En Route)</span></td>
+<td class="def">ATC 中负责航路巡航阶段管制的席位</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">应答机编码 <span class="term-en">Squawk</span></td>
+<td class="def">ATC 分配给飞机的的四位八进制 transponder 编码，用于雷达识别</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">应答机 <span class="term-en">Transponder</span></td>
+<td class="def">机载二次雷达信标机，接收地面雷达询问后发送飞机识别和高度信息</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 九、状态与控制模式 ==================== -->
+<div class="category collapsed" id="cat-state">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-state">STATE</span>状态与控制模式</h3>
+<span class="count">18</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">飞行冻结 <span class="term-en">Flight Freeze</span></td>
+<td class="def">暂停所有飞行参数（俯仰、坡度、航向、空速、高度、位置）和运动系统的状态</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">位置冻结 <span class="term-en">Position Freeze</span></td>
+<td class="def">仅冻结飞机空间位置，其他参数继续运行的局部冻结模式</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">燃油冻结 <span class="term-en">Fuel Freeze</span></td>
+<td class="def">仅冻结燃油消耗计算的局部冻结模式</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">总冻结 <span class="term-en">Total Freeze</span></td>
+<td class="def">冻结所有可冻结参数的全局冻结模式</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">解冻 <span class="term-en">Unfreeze</span></td>
+<td class="def">解除冻结状态，恢复模拟器正常运行的操作</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">环境重置 <span class="term-en">Environment Reset</span></td>
+<td class="def">将环境参数恢复至标准默认值（干燥跑道、能见度 40 nm、无云无雾等）</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">ISA 与风重置 <span class="term-en">ISA &amp; Winds Reset</span></td>
+<td class="def">将气压、温度、风恢复至 ISA 标准值（1013.2 mb、15°C、360/0° 风）</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">系统重置 <span class="term-en">Systems Reset</span></td>
+<td class="def">重置"重置系统"分支下的所有可重置系统</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">全部重置 <span class="term-en">Total Reset</span></td>
+<td class="def">执行坠机重置、清除故障、清除失效站点、发动机超限等全部复位操作</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">课程重置 <span class="term-en">Session Reset</span></td>
+<td class="def">结束当前课程并恢复环境、标准大气、清除交通和轨迹等至初始状态</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">快照 <span class="term-en">Snapshot</span></td>
+<td class="def">保存模拟器当前全部状态（飞机+环境）的瞬时副本，可随时调用恢复</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">回放 <span class="term-en">Replay</span></td>
+<td class="def">重新播放已录制的训练过程，支持暂停、快进、逐帧查看</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">录制 <span class="term-en">Recording</span></td>
+<td class="def">将训练过程中的教员操作与飞机状态变化记录为可回放的数据流</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">捕获飞行 <span class="term-en">Capture Flight</span></td>
+<td class="def">将当前飞机状态保存为可调用快照的操作</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">飞行状态捕捉 FSC <span class="term-en">Flight Status Capture</span></td>
+<td class="def">Advanced 工作区中的状态保存功能，与 Capture Flight 功能对应</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">调用 / 召回 <span class="term-en">Recall</span></td>
+<td class="def">加载先前保存的快照、场景或 FMS 配置，恢复模拟器至该状态</td>
+<td class="refs"><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">加速 <span class="term-en">Speed Up</span></td>
+<td class="def">加快模拟器时间流速，用于快速跳过巡航等低活动阶段</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+<tr>
+<td class="term">模拟控制 <span class="term-en">Sim Controls</span></td>
+<td class="def">对模拟器子系统的开关控制，包括视觉、运动、操纵载荷、烟雾、灯光等</td>
+<td class="refs"><a href="ch1_2_7_control_board_footer.html">1.2.7</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 十、地图与可视化 ==================== -->
+<div class="category collapsed" id="cat-map">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-map">MAP</span>地图与可视化</h3>
+<span class="count">14</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">2D/3D 视图 <span class="term-en">2D/3D View</span></td>
+<td class="def">地图工作区的两种显示模式：2D 俯视平面视图与 3D 透视立体视图</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">图标 <span class="term-en">Icon</span></td>
+<td class="def">地图主区域中表示飞机、导航台、机场、风暴等对象的图形符号</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">风向标 <span class="term-en">Wind Barb</span></td>
+<td class="def">地图主区域中显示风向风速的标准气象符号</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">罗盘 <span class="term-en">Compass</span></td>
+<td class="def">地图主区域中显示飞机航向的圆形方向指示器</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">距离环 <span class="term-en">Range Ring</span></td>
+<td class="def">以飞机为中心的一系列同心圆，用于直观判断距离</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">比例尺 <span class="term-en">Scale</span></td>
+<td class="def">地图工具栏中显示当前地图比例的功能</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">地图定位 <span class="term-en">Map To</span></td>
+<td class="def">地图工具栏功能，将地图中心快速跳转至指定对象（如飞机、机场、航路点）</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">航迹 <span class="term-en">Track</span></td>
+<td class="def">飞机在地图上的历史飞行路径线</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">锁定 <span class="term-en">Latch</span></td>
+<td class="def">地图页脚功能，锁定当前地图中心不随飞机移动而自动平移</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">风暴属性 <span class="term-en">Storm Properties</span></td>
+<td class="def">地图中点击风暴图标后弹出的滑动面板，可调整风暴类型、旋转与效果</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">精密进近 <span class="term-en">Precision Approach</span></td>
+<td class="def">有垂直引导的仪表进近（如 ILS），地图页脚绘图中可显示其剖面</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">非精密进近 <span class="term-en">Non-Precision Approach</span></td>
+<td class="def">仅有水平引导的仪表进近（如 VOR、NDB 进近）</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">尾部间隙 <span class="term-en">Tail Clearance</span></td>
+<td class="def">进近过程中飞机尾部与跑道/障碍物的安全距离监控参数</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+<tr>
+<td class="term">绘图 <span class="term-en">Plot</span></td>
+<td class="def">地图页脚左侧功能，以图形方式显示精密/非精密进近、起飞、尾部间隙、跑道等参数曲线</td>
+<td class="refs"><a href="ch1_6_map_workspace.html">1.6</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 十一、架构与数据流 ==================== -->
+<div class="category collapsed" id="cat-arch">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-arch">ARCH</span>架构与数据流</h3>
+<span class="count">10</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:28%">术语</th><th style="width:44%">定义</th><th style="width:28%">关联页面</th></tr></thead>
+<tbody>
+<tr>
+<td class="term">参考流程 RF <span class="term-en">Reference Flow</span></td>
+<td class="def">基于 1.1~1.7 整合创作的端到端标准操作流程（SOP），共 6 个（RF-01 ~ RF-06）</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">标准操作程序 SOP <span class="term-en">Standard Operating Procedure</span></td>
+<td class="def">规定教员从训练准备到结束讲评的规范化操作步骤</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">计量单位 UOM <span class="term-en">Unit of Measure</span></td>
+<td class="def">系统中各参数的计量单位制，包括公制（Metric）与英制（Imperial）</td>
+<td class="refs"><a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td>
+</tr>
+<tr>
+<td class="term">配置 <span class="term-en">Configuration</span></td>
+<td class="def">IOS 的软件/硬件配置方案，决定可用机型、机场集、仪表列表等</td>
+<td class="refs"><a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td>
+</tr>
+<tr>
+<td class="term">本机 <span class="term-en">Ownship</span></td>
+<td class="def">教员当前控制的模拟飞机，与"入侵者"等其他飞机相对</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a><a href="ch1_7_advanced.html">1.7</a></td>
+</tr>
+<tr>
+<td class="term">状态机 <span class="term-en">State Machine</span></td>
+<td class="def">描述系统或模块在不同状态之间转换条件的数学模型，广泛用于课程执行、冻结/回放等设计</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">数据流 <span class="term-en">Data Flow</span></td>
+<td class="def">描述教员操作 → UI 事件 → 状态变更 → 模拟器指令 → 反馈呈现的完整信息传递路径</td>
+<td class="refs"><a href="ch1_8_reference_flows.html">1.8</a></td>
+</tr>
+<tr>
+<td class="term">单一事实来源 <span class="term-en">Single Source of Truth</span></td>
+<td class="def">架构设计原则：每个数据项只由一个工作区产生和维护，其他工作区只读取不独立修改</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">关注点分离 <span class="term-en">Separation of Concerns</span></td>
+<td class="def">架构设计原则：六大工作区各自承担独立职责，避免功能耦合</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+<tr>
+<td class="term">认知模态分离 <span class="term-en">Cognitive Modality Separation</span></td>
+<td class="def">架构设计原则：将"操作"（Control Board）与"监控"（Map/Profile/Instruments）分离，匹配教员认知负荷</td>
+<td class="refs"><a href="ch1_1_components.html">1.1</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 十二、缩略语表 ==================== -->
+<div class="category collapsed" id="cat-acronym">
+<div class="category-header" onclick="this.parentElement.classList.toggle('collapsed')">
+<h3><span class="tag-cat cat-arch">ACR</span>缩略语速查表</h3>
+<span class="count">30</span>
+<span class="toggle-icon">▼</span>
+</div>
+<div class="category-body">
+<table class="index-table">
+<thead><tr><th style="width:18%">缩略语</th><th style="width:35%">英文全称</th><th style="width:47%">中文释义</th></tr></thead>
+<tbody>
+<tr><td class="term">AC</td><td class="def">Aircraft</td><td class="def">飞机/航空器</td></tr>
+<tr><td class="term">ADS</td><td class="def">Automatic Dependent Surveillance</td><td class="def">自动相关监视</td></tr>
+<tr><td class="term">AGL</td><td class="def">Above Ground Level</td><td class="def">离地高度</td></tr>
+<tr><td class="term">ASL</td><td class="def">Above Sea Level</td><td class="def">海拔高度</td></tr>
+<tr><td class="term">ATC</td><td class="def">Air Traffic Control</td><td class="def">空中交通管制</td></tr>
+<tr><td class="term">ATIS</td><td class="def">Automatic Terminal Information Service</td><td class="def">自动终端信息服务</td></tr>
+<tr><td class="term">CB</td><td class="def">Circuit Breaker</td><td class="def">断路器</td></tr>
+<tr><td class="term">CG</td><td class="def">Center of Gravity</td><td class="def">重心</td></tr>
+<tr><td class="term">DL</td><td class="def">Data Link</td><td class="def">数据链</td></tr>
+<tr><td class="term">FMS</td><td class="def">Flight Management System</td><td class="def">飞行管理系统</td></tr>
+<tr><td class="term">FSC</td><td class="def">Flight Status Capture</td><td class="def">飞行状态捕捉</td></tr>
+<tr><td class="term">GS</td><td class="def">Ground Speed</td><td class="def">地速</td></tr>
+<tr><td class="term">GW</td><td class="def">Gross Weight</td><td class="def">总重</td></tr>
+<tr><td class="term">HDG</td><td class="def">Heading</td><td class="def">航向</td></tr>
+<tr><td class="term">IAS</td><td class="def">Indicated Airspeed</td><td class="def">指示空速</td></tr>
+<tr><td class="term">ILS</td><td class="def">Instrument Landing System</td><td class="def">仪表着陆系统</td></tr>
+<tr><td class="term">ISA</td><td class="def">International Standard Atmosphere</td><td class="def">国际标准大气</td></tr>
+<tr><td class="term">ITP</td><td class="def">In-Trail Procedure</td><td class="def">同航迹程序</td></tr>
+<tr><td class="term">MALF</td><td class="def">Malfunction</td><td class="def">故障</td></tr>
+<tr><td class="term">MAC</td><td class="def">Mean Aerodynamic Chord</td><td class="def">平均气动弦</td></tr>
+<tr><td class="term">NDB</td><td class="def">Non-Directional Beacon</td><td class="def">无方向信标</td></tr>
+<tr><td class="term">OAT</td><td class="def">Outside Air Temperature</td><td class="def">外界大气温度</td></tr>
+<tr><td class="term">QFE</td><td class="def">QFE (Field Elevation pressure)</td><td class="def">场面气压</td></tr>
+<tr><td class="term">QNH</td><td class="def">QNH (Nautical Height pressure)</td><td class="def">修正海平面气压</td></tr>
+<tr><td class="term">RAAS</td><td class="def">Runway Awareness and Advisory System</td><td class="def">跑道感知与咨询系统</td></tr>
+<tr><td class="term">RF</td><td class="def">Reference Flow</td><td class="def">参考流程</td></tr>
+<tr><td class="term">RVR</td><td class="def">Runway Visual Range</td><td class="def">跑道视程</td></tr>
+<tr><td class="term">SOP</td><td class="def">Standard Operating Procedure</td><td class="def">标准操作程序</td></tr>
+<tr><td class="term">TAS</td><td class="def">True Airspeed</td><td class="def">真空速</td></tr>
+<tr><td class="term">TCAS</td><td class="def">Traffic Collision Avoidance System</td><td class="def">空中交通警戒与防撞系统</td></tr>
+<tr><td class="term">UPRT</td><td class="def">Upset Prevention and Recovery Training</td><td class="def">异常姿态预防与恢复训练</td></tr>
+<tr><td class="term">UL</td><td class="def">Uplink</td><td class="def">上行链路</td></tr>
+<tr><td class="term">UOM</td><td class="def">Unit of Measure</td><td class="def">计量单位</td></tr>
+<tr><td class="term">VHF</td><td class="def">VHF Communication</td><td class="def">甚高频通信</td></tr>
+<tr><td class="term">VOR</td><td class="def">VHF Omnidirectional Range</td><td class="def">甚高频全向信标</td></tr>
+<tr><td class="term">VS</td><td class="def">Vertical Speed</td><td class="def">垂直速度</td></tr>
+<tr><td class="term">ZFW</td><td class="def">Zero Fuel Weight</td><td class="def">零燃油重量</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<p style="margin-top:24px;color:var(--text-secondary);font-size:13px;text-align:center">— 索引覆盖 1.1 ~ 1.8 全部页面及第 2 章已发布页面，后续随章节扩展持续更新 —</p>
