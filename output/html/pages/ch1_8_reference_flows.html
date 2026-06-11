@@ -10,6 +10,12 @@
 .mermaid.is-zoomed:active{cursor:grabbing !important}
 .mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
 .mermaid.is-zoomed::after{display:none !important}
+
+/* 1.3 流程×工作区映射矩阵专用视觉标签 */
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-none{color:var(--text-secondary);font-size:12px}
 </style>
 
 
@@ -39,18 +45,22 @@
 <li>流程中的每个操作步骤均可在 1.1 ~ 1.7 对应 HTML 中找到详细的功能说明、参数定义和边界行为</li>
 <li>流程之间的<strong>衔接点</strong>（即一个流程的结束是另一个流程的开始）用虚线标注</li>
 <li>所有流程均假设教员已完成<strong>系统启动与登录</strong>（维护页面层面的初始化不在本章范围内，详见 1.3 维护页面）</li>
+<li>所有工作区之间的切换均通过 <strong>Footer 底部的 Workspace 按钮</strong> 或 <strong>Control Board 顶部的 Tab 栏</strong> 完成</li>
 </ul>
+<div class="highlight-box warn">
+<strong>上游依赖声明：</strong>本章 RF-04（故障注入）与 RF-06（冻结/回放/录制）的部分内容基于 <code>ch1_7_advanced.html</code>（1.7 高级）初版推导。若 1.7 后续发生架构或功能边界变更，本章需同步更新。
+    </div>
 <h3>1.3 流程 × 工作区全局映射矩阵</h3>
 <p>下表从架构视角展示 6 个参考流程与 6 大工作区之间的交叉关系。<strong>主战场</strong>表示该流程的核心操作发生在此工作区，<strong>辅助参与</strong>表示数据读取、状态监控或结果确认，— 表示不直接涉及。</p>
 <div class="table-wrap">
 <table>
 <tr><th>工作区</th><th>RF-01<br/>完整 Session</th><th>RF-02<br/>课程执行</th><th>RF-03<br/>初始化</th><th>RF-04<br/>故障注入</th><th>RF-05<br/>地图监控</th><th>RF-06<br/>冻结/回放</th></tr>
-<tr><td><strong>Control Board</strong><br/>控制面板</td><td>*</td><td>*</td><td>*</td><td>*</td><td>·</td><td>·</td></tr>
-<tr><td><strong>Map</strong><br/>地图</td><td>*</td><td>·</td><td>·</td><td>·</td><td>*</td><td>·</td></tr>
-<tr><td><strong>Lesson Plan Profile</strong><br/>课程计划剖面</td><td>*</td><td>*</td><td>—</td><td>—</td><td>—</td><td>·</td></tr>
-<tr><td><strong>Instruments Repeaters</strong><br/>复示仪表</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td></tr>
-<tr><td><strong>Maintenance</strong><br/>维护</td><td>·</td><td>—</td><td>—</td><td>·</td><td>·</td><td>—</td></tr>
-<tr><td><strong>Advanced</strong><br/>高级</td><td>*</td><td>·</td><td>·</td><td>*</td><td>*</td><td>*</td></tr>
+<tr><td><strong>Control Board</strong><br/>控制面板</td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td></tr>
+<tr><td><strong>Map</strong><br/>地图</td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-aux">辅</span></td></tr>
+<tr><td><strong>Lesson Plan Profile</strong><br/>课程计划剖面</td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-none">—</span></td><td><span class="tag-none">—</span></td><td><span class="tag-none">—</span></td><td><span class="tag-pill tag-aux">辅</span></td></tr>
+<tr><td><strong>Instruments Repeaters</strong><br/>复示仪表</td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td></tr>
+<tr><td><strong>Maintenance</strong><br/>维护</td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-none">—</span></td><td><span class="tag-none">—</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-none">—</span></td></tr>
+<tr><td><strong>Advanced</strong><br/>高级</td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-aux">辅</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td><td><span class="tag-pill tag-main">主</span></td></tr>
 </table>
 </div>
 <div class="highlight-box">
@@ -84,6 +94,7 @@
 <tr><td>4</td><td><strong>音量水平</strong></td><td>Footer → Volume</td><td>模拟声音清晰可闻，不刺耳；如需静音测试则确认静音按钮未误触</td></tr>
 <tr><td>5</td><td><strong>全局冻结状态</strong></td><td>Footer → Flight Freeze 指示灯</td><td>未处于冻结状态（指示灯暗色）；如之前 session 结束后冻结未解除，先点击 Unfreeze</td></tr>
 <tr><td>6</td><td><strong>故障清零</strong></td><td>AIRCRAFT Tab 底部 Malfunction Section / Footer → Clear All Malf.</td><td>无残留激活或预位故障；Footer 上 Clear All Malf. 按钮无红色标记</td></tr>
+<tr><td>7</td><td><strong>教员-学员通信通道</strong></td><td>Footer → Volume / IOS 语音通信面板</td><td>教员与驾驶舱的语音通信链路正常；模拟声音与通信音频通道分离清晰</td></tr>
 </table>
 </div>
 <div class="highlight-box">
@@ -99,6 +110,7 @@
       <strong>起点：</strong>进入 LESSON PLAN Tab  | 
       <strong>终点：</strong>结束课程并退出
     </p>
+<h3>2.1 标准训练 Session 主干流程</h3>
 <p>下图展示了教员从加载课程到结束讲评的<strong>完整训练生命周期</strong>。该流程以课程计划为核心主线，在关键节点上与飞机初始化、环境配置、地图监控、故障注入等支线流程产生交叉。虚线框表示可独立执行的子流程（详见下文 RF-02 ~ RF-06）。</p>
 <div class="highlight-box">
 <strong>架构视角的衔接点解读：</strong>本流程图中有三个关键的<strong>领域切换点</strong>（用黄色虚线框标注）：<strong>「初始化检查 → RF-03」</strong>是从<strong>课程准备域</strong>切换到<strong>参数配置域</strong>；<strong>「动态干预 → RF-04」</strong>是从<strong>核心训练域</strong>切换到<strong>支撑保障域（Advanced）</strong>的应急通道；<strong>「冻结事件 → RF-06」</strong>是从<strong>实时执行状态</strong>切换到<strong>状态保全状态</strong>的全局控制点。这三个衔接点是后续软件架构设计中跨模块接口与状态同步协议的重点。
@@ -158,18 +170,18 @@ flowchart LR
     style RF05 fill:#fef3c7,stroke:#d97706,stroke-dasharray:5 5
     style RF06 fill:#fef3c7,stroke:#d97706,stroke-dasharray:5 5
     </div>
-<h3>2.1 流程阶段说明</h3>
+<h4>2.1.1 流程阶段说明</h4>
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
-<tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标</td><td>逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
+<tr><td><strong>课程加载</strong></td><td>在 LESSON PLAN Tab 中浏览可用课程列表，选择目标课程并加载；确认课程大纲中的训练阶段和步骤是否符合本次训练目标。<strong>加载前务必完成 1.5 Pre-Session Checklist 中的所有检查项</strong></td><td>逻辑推理："选哪个课程？包含哪些阶段？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
 <tr><td><strong>初始化检查</strong></td><td>检查飞机重量与平衡（AIRCRAFT Tab）、环境参数（CURRENT CONDITIONS Tab）、参考机场与跑道（REFERENCE AIRPORT Tab）；如有偏差，在进入课程执行前修正</td><td>逻辑推理："参数是否在包线内？数值是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_2_3_current_conditions_tab.html">1.2.3</a> / <a href="ch1_2_5_reference_airport_tab.html">1.2.5</a></td></tr>
 <tr><td><strong>位置确认</strong></td><td>切换至 Map Workspace，确认飞机初始位置、跑道朝向、FMS 航线加载正确；必要时使用 SLEW 功能微调</td><td>空间直觉："飞机在跑道哪一端？航向对不对？"</td><td><a href="ch1_6_map_workspace.html">1.6</a></td></tr>
 <tr><td><strong>文档查阅</strong></td><td>如需查阅机场图、SID/STAR 程序、检查单或 SOP，切换至 DOC Tab 快速浏览；文档查阅不改变模拟器状态，可随时进行</td><td>逻辑推理："这条跑道的离场程序是什么？限制高度多少？"</td><td><a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
 <tr><td><strong>课程执行</strong></td><td>选择 Autorun 或 Step-by-Step 模式启动课程；Autorun 适合标准化流程，Step-by-Step 适合需要教员评估和干预的场景</td><td>流程监控："课程是否按预期推进？是否需要干预？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
 <tr><td><strong>实时监控</strong></td><td>在 Map Workspace 监控飞机轨迹与环境；在 Lesson Plan Profile 查看课程进度；在 INSTRUMENT REPEATER 监控关键仪表读数；可随时返回 DOC Tab 查阅文档</td><td>空间直觉 + 流程监控：多视图并行扫描</td><td><a href="ch1_6_map_workspace.html">1.6</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a> / <a href="ch1_4_instrument_repeater.html">1.4</a> / <a href="ch1_2_2_doc_tab.html">1.2.2</a></td></tr>
 <tr><td><strong>动态干预</strong></td><td>根据训练目标，在任意时刻注入故障（Malfunctions）、修改环境（Advanced → Environment）、调整飞机参数（AIRCRAFT Tab）</td><td>逻辑推理（参数修改）+ 应激决策（快速响应）："需要注入什么？从哪个入口最快？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_2_6_instructor_station_panel.html">1.2.6</a></td></tr>
-<tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；使用 Recording 回放训练关键片段 → 标记关键事件（故障注入点/冻结点/学员偏差）→ 在 Lesson Plan Profile 对比实际剖面与标准 amber line → 生成讲评要点/打印关键屏幕截图</td><td>流程监控 + 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
+<tr><td><strong>结束与讲评</strong></td><td>点击 End Lesson 结束课程；<strong>若课程正常完成</strong>，进入完整讲评流程（Recording 回放 → 标记关键事件 → Profile 对比 → 生成要点/打印截图）；<strong>若课程被教员主动中止或异常退出</strong>，可选择简要复盘后直接 Cleanup，或跳过讲评进入下一课程准备</td><td>流程监控 + 逻辑推理："回顾哪些关键点？数据是否已保存？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a> / <a href="ch1_7_advanced.html">1.7</a> / <a href="ch1_5_lesson_plan_profile.html">1.5</a></td></tr>
 </table>
 </div>
 <div class="highlight-box">
@@ -328,7 +340,14 @@ flowchart LR
 <h3>4.1 初始化流程图</h3>
 <div class="mermaid">
 flowchart LR
-    Start([开始初始化]) --&gt; AircraftTab[进入 AIRCRAFT Tab]
+    Start([开始初始化]) --&gt; HasPreset{课程包含<br/>预设初始化<br/>参数？}
+
+    HasPreset --&gt;|是| LoadPreset[自动加载课程<br/>预设的飞机/<br/>环境/位置参数]
+    HasPreset --&gt;|否| AircraftTab[进入 AIRCRAFT Tab]
+
+    LoadPreset --&gt; PresetOk{预设参数<br/>符合训练目标？}
+    PresetOk --&gt;|是| Verify[切换至 Map Workspace<br/>目视确认环境效果]
+    PresetOk --&gt;|否| AircraftTab
 
     AircraftTab --&gt; GW[设置 Gross Weight<br>总重]
     GW --&gt; GWCG[设置 GW CG<br>总重重心]
@@ -376,6 +395,7 @@ flowchart LR
 <div class="table-wrap">
 <table>
 <tr><th>阶段</th><th>教员操作要点</th><th>认知模式</th><th>关联 HTML</th></tr>
+<tr><td><strong>课程预设加载</strong></td><td>如课程包含默认初始化参数，系统自动加载预设的飞机重量、环境、参考机场与位置；教员检查预设是否符合本次训练目标</td><td>逻辑推理："预设参数是否满足训练需求？是否需要手动覆盖？"</td><td><a href="ch1_2_1_lesson_plan_tab.html">1.2.1</a></td></tr>
 <tr><td><strong>飞机参数初始化</strong></td><td>进入 AIRCRAFT Tab，依次设置 Gross Weight、GW CG、ZFW、ZFW CG、Fuel；确保 GW = ZFW + Fuel 等式成立</td><td>逻辑推理："数值是否在包线内？等式是否平衡？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
 <tr><td><strong>重量平衡校验</strong></td><td>系统检查 Weight &amp; CG 是否在允许包线内；若不通过，调整重量参数或打开 Weight &amp; CG Sliding Panel 精细调整</td><td>逻辑推理："重心是否超限？如何调整？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
 <tr><td><strong>通信与服务检查</strong></td><td>检查 DATALINK 状态、VHF 通信频率、Services &amp; Doors 状态；确保飞机系统与地面服务准备就绪</td><td>逻辑推理："通信链路是否正常？舱门状态是否正确？"</td><td><a href="ch1_2_4_aircraft_tab.html">1.2.4</a></td></tr>
@@ -387,10 +407,11 @@ flowchart LR
 <h3>4.2 初始化顺序建议</h3>
 <p>上述流程图展示的是<strong>推荐顺序</strong>，实际操作中教员可根据场景灵活调整。但以下<strong>依赖关系不可颠倒</strong>：</p>
 <ul>
+<li><strong>课程预设优先</strong>：如课程文件包含默认初始化参数，加载课程后系统自动应用预设；教员应首先检查预设是否符合训练目标，再决定是否需要手动覆盖</li>
 <li><strong>必须先设机场，再设跑道</strong>：REFERENCE AIRPORT Tab 中的跑道列表依赖于所选机场</li>
 <li><strong>必须先设跑道，再设跑道条件</strong>：CURRENT CONDITIONS Tab 中的跑道条件（Runway Condition）与具体跑道绑定</li>
-<li><strong>Weight &amp; CG 的联动</strong>：修改 GW 后，GW CG 可能自动变化；修改 ZFW 后，Fuel 可能需重新校准以确保 GW = ZFW + Fuel</li>
-<li><strong>环境参数的层次</strong>：Surface Wind 是 QNH 计算的基础输入之一；温度与 ISA 偏差影响气压高度修正</li>
+<li><strong>Weight &amp; CG 的联动</strong>：修改 GW 后，教员需手动确认 GW CG 仍处在允许包线内；若调整 ZFW，需重新校准 Fuel 以确保 GW = ZFW + Fuel 等式成立</li>
+<li><strong>环境参数的层次</strong>：QNH 与机场标高相关，温度与 ISA 偏差影响气压高度修正；Surface Wind 独立配置，三者无计算依赖</li>
 </ul>
 <h3>4.3 场景保存与复用（Save/Recall Scenario）</h3>
 <p>如需在多次训练中重复使用相同的环境配置（例如标准化 CAT II 进近训练、或特定风切变条件），教员可在 <strong>Advanced → Environment → Weather Region</strong> 中使用「保存场景（Save Scenario）」和「调用场景（Recall Scenario）」功能：</p>
@@ -705,7 +726,7 @@ flowchart LR
 <div class="table-wrap">
 <table>
 <tr><th>操作</th><th>对 LESSON PLAN 的影响</th><th>对 Map 的影响</th><th>对 AIRCRAFT 的影响</th><th>对 Current Conditions 的影响</th><th>关联 HTML</th></tr>
-<tr><td><strong>冻结</strong></td><td>课程执行暂停；解冻后从当前步骤继续（Autorun 模式可能自动恢复）</td><td>飞机图标、航迹、风暴动画静止；视图操作仍可正常进行</td><td>参数显示静止；可修改参数但修改在解冻后才生效</td><td>可修改参数但修改在解冻后才生效</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
+<tr><td><strong>冻结</strong></td><td>课程执行暂停，当前步骤索引保持不变；解冻后系统重新评估当前步骤完成条件。若条件在冻结前已满足，Autorun 自动推进至下一步骤；否则保持当前步骤，待条件满足后自动执行</td><td>飞机图标、航迹、风暴动画静止；视图操作仍可正常进行</td><td>参数显示静止；可修改参数但修改在解冻后才生效</td><td>可修改参数但修改在解冻后才生效</td><td><a href="ch1_2_7_control_board_footer.html">1.2.7</a> / <a href="ch1_7_advanced.html">1.7</a></td></tr>
 <tr><td><strong>状态捕捉</strong></td><td>无直接影响</td><td>无直接影响</td><td>捕捉当前飞机全部状态参数</td><td>捕捉当前环境参数</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
 <tr><td><strong>状态调用</strong></td><td>课程可能被中断；调用完成后需重新确认课程状态</td><td>飞机位置跳变至捕捉点；Map 自动刷新</td><td>所有参数恢复至捕捉时的值</td><td>环境参数恢复至捕捉时的值</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
 <tr><td><strong>FMS 内存保存</strong></td><td>无直接影响</td><td>FMS 航线数据保存</td><td>FMS 飞行计划保存至内存</td><td>无直接影响</td><td><a href="ch1_7_advanced.html">1.7</a></td></tr>
@@ -874,6 +895,9 @@ flowchart LR
 <li>通知维护人员，保留当前系统日志和状态</li>
 <li>如需疏散，按模拟机机房应急预案执行</li>
 </ol>
+<div class="highlight-box">
+<strong>补充参考：</strong>对于更细粒度的日常应急决策路径，参见 <strong>附录 A：紧急快速决策树</strong>。
+    </div>
 <!-- ==================== 十、变更记录 ==================== -->
 <h2>十、变更记录</h2>
 <div class="table-wrap">
@@ -884,6 +908,8 @@ flowchart LR
 <tr><td>2026-06-10</td><td>V1.2</td><td>基于 1.1 总纲与各子页面深度比对进行全面功能补全，并经过独立 API 盲审交叉验证后优化：(1) 新增 1.5「课程前准备检查清单（Pre-Session Checklist）」；(2) RF-01 流程图与阶段表补全 DOC Tab 文档查阅分支，Debrief 讲评阶段扩展为 4 步详细子流程；(3) RF-02 增加 UPRT 特别说明（3.5），教员干预点增加查阅文档；(4) RF-03 新增 4.3「场景保存与复用」及架构解读框；(5) RF-04 故障解除流程增加「系统损坏 → Resets」分支，新增 5.4「常见故障与系统损坏速查表」（覆盖 10 类故障与对应 Reset 映射）；(6) RF-05 重新定位方式从 3 种扩展为 4 种（增加 Footer 预设位置），地图监控增加 TCAS/交通监控阶段，新增 6.4「FMS 内存保存与召回」；(7) RF-06 原 7.4 扩展为 7.4~7.4.3，新增 Footer 功能速查、Reset 类型选择决策表（6 种场景）、Freezes 类型详解（10 种）、Sim Controls 与其他 Footer 功能速查表；(8) 为 RF-01~RF-06 各增加「架构原则映射（基于 1.1 节）」框；(9) 附录 A 决策树增加「查阅文档」路径；(10) 1.4 核心数据流总览补充 Advanced→Environment 覆盖优先级与失效条件说明；(11) RF-06 7.5 冻结一致性约束补充「全局原子状态管理器 + 最终一致性策略」实现建议。</td></tr>
 <tr><td>2026-06-10</td><td>V1.3</td><td>全量补充「关联 HTML」跨引用列/链接：(1) RF-02 的 3.4「课程执行跨工作区联动规则」新增「关联 HTML」列；(2) RF-05 的 6.2「重新定位方式选择指南」新增「关联 HTML」列；(3) RF-06 的 7.3「冻结跨工作区影响」、7.4.1「Reset 决策表」、7.4.2「Freezes 详解」、7.4.3「Footer 功能速查」均新增「关联 HTML」列；(4) RF-04 的 5.4「常见故障与系统损坏速查表」新增「关联 HTML」列；(5) 第八章「按工作区索引的异常速查表」将工作区名称改为可点击的 HTML 链接；(6) 第九章「异常处置」将「关联工作区」列中的工作区名称改为可点击的 HTML 链接。实现全文档跨章节导航闭环。</td></tr>
 <tr><td>2026-06-10</td><td>V1.4</td><td>全量补充「流程阶段说明」表格（对标 RF-01 的 2.1 设计）：(1) RF-02 新增 3.1.1「课程执行阶段说明」；(2) RF-03 新增 4.1.1「初始化阶段说明」；(3) RF-04 新增 5.1.1「故障注入阶段说明」；(4) RF-05 新增 6.1.1「地图监控阶段说明」；(5) RF-06 新增 7.2.1「冻结/录制/回放阶段说明」。每个表格均包含阶段、教员操作要点、认知模式、关联 HTML 四列，实现 Mermaid 流程图的阶段化拆解与跨章节导航。</td></tr>
+<tr><td>2026-06-11</td><td>V1.5</td><td>多维度审查与修正：(1) 新增「上游依赖声明」，明确 RF-04/RF-06 依赖 ch1_7_advanced.html 初版；(2) 修正 RF-03 4.2 中「Surface Wind 是 QNH 计算的基础输入」的航空知识错误；(3) 修正 RF-03 4.2 中「修改 GW 后 GW CG 自动变化」的描述，改为手动确认；(4) 统一 RF-01 阶段说明标题层级（h3→h4），新增 2.1 主干流程 h3 标题，与 RF-02~RF-06 结构对齐；(5) 1.2 阅读指南补充「工作区切换」标准操作路径；(6) 1.5 Pre-Session Checklist 新增第 7 项「教员-学员通信通道」检查；(7) 8.2 紧急中止流程末尾补充指向附录 A 的交叉引用。</td></tr>
+<tr><td>2026-06-11</td><td>V1.6</td><td>基于独立 API（DeepSeek）盲审意见进行优化：(1) RF-03 流程图新增「课程预设加载」决策节点与「预设参数确认」分支，补全「基于课程预设一键初始化」与「手动精细初始化」双路径，使 RF-03 与 RF-01 自然衔接；(2) RF-03 4.1.1 初始化阶段说明表新增「课程预设加载」阶段；(3) RF-03 4.2 初始化顺序建议新增「课程预设优先」依赖规则；(4) RF-06 7.3 跨工作区影响表精确定义 Autorun 解冻行为，消除「可能自动恢复」的不确定性表述，改为基于状态机的确定性描述；(5) RF-01 2.1.1 流程阶段说明表「课程加载」阶段增加对 1.5 Pre-Session Checklist 的显式引用；(6) RF-01 2.1.1「结束与讲评」阶段增加「正常完成 vs 主动中止/异常退出」的双路径说明。</td></tr>
 </table>
 </div>
 <!-- ==================== 附录 A：紧急快速决策树 ==================== -->
