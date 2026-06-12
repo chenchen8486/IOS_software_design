@@ -1,102 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.2.6 跨流程状态衔接与交互断点汇总 — CAE IOS 教员台</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<style>
-/* ==========================================
-   CAE IOS 教员台 — 全局公共样式
-   职责：定义全局 CSS 变量、布局骨架、基础排版、通用组件
-   注意：此文件由 build.py 统一注入到每个生成页面
-   ========================================== */
-
-/* ─── CSS 变量 ─── */
-:root{
-  --primary:#2563eb;--primary-light:#dbeafe;--primary-dark:#1e40af;
-  --accent:#059669;--danger:#dc2626;--warning:#d97706;
-  --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--text-secondary:#64748b;
-  --border:#e2e8f0;
-  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -2px rgba(0,0,0,0.05);
-  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.08);
-  --radius:8px;--radius-lg:12px;--sidebar-width:280px;
-}
-
-/* ─── 基础重置 ─── */
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
-a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
-
-/* ─── 布局骨架 ─── */
-.layout{display:flex;min-height:100vh}
-
-/* Sidebar */
-.sidebar{width:var(--sidebar-width);background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;z-index:50;transition:transform .3s}
-.sidebar-header{padding:20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10}
-.sidebar-header h1{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
-.sidebar-header p{font-size:12px;color:var(--text-secondary)}
-.nav-tree{padding:12px}
-.nav-group{margin-bottom:4px}
-.nav-toggle{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:500;color:var(--text);user-select:none;transition:background .15s}
-.nav-toggle:hover{background:var(--primary-light)}
-.nav-toggle .arrow{width:16px;height:16px;display:flex;align-items:center;justify-content:center;transition:transform .2s;font-size:11px;color:var(--text-secondary)}
-.nav-toggle.collapsed .arrow{transform:rotate(-90deg)}
-.nav-children{margin-left:20px;border-left:2px solid var(--border);padding-left:8px;overflow:hidden;transition:max-height .3s}
-.nav-children.collapsed{max-height:0}
-.nav-link{display:block;padding:6px 10px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);transition:all .15s}
-.nav-link:hover{background:var(--primary-light);color:var(--primary-dark)}
-.nav-link.active{background:var(--primary);color:#fff;font-weight:500}
-
-/* Main & Breadcrumb */
-.main{margin-left:var(--sidebar-width);flex:1;min-width:0}
-.breadcrumb{position:sticky;top:0;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:12px 32px;font-size:13px;color:var(--text-secondary);z-index:40}
-.breadcrumb a{color:var(--text-secondary)}.breadcrumb a:hover{color:var(--primary)}.breadcrumb-sep{margin:0 8px;opacity:.5}
-
-/* ─── 内容区域基础排版 ─── */
-.content{max-width:1000px;margin:0 auto;padding:32px}
-.content h1{font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text);letter-spacing:-.02em}
-.content .subtitle{font-size:14px;color:var(--text-secondary);margin-bottom:32px}
-.content h2{font-size:22px;font-weight:700;margin:40px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--primary-light);color:var(--primary-dark)}
-.content h3{font-size:18px;font-weight:600;margin:28px 0 12px;color:var(--text)}
-.content h4{font-size:15px;font-weight:600;margin:20px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.02em}
-.content p{margin-bottom:14px}
-.content ul,.content ol{margin:12px 0 12px 22px}
-.content li{margin-bottom:6px}
-.content blockquote{border-left:4px solid var(--primary);padding:12px 16px;background:var(--primary-light);border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:14px}
-.content code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:'SF Mono',monospace;font-size:13px;color:var(--primary-dark)}
-.content pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:var(--radius);overflow-x:auto;font-size:13px;line-height:1.6;margin:16px 0}
-.content pre code{background:transparent;padding:0;color:inherit}
-
-/* ─── 表格基础 ─── */
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
-th{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 100%);color:#fff;font-weight:600;position:sticky;top:0;white-space:nowrap}
-tr:hover td{background:#f8fafc}
-tr:last-child td{border-bottom:none}
-
-/* ─── 页脚导航 ─── */
-.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
-.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
-.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
-.footer-nav .prev{color:var(--text-secondary)}
-.footer-nav .next{color:var(--primary)}
-
-/* ─── 滚动条 ─── */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#94a3b8}
-
-/* ─── 响应式 ─── */
-@media print{.sidebar{display:none}.main{margin-left:0}.breadcrumb{position:static}}
-@media (max-width:768px){:root{--sidebar-width:0}.sidebar{transform:translateX(-100%)}.main{margin-left:0}.content{padding:20px}}
-
-</style>
-<style>
+﻿<style>
 .table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
 .mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
 .mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
@@ -173,74 +75,13 @@ tr:last-child td{border-bottom:none}
   .seq-legend-item{margin:2px 0;white-space:nowrap}
 }
 </style>
-</head>
-<body>
-<aside class="sidebar">
-  <div class="sidebar-header"><h1>CAE IOS 教员台</h1><p>结构化整理与可视化手册</p></div>
-  <nav class="nav-tree">
-    <div class="nav-group">
-  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 1 章 CAE IOS功能详解</span></div>
-  <div class="nav-children collapsed">
-    <a class="nav-link" href="ch1_1_components.html">1.1 IOS组成部分与设计哲学</a>
-<div class="nav-group">
-  <div class="nav-toggle collapsed" onclick="toggleNav(this)"><span class="arrow">▼</span><span>1.2 控制面板工作区</span></div>
-  <div class="nav-children collapsed">
-    <a class="nav-link" href="ch1_2_1_lesson_plan_tab.html">1.2.1 课程计划选项卡 Lesson Plan Tab</a>
-<a class="nav-link" href="ch1_2_2_doc_tab.html">1.2.2 文档选项卡 Doc Tab</a>
-<a class="nav-link" href="ch1_2_3_current_conditions_tab.html">1.2.3 当前条件选项卡 Current Conditions Tab</a>
-<a class="nav-link" href="ch1_2_4_aircraft_tab.html">1.2.4 飞机/航空器选项卡 Aircraft Tab</a>
-<a class="nav-link" href="ch1_2_5_reference_airport_tab.html">1.2.5 参考机场选项卡（Reference Airport Tab）</a>
-<a class="nav-link" href="ch1_2_6_instructor_station_panel.html">1.2.6 教员台滑动面板（Instructor Station Sliding Panel）</a>
-<a class="nav-link" href="ch1_2_7_control_board_footer.html">1.2.7 控制面板底部（Control Board Footer）</a>
-  </div>
-</div>
-<a class="nav-link" href="ch1_3_maintenance_pages.html">1.3 维护页面（Maintenance Pages）</a>
-<a class="nav-link" href="ch1_4_instrument_repeater.html">1.4 仪表复示器工作区（Instrument Repeater）</a>
-<a class="nav-link" href="ch1_5_lesson_plan_profile.html">1.5 课程计划配置工作区（Lesson Plan Profile Workspace）</a>
-<a class="nav-link" href="ch1_6_map_workspace.html">1.6 地图工作区（Map Workspace）</a>
-<a class="nav-link" href="ch1_7_advanced.html">1.7 高级（Advanced）</a>
-<a class="nav-link" href="ch1_8_reference_flows.html">1.8 参考流程</a>
-<a class="nav-link" href="ch1_9_index.html">1.9 索引</a>
-  </div>
-</div>
-<div class="nav-group">
-  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>第 2 章 软件架构逆向分析</span></div>
-  <div class="nav-children">
-    <a class="nav-link" href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a>
-<div class="nav-group">
-  <div class="nav-toggle" onclick="toggleNav(this)"><span class="arrow">▼</span><span>2.2 端到端交互完整性流程</span></div>
-  <div class="nav-children">
-    <a class="nav-link" href="ch2_2_1_framework.html">2.2.1 交互完整性分析框架</a>
-<a class="nav-link" href="ch2_2_2_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
-<a class="nav-link" href="ch2_2_3_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
-<a class="nav-link" href="ch2_2_4_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
-<a class="nav-link" href="ch2_2_5_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
-<a class="nav-link active" href="ch2_2_6_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
-  </div>
-</div>
-<a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
-  </div>
-</div>
-  </nav>
-</aside>
-<div class="layout">
-  <div class="main">
-    <div class="breadcrumb">
-    <a href="#">首页</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="#">第 2 章 软件架构逆向分析</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="#">2.2 端到端交互完整性流程</a>
-    <span class="breadcrumb-sep">/</span>
-    <span>2.2.6 跨流程状态衔接与交互断点汇总</span>
-  </div>
-    <div class="content">
-      <h1>2.2.6 跨流程状态衔接与交互断点汇总</h1>
-<h2 id="sec-2-2-6">2.2.6 跨流程状态衔接与交互断点汇总</h2>
+
+<h1>2.2.7 跨流程状态衔接与交互断点汇总</h1>
+<h2 id="sec-2-2-7">2.2.7 跨流程状态衔接与交互断点汇总</h2>
 <p class="area-map">
-<strong>推导来源：</strong>2.2.2 ~ 2.2.5 全部交互序列推导结果 &nbsp;|&nbsp; <strong>输入约束：</strong>六流程间状态传递契约、7 个交互断点、异常降级矩阵 &nbsp;|&nbsp; <strong>下游输出：</strong>2.3 UI 控件体系规范、2.4 数据流与接口契约推导
+<strong>推导来源：</strong>2.2.2 ~ 2.2.6 全部交互序列推导结果 &nbsp;|&nbsp; <strong>输入约束：</strong>六流程间状态传递契约、7 个交互断点、异常降级矩阵 &nbsp;|&nbsp; <strong>下游输出：</strong>2.3 UI 控件体系规范、2.4 数据流与接口契约推导
 </p>
-<p>2.2.2 ~ 2.2.5 分别推导了 RF-01~RF-06 的交互序列、状态机和断点。本节将所有推导结果汇总为三张总表，形成对后续 2.3（UI 控件体系规范）和 2.4（数据流与接口契约推导）的顶层输入。</p>
+<p>2.2.2 ~ 2.2.6 分别推导了 RF-01~RF-06 的交互序列、状态机和断点。本节将所有推导结果汇总为三张总表，形成对后续 2.3（UI 控件体系规范）和 2.4（数据流与接口契约推导）的顶层输入。</p>
 
 <h3>六流程间状态传递契约总表</h3>
 <p>RF-01 作为主流程，与 RF-02~RF-06 之间存在多次调用/返回关系。以下表格定义了所有流程间衔接点的输入/输出契约：</p>
@@ -264,7 +105,7 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <h3>交互断点汇总表</h3>
-<p>以下汇总了 2.2.2~2.2.5 中识别出的全部 7 个交互断点，按优先级分组展示。点击面板标题可展开/收起详情：</p>
+<p>以下汇总了 2.2.2~2.2.6 中识别出的全部 7 个交互断点，按优先级分组展示。点击面板标题可展开/收起详情：</p>
 
 <div class="gap-category" id="gap-high">
 <div class="gap-header" onclick="this.parentElement.classList.toggle('collapsed')">
@@ -371,35 +212,32 @@ tr:last-child td{border-bottom:none}
 </thead>
 <tbody>
 <tr>
-<td><strong>原则一：按认知模态分离</strong></td><td>离散参数与连续空间信息绝不混在同一面板</td><td><strong>2.2.4</strong> 中 Map 的 2D/3D 视图状态被定义为纯渲染层本地状态，不进入全局 Session State；<strong>2.2.4</strong> 中重新定位的四种方式按"空间直觉"（SLEW/Map）和"逻辑推理"（Airport Repo/Footer Repo）分类分析</td>
+<td><strong>原则一：按认知模态分离</strong></td><td>离散参数与连续空间信息绝不混在同一面板</td><td><strong>2.2.5</strong> 中 Map 的 2D/3D 视图状态被定义为纯渲染层本地状态，不进入全局 Session State；<strong>2.2.5</strong> 中重新定位的四种方式按"空间直觉"（SLEW/Map）和"逻辑推理"（Airport Repo/Footer Repo）分类分析</td>
 </tr>
 <tr>
-<td><strong>原则二：按使用频率分层</strong></td><td>高频功能常驻主界面；低频功能独立隔离</td><td><strong>2.2.4</strong> 中三种故障注入入口按使用频率分层：MALF（标准化高频）→ Quick（即兴中频）→ Advanced（精细低频）；<strong>2.2.5</strong> 中 Footer Freeze（高频）与 Advanced Freeze（低频精细控制）的消息路径差异</td>
+<td><strong>原则二：按使用频率分层</strong></td><td>高频功能常驻主界面；低频功能独立隔离</td><td><strong>2.2.5</strong> 中三种故障注入入口按使用频率分层：MALF（标准化高频）→ Quick（即兴中频）→ Advanced（精细低频）；<strong>2.2.6</strong> 中 Footer Freeze（高频）与 Advanced Freeze（低频精细控制）的消息路径差异</td>
 </tr>
 <tr>
-<td><strong>原则三：按角色隔离</strong></td><td>不同用户角色的功能绝不混用</td><td><strong>2.2.4</strong> 中故障注入权限与维护锁定状态互斥；<strong>2.2.6</strong> 异常降级矩阵中，所有无法通过软件恢复的路径最终都降级到 Maintenance 角色域</td>
+<td><strong>原则三：按角色隔离</strong></td><td>不同用户角色的功能绝不混用</td><td><strong>2.2.5</strong> 中故障注入权限与维护锁定状态互斥；<strong>2.2.7</strong> 异常降级矩阵中，所有无法通过软件恢复的路径最终都降级到 Maintenance 角色域</td>
 </tr>
 <tr>
 <td><strong>原则四：同一模型，多重视图</strong></td><td>同一个领域对象设计多个正交视图</td><td><strong>2.2.3</strong> 中 LESSON PLAN Tab ↔ Lesson Plan Profile 的双向同步契约推导；当前步骤索引的单一事实来源为 SSM，CB 和 LPP 均为消费视图</td>
 </tr>
 <tr>
-<td><strong>原则五：应急通道设计</strong></td><td>常规层级导航在紧急场景下是致命的</td><td><strong>2.2.4</strong> 中 Footer Reposition（3 次点击直达）与 SLEW/Airport Repo（10+ 次操作）的交互代价对比；<strong>2.2.5</strong> 中 Footer Freeze（瞬时冻结）作为最高频应急操作的消息路径最短化设计</td>
+<td><strong>原则五：应急通道设计</strong></td><td>常规层级导航在紧急场景下是致命的</td><td><strong>2.2.5</strong> 中 Footer Reposition（3 次点击直达）与 SLEW/Airport Repo（10+ 次操作）的交互代价对比；<strong>2.2.6</strong> 中 Footer Freeze（瞬时冻结）作为最高频应急操作的消息路径最短化设计</td>
 </tr>
 </tbody>
 </table>
 </div>
 
 <div class="footer-nav">
-<a class="prev" href="ch2_2_5_rf06_freeze.html"><span>←</span><span>2.2.5 RF-06 冻结、回放与录制交互完整性</span></a>
+<a class="prev" href="ch2_2_6_rf06_freeze.html"><span>←</span><span>2.2.6 RF-06 冻结、回放与录制交互完整性</span></a>
 <a class="next" href="ch2_3_ui_component_spec.html"><span>2.3 UI 控件体系规范</span><span>→</span></a>
 </div>
 <hr style="margin:40px 0;border:none;border-top:1px solid var(--border)"/>
 <p style="font-size:13px;color:var(--text-secondary)">
 <strong>文档版本：</strong>V1.0 &nbsp;|&nbsp; <strong>创建时间：</strong>2026-06-10 &nbsp;|&nbsp; <strong>上游依赖：</strong><a href="ch1_8_reference_flows.html">1.8 参考流程</a>、<a href="ch2_1_functional_architecture.html">2.1 功能架构全景图</a> &nbsp;|&nbsp; <strong>下游输出：</strong>2.3 UI 控件体系规范、2.4 数据流与接口契约推导 &nbsp;|&nbsp; <strong>性质：</strong>基于操作手册的架构交互推导 &nbsp;|&nbsp; <strong>置信度：</strong>中~高
 </p>
-    </div>
-  </div>
-</div>
 <script>
 mermaid.initialize({
   startOnLoad:true,
@@ -525,5 +363,3 @@ function toggleNav(el){
   });
 })();
 </script>
-</body>
-</html>

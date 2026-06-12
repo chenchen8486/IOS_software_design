@@ -1,0 +1,347 @@
+﻿<style>
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.mermaid{margin:24px 0;display:flex;justify-content:center;cursor:zoom-in;position:relative}
+.mermaid::after{content:'点击放大';position:absolute;bottom:4px;right:4px;font-size:11px;color:var(--text-secondary);background:rgba(255,255,255,0.9);padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.mermaid:hover::after{opacity:1}
+.mermaid-zoom-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);z-index:999;backdrop-filter:blur(4px);cursor:zoom-out}
+.mermaid.is-zoomed{position:fixed !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) !important;z-index:1000 !important;width:90vw !important;height:90vh !important;max-width:none !important;background:var(--surface) !important;border-radius:var(--radius-lg) !important;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25) !important;padding:0 !important;overflow:hidden !important;cursor:grab !important;display:flex !important;justify-content:center !important;align-items:center !important;user-select:none}
+.mermaid.is-zoomed:active{cursor:grabbing !important}
+.mermaid.is-zoomed svg{transition:transform .1s ease-out;transform-origin:center center;max-width:none !important}
+.mermaid.is-zoomed::after{display:none !important}
+.highlight-box{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.highlight-box.warn{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left-color:var(--warning)}
+.highlight-box.danger{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 100%);border-left-color:var(--danger)}
+.speculation-box{background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-left:4px solid #f97316;padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0}
+.speculation-box strong{color:#c2410c}
+.confidence{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;margin-left:8px}
+.conf-high{background:#dcfce7;color:#166534}
+.conf-med{background:#fef9c3;color:#854d0e}
+.conf-low{background:#fee2e2;color:#991b1b}
+.arch-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.arch-block h4{margin-top:0;color:var(--primary-dark);font-size:16px;text-transform:none;letter-spacing:normal}
+.footer-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:24px;border-top:2px solid var(--border)}
+.footer-nav a{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:500;transition:all .15s}
+.footer-nav a:hover{background:var(--primary-light);border-color:var(--primary);text-decoration:none}
+.footer-nav .prev{color:var(--text-secondary)}
+.footer-nav .next{color:var(--primary)}
+/* area-map 推导边界条（借鉴 ch1.8） */
+.area-map{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px;padding:8px 12px;background:var(--primary-light);border-radius:var(--radius);border-left:3px solid var(--primary)}
+.area-map strong{color:var(--primary-dark)}
+
+/* arch-grid 架构信息网格（借鉴 ch1.1） */
+.arch-grid{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;margin-top:16px}
+.arch-grid .label{font-weight:600;color:var(--text-secondary);text-align:right;padding-top:2px}
+.arch-grid .content{color:var(--text)}
+@media (max-width:768px){.arch-grid{grid-template-columns:1fr}.arch-grid .label{text-align:left}}
+
+/* tag-pill 视觉标签（借鉴 ch1.8） */
+.tag-pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;line-height:1.4;white-space:nowrap;text-align:center;min-width:20px;letter-spacing:0.5px}
+.tag-main{background:var(--primary);color:#fff}
+.tag-aux{background:var(--primary-light);color:var(--primary-dark)}
+.tag-warn{background:#fef3c7;color:#92400e}
+.tag-danger{background:#fee2e2;color:#991b1b}
+.tag-none{color:var(--text-secondary);font-size:12px}
+
+/* 折叠分类面板（借鉴 ch1.9，简化版） */
+.gap-category{margin:16px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.gap-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);cursor:pointer;user-select:none}
+.gap-header h4{margin:0;font-size:15px;color:var(--text);font-weight:600}
+.gap-header .count{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--primary-light);color:var(--primary-dark);font-weight:500}
+.gap-header .toggle-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;transition:transform .2s;color:var(--text-secondary)}
+.gap-category.collapsed .toggle-icon{transform:rotate(-90deg)}
+.gap-body{padding:0 18px 18px;border-top:1px solid var(--border);display:none}
+.gap-category:not(.collapsed) .gap-body{display:block}
+@media print{.gap-body{display:block!important}}
+
+@media print{.mermaid{page-break-inside:avoid}}
+
+/* 序列图 + 右侧图例 并排布局 */
+.seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
+.seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
+.seq-legend{flex:0 0 150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;line-height:1.7}
+.seq-legend-title{font-weight:600;color:var(--primary-dark);margin-bottom:8px;font-size:13px;border-bottom:1px solid var(--border);padding-bottom:6px}
+.seq-legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;color:var(--text-secondary)}
+.seq-line-solid{display:inline-block;width:18px;border-bottom:2px solid #334155}
+.seq-line-dashed{display:inline-block;width:18px;border-bottom:2px dashed #94a3b8}
+.seq-box{display:inline-block;width:14px;height:8px;border:1px dashed #94a3b8;border-radius:2px}
+.seq-diamond{display:inline-block;width:8px;height:8px;border:1px solid #94a3b8;transform:rotate(45deg)}
+.seq-loop{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-par{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
+.seq-color{display:inline-block;width:12px;height:12px;border:1px solid transparent;border-radius:3px;flex-shrink:0}
+@media(max-width:900px){
+  .seq-pair{flex-direction:column}
+  .seq-legend{flex:0 0 auto;width:100%;display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px}
+  .seq-legend-title{width:100%;margin-bottom:4px;padding-bottom:4px}
+  .seq-legend-item{margin:2px 0;white-space:nowrap}
+}
+</style>
+<h1>2.2.4 RF-03 初始化交互完整性</h1>
+<h2 id="sec-2-2-4">2.2.4 RF-03 初始化交互完整性</h2>
+<p class="area-map">
+<strong>推导来源：</strong>RF-03 环境配置与飞机初始化 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（AIRCRAFT / REF AIRPORT / CURRENT CONDITIONS 域） &nbsp;|&nbsp; <strong>输出产物：</strong>三层参数校验链、Save/Recall Scenario 持久化契约
+</p>
+<p>RF-03 是 RF-01 主流程的<strong>前置准备阶段</strong>，负责训练开始前的飞机参数、参考机场、当前环境等初始化配置。其输出（初始化完成确认）是 RF-02 课程执行的前置条件。本节推导 RF-03 的交互序列、参数校验链以及 Save/Recall Scenario 的状态持久化契约。</p>
+
+<div class="highlight-box">
+<strong>前置阅读提示：</strong>本节序列图涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
+</div>
+<h3>初始化交互序列图与参数校验链</h3>
+<p>RF-03 是纯逻辑推理流程，所有步骤都是精确的数值输入与包线验证。其交互序列的特点是<strong>多轮参数变更 + 层级校验</strong>。</p>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 飞机参数初始化</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 机场与环境配置</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 全局目视确认</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as Instructor<br/>教员
+    participant CB as Control Board<br/>控制面板
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant MAP as Map<br/>地图
+
+    rect rgb(219,234,254)
+    Note over INST,MAP: 飞机参数初始化
+    INST->>CB: 进入 AIRCRAFT Tab，输入 GW
+    CB->>SSM: 参数变更 {param: GW, value, source: CB}
+    SSM->>SSM: UI 层校验（范围/格式）
+    SSM->>SSM: 业务校验：GW 是否在包线内？
+    SSM->>SC: 下发 GW
+    SC-->>SSM: GW 确认
+    SSM->>CB: GW CG 自动计算回显
+
+    INST->>CB: 输入 ZFW / Fuel
+    CB->>SSM: 参数变更 {ZFW, Fuel}
+    SSM->>SSM: 业务校验：GW = ZFW + Fuel？
+    alt 等式不成立
+        SSM->>CB: 报错提示，拒绝下发
+        CB-->>INST: 显示校验失败
+    else 等式成立
+        SSM->>SC: 下发 ZFW / Fuel
+        SC-->>SSM: 确认
+    end
+    end
+
+    rect rgb(254,243,199)
+    Note over INST,MAP: 机场与环境初始化
+    INST->>CB: 进入 REFERENCE AIRPORT，选择机场
+    CB->>SSM: 参数变更 {airportICAO}
+    SSM->>SC: 查询机场数据库
+    SC-->>SSM: 机场数据 {runways, gates, terrain}
+    SSM->>CB: 跑道列表更新
+
+    INST->>CB: 选择跑道
+    CB->>SSM: 参数变更 {runwayId}
+    SSM->>CB: 跑道条件选项绑定
+
+    INST->>CB: 进入 CURRENT CONDITIONS，逐项配置
+    CB->>SSM: 多轮参数变更
+    SSM->>SSM: 依赖校验：Surface Wind → QNH 计算基础
+    SSM->>SC: 下发环境参数
+    SC-->>SSM: 环境确认
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,MAP: 全局目视确认
+    SSM-->>MAP: 推送机场/环境/飞机数据
+    MAP-->>INST: 渲染完整场景
+    INST->>MAP: 目视确认
+    alt 确认通过
+        MAP-->>INST: 初始化完成
+    else 需要调整
+        INST->>CB: 返回对应 Tab 修正
+    end
+    end
+</div>
+</div>
+
+<h3>参数校验链的架构实现推导</h3>
+<p>RF-03 的初始化流程揭示了一个三层校验架构，这是 2.1.2 中"UI 层 → 状态管理层 → 模拟器核心层"数据流的具体实例：</p>
+<div class="arch-block">
+<h4>三层校验层级定义</h4>
+<div class="arch-grid">
+<div class="label">L1 UI 层校验</div>
+<div class="content"><strong>执行者：</strong>Control Board 前端控件<br/><strong>校验内容：</strong>输入格式（数字/字符串）、取值范围（如 GW 必须在 40t~80t 之间）<br/><strong>失败行为：</strong>即时阻止非法输入，给出红色边框/提示文案，不向 SSM 发送请求</div>
+<div class="label">L2 业务校验</div>
+<div class="content"><strong>执行者：</strong>Session State Manager<br/><strong>校验内容：</strong>跨参数等式（GW = ZFW + Fuel）、包线约束（CG 在 MAC 范围内）、依赖顺序（必须先选机场再选跑道）<br/><strong>失败行为：</strong>拒绝下发并回滚到上次合法状态，向 CB 返回具体错误码</div>
+<div class="label">L3 物理校验</div>
+<div class="content"><strong>执行者：</strong>Simulator Core<br/><strong>校验内容：</strong>物理可行性（飞机在当前机场跑道能否起飞）、地形碰撞检测、FMS 航线可计算性<br/><strong>失败行为：</strong>返回物理校验失败，SSM 保持冻结或回滚到上一次通过校验的快照</div>
+</div>
+</div>
+
+<div class="highlight-box warn">
+<strong>失败回滚策略：</strong>L1 失败无需回滚（仅前端拦截）；L2 失败回滚到 SSM 上一次合法状态；L3 失败回滚到 Simulator Core 上一次通过物理校验的快照。三层校验的粒度逐层收紧，避免了"前端通过但后端崩溃"的状态不一致。
+</div>
+
+<h3>Save/Recall Scenario 的状态持久化契约</h3>
+<p>ch1_8 的 4.3 节描述了 Advanced → Environment 中的 Save/Recall Scenario 功能。将其映射到 2.1 架构中，需要明确<strong>保存范围</strong>与<strong>数据依赖矩阵</strong>的对应关系。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">场景数据项</th><th style="width:22%">2.1.3 数据类别</th><th style="width:28%">是否被 Save/Recall 持久化</th><th style="width:28%">架构原因</th></tr>
+</thead>
+<tbody>
+<tr><td>海平面温度、中间层/对流层顶温度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数，可复用</td></tr>
+<tr><td>QNH、QFE</td><td>环境参数</td><td>✅ 保存（衍生存储）</td><td>可由温度和气压剖面重新计算</td></tr>
+<tr><td>地面/中间层/对流层顶风</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
+<tr><td>云和能见度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
+<tr><td>活跃风暴、微下击暴流</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>属于瞬时模拟状态，非配置参数；重新加载后应由教员按需重新配置</td></tr>
+<tr><td>风切变、结冰条件</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>同上，属于触发式瞬时状态</td></tr>
+<tr><td>飞机位置、重量、重心</td><td>飞机物理状态</td><td>❌ 不保存</td><td>Save Scenario 仅保存环境配置，飞机状态由课程或教员单独管理</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box">
+<strong>状态持久化契约：</strong>Save Scenario 操作的消息序列为：ADV -> SSM -> 持久化存储。SSM 在保存前需过滤掉"瞬时模拟状态"，只持久化"教员输入的配置参数"。Recall 时，SSM 从持久化存储读取配置参数，按 RF-03 的初始化顺序（机场→环境→验证）重新下发至 SC，并递增 State Version 通知所有工作区刷新。
+</div>
+
+
+<div class="footer-nav">
+<a class="prev" href="ch2_2_2_rf01_session.html"><span>←</span><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span></a>
+<a class="next" href="ch2_2_4_rf04_rf05_intervention.html"><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
+</div>
+<div class="footer-nav">
+<a class="prev" href="ch2_2_3_rf02_execution.html"><span>←</span><span>2.2.3 RF-02 课程执行交互完整性</span></a>
+<a class="next" href="ch2_2_5_rf04_rf05_intervention.html"><span>2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
+</div>
+<script>
+mermaid.initialize({
+  startOnLoad:true,
+  securityLevel:'loose',
+  theme:'base',
+  themeVariables:{
+    primaryColor:'#dbeafe',
+    primaryTextColor:'#1e293b',
+    primaryBorderColor:'#2563eb',
+    lineColor:'#64748b',
+    secondaryColor:'#f1f5f9',
+    tertiaryColor:'#fff',
+    fontFamily:'Noto Sans SC,system-ui,sans-serif',
+    fontSize:'14px'
+  },
+  flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'},
+  graph:{useMaxWidth:true,htmlLabels:true},
+  stateDiagram:{curve:'basis'},
+  sequence:{useMaxWidth:true,diagramMarginX:10,diagramMarginY:10,actorMargin:60,width:150,height:65,boxMargin:10,boxTextMargin:5,noteMargin:10,messageMargin:35}
+});
+
+function toggleNav(el){
+  el.classList.toggle('collapsed');
+  const children = el.nextElementSibling;
+  if(children && children.classList.contains('nav-children')){
+    children.classList.toggle('collapsed');
+    children.style.maxHeight = children.classList.contains('collapsed') ? '0' : '2000px';
+  }
+}
+
+// Mermaid 图表点击放大与交互功能
+(function(){
+  let currentScale=1;
+  let isDragging=false;
+  let dragStartX=0,dragStartY=0;
+  let startX,startY,translateX=0,translateY=0;
+
+  function closeZoom(el){
+    el.classList.remove('is-zoomed');
+    const svg=el.querySelector('svg');
+    if(svg){svg.style.transform='';svg.style.transition='';}
+    const overlay=document.querySelector('.mermaid-zoom-overlay');
+    if(overlay) overlay.remove();
+  }
+
+  function updateTransform(svg){
+    if(svg) svg.style.transform=`translate(${translateX}px,${translateY}px) scale(${currentScale})`;
+  }
+
+  document.addEventListener('click',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.classList.contains('mermaid-zoom-overlay')){
+      closeZoom(zoomed);
+      return;
+    }
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      const dx=Math.abs(e.clientX-dragStartX);
+      const dy=Math.abs(e.clientY-dragStartY);
+      if(dx<5&&dy<5){closeZoom(zoomed);}
+      return;
+    }
+    const mermaidEl=e.target.closest('.mermaid:not(.is-zoomed)');
+    if(mermaidEl){
+      const overlay=document.createElement('div');
+      overlay.className='mermaid-zoom-overlay';
+      document.body.appendChild(overlay);
+      mermaidEl.classList.add('is-zoomed');
+      currentScale=1;
+      translateX=0;
+      translateY=0;
+      updateTransform(mermaidEl.querySelector('svg'));
+    }
+  });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      const zoomed=document.querySelector('.mermaid.is-zoomed');
+      if(zoomed) closeZoom(zoomed);
+    }
+  });
+
+  document.addEventListener('wheel',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(!zoomed) return;
+    e.preventDefault();
+    const svg=zoomed.querySelector('svg');
+    if(!svg) return;
+    const delta=e.deltaY<0?.1:-.1;
+    currentScale+=delta;
+    currentScale=Math.max(.3,Math.min(currentScale,5));
+    updateTransform(svg);
+  },{passive:false});
+
+  document.addEventListener('mousedown',function(e){
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed&&e.target.closest('.mermaid.is-zoomed')){
+      isDragging=true;
+      dragStartX=e.clientX;
+      dragStartY=e.clientY;
+      startX=e.clientX-translateX;
+      startY=e.clientY-translateY;
+    }
+  });
+
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging) return;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      translateX=e.clientX-startX;
+      translateY=e.clientY-startY;
+      const svg=zoomed.querySelector('svg');
+      if(svg){svg.style.transition='none';updateTransform(svg);}
+    }
+  });
+
+  document.addEventListener('mouseup',function(){
+    isDragging=false;
+    const zoomed=document.querySelector('.mermaid.is-zoomed');
+    if(zoomed){
+      const svg=zoomed.querySelector('svg');
+      if(svg) svg.style.transition='transform .1s ease-out';
+    }
+  });
+})();
+</script>

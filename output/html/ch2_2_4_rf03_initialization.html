@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性 — CAE IOS 教员台</title>
+<title>2.2.4 RF-03 初始化交互完整性 — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -212,10 +212,11 @@ tr:last-child td{border-bottom:none}
   <div class="nav-children">
     <a class="nav-link" href="ch2_2_1_framework.html">2.2.1 交互完整性分析框架</a>
 <a class="nav-link" href="ch2_2_2_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
-<a class="nav-link active" href="ch2_2_3_rf02_rf03_execution.html">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</a>
-<a class="nav-link" href="ch2_2_4_rf04_rf05_intervention.html">2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
-<a class="nav-link" href="ch2_2_5_rf06_freeze.html">2.2.5 RF-06 冻结、回放与录制交互完整性</a>
-<a class="nav-link" href="ch2_2_6_summary.html">2.2.6 跨流程状态衔接与交互断点汇总</a>
+<a class="nav-link" href="ch2_2_3_rf02_execution.html">2.2.3 RF-02 课程执行交互完整性</a>
+<a class="nav-link active" href="ch2_2_4_rf03_initialization.html">2.2.4 RF-03 初始化交互完整性</a>
+<a class="nav-link" href="ch2_2_5_rf04_rf05_intervention.html">2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
+<a class="nav-link" href="ch2_2_6_rf06_freeze.html">2.2.6 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link" href="ch2_2_7_summary.html">2.2.7 跨流程状态衔接与交互断点汇总</a>
   </div>
 </div>
 <a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
@@ -232,173 +233,19 @@ tr:last-child td{border-bottom:none}
     <span class="breadcrumb-sep">/</span>
     <a href="#">2.2 端到端交互完整性流程</a>
     <span class="breadcrumb-sep">/</span>
-    <span>2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</span>
+    <span>2.2.4 RF-03 初始化交互完整性</span>
   </div>
     <div class="content">
-      <h1>2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</h1>
-<h2 id="sec-2-2-3">2.2.3 RF-02 课程执行与 RF-03 初始化交互完整性</h2>
+      <h1>2.2.4 RF-03 初始化交互完整性</h1>
+<h2 id="sec-2-2-4">2.2.4 RF-03 初始化交互完整性</h2>
 <p class="area-map">
-<strong>推导来源：</strong>RF-02 课程执行 + RF-03 环境配置与飞机初始化 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（LESSON PLAN / AIRCRAFT / CC / REF AIRPORT 域） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-danger">GAP-03</span> <span class="tag-pill tag-danger">GAP-04</span>
+<strong>推导来源：</strong>RF-03 环境配置与飞机初始化 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（AIRCRAFT / REF AIRPORT / CURRENT CONDITIONS 域） &nbsp;|&nbsp; <strong>输出产物：</strong>三层参数校验链、Save/Recall Scenario 持久化契约
 </p>
-<p>RF-02（课程执行）和 RF-03（初始化）是 RF-01 主流程中<strong>最紧密耦合</strong>的两个子流程。RF-03 的输出（初始化完成确认）是 RF-02 的前置条件；RF-02 执行过程中又可能中断进入 RF-04/RF-05/RF-06。本节推导它们各自的交互序列，以及衔接处的状态契约。</p>
+<p>RF-03 是 RF-01 主流程的<strong>前置准备阶段</strong>，负责训练开始前的飞机参数、参考机场、当前环境等初始化配置。其输出（初始化完成确认）是 RF-02 课程执行的前置条件。本节推导 RF-03 的交互序列、参数校验链以及 Save/Recall Scenario 的状态持久化契约。</p>
 
 <div class="highlight-box">
 <strong>前置阅读提示：</strong>本节序列图涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
 </div>
-
-<h3>课程执行交互序列图</h3>
-<p>RF-02 的两种执行模式在架构层面有本质差异：<strong>Autorun</strong> 模式下课程引擎自动推进，教员处于"监控者"角色；<strong>Step-by-Step</strong> 模式下教员的每次点击 Execute 都是一次显式的人机交互事件。</p>
-
-<div class="seq-pair">
-<div class="seq-legend">
-  <div class="seq-legend-title">符号约定</div>
-  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
-  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
-  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
-  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
-  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
-  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
-
-  <div class="seq-legend-color">
-    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> Autorun 自动推进</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> Step-by-Step 教员控制</div>
-  </div>
-</div>
-<div class="mermaid">
-sequenceDiagram
-    autonumber
-    participant INST as Instructor<br/>教员
-    participant CB as Control Board<br/>控制面板
-    participant SSM as Session State Manager<br/>会话状态管理器
-    participant LPP as Lesson Plan Profile<br/>课程计划剖面
-    participant SC as Simulator Core<br/>模拟器核心
-    participant MAP as Map<br/>地图
-    participant FS as Footer<br/>页脚
-
-    rect rgb(219,234,254)
-    Note over INST,MAP: Autorun 模式
-    INST->>CB: 点击 Autorun
-    CB->>SSM: 执行模式变更 {mode: autorun}
-    SSM->>SC: 启动自动执行引擎
-    loop 自动步骤推进
-        SC->>SC: 评估当前步骤条件
-        SC-->>SSM: 步骤状态 {stepIndex, state}
-        SSM->>CB: 更新步骤高亮
-        SSM-->>LPP: 同步剖面进度
-        alt SIM 步骤
-            SC->>SC: 更新飞机状态
-            SC-->>MAP: 位置/航迹广播
-        else MALF 步骤
-            SC->>SC: 激活/预位故障
-            SSM->>CB: Malfunctions Panel 更新
-            SSM->>FS: Footer 故障计数器更新
-        end
-        opt 遇到手动确认步骤
-            SC-->>SSM: 等待教员确认
-            SSM->>CB: 高亮"等待 Execute"
-            INST->>CB: 点击 Execute
-            CB->>SSM: 手动确认
-            SSM->>SC: 继续推进
-        end
-    end
-    SC-->>SSM: 课程完成
-    SSM->>CB: 显示"课程结束"
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,MAP: Step-by-Step 模式
-    INST->>CB: 点击 Step-by-Step
-    CB->>SSM: 执行模式变更 {mode: step}
-    loop 教员逐条控制
-        SC-->>SSM: 当前步骤 {stepIndex, detail}
-        SSM->>CB: 加载步骤详情
-        CB-->>INST: 显示步骤参数
-        INST->>CB: 决策：Execute / Skip / End
-        alt Execute
-            CB->>SSM: 执行当前步骤
-            SSM->>SC: 推进步骤
-        else Skip Condition
-            CB->>SSM: 跳过当前步骤
-            SSM->>SC: 跳至下一条
-        else End Lesson
-            CB->>SSM: 终止课程
-            SSM->>SC: 停止引擎
-            SSM->>CB: 课程中止状态
-        end
-    end
-    end
-</div>
-</div>
-
-<h3>LESSON PLAN Tab ↔ Lesson Plan Profile 双向同步契约推导</h3>
-<p>ch1_8 的 3.3 节描述了 Tab 与 Profile 的视图选择行为，但并未从架构层面定义它们之间的<strong>数据同步契约</strong>。基于 2.1.3 的状态同步规则，推导如下：</p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th style="width:20%">同步场景</th><th style="width:25%">触发源</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>当前步骤索引变更</strong></td>
-<td>LESSON PLAN Tab（Execute / Skip / Go to Current）</td>
-<td>CB -> SSM -> LPP（事件驱动）</td>
-<td>强一致性（&lt;100ms）；Profile 必须在 CB 高亮后同步滚动并高亮当前阶段</td>
-</tr>
-<tr>
-<td><strong>剖面阶段跳转</strong></td>
-<td>Lesson Plan Profile（点击某阶段）</td>
-<td>LPP -> SSM -> CB（事件驱动）</td>
-<td>强一致性（&lt;100ms）；CB 自动定位到对应步骤，但不自动执行</td>
-</tr>
-<tr>
-<td><strong>课程加载完成</strong></td>
-<td>Session State Manager（课程引擎）</td>
-<td>SSM -> CB + SSM -> LPP（广播）</td>
-<td>强一致性；两者必须同时收到完整的课程结构数据</td>
-</tr>
-<tr>
-<td><strong>执行模式切换</strong></td>
-<td>教员（Autorun / Step-by-Step）</td>
-<td>CB -> SSM -> LPP（状态变更）</td>
-<td>强一致性；Profile 上的进度标记样式需随模式变化（Autorun 连续流动 vs Step 离散跳跃）</td>
-</tr>
-</tbody>
-</table>
-</div>
-
-<div class="highlight-box">
-<strong>架构推导结论：</strong>当前步骤索引的<strong>单一事实来源</strong>应为 <strong>Session State Manager</strong>，而非 LESSON PLAN Tab 或 Lesson Plan Profile 中的任意一方。CB 和 LPP 都是该状态的<strong>消费视图</strong>，任何一方的用户操作（点击 Execute 或点击剖面阶段）都应先发送至 SSM，由 SSM 更新权威状态后再广播至所有视图。这避免了双向绑定导致的竞态条件。
-</div>
-
-<h3>Freeplay / Nested 异常分支的架构补充</h3>
-<p>ch1_8 的 3.2 节和 3.4 节提到了 Freeplay 和 Nested 两种打破常规步骤序列的异常机制。2.1 架构中未对这两种场景做专门设计，属于明确的交互断点。</p>
-
-<div class="speculation-box">
-<strong>GAP-03：Freeplay 优先级仲裁机制</strong><span class="confidence conf-high">高优先级</span><br/>
-ch1_8 描述："Freeplay 步骤可能与当前 Autorun 步骤冲突；Freeplay 优先执行，Autorun 在其完成后继续。"<br/><br/>
-<strong>架构补充建议：</strong>Session State Manager 需增加<strong>步骤优先级仲裁器</strong>。规则如下：
-<ul>
-<li>Freeplay 步骤的优先级高于常规 SIM/MALF 步骤</li>
-<li>当 Freeplay 触发时，SSM 暂停当前常规步骤的执行上下文（非冻结，只是挂起）</li>
-<li>Freeplay 完成后，SSM 恢复被挂起的常规步骤上下文</li>
-<li>若 Freeplay 与当前步骤修改了同一参数（如都修改飞机位置），Freeplay 的修改覆盖常规步骤，但需在课程日志中记录覆盖事件</li>
-</ul>
-</div>
-
-<div class="speculation-box">
-<strong>GAP-04：Nested 课程状态栈</strong><span class="confidence conf-high">高优先级</span><br/>
-ch1_8 描述："加载子课程并替换当前课程大纲；执行完成后可返回主课程。子课程执行期间，主课程的步骤计时器暂停。"<br/><br/>
-<strong>架构补充建议：</strong>SSM 需维护一个<strong>课程状态栈（Course State Stack）</strong>，支持 LIFO 的嵌套调用：
-<ul>
-<li>进入 Nested 时：将主课程的 {courseId, stepIndex, stepTimer, executionContext} 压栈</li>
-<li>子课程执行期间：栈顶为子课程状态，主课程计时器暂停</li>
-<li>子课程完成/中止时：弹出主课程状态，恢复 stepTimer 和 executionContext</li>
-<li>最大嵌套深度建议限制为 3 层，防止栈溢出导致状态混乱</li>
-</ul>
-</div>
-
 <h3>初始化交互序列图与参数校验链</h3>
 <p>RF-03 是纯逻辑推理流程，所有步骤都是精确的数值输入与包线验证。其交互序列的特点是<strong>多轮参数变更 + 层级校验</strong>。</p>
 
@@ -529,6 +376,10 @@ sequenceDiagram
 <div class="footer-nav">
 <a class="prev" href="ch2_2_2_rf01_session.html"><span>←</span><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span></a>
 <a class="next" href="ch2_2_4_rf04_rf05_intervention.html"><span>2.2.4 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
+</div>
+<div class="footer-nav">
+<a class="prev" href="ch2_2_3_rf02_execution.html"><span>←</span><span>2.2.3 RF-02 课程执行交互完整性</span></a>
+<a class="next" href="ch2_2_5_rf04_rf05_intervention.html"><span>2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</span><span>→</span></a>
 </div>
     </div>
   </div>
