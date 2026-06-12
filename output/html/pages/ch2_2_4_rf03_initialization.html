@@ -233,7 +233,7 @@ sequenceDiagram
 </thead>
 <tbody>
 <tr class="phase-summary-row">
-  <td rowspan="14"><strong>阶段一</strong><br/>飞机参数初始化</td>
+  <td rowspan="13"><strong>阶段一</strong><br/>飞机参数初始化</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员在 AIRCRAFT Tab 输入 GW、ZFW、Fuel 等重量参数，依次经过 Control Board 的 UI 层校验、SSM 的业务层校验、Simulator Core 的物理层校验，最终生效并回显 GW CG。</td>
 </tr>
 <tr><td>1</td><td>Instructor → Control Board</td><td>进入 AIRCRAFT Tab，输入 GW</td><td>教员在 CB 上切换到 AIRCRAFT Tab 并输入全重 GW，是飞机参数配置的人机入口。</td></tr>
@@ -250,7 +250,7 @@ sequenceDiagram
 <tr><td>12–13</td><td>SC → SSM → CB</td><td>GW 校验通过 → GW 回显确认</td><td>L3 校验通过后，SC 返回确认；SSM 通知 CB 回显 GW，标记该参数生效。</td></tr>
 
 <tr class="phase-summary-row">
-  <td rowspan="16"><strong>阶段二</strong><br/>飞机参数初始化（续）<br/>ZFW / Fuel</td>
+  <td rowspan="12"><strong>阶段二</strong><br/>飞机参数初始化（续）<br/>ZFW / Fuel</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员继续输入 ZFW 与 Fuel，SSM 校验 GW = ZFW + Fuel 等式及 CG 包线，通过后经 SC 物理校验回显 GW CG。</td>
 </tr>
 <tr><td>14</td><td>Instructor → Control Board</td><td>输入 ZFW / Fuel</td><td>教员输入零油重量 ZFW 与燃油重量 Fuel。</td></tr>
@@ -266,7 +266,7 @@ sequenceDiagram
 <tr><td>25–26</td><td>SC → SSM → CB</td><td>ZFW/Fuel 校验通过 → GW CG 自动计算回显</td><td>SC 校验通过后，SSM 基于完整重量参数计算 GW CG 并回显至 CB，供教员确认。</td></tr>
 
 <tr class="phase-summary-row">
-  <td rowspan="14"><strong>阶段三</strong><br/>机场与环境初始化</td>
+  <td rowspan="15"><strong>阶段三</strong><br/>机场与环境初始化</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员依次选择参考机场、跑道，并在 CURRENT CONDITIONS 中配置环境参数；SSM 依据机场标高与温度剖面完成 QNH/QFE 等派生参数校验，再经 SC 物理校验后生效。</td>
 </tr>
 <tr><td>27</td><td>Instructor → Control Board</td><td>进入 REFERENCE AIRPORT，选择机场</td><td>教员切换到参考机场选项卡并选择机场 ICAO。</td></tr>
@@ -285,7 +285,7 @@ sequenceDiagram
 <tr><td>46</td><td>Simulator Core → Session State Manager</td><td>环境校验通过</td><td>SC 返回确认，环境参数正式生效。</td></tr>
 
 <tr class="phase-summary-row">
-  <td rowspan="11"><strong>阶段四</strong><br/>全局目视确认</td>
+  <td rowspan="10"><strong>阶段四</strong><br/>全局目视确认</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>Map 渲染完整初始化场景，教员通过 Control Board 确认初始化完成后，SSM 将全局状态置为 INIT_COMPLETE 并解锁 RF-02 课程执行流程。</td>
 </tr>
 <tr><td>47</td><td>Session State Manager → Map</td><td>推送机场/环境/飞机数据</td><td>SSM 将初始化完成的机场、环境、飞机数据一次性推送给 Map。</td></tr>
