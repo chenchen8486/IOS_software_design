@@ -610,6 +610,89 @@ sequenceDiagram
 </div>
 </div>
 
+<h4>Freeplay / Nested 交互子图逐段解读</h4>
+<p>下表对 Freeplay 与 Nested 两个异常分支子图进行逐条拆解，明确 SSM 在优先级仲裁、状态栈管理、上下文恢复中的关键作用。</p>
+
+<div class="table-wrap">
+<table class="seq-breakdown">
+<thead>
+<tr><th style="width:13%">阶段</th><th style="width:7%">箭头</th><th style="width:18%">流向</th><th style="width:30%">消息 / 动作</th><th style="width:32%">业务含义</th></tr>
+</thead>
+<tbody>
+<tr class="phase-summary-row">
+  <td rowspan="3"><strong>Freeplay 阶段一</strong><br/>触发与仲裁</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员触发 Freeplay 后，SSM 判断优先级并接管控制权，确保 Freeplay 优先于常规步骤执行。</td>
+</tr>
+<tr><td>1</td><td>Instructor → Control Board</td><td>触发 Freeplay 步骤</td><td>教员通过 CB 触发 Freeplay，打断当前常规步骤序列。</td></tr>
+<tr><td>2</td><td>Control Board → Session State Manager</td><td>Freeplay 请求</td><td>CB 将 Freeplay 请求上报 SSM，由 SSM 统一仲裁，不允许 CB 直接调用 SC。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="7"><strong>Freeplay 阶段二</strong><br/>执行、挂起与结果处理</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>SSM 挂起当前常规步骤上下文，向 SC 下发 Freeplay 动作，并记录可能的参数覆盖事件。</td>
+</tr>
+<tr><td>3</td><td>Session State Manager → Session State Manager</td><td>优先级仲裁（Freeplay > 常规步骤）</td><td>SSM 内部确认 Freeplay 优先级高于常规步骤，准备切换执行上下文。</td></tr>
+<tr><td>4</td><td>Session State Manager → Session State Manager</td><td>挂起当前常规步骤上下文</td><td>SSM 保存常规步骤的执行状态（非冻结），以便 Freeplay 完成后恢复。</td></tr>
+<tr><td>5</td><td>Session State Manager → Simulator Core</td><td>执行 Freeplay 动作</td><td>SSM 向 SC 下发 Freeplay 动作指令，SC 只负责执行。</td></tr>
+<tr><td>6</td><td>Simulator Core → Session State Manager</td><td>Freeplay 结果</td><td>SC 返回 Freeplay 执行结果，SSM 据此决定后续恢复行为。</td></tr>
+<tr class="branch-header"><td colspan="4">分支：参数冲突覆盖</td></tr>
+<tr><td>7</td><td>Session State Manager → Session State Manager</td><td>记录覆盖事件到课程日志</td><td>若 Freeplay 修改了与常规步骤冲突的参数，SSM 记录覆盖事件，保证后续可追溯。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="7"><strong>Freeplay 阶段三</strong><br/>恢复与视图同步</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>Freeplay 完成后，SSM 恢复常规步骤上下文，并按当前模式决定继续自动推进或等待教员确认。</td>
+</tr>
+<tr><td>8</td><td>Session State Manager → Session State Manager</td><td>恢复常规步骤上下文</td><td>SSM 从挂起状态恢复常规步骤的执行上下文。</td></tr>
+<tr class="branch-header"><td colspan="4">分支：按当前模式继续执行</td></tr>
+<tr><td>9</td><td>Session State Manager → Simulator Core</td><td>继续自动推进常规步骤</td><td>若当前为 Autorun，SSM 通知 SC 自动继续推进常规步骤。</td></tr>
+<tr><td>10</td><td>Session State Manager → Control Board</td><td>高亮"等待 Execute"</td><td>若当前为 Step-by-Step，SSM 通知 CB 等待教员再次确认。</td></tr>
+<tr><td>11</td><td>Session State Manager → Control Board</td><td>更新当前步骤高亮</td><td>SSM 通知 CB 刷新当前步骤高亮。</td></tr>
+<tr><td>12</td><td>Session State Manager → Lesson Plan Profile</td><td>同步剖面进度</td><td>SSM 将恢复后的进度同步到 LPP，保持视图一致。</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-wrap">
+<table class="seq-breakdown">
+<thead>
+<tr><th style="width:13%">阶段</th><th style="width:7%">箭头</th><th style="width:18%">流向</th><th style="width:30%">消息 / 动作</th><th style="width:32%">业务含义</th></tr>
+</thead>
+<tbody>
+<tr class="phase-summary-row">
+  <td rowspan="5"><strong>Nested 阶段一</strong><br/>进入与状态压栈</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员加载子课程时，SSM 将主课程状态压入课程状态栈，为后续恢复做准备。</td>
+</tr>
+<tr><td>1</td><td>Instructor → Control Board</td><td>加载子课程</td><td>教员通过 CB 发起加载子课程请求。</td></tr>
+<tr><td>2</td><td>Control Board → Session State Manager</td><td>Nested 课程请求</td><td>CB 将请求上报 SSM，由 SSM 管理课程栈。</td></tr>
+<tr><td>3</td><td>Session State Manager → Session State Manager</td><td>将主课程状态压栈</td><td>SSM 保存主课程 {courseId, stepIndex, stepTimer, executionContext}，主课程计时器暂停。</td></tr>
+<tr><td>4</td><td>Session State Manager → Simulator Core</td><td>加载并启动子课程</td><td>SSM 通知 SC 加载并启动子课程，栈顶切换为子课程状态。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="6"><strong>Nested 阶段二</strong><br/>子课程执行循环</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>子课程执行期间，SSM 维护子课程的 currentStepIndex，并同步更新 CB 与 LPP 视图。</td>
+</tr>
+<tr><td>5</td><td>Session State Manager → Simulator Core</td><td>执行子课程步骤</td><td>SSM 向 SC 下发子课程当前步骤指令。</td></tr>
+<tr><td>6</td><td>Simulator Core → Session State Manager</td><td>执行结果</td><td>SC 返回子课程步骤执行结果。</td></tr>
+<tr><td>7</td><td>Session State Manager → Session State Manager</td><td>更新子课程 currentStepIndex</td><td>SSM 根据结果推进子课程步骤索引。</td></tr>
+<tr><td>8</td><td>Session State Manager → Control Board</td><td>更新子课程视图</td><td>SSM 通知 CB 显示子课程当前步骤。</td></tr>
+<tr><td>9</td><td>Session State Manager → Lesson Plan Profile</td><td>同步子课程进度</td><td>SSM 将子课程进度同步到 LPP。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="10"><strong>Nested 阶段三</strong><br/>退出与主课程恢复</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>子课程正常完成或教员中止后，SSM 按 LIFO 弹出主课程状态，恢复主课程上下文与视图。</td>
+</tr>
+<tr class="branch-header"><td colspan="4">分支 A：子课程正常完成</td></tr>
+<tr><td>10</td><td>Simulator Core → Session State Manager</td><td>子课程结束</td><td>SC 通知 SSM 子课程正常结束。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 B：子课程中止</td></tr>
+<tr><td>11</td><td>Instructor → Control Board</td><td>中止子课程</td><td>教员主动触发子课程中止。</td></tr>
+<tr><td>12</td><td>Control Board → Session State Manager</td><td>中止请求</td><td>CB 将中止请求上报 SSM。</td></tr>
+<tr><td>13</td><td>Session State Manager → Session State Manager</td><td>弹出主课程状态</td><td>SSM 从课程状态栈弹出主课程状态，恢复主课程上下文。</td></tr>
+<tr><td>14</td><td>Session State Manager → Simulator Core</td><td>恢复主课程上下文</td><td>SSM 通知 SC 恢复主课程的物理与课程状态。</td></tr>
+<tr><td>15</td><td>Session State Manager → Control Board</td><td>恢复主课程视图</td><td>SSM 通知 CB 恢复主课程步骤显示。</td></tr>
+<tr><td>16</td><td>Session State Manager → Lesson Plan Profile</td><td>恢复主课程进度</td><td>SSM 将主课程进度同步回 LPP。</td></tr>
+</tbody>
+</table>
+</div>
+
 <h3>课程步骤生命周期（精简）</h3>
 <p>为统一边界与降级行为的语义，本节给出课程步骤的最小状态集合。所有步骤推进、超时、失败、跳过等行为都可以落足到该状态机上，由 SSM 作为唯一仲裁者维护。</p>
 
