@@ -270,14 +270,14 @@ tr:last-child td{border-bottom:none}
 <div class="mermaid">
 sequenceDiagram
     autonumber
-    participant INST as 教员
-    participant CB as Control Board
-    participant ADV as Advanced
-    participant SSM as Session State Manager
-    participant SC as Simulator Core
-    participant FS as Footer
-    participant IR as Instruments Repeaters
-    participant MAP as Map
+    participant INST as Instructor<br/>教员
+    participant CB as Control Board<br/>控制面板
+    participant ADV as Advanced<br/>高级
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant FS as Footer<br/>页脚
+    participant IR as Instruments Repeaters<br/>仪表复示器
+    participant MAP as Map<br/>地图
 
     rect rgb(219,234,254)
     Note over INST,MAP: 入口 A：课程步骤 MALF
@@ -403,11 +403,11 @@ ch1_8 描述预位故障等待"预设触发条件（如高度、速度、时间�
 <div class="mermaid">
 sequenceDiagram
     autonumber
-    participant CB as Control Board
-    participant SSM as Session State Manager
-    participant SC as Simulator Core
-    participant FS as Footer
-    participant IR as Instruments Repeaters
+    participant CB as Control Board<br/>控制面板
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant FS as Footer<br/>页脚
+    participant IR as Instruments Repeaters<br/>仪表复示器
 
     CB->>SSM: 教员解除故障 {malfId}
     SSM->>SC: 故障解除指令
@@ -504,14 +504,14 @@ sequenceDiagram
 <div class="mermaid">
 sequenceDiagram
     autonumber
-    participant INST as 教员
-    participant CB as Control Board
-    participant FS as Footer
-    participant ADV as Advanced
-    participant MAP as Map
-    participant SSM as Session State Manager
-    participant SC as Simulator Core
-    participant IR as Instruments Repeaters
+    participant INST as Instructor<br/>教员
+    participant CB as Control Board<br/>控制面板
+    participant FS as Footer<br/>页脚
+    participant ADV as Advanced<br/>高级
+    participant MAP as Map<br/>地图
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant IR as Instruments Repeaters<br/>仪表复示器
 
     rect rgb(219,234,254)
     Note over INST,IR: SLEW 微调
@@ -571,11 +571,11 @@ sequenceDiagram
 <div class="mermaid">
 sequenceDiagram
     autonumber
-    participant INST as 教员
-    participant ADV as Advanced
-    participant SSM as Session State Manager
-    participant SC as Simulator Core
-    participant MAP as Map
+    participant INST as Instructor<br/>教员
+    participant ADV as Advanced<br/>高级
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant MAP as Map<br/>地图
 
     rect rgb(219,234,254)
     Note over INST,MAP: FMS Memory Save

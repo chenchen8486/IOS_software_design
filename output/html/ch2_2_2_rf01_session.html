@@ -153,6 +153,16 @@ tr:last-child td{border-bottom:none}
 
 @media print{.mermaid{page-break-inside:avoid}}
 
+/* 序列图逐段解读表格 */
+.seq-breakdown .phase-summary{background:#f1f5f9;color:#334155;font-weight:500}
+.seq-breakdown .phase-summary strong{color:var(--primary-dark)}
+.seq-breakdown td[rowspan]{background:#f8fafc;border-right:1px solid var(--border);text-align:center;vertical-align:middle;font-weight:600;color:var(--primary-dark);line-height:1.5}
+.seq-breakdown .branch-header td{background:#fffbeb;color:#92400e;font-weight:600;border-top:2px solid #fcd34d}
+.seq-breakdown .branch-header td strong{color:#78350f}
+.seq-breakdown tr:hover td[rowspan]{background:#f1f5f9}
+.seq-breakdown tr:hover .phase-summary{background:#e2e8f0}
+.seq-breakdown tr:hover .branch-header td{background:#fef3c7}
+
 /* 序列图 + 右侧图例 并排布局 */
 .seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
 .seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
@@ -269,19 +279,19 @@ tr:last-child td{border-bottom:none}
 <div class="mermaid">
 sequenceDiagram
     autonumber
-    participant INST as 教员
-    participant CB as Control Board
-    participant FS as Footer
-    participant SSM as Session State Manager
-    participant LPP as Lesson Plan Profile
-    participant MAP as Map
-    participant ADV as Advanced
-    participant SC as Simulator Core
-    participant IR as Instruments Repeaters
+    participant INST as Instructor<br/>教员
+    participant CB as Control Board<br/>控制面板
+    participant FS as Footer<br/>页脚
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant LPP as Lesson Plan Profile<br/>课程计划剖面
+    participant MAP as Map<br/>地图
+    participant ADV as Advanced<br/>高级
+    participant SC as Simulator Core<br/>模拟器核心
+    participant IR as Instruments Repeaters<br/>仪表复示器
 
     rect rgb(219,234,254)
     Note over INST,IR: 阶段一：课程加载与初始化检查
-    INST->>CB: 1. 进入 LESSON PLAN Tab，选择课程
+    INST->>CB: 进入 LESSON PLAN Tab，选择课程
     CB->>SSM: 课程加载请求 {courseId}
     SSM->>SC: 加载课程定义
     SC-->>SSM: 课程数据 {phases, steps, params}
@@ -292,7 +302,7 @@ sequenceDiagram
 
     rect rgb(254,243,199)
     Note over INST,IR: 阶段二：环境配置与飞机初始化（引用 RF-03）
-    INST->>CB: 2. 进入 AIRCRAFT / REF AIRPORT / CC Tabs
+    INST->>CB: 进入 AIRCRAFT / REF AIRPORT / CC Tabs
     CB->>SSM: 参数变更事件（多轮）
     SSM->>SC: 下发飞机/环境/机场参数
     SC-->>SSM: 参数确认 / 校验结果
@@ -303,10 +313,10 @@ sequenceDiagram
 
     rect rgb(219,234,254)
     Note over INST,IR: 阶段三：位置确认与课程启动
-    INST->>MAP: 3. 切换至 Map，确认位置/跑道
+    INST->>MAP: 切换至 Map，确认位置/跑道
     MAP-->>INST: 显示飞机位置与航迹
-    INST->>CB: 4. 返回 LESSON PLAN Tab
-    INST->>CB: 5. 选择 Autorun / Step-by-Step
+    INST->>CB: 返回 LESSON PLAN Tab
+    INST->>CB: 选择 Autorun / Step-by-Step
     CB->>SSM: 课程执行模式 {mode}
     SSM->>SC: 启动课程引擎
     SC-->>SSM: 课程状态 {stepIndex, state}
@@ -322,20 +332,21 @@ sequenceDiagram
         SC-->>CB: 参数状态回显
         MAP-->>INST: 地图渲染
         IR-->>INST: 仪表显示
+        Note over SC,SSM: 课程步骤自动推进与状态同步详见 RF-02
     end
     end
 
     rect rgb(254,243,199)
     Note over INST,IR: 阶段五：动态干预（引用 RF-04 / RF-05）
     alt 故障注入
-        INST->>ADV: 6a. 进入 Advanced → Failure
+        INST->>ADV: 进入 Advanced → Failure
         ADV->>SSM: 故障激活/预位请求
         SSM->>SC: 注入故障
         SC-->>SSM: 故障状态确认
         SSM->>CB: Malfunctions Panel 更新
         SSM->>FS: Footer 故障计数器更新
     else 重新定位
-        INST->>MAP: 6b. SLEW 拖动 / Airport Repo
+        INST->>MAP: SLEW 拖动 / Airport Repo
         MAP->>SSM: 位置变更事件
         SSM->>SC: 更新飞机位置
         SSM->>CB: 位置参数同步
@@ -344,7 +355,7 @@ sequenceDiagram
 
     rect rgb(254,243,199)
     Note over INST,IR: 阶段六：冻结与状态保全（引用 RF-06）
-    INST->>FS: 7. 点击 Freeze
+    INST->>FS: 点击 Freeze
     FS->>SSM: 全局冻结请求 {freezeType}
     SSM->>SC: 暂停物理引擎
     SSM->>CB: 冻结状态通知
@@ -352,22 +363,139 @@ sequenceDiagram
     SSM->>IR: 冻结状态通知
     SSM->>LPP: 冻结状态通知
     Note over CB,LPP: 全部工作区保持冻结瞬间快照
+    opt 解冻继续训练
+        INST->>FS: 点击 Unfreeze
+        FS->>SSM: 全局解冻请求
+        Note over SSM,SC: SSM 恢复物理引擎，并广播解冻状态至各工作区
+    end
     end
 
     rect rgb(219,234,254)
     Note over INST,IR: 阶段七：结束与讲评
-    INST->>CB: 8. 点击 End Lesson
+    INST->>CB: 点击 End Lesson
     CB->>SSM: 课程终止请求
     SSM->>SC: 停止课程引擎
     SSM->>CB: 课程状态重置
     SSM-->>LPP: 清除进度高亮
-    INST->>ADV: 9. 回放 Recording
+    SSM-->>MAP: 课程结束通知
+    SSM-->>IR: 课程结束通知
+    SSM-->>ADV: 课程结束通知
+    INST->>ADV: 回放 Recording
     ADV->>SSM: 回放请求
     SSM->>SC: 按序恢复状态快照
     SC-->>SSM: 恢复完成
     SSM->>CB: 显示回放状态
     end
 </div>
+</div>
+
+<h3>主流程交互序列逐段解读</h3>
+<p>下表按阶段拆解上图中的每一条消息流。每一阶段的首行给出该阶段整体业务目标，后续行逐条说明箭头编号、来源 → 目标、消息内容与业务含义。</p>
+
+<div class="table-wrap">
+<table class="seq-breakdown">
+<thead>
+<tr><th style="width:13%">阶段</th><th style="width:7%">箭头</th><th style="width:18%">流向</th><th style="width:30%">消息 / 动作</th><th style="width:32%">业务含义</th></tr>
+</thead>
+<tbody>
+<tr class="phase-summary-row">
+  <td rowspan="8"><strong>阶段一</strong><br>课程加载与初始化检查</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>从 Lesson Plan 中选定课程，将课程定义加载到 SSM，并把课程结构同步到 Control Board 与 Lesson Plan Profile，完成训练开始前的数据准备。</td>
+</tr>
+<tr><td>1</td><td>Instructor → Control Board</td><td>进入 LESSON PLAN Tab，选择课程</td><td>教员在 Control Board 上触发课程选择，是整个训练 Session 的人机交互入口。</td></tr>
+<tr><td>2</td><td>Control Board → Session State Manager</td><td>课程加载请求 <code>{courseId}</code></td><td>CB 只负责收集教员点击，把课程标识（如 <code>courseId = "A320-ILS-APPR-01"</code>）上报给 SSM。由 SSM 而不是 CB 直接访问 SC，是为了让 SSM 成为本次 Session 的单一事实来源：加载完成前其他工作区不会收到半拉子数据；SSM 可统一打上版本号 <code>version+=1</code>；若 SC 失败，SSM 也能统一回滚或报错，而不是让 CB 自己处理。</td></tr>
+<tr><td>3</td><td>Session State Manager → Simulator Core</td><td>加载课程定义</td><td>SSM 用 courseId 向 SC 请求完整的课程定义（Course Definition）。它不是一个名字，而是一套结构化数据，至少包括课程元信息、阶段（Phases）、步骤（Steps）、默认参数（Params）和评分/事件规则。</td></tr>
+<tr><td>4</td><td>Simulator Core → Session State Manager</td><td>课程数据 <code>{phases, steps, params}</code></td><td>SC 把课程定义的完整结构返回给 SSM，包括阶段、步骤与默认参数。SSM 拿到这份权威数据后，才会继续分发给 CB（显示大纲）和 LPP（做进度剖面）。如果 CB 越过 SSM 直接找 SC，LPP 就不知道课程有哪些步骤，后续「步骤高亮」和「剖面进度同步」都会断掉。</td></tr>
+<tr><td>5</td><td>Session State Manager → Control Board</td><td>课程加载完成 <code>{version+=1}</code></td><td>SSM 确认加载成功并递增全局版本号，通知 CB 更新界面状态。</td></tr>
+<tr><td>6</td><td>Session State Manager → Lesson Plan Profile</td><td>同步课程结构（剖面数据）</td><td>SSM 将课程阶段与步骤列表同步到 LPP，为后续进度高亮做准备。</td></tr>
+<tr><td>7</td><td>Control Board → Instructor</td><td>显示课程大纲与步骤列表</td><td>CB 向教员呈现可执行的课程大纲，进入待配置状态。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="8"><strong>阶段二</strong><br>环境配置与飞机初始化<br><span class="tag-pill tag-aux" style="margin-top:6px">引用 RF-03</span></td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员在 AIRCRAFT、REFERENCE AIRPORT、CURRENT CONDITIONS 等 Tab 中逐项输入训练参数，经 SSM 校验后下发至 SC，并驱动 Map 渲染初始化地景。</td>
+</tr>
+<tr><td>8</td><td>Instructor → Control Board</td><td>进入 AIRCRAFT / REF AIRPORT / CC Tabs</td><td>教员切换到参数配置域，准备输入飞机、机场与环境参数。</td></tr>
+<tr><td>9</td><td>Control Board → Session State Manager</td><td>参数变更事件（多轮）</td><td>每完成一项参数输入，CB 即将变更事件上报 SSM，形成多轮校验循环。</td></tr>
+<tr><td>10</td><td>Session State Manager → Simulator Core</td><td>下发飞机 / 环境 / 机场参数</td><td>SSM 将校验后的参数下发给 SC，驱动模拟器主机更新物理与环境模型。</td></tr>
+<tr><td>11</td><td>Simulator Core → Session State Manager</td><td>参数确认 / 校验结果</td><td>SC 返回参数是否生效以及跨参数等式（如 GW = ZFW + Fuel）的校验结果。</td></tr>
+<tr><td>12</td><td>Session State Manager → Control Board</td><td>参数生效回显 <code>{version+=1}</code></td><td>SSM 通知 CB 更新参数显示，并递增版本号以标记状态变更。</td></tr>
+<tr><td>13</td><td>Session State Manager → Map</td><td>机场 / 环境数据推送</td><td>SSM 将初始化后的机场位置、跑道、地景数据推送给 Map。</td></tr>
+<tr><td>14</td><td>Map → Instructor</td><td>渲染地图与地景</td><td>Map 根据最新数据渲染飞机初始场景，供教员后续目视检查。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="10"><strong>阶段三</strong><br>位置确认与课程启动</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员在 Map 上确认飞机位置与跑道正确后，返回 LESSON PLAN Tab 选择执行模式，最终启动课程引擎并同步初始步骤状态。</td>
+</tr>
+<tr><td>15</td><td>Instructor → Map</td><td>切换至 Map，确认位置 / 跑道</td><td>教员主动切换到 Map 工作区，进行启动前的最后人工目视校验。</td></tr>
+<tr><td>16</td><td>Map → Instructor</td><td>显示飞机位置与航迹</td><td>Map 向教员呈现飞机当前位置、航向与预设航迹。</td></tr>
+<tr><td>17</td><td>Instructor → Control Board</td><td>返回 LESSON PLAN Tab</td><td>目视确认无误后，教员从空间确认域切回课程控制域。</td></tr>
+<tr><td>18</td><td>Instructor → Control Board</td><td>选择 Autorun / Step-by-Step</td><td>教员在 LESSON PLAN Tab 中选择课程执行模式。</td></tr>
+<tr><td>19</td><td>Control Board → Session State Manager</td><td>课程执行模式 <code>{mode}</code></td><td>CB 将教员选择的执行模式传递给 SSM。</td></tr>
+<tr><td>20</td><td>Session State Manager → Simulator Core</td><td>启动课程引擎</td><td>SSM 通知 SC 启动课程引擎，开始按步骤驱动模拟。</td></tr>
+<tr><td>21</td><td>Simulator Core → Session State Manager</td><td>课程状态 <code>{stepIndex, state}</code></td><td>SC 返回课程启动后的当前步骤索引与运行状态。</td></tr>
+<tr><td>22</td><td>Session State Manager → Control Board</td><td>步骤高亮更新</td><td>SSM 通知 CB 高亮当前执行步骤。</td></tr>
+<tr><td>23</td><td>Session State Manager → Lesson Plan Profile</td><td>剖面进度同步</td><td>SSM 将当前步骤索引同步到 LPP，更新剖面进度显示。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="6"><strong>阶段四</strong><br>实时监控循环</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>课程运行期间，SC 以广播方式持续向 Map、Instruments Repeaters、Control Board 推送飞机物理状态，各工作区独立完成渲染与显示；课程步骤的自动推进与状态同步详见 RF-02。</td>
+</tr>
+<tr><td>24</td><td>Simulator Core → Map</td><td>飞机位置 / 航迹广播</td><td>SC 向 Map 发送飞机实时位置与航迹数据，驱动地图动态更新。</td></tr>
+<tr><td>25</td><td>Simulator Core → Instruments Repeaters</td><td>仪表数据广播</td><td>SC 向 IR 发送飞行仪表所需数据，驱动指针与数字显示。</td></tr>
+<tr><td>26</td><td>Simulator Core → Control Board</td><td>参数状态回显</td><td>SC 向 CB 回显关键参数状态，供教员监控训练进程。</td></tr>
+<tr><td>27</td><td>Map → Instructor</td><td>地图渲染</td><td>Map 将实时场景渲染给教员，提供外部视界参考。</td></tr>
+<tr><td>28</td><td>Instruments Repeaters → Instructor</td><td>仪表显示</td><td>IR 将实时仪表画面呈现给教员，用于监控学员操作结果。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="13"><strong>阶段五</strong><br>动态干预<br><span class="tag-pill tag-aux" style="margin-top:6px">引用 RF-04 / RF-05</span></td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>在课程运行中，教员可主动注入故障或重新定位飞机。SSM 负责将干预请求转发给 SC，并把结果同步到所有相关面板与 Footer 计数器。</td>
+</tr>
+<tr class="branch-header"><td colspan="4">分支 A：故障注入（RF-04）</td></tr>
+<tr><td>29</td><td>Instructor → Advanced</td><td>进入 Advanced → Failure</td><td>教员打开 Advanced 工作区的故障注入界面。</td></tr>
+<tr><td>30</td><td>Advanced → Session State Manager</td><td>故障激活 / 预位请求</td><td>ADV 将教员选中的故障及激活方式提交给 SSM。</td></tr>
+<tr><td>31</td><td>Session State Manager → Simulator Core</td><td>注入故障</td><td>SSM 向 SC 下发故障激活指令，改变模拟器物理或系统行为。</td></tr>
+<tr><td>32</td><td>Simulator Core → Session State Manager</td><td>故障状态确认</td><td>SC 返回故障是否成功激活及当前故障列表。</td></tr>
+<tr><td>33</td><td>Session State Manager → Control Board</td><td>Malfunctions Panel 更新</td><td>SSM 通知 CB 更新故障面板，显示已激活故障。</td></tr>
+<tr><td>34</td><td>Session State Manager → Footer</td><td>Footer 故障计数器更新</td><td>SSM 更新 Footer 故障计数器，提供全局状态提示。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 B：重新定位（RF-05）</td></tr>
+<tr><td>35</td><td>Instructor → Map</td><td>SLEW 拖动 / Airport Repo</td><td>教员在 Map 上通过 SLEW 或机场列表重新定位飞机。</td></tr>
+<tr><td>36</td><td>Map → Session State Manager</td><td>位置变更事件</td><td>Map 将新的位置请求上报 SSM。</td></tr>
+<tr><td>37</td><td>Session State Manager → Simulator Core</td><td>更新飞机位置</td><td>SSM 通知 SC 更新飞机物理位置与姿态。</td></tr>
+<tr><td>38</td><td>Session State Manager → Control Board</td><td>位置参数同步</td><td>SSM 将更新后的位置参数同步回 CB，保持各工作区一致。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="10"><strong>阶段六</strong><br>冻结与状态保全<br><span class="tag-pill tag-aux" style="margin-top:6px">引用 RF-06</span></td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员点击 Freeze 后，SSM 请求 SC 暂停物理引擎，并向所有工作区广播冻结状态，确保冻结瞬间的全局状态快照一致；解冻后继续训练详见 RF-06。</td>
+</tr>
+<tr><td>39</td><td>Instructor → Footer</td><td>点击 Freeze</td><td>教员通过 Footer 上的冻结按钮触发全局冻结。</td></tr>
+<tr><td>40</td><td>Footer → Session State Manager</td><td>全局冻结请求 <code>{freezeType}</code></td><td>Footer 将冻结请求（含冻结类型）发送给 SSM。</td></tr>
+<tr><td>41</td><td>Session State Manager → Simulator Core</td><td>暂停物理引擎</td><td>SSM 通知 SC 暂停物理模拟，冻结飞机与环境状态。</td></tr>
+<tr><td>42</td><td>Session State Manager → Control Board</td><td>冻结状态通知</td><td>SSM 通知 CB 进入冻结状态，冻结相关控制与显示。</td></tr>
+<tr><td>43</td><td>Session State Manager → Map</td><td>冻结状态通知</td><td>SSM 通知 Map 停止动态更新并保持当前视图。</td></tr>
+<tr><td>44</td><td>Session State Manager → Instruments Repeaters</td><td>冻结状态通知</td><td>SSM 通知 IR 停止指针动画并保持当前读数。</td></tr>
+<tr><td>45</td><td>Session State Manager → Lesson Plan Profile</td><td>冻结状态通知</td><td>SSM 通知 LPP 保持当前步骤与高亮状态。</td></tr>
+<tr><td>46</td><td>Instructor → Footer</td><td>点击 Unfreeze</td><td>教员通过 Footer 触发全局解冻，恢复训练。</td></tr>
+<tr><td>47</td><td>Footer → Session State Manager</td><td>全局解冻请求</td><td>Footer 将解冻请求发送给 SSM，由 SSM 恢复 SC 物理引擎并广播解冻状态至各工作区。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="14"><strong>阶段七</strong><br>结束与讲评</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员结束课程后，SSM 停止课程引擎、复位课程状态并通知所有相关视图，在讲评阶段通过回放 Recording 按序恢复状态快照。</td>
+</tr>
+<tr><td>48</td><td>Instructor → Control Board</td><td>点击 End Lesson</td><td>教员在 CB 上触发课程结束。</td></tr>
+<tr><td>49</td><td>Control Board → Session State Manager</td><td>课程终止请求</td><td>CB 将终止请求发送给 SSM。</td></tr>
+<tr><td>50</td><td>Session State Manager → Simulator Core</td><td>停止课程引擎</td><td>SSM 通知 SC 停止课程引擎与物理模拟。</td></tr>
+<tr><td>51</td><td>Session State Manager → Control Board</td><td>课程状态重置</td><td>SSM 通知 CB 重置课程相关状态与界面。</td></tr>
+<tr><td>52</td><td>Session State Manager → Lesson Plan Profile</td><td>清除进度高亮</td><td>SSM 通知 LPP 清除当前步骤高亮，恢复未执行状态。</td></tr>
+<tr><td>53</td><td>Session State Manager → Map</td><td>课程结束通知</td><td>SSM 通知 Map 课程已结束，停止基于训练状态的动态渲染。</td></tr>
+<tr><td>54</td><td>Session State Manager → Instruments Repeaters</td><td>课程结束通知</td><td>SSM 通知 IR 课程已结束，仪表可归零或保持最终读数。</td></tr>
+<tr><td>55</td><td>Session State Manager → Advanced</td><td>课程结束通知</td><td>SSM 通知 ADV 课程已结束，为讲评/回放做准备。</td></tr>
+<tr><td>56</td><td>Instructor → Advanced</td><td>回放 Recording</td><td>教员切换到 Advanced 工作区，启动训练录像回放。</td></tr>
+<tr><td>57</td><td>Advanced → Session State Manager</td><td>回放请求</td><td>ADV 将回放请求发送给 SSM。</td></tr>
+<tr><td>58</td><td>Session State Manager → Simulator Core</td><td>按序恢复状态快照</td><td>SSM 通知 SC 按时间序列恢复冻结点或事件点的状态快照。</td></tr>
+<tr><td>59</td><td>Simulator Core → Session State Manager</td><td>恢复完成</td><td>SC 完成状态恢复后向 SSM 返回确认。</td></tr>
+<tr><td>60</td><td>Session State Manager → Control Board</td><td>显示回放状态</td><td>SSM 通知 CB 显示当前回放进度与状态，供教员讲评使用。</td></tr>
+</tbody>
+</table>
 </div>
 
 <h3>领域切换点的状态传递契约</h3>
@@ -382,7 +510,8 @@ sequenceDiagram
 <tr><td><strong>A：课程加载 → RF-03 初始化</strong></td><td>{courseLoaded: true, stepIndex: 0, aircraft: default, env: default, airport: null}</td><td>{initComplete: true, aircraft: validated, env: validated, airport: validated, version: N}</td><td>version 必须递增；所有校验链通过；GW = ZFW + Fuel 等式成立</td></tr>
 <tr><td><strong>B：实时监控 → RF-04 故障注入</strong></td><td>{sessionRunning: true, stepIndex: K, malfList: []}</td><td>{malfList: [...], malfVersion: M, sessionRunning: true}</td><td>故障状态必须在 50ms 内同步至所有工作区；课程执行状态不丢失</td></tr>
 <tr><td><strong>C：实时监控 → RF-05 重新定位</strong></td><td>{position: P0, heading: H0, flightPhase: F}</td><td>{position: P1, heading: H1, flightPhase: F, repositionVersion: R}</td><td>重新定位期间课程执行状态暂停或保持；非着陆接地瞬间允许重新定位</td></tr>
-<tr><td><strong>D：任意阶段 → RF-06 冻结</strong></td><td>{sessionRunning: true, ...allState}</td><td>{freezeFlag: true, frozenSnapshot: S, version: V+1}</td><td>冻结瞬间捕获全量状态快照；所有工作区在 50ms 内响应；解冻后 version 再次递增</td></tr>
+<tr><td rowspan="2"><strong>D：任意阶段 ↔ RF-06 冻结/解冻</strong></td><td>{sessionRunning: true, ...allState}</td><td>{freezeFlag: true, frozenSnapshot: S, version: V+1}</td><td>冻结瞬间捕获全量状态快照；所有工作区在 50ms 内响应</td></tr>
+<tr><td>{freezeFlag: true, frozenSnapshot: S, version: V+1}</td><td>{freezeFlag: false, sessionRunning: true, version: V+2}</td><td>基于 frozenSnapshot 恢复；物理引擎恢复运行；所有工作区在 50ms 内解除冻结</td></tr>
 </tbody>
 </table>
 </div>
@@ -402,8 +531,8 @@ sequenceDiagram
 <tr><td><strong>课程执行</strong></td><td>当前步骤索引、执行模式</td><td><span class="tag-pill tag-main">已覆盖</span>（LPP/CB 共享）</td><td>课程步骤索引：强一致性（&lt;100ms）</td><td><span class="tag-pill tag-main">通过</span>。CB 与 LPP 必须同步高亮</td></tr>
 <tr><td><strong>实时监控</strong></td><td>飞机物理状态（持续广播）</td><td><span class="tag-pill tag-main">已覆盖</span>（SC 所有者，Pub-Sub）</td><td>仪表指针动画：最终一致性（&lt;200ms）</td><td><span class="tag-pill tag-main">通过</span>。IR 作为只读消费端，允许指针平滑插值</td></tr>
 <tr><td><strong>动态干预</strong></td><td>故障状态、环境参数、飞机位置</td><td><span class="tag-pill tag-main">已覆盖</span>（CB/ADV 所有者）</td><td>故障状态：强一致性（&lt;50ms）</td><td><span class="tag-pill tag-main">通过</span>。故障激活后 Footer 计数器和 CB Malfunctions Panel 必须实时更新</td></tr>
-<tr><td><strong>冻结/解冻</strong></td><td>全局冻结标志</td><td><span class="tag-pill tag-main">已覆盖</span>（FS/ADV 所有者）</td><td>冻结/解冻标志：强一致性（&lt;50ms）</td><td><span class="tag-pill tag-main">通过</span>。2.1.4 原则一已定义全局原子状态标志机制</td></tr>
-<tr><td><strong>结束与讲评</strong></td><td>课程日志、录制片段、事件标记</td><td><span class="tag-pill tag-warn">部分缺失</span>（事件标记未定义）</td><td>状态恢复：强一致性</td><td><span class="tag-pill tag-warn">断点</span>。见下方 GAP-01 / GAP-02</td></tr>
+<tr><td><strong>冻结/解冻</strong></td><td>全局冻结标志</td><td><span class="tag-pill tag-main">已覆盖</span>（FS/ADV 所有者）</td><td>冻结/解冻标志：强一致性（&lt;50ms）</td><td><span class="tag-pill tag-main">通过</span>。2.1.4 原则一已定义全局原子状态标志机制；主流程图已覆盖冻结与解冻两条路径</td></tr>
+<tr><td><strong>结束与讲评</strong></td><td>课程日志、录制片段、事件标记</td><td><span class="tag-pill tag-warn">部分缺失</span>（事件标记未定义）</td><td>状态恢复：强一致性</td><td><span class="tag-pill tag-warn">断点</span>。结束状态已广播至 CB/LPP/Map/IR/ADV；事件标记与 Cleanup 校验仍见 GAP-01 / GAP-02</td></tr>
 </tbody>
 </table>
 </div>

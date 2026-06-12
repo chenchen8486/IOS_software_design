@@ -55,6 +55,9 @@
 
 @media print{.mermaid{page-break-inside:avoid}}
 
+/* SSM 核心规则强调标题 */
+.ssm-core-rule{color:var(--danger);font-weight:700;font-size:16px;margin:20px 0 12px}
+
 /* 序列图 + 右侧图例 并排布局 */
 .seq-pair{display:flex;gap:16px;align-items:flex-start;margin:24px 0}
 .seq-pair .mermaid{flex:1 1 auto;margin:0;min-width:0}
@@ -167,6 +170,83 @@
 </div>
 <div class="label">与 2.1 的对应关系</div>
 <div class="content">SSM 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2 三层数据流</a> 中<strong>状态管理层</strong>的具体化，也是 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性原则</a> 中"单一事实来源"机制的执行者。</div>
+</div>
+
+<p><strong>SSM 的软件形态与内部职责</strong></p>
+<p>需要强调的是，SSM 不是「一个大函数」，而是<strong>训练 Session 运行期间的唯一管家</strong>——一个架构角色 / 状态协调层。它的具体代码形态取决于项目技术栈，但职责边界是固定的。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">技术栈风格</th><th style="width:78%">SSM 的实现形态</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>桌面端 / Qt / WPF</strong></td><td>一个 <code>SessionStateManager</code> 单例类，内部持有当前 Session 的状态对象</td></tr>
+<tr><td><strong>前端 Web / React / Vue</strong></td><td>一个全局 Store（Redux / Pinia / Zustand），或一个自定义的 State Machine Hook</td></tr>
+<tr><td><strong>后端服务 / 微服务</strong></td><td>一个独立服务或领域服务（Domain Service），维护 Session 聚合根</td></tr>
+<tr><td><strong>事件驱动架构</strong></td><td>一个事件总线协调器 + 状态投影（Projection），消费 SC 的事件并分发给 UI</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>无论哪种形态，SSM 都有一个共同特征：<strong>持有本次训练 Session 的权威状态副本，并对外提供「读状态 / 申请改状态 / 订阅状态变化」的接口。</strong></p>
+
+<p>从内部看，SSM 可以拆成六个职责模块：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:22%">模块</th><th style="width:78%">职责</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>状态仓库</strong></td><td>持有当前 Session 的权威状态：当前课程、步骤索引、飞机状态、环境、故障列表、冻结标志、版本号等</td></tr>
+<tr><td><strong>请求路由器</strong></td><td>接收来自 CB / Map / ADV / Footer 的请求，判断请求类型：加载、启动、注入故障、冻结、结束等</td></tr>
+<tr><td><strong>版本与一致性控制</strong></td><td>每次有效变更递增 State Version；拒绝过期请求；合并并发修改</td></tr>
+<tr><td><strong>生命周期管理</strong></td><td>管理课程状态机：未加载 → 加载中 → 待启动 → 运行中 → 冻结 → 结束 / 回放</td></tr>
+<tr><td><strong>冲突解决器</strong></td><td>裁决 Freeplay / Nested 优先级；处理冻结期间的位置变更、着陆接地瞬间的重新定位等边界冲突</td></tr>
+<tr><td><strong>分发器</strong></td><td>状态变更后，广播给 CB / LPP / Map / IR / Footer 等订阅者</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box warn">
+<strong>注意：</strong>持久化不是 SSM 的必选项。在 IOS 这种实时训练系统里，SSM 主要维护<strong>内存中的运行态</strong>。真正需要持久化的录像、日志、事件标记，通常由 SC 或专门的 Recording Service 负责。
+</div>
+
+<p>SSM 与「一个大函数」的关键区别在于：SSM 是<strong>有状态、长期存在、职责可横向扩展</strong>的。把所有逻辑塞进一个函数会导致「上帝函数」，难以维护版本、生命周期和冲突仲裁。</p>
+
+<p class="ssm-core-rule">为什么工作区不能绕过 SSM 直接操作 SC</p>
+<p>SSM 保管的是「需要被仲裁、需要保持一致性、需要被版本控制」的会话状态。工作区想和 SC 发生<strong>写操作</strong>（改状态、改参数、注入故障、冻结等）必须经 SSM，核心原因有三点：</p>
+
+<ul>
+<li><strong>单一事实来源：</strong>如果 CB、Map、ADV 都能直接调用 SC 修改状态，多个工作区并发下发不同指令，SC 可能按不同顺序执行，最终状态会乱掉。SSM 作为唯一入口，把所有变更排队、排序、合并，确保 SC 收到的指令是连贯的。</li>
+<li><strong>版本控制与一致性：</strong>SSM 给每次有效状态变更打一个版本号 State Version，所有工作区都按这个版本号刷新。如果某个工作区因为网络延迟只收到旧版本，SSM 能发现它落后并补齐。没有 SSM，各工作区就无从判断自己看到的是不是最新状态。</li>
+<li><strong>冲突裁决与回滚：</strong>有些操作不能同时进行，例如冻结期间不允许重新定位、着陆接地瞬间不允许重新定位、课程未加载时不能启动。这些业务规则由 SSM 统一裁决。一旦 SC 执行失败，SSM 可以统一回滚到上一个合法状态。</li>
+</ul>
+
+<p>但 SSM 不是「所有数据的搬运工」。下表区分了哪些交互必须经过 SSM，哪些可以由 SC 直接广播：</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:20%">交互类型</th><th style="width:35%">典型操作 / 数据</th><th style="width:45%">是否必须经 SSM</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>状态变更（写）</strong></td><td>课程加载、参数修改、故障注入、重新定位、冻结/解冻</td><td><span class="tag-pill tag-main">必须</span> 经过 SSM。需要仲裁、版本控制、一致性广播与冲突裁决</td></tr>
+<tr><td><strong>高频实时数据（读）</strong></td><td>飞机位置 / 姿态（30Hz）、仪表数据（30Hz）、参数回显</td><td><span class="tag-pill tag-aux">不必</span> 经过 SSM。由 SC 直接广播给消费端，避免 SSM 成为性能瓶颈</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>这样设计的原因很实际：</p>
+<ul>
+<li>30Hz 的数据每 33ms 来一次，如果都经过 SSM 转发，SSM 会成为性能瓶颈；</li>
+<li>实时数据是「只读测量值」，不是「状态变更请求」，不需要仲裁、不需要版本递增；</li>
+<li>SSM 只关心「飞机位置是不是被教员手动修改了」，而不关心「飞机当前每一帧的坐标是多少」。</li>
+</ul>
+
+<div class="highlight-box">
+<strong>一句话总结：</strong>SSM 是「状态变更的守门员 + 版本管理员 + 冲突仲裁员」。工作区向 SC 的写操作必须经 SSM；SC 向工作区推送的高频读数据可以直接广播。
 </div>
 </div>
 
