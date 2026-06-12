@@ -74,6 +74,16 @@
   .seq-legend-title{width:100%;margin-bottom:4px;padding-bottom:4px}
   .seq-legend-item{margin:2px 0;white-space:nowrap}
 }
+
+/* 序列图逐段解读表格 */
+.seq-breakdown .phase-summary{background:#f1f5f9;color:#334155;font-weight:500}
+.seq-breakdown .phase-summary strong{color:var(--primary-dark)}
+.seq-breakdown td[rowspan]{background:#f8fafc;border-right:1px solid var(--border);text-align:center;vertical-align:middle;font-weight:600;color:var(--primary-dark);line-height:1.5}
+.seq-breakdown .branch-header td{background:#fffbeb;color:#92400e;font-weight:600;border-top:2px solid #fcd34d}
+.seq-breakdown .branch-header td strong{color:#78350f}
+.seq-breakdown tr:hover td[rowspan]{background:#f1f5f9}
+.seq-breakdown tr:hover .phase-summary{background:#e2e8f0}
+.seq-breakdown tr:hover .branch-header td{background:#fef3c7}
 </style>
 <h1>2.2.3 RF-02 课程执行交互完整性</h1>
 <h2 id="sec-2-2-3">2.2.3 RF-02 课程执行交互完整性</h2>
@@ -180,6 +190,95 @@ sequenceDiagram
     SSM->>CB: 课程结束
     end
 </div>
+</div>
+
+<h3>课程执行交互序列逐段解读</h3>
+<p>下表按阶段拆解上图中的每一条消息流。每一阶段的首行给出该阶段整体业务目标，后续行逐条说明箭头编号、来源 → 目标、消息内容与业务含义。由于 Autorun 与 Step-by-Step 中存在条件分支，表格用分支标题区分不同执行路径。</p>
+
+<div class="table-wrap">
+<table class="seq-breakdown">
+<thead>
+<tr><th style="width:13%">阶段</th><th style="width:7%">箭头</th><th style="width:18%">流向</th><th style="width:30%">消息 / 动作</th><th style="width:32%">业务含义</th></tr>
+</thead>
+<tbody>
+<tr class="phase-summary-row">
+  <td rowspan="5"><strong>阶段一</strong><br/>Autorun 模式初始化与启动</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员选择 Autorun 后，SSM 启动自动执行引擎并初始化 <code>currentStepIndex</code>，建立 SSM 对步骤索引的权威控制。</td>
+</tr>
+<tr><td>1</td><td>Instructor → Control Board</td><td>点击 Autorun</td><td>教员在 LESSON PLAN Tab 触发自动执行模式，CB 仅作为交互入口。</td></tr>
+<tr><td>2</td><td>Control Board → Session State Manager</td><td>执行模式变更 <code>{mode: autorun}</code></td><td>CB 将模式变更请求上报 SSM，由 SSM 统一仲裁并切换会话执行模式。</td></tr>
+<tr><td>3</td><td>Session State Manager → Simulator Core</td><td>启动自动执行引擎</td><td>SSM 通知 SC 启动课程执行引擎，准备按步骤自动驱动模拟。</td></tr>
+<tr><td>4</td><td>Session State Manager → Session State Manager</td><td><code>currentStepIndex = 0</code></td><td>SSM 初始化权威步骤索引，作为课程自动推进的起点；后续步骤推进均由 SSM 决策。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="13"><strong>阶段二</strong><br/>Autorun 自动执行循环</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>SSM 逐条向 SC 下发当前步骤指令，根据 SC 返回结果推进索引并同步所有视图；遇到 SIM/MALF/手动确认步骤时进入对应分支。</td>
+</tr>
+<tr><td>5</td><td>Session State Manager → Simulator Core</td><td>执行当前步骤 <code>{stepIndex}</code></td><td>SSM 向 SC 下发当前步骤执行指令；SC 只负责执行，不决定步骤索引。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 A：SIM 步骤</td></tr>
+<tr><td>6</td><td>Simulator Core → Simulator Core</td><td>更新飞机状态</td><td>SC 内部 Simulation Engine 更新飞机物理状态。</td></tr>
+<tr><td>7</td><td>Simulator Core → Map</td><td>位置 / 航迹广播</td><td>SC 将位置 / 航迹异步广播给 Map，驱动地图动态更新。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 B：MALF 步骤</td></tr>
+<tr><td>8</td><td>Simulator Core → Simulator Core</td><td>激活 / 预位故障</td><td>SC 内部 Course Execution Engine 激活或预位当前步骤配置的故障。</td></tr>
+<tr><td>9</td><td>Simulator Core → Session State Manager</td><td>步骤执行结果 <code>{status}</code></td><td>SC 返回步骤执行结果，SSM 据此评估是否推进索引。</td></tr>
+<tr><td>10</td><td>Session State Manager → Session State Manager</td><td>评估并推进 <code>currentStepIndex</code></td><td>SSM 根据执行结果更新权威步骤索引；所有视图稍后按此刷新。</td></tr>
+<tr><td>11</td><td>Session State Manager → Control Board</td><td>更新步骤高亮</td><td>SSM 通知 CB 高亮当前执行步骤。</td></tr>
+<tr><td>12</td><td>Session State Manager → Lesson Plan Profile</td><td>同步剖面进度</td><td>SSM 将进度同步到 LPP，保持剖面与 CB 一致。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 C：MALF 步骤 Footer 更新</td></tr>
+<tr><td>13</td><td>Session State Manager → Footer</td><td>故障计数器更新</td><td>若当前步骤为 MALF，SSM 更新 Footer 故障计数器，提供全局提示。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 D：手动确认步骤</td></tr>
+<tr><td>14</td><td>Session State Manager → Control Board</td><td>高亮"等待 Execute"</td><td>当前步骤需要手动确认时，SSM 通知 CB 暂停等待，防止自动推进。</td></tr>
+<tr><td>15</td><td>Instructor → Control Board</td><td>点击 Execute</td><td>教员点击 Execute 以确认继续。</td></tr>
+<tr><td>16</td><td>Control Board → Session State Manager</td><td>手动确认</td><td>CB 将确认上报 SSM，SSM 在下一循环继续推进。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="3"><strong>阶段三</strong><br/>Autorun 结束</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>课程循环退出后，SSM 通知 SC 停止引擎，并向 CB 显示课程结束状态。</td>
+</tr>
+<tr><td>17</td><td>Session State Manager → Simulator Core</td><td>停止引擎</td><td>当循环退出条件满足（步骤全部完成或教员中断），SSM 通知 SC 停止课程引擎。</td></tr>
+<tr><td>18</td><td>Session State Manager → Control Board</td><td>显示"课程结束"</td><td>SSM 通知 CB 显示课程结束状态，完成 Autorun 流程。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="7"><strong>阶段四</strong><br/>Step-by-Step 模式初始化</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员选择 Step-by-Step 后，SSM 从课程数据加载第一步，并等待教员逐条决策。</td>
+</tr>
+<tr><td>19</td><td>Instructor → Control Board</td><td>点击 Step-by-Step</td><td>教员触发 Step-by-Step 模式，进入逐条控制流程。</td></tr>
+<tr><td>20</td><td>Control Board → Session State Manager</td><td>执行模式变更 <code>{mode: step}</code></td><td>CB 上报模式变更请求，SSM 切换会话执行模式。</td></tr>
+<tr><td>21</td><td>Session State Manager → Session State Manager</td><td>从课程数据加载第 1 步</td><td>SSM 权威持有课程结构，初始化 <code>currentStepIndex</code> 为第一步。</td></tr>
+<tr><td>22</td><td>Session State Manager → Control Board</td><td>加载步骤详情</td><td>SSM 通知 CB 加载当前步骤详情，供教员查看。</td></tr>
+<tr><td>23</td><td>Session State Manager → Lesson Plan Profile</td><td>同步当前步骤</td><td>SSM 将当前步骤同步到 LPP，保持剖面一致。</td></tr>
+<tr><td>24</td><td>Control Board → Instructor</td><td>显示步骤参数</td><td>CB 向教员呈现当前步骤参数，等待决策。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="12"><strong>阶段五</strong><br/>Step-by-Step 执行循环</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员对每一步执行 Execute 或 Skip 决策；SSM 根据决策更新索引并同步视图，执行成功后按步骤类型广播飞机状态或故障计数。</td>
+</tr>
+<tr><td>25</td><td>Instructor → Control Board</td><td>决策：Execute / Skip</td><td>教员针对当前步骤做出执行或跳过决策。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 A：Execute 分支</td></tr>
+<tr><td>26</td><td>Control Board → Session State Manager</td><td>执行当前步骤</td><td>CB 将执行请求上报 SSM。</td></tr>
+<tr><td>27</td><td>Session State Manager → Simulator Core</td><td>下发步骤执行指令</td><td>SSM 向 SC 下发步骤执行指令。</td></tr>
+<tr><td>28</td><td>Simulator Core → Simulator Core</td><td>执行模拟动作</td><td>SC 内部执行具体模拟动作。</td></tr>
+<tr><td>29</td><td>Simulator Core → Session State Manager</td><td>执行结果</td><td>SC 返回执行结果，SSM 据此推进或降级处理。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 B：Skip 分支</td></tr>
+<tr><td>30</td><td>Control Board → Session State Manager</td><td>跳过当前步骤</td><td>CB 将跳过请求上报 SSM；SSM 直接将步骤标记为 SKIPPED 并推进索引。</td></tr>
+<tr><td>31</td><td>Session State Manager → Session State Manager</td><td>更新 <code>currentStepIndex</code></td><td>SSM 根据 Execute 结果或 Skip 请求更新权威步骤索引。</td></tr>
+<tr><td>32</td><td>Session State Manager → Control Board</td><td>更新步骤高亮</td><td>SSM 通知 CB 高亮新的当前步骤。</td></tr>
+<tr><td>33</td><td>Session State Manager → Lesson Plan Profile</td><td>同步剖面进度</td><td>SSM 将新进度同步到 LPP。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 C：SIM 步骤且执行成功</td></tr>
+<tr><td>34</td><td>Simulator Core → Map</td><td>位置 / 航迹广播</td><td>若 Execute 的是 SIM 步骤且成功，SC 向 Map 广播位置 / 航迹更新。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 D：MALF 步骤且执行成功</td></tr>
+<tr><td>35</td><td>Session State Manager → Footer</td><td>故障计数器更新</td><td>若 Execute 的是 MALF 步骤且成功，SSM 更新 Footer 故障计数器。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="5"><strong>阶段六</strong><br/>Step-by-Step 结束</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员点击 End Lesson 后，SSM 终止课程并通知相关视图。</td>
+</tr>
+<tr><td>36</td><td>Instructor → Control Board</td><td>点击 End Lesson</td><td>教员触发课程结束。</td></tr>
+<tr><td>37</td><td>Control Board → Session State Manager</td><td>终止课程</td><td>CB 上报终止请求。</td></tr>
+<tr><td>38</td><td>Session State Manager → Simulator Core</td><td>停止引擎</td><td>SSM 通知 SC 停止课程引擎。</td></tr>
+<tr><td>39</td><td>Session State Manager → Control Board</td><td>课程结束</td><td>SSM 通知 CB 显示课程结束状态。</td></tr>
+</tbody>
+</table>
 </div>
 
 <h3>LESSON PLAN Tab ↔ Lesson Plan Profile 双向同步契约推导</h3>
