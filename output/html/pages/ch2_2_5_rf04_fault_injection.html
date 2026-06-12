@@ -75,18 +75,18 @@
   .seq-legend-item{margin:2px 0;white-space:nowrap}
 }
 </style>
-<h1>2.2.4 RF-03 初始化交互完整性</h1>
-<h2 id="sec-2-2-4">2.2.4 RF-03 初始化交互完整性</h2>
+<h1>2.2.5 RF-04 故障注入交互完整性</h1>
+<h2 id="sec-2-2-5">2.2.5 RF-04 故障注入交互完整性</h2>
 <p class="area-map">
-<strong>推导来源：</strong>RF-03 环境配置与飞机初始化 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（AIRCRAFT / REF AIRPORT / CURRENT CONDITIONS 域） &nbsp;|&nbsp; <strong>输出产物：</strong>三层参数校验链、Save/Recall Scenario 持久化契约
+<strong>推导来源：</strong>RF-04 故障注入与应急训练 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（故障状态 / 飞机物理状态域）、<a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 原则一</a>（全局原子状态标志） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-05</span>
 </p>
-<p>RF-03 是 RF-01 主流程的<strong>前置准备阶段</strong>，负责训练开始前的飞机参数、参考机场、当前环境等初始化配置。其输出（初始化完成确认）是 RF-02 课程执行的前置条件。本节推导 RF-03 的交互序列、参数校验链以及 Save/Recall Scenario 的状态持久化契约。</p>
+<p>RF-04（故障注入）是训练进行中的<strong>动态干预</strong>操作，可在课程执行、初始化或冻结后随时触发。本节推导三种注入入口的统一汇聚模型、故障状态机以及系统损坏后的 Reset 级联机制。</p>
 
 <div class="highlight-box">
-<strong>前置阅读提示：</strong>本节序列图涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
+<strong>前置阅读提示：</strong>本节涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
 </div>
-<h3>初始化交互序列图与参数校验链</h3>
-<p>RF-03 是纯逻辑推理流程，所有步骤都是精确的数值输入与包线验证。其交互序列的特点是<strong>多轮参数变更 + 层级校验</strong>。</p>
+<h3>故障注入交互序列图（三种入口统一建模）</h3>
+<p>ch1_8 描述了三种故障注入入口（课程 MALF、AIRCRAFT Tab 底部、Advanced/INSTRUCTOR STATION），但从架构视角看，它们最终都应汇聚到一个统一的<strong>故障注册表（Malfunction Registry）</strong>中，再由 SSM 协调广播。</p>
 
 <div class="seq-pair">
 <div class="seq-legend">
@@ -100,9 +100,10 @@
 
   <div class="seq-legend-color">
     <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 飞机参数初始化</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 机场与环境配置</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 全局目视确认</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 入口 A：课程 MALF</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 入口 B：快速注入</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 入口 C：Advanced</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,242,242);border-color:#fca5a5"></span> 统一汇聚 / 冲突检测</div>
   </div>
 </div>
 <div class="mermaid">
@@ -110,111 +111,184 @@ sequenceDiagram
     autonumber
     participant INST as Instructor<br/>教员
     participant CB as Control Board<br/>控制面板
+    participant ADV as Advanced<br/>高级
     participant SSM as Session State Manager<br/>会话状态管理器
     participant SC as Simulator Core<br/>模拟器核心
+    participant FS as Footer<br/>页脚
+    participant IR as Instruments Repeaters<br/>仪表复示器
     participant MAP as Map<br/>地图
 
     rect rgb(219,234,254)
-    Note over INST,MAP: 飞机参数初始化
-    INST->>CB: 进入 AIRCRAFT Tab，输入 GW
-    CB->>SSM: 参数变更 {param: GW, value, source: CB}
-    SSM->>SSM: UI 层校验（范围/格式）
-    SSM->>SSM: 业务校验：GW 是否在包线内？
-    SSM->>SC: 下发 GW
-    SC-->>SSM: GW 确认
-    SSM->>CB: GW CG 自动计算回显
-
-    INST->>CB: 输入 ZFW / Fuel
-    CB->>SSM: 参数变更 {ZFW, Fuel}
-    SSM->>SSM: 业务校验：GW = ZFW + Fuel？
-    alt 等式不成立
-        SSM->>CB: 报错提示，拒绝下发
-        CB-->>INST: 显示校验失败
-    else 等式成立
-        SSM->>SC: 下发 ZFW / Fuel
-        SC-->>SSM: 确认
-    end
+    Note over INST,MAP: 入口 A：课程步骤 MALF
+    SC->>SC: 课程引擎执行到 MALF 步骤
+    SC->>SSM: 故障注入请求 {malfCode, source: lesson}
     end
 
     rect rgb(254,243,199)
-    Note over INST,MAP: 机场与环境初始化
-    INST->>CB: 进入 REFERENCE AIRPORT，选择机场
-    CB->>SSM: 参数变更 {airportICAO}
-    SSM->>SC: 查询机场数据库
-    SC-->>SSM: 机场数据 {runways, gates, terrain}
-    SSM->>CB: 跑道列表更新
-
-    INST->>CB: 选择跑道
-    CB->>SSM: 参数变更 {runwayId}
-    SSM->>CB: 跑道条件选项绑定
-
-    INST->>CB: 进入 CURRENT CONDITIONS，逐项配置
-    CB->>SSM: 多轮参数变更
-    SSM->>SSM: 依赖校验：Surface Wind → QNH 计算基础
-    SSM->>SC: 下发环境参数
-    SC-->>SSM: 环境确认
+    Note over INST,MAP: 入口 B：AIRCRAFT Tab 快速注入
+    INST->>CB: 点击 Toggle Fail（AIRCRAFT Tab 底部）
+    CB->>SSM: 故障注入请求 {malfCode, source: quick}
     end
 
     rect rgb(220,252,231)
-    Note over INST,MAP: 全局目视确认
-    SSM-->>MAP: 推送机场/环境/飞机数据
-    MAP-->>INST: 渲染完整场景
-    INST->>MAP: 目视确认
-    alt 确认通过
-        MAP-->>INST: 初始化完成
-    else 需要调整
-        INST->>CB: 返回对应 Tab 修正
+    Note over INST,MAP: 入口 C：Advanced / INSTRUCTOR STATION
+    INST->>ADV: 选择故障类型与参数
+    ADV->>SSM: 故障注入请求 {malfCode, params, source: advanced}
+    end
+
+    rect rgb(254,242,242)
+    Note over INST,MAP: 统一汇聚与广播
+    SSM->>SSM: 写入 Malfunction Registry
+    SSM->>SSM: 冲突检测：同一故障是否已激活？
+    alt 冲突（已激活）
+        SSM->>CB: 忽略重复注入，提示"故障已存在"
+    else 无冲突
+        SSM->>SC: 下发故障定义
+        SC-->>SSM: 故障状态确认 {malfId, state: active/armed}
+        SSM->>CB: Malfunctions Panel 更新
+        SSM->>FS: Footer 故障计数器 + 指示灯更新
+        SSM-->>IR: 仪表故障指示更新
+        SSM-->>MAP: 相关系统效果更新（如液压故障影响运动）
     end
     end
 </div>
 </div>
 
-<h3>参数校验链的架构实现推导</h3>
-<p>RF-03 的初始化流程揭示了一个三层校验架构，这是 2.1.2 中"UI 层 → 状态管理层 → 模拟器核心层"数据流的具体实例：</p>
-<div class="arch-block">
-<h4>三层校验层级定义</h4>
-<div class="arch-grid">
-<div class="label">L1 UI 层校验</div>
-<div class="content"><strong>执行者：</strong>Control Board 前端控件<br/><strong>校验内容：</strong>输入格式（数字/字符串）、取值范围（如 GW 必须在 40t~80t 之间）<br/><strong>失败行为：</strong>即时阻止非法输入，给出红色边框/提示文案，不向 SSM 发送请求</div>
-<div class="label">L2 业务校验</div>
-<div class="content"><strong>执行者：</strong>Session State Manager<br/><strong>校验内容：</strong>跨参数等式（GW = ZFW + Fuel）、包线约束（CG 在 MAC 范围内）、依赖顺序（必须先选机场再选跑道）<br/><strong>失败行为：</strong>拒绝下发并回滚到上次合法状态，向 CB 返回具体错误码</div>
-<div class="label">L3 物理校验</div>
-<div class="content"><strong>执行者：</strong>Simulator Core<br/><strong>校验内容：</strong>物理可行性（飞机在当前机场跑道能否起飞）、地形碰撞检测、FMS 航线可计算性<br/><strong>失败行为：</strong>返回物理校验失败，SSM 保持冻结或回滚到上一次通过校验的快照</div>
-</div>
-</div>
+<h3>故障状态机（Armed → Active → Reset）的架构推导</h3>
+<p>ch1_8 的 5.1 节描述了故障的生命周期，但将其映射到 2.1 的架构中，需要明确状态转换的触发者和数据流路径。</p>
 
-<div class="highlight-box warn">
-<strong>失败回滚策略：</strong>L1 失败无需回滚（仅前端拦截）；L2 失败回滚到 SSM 上一次合法状态；L3 失败回滚到 Simulator Core 上一次通过物理校验的快照。三层校验的粒度逐层收紧，避免了"前端通过但后端崩溃"的状态不一致。
-</div>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Idle: 系统启动
+    Idle --> Armed: 教员预位故障
+    Armed --> Active: 触发条件满足
+    Armed --> Active: 教员手动触发
+    Active --> Reset: 教员解除故障
+    Active --> SysDamage: 故障导致系统损坏
+    SysDamage --> Reset: 执行对应系统 Reset
+    Reset --> Idle: 系统健康检查通过
+    Reset --> SysDamage: 健康检查失败（需二次 Reset）
 
-<h3>Save/Recall Scenario 的状态持久化契约</h3>
-<p>ch1_8 的 4.3 节描述了 Advanced → Environment 中的 Save/Recall Scenario 功能。将其映射到 2.1 架构中，需要明确<strong>保存范围</strong>与<strong>数据依赖矩阵</strong>的对应关系。</p>
+    classDef idle fill:#f1f5f9,stroke:#64748b
+    classDef armed fill:#fef3c7,stroke:#d97706
+    classDef active fill:#fee2e2,stroke:#dc2626
+    classDef damage fill:#fef2f2,stroke:#991b1b
+    classDef reset fill:#dbeafe,stroke:#2563eb
+
+    class Idle idle
+    class Armed armed
+    class Active active
+    class SysDamage damage
+    class Reset reset
+
+    note right of Idle
+        Malfunction Registry 中无该故障记录
+    end note
+
+    note right of Armed
+        故障定义已写入 Registry，
+        等待触发条件评估
+    end note
+
+    note right of Active
+        故障已影响 Simulator Core，
+        状态广播至所有工作区
+    end note
+
+    note right of SysDamage
+        故障解除后系统参数
+        未自动恢复（如 EGT 超限）
+    end note
+</div>
 
 <div class="table-wrap">
 <table>
 <thead>
-<tr><th style="width:22%">场景数据项</th><th style="width:22%">2.1.3 数据类别</th><th style="width:28%">是否被 Save/Recall 持久化</th><th style="width:28%">架构原因</th></tr>
+<tr><th style="width:20%">状态转换</th><th style="width:25%">触发者</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
 </thead>
 <tbody>
-<tr><td>海平面温度、中间层/对流层顶温度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数，可复用</td></tr>
-<tr><td>QNH、QFE</td><td>环境参数</td><td>✅ 保存（衍生存储）</td><td>可由温度和气压剖面重新计算</td></tr>
-<tr><td>地面/中间层/对流层顶风</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
-<tr><td>云和能见度</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
-<tr><td>活跃风暴、微下击暴流</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>属于瞬时模拟状态，非配置参数；重新加载后应由教员按需重新配置</td></tr>
-<tr><td>风切变、结冰条件</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>同上，属于触发式瞬时状态</td></tr>
-<tr><td>飞机位置、重量、重心</td><td>飞机物理状态</td><td>❌ 不保存</td><td>Save Scenario 仅保存环境配置，飞机状态由课程或教员单独管理</td></tr>
+<tr><td>Idle → Armed</td><td>教员（三种入口）</td><td>CB/ADV -> SSM -> Malfunction Registry</td><td>最终一致性；预位不立即影响物理状态</td></tr>
+<tr><td>Armed → Active</td><td>触发条件引擎 / 教员手动</td><td>SC 触发器评估 -> SSM -> SC 故障生效 -> SSM 广播</td><td>强一致性（&lt;50ms）；故障生效后所有工作区必须同步</td></tr>
+<tr><td>Active → Reset</td><td>教员解除 / 课程步骤自动解除</td><td>CB/ADV -> SSM -> SC 故障解除 -> SSM 广播</td><td>强一致性；解除后仪表和 Footer 指示灯必须同步熄灭</td></tr>
+<tr><td>Active → SysDamage</td><td>Simulator Core（物理引擎内部）</td><td>SC -> SSM：系统健康告警</td><td>强一致性；损坏状态必须立即通知教员</td></tr>
 </tbody>
 </table>
 </div>
 
-<div class="highlight-box">
-<strong>状态持久化契约：</strong>Save Scenario 操作的消息序列为：ADV -> SSM -> 持久化存储。SSM 在保存前需过滤掉"瞬时模拟状态"，只持久化"教员输入的配置参数"。Recall 时，SSM 从持久化存储读取配置参数，按 RF-03 的初始化顺序（机场→环境→验证）重新下发至 SC，并递增 State Version 通知所有工作区刷新。
+<div class="speculation-box">
+<strong>GAP-05：预位故障触发条件评估的归属</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 描述预位故障等待"预设触发条件（如高度、速度、时间）"，但 2.1 架构中未明确<strong>触发条件评估引擎</strong>的归属。<br/><br/>
+<strong>架构补充建议：</strong>触发条件评估建议由 <strong>Simulator Core 内部的专用触发器引擎</strong>执行，而非 SSM。原因：触发条件通常与物理状态（高度、速度、位置）强耦合，由物理引擎内部评估可避免跨进程通信延迟。当触发条件满足时，触发器引擎向 SSM 发送"Armed → Active"事件，SSM 负责后续的广播同步。
 </div>
 
+<h3>系统损坏 → Reset 级联的异常分支设计</h3>
+<p>ch1_8 的 5.4 节提供了详细的故障→Reset 映射表。将其转化为架构交互序列，需要明确<strong>"谁检测损坏、谁执行 Reset、谁验证恢复"</strong>的分工。</p>
 
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item" style="color:var(--text-secondary);font-style:italic">本图未使用 rect 颜色分组</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant CB as Control Board<br/>控制面板
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant FS as Footer<br/>页脚
+    participant IR as Instruments Repeaters<br/>仪表复示器
+
+    CB->>SSM: 教员解除故障 {malfId}
+    SSM->>SC: 故障解除指令
+    SC->>SC: 移除故障影响
+    SC-->>SSM: 故障已移除
+
+    SSM->>SC: 请求系统健康检查
+    SC->>SC: 评估各子系统参数
+    alt 健康检查通过
+        SC-->>SSM: 全部正常
+        SSM->>CB: 清除 Malfunctions Panel
+        SSM->>FS: 清除故障指示灯
+        SSM-->>IR: 仪表恢复正常显示
+    else 健康检查失败（系统损坏）
+        SC-->>SSM: 损坏报告 {systemId, damageType}
+        SSM->>CB: 提示"系统损坏，需要 Reset"
+        CB-->>INST: 显示损坏详情（省略 INST 以简化图）
+
+        CB->>SSM: 教员执行对应 Reset
+        SSM->>SC: Reset 指令 {resetType}
+        SC->>SC: 重置子系统参数
+        SC-->>SSM: Reset 完成
+
+        SSM->>SC: 二次健康检查
+        alt 二次检查通过
+            SC-->>SSM: 正常
+            SSM->>CB: 系统恢复正常
+        else 二次检查仍失败
+            SC-->>SSM: 持续异常
+            SSM->>CB: 提示"请切换至 Maintenance 诊断"
+            SSM->>FS: 全局告警状态
+        end
+    end
+</div>
+</div>
+
+<div class="highlight-box warn">
+<strong>级联 Reset 的架构原则：</strong>故障解除 ≠ 系统恢复。架构上必须将"故障状态移除"和"系统健康恢复"视为两个独立阶段，中间由<strong>强制健康检查</strong>连接。这避免了教员误以为"解除故障就万事大吉"，而实际上液压压力或发动机 EGT 仍处于异常区间。
+</div>
 <div class="footer-nav">
-<a class="prev" href="ch2_2_3_rf02_execution.html"><span>←</span><span>2.2.3 RF-02 课程执行交互完整性</span></a>
-<a class="next" href="ch2_2_5_rf04_fault_injection.html"><span>2.2.5 RF-04 故障注入交互完整性</span><span>→</span></a>
+<a class="prev" href="ch2_2_4_rf03_initialization.html"><span>←</span><span>2.2.4 RF-03 初始化交互完整性</span></a>
+<a class="next" href="ch2_2_6_rf05_reposition.html"><span>2.2.6 RF-05 重新定位交互完整性</span><span>→</span></a>
 </div>
 <script>
 mermaid.initialize({

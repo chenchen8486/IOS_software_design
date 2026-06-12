@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性 — CAE IOS 教员台</title>
+<title>2.2.5 RF-04 故障注入交互完整性 — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -214,9 +214,10 @@ tr:last-child td{border-bottom:none}
 <a class="nav-link" href="ch2_2_2_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
 <a class="nav-link" href="ch2_2_3_rf02_execution.html">2.2.3 RF-02 课程执行交互完整性</a>
 <a class="nav-link" href="ch2_2_4_rf03_initialization.html">2.2.4 RF-03 初始化交互完整性</a>
-<a class="nav-link active" href="ch2_2_5_rf04_rf05_intervention.html">2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</a>
-<a class="nav-link" href="ch2_2_6_rf06_freeze.html">2.2.6 RF-06 冻结、回放与录制交互完整性</a>
-<a class="nav-link" href="ch2_2_7_summary.html">2.2.7 跨流程状态衔接与交互断点汇总</a>
+<a class="nav-link active" href="ch2_2_5_rf04_fault_injection.html">2.2.5 RF-04 故障注入交互完整性</a>
+<a class="nav-link" href="ch2_2_6_rf05_reposition.html">2.2.6 RF-05 重新定位交互完整性</a>
+<a class="nav-link" href="ch2_2_7_rf06_freeze.html">2.2.7 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link" href="ch2_2_8_summary.html">2.2.8 跨流程状态衔接与交互断点汇总</a>
   </div>
 </div>
 <a class="nav-link" href="ch2_3_ui_component_spec.html">2.3 UI 控件体系规范</a>
@@ -233,20 +234,19 @@ tr:last-child td{border-bottom:none}
     <span class="breadcrumb-sep">/</span>
     <a href="#">2.2 端到端交互完整性流程</a>
     <span class="breadcrumb-sep">/</span>
-    <span>2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</span>
+    <span>2.2.5 RF-04 故障注入交互完整性</span>
   </div>
     <div class="content">
-      <h1>2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</h1>
-<h2 id="sec-2-2-5">2.2.5 RF-04 故障注入与 RF-05 重新定位交互完整性</h2>
+      <h1>2.2.5 RF-04 故障注入交互完整性</h1>
+<h2 id="sec-2-2-5">2.2.5 RF-04 故障注入交互完整性</h2>
 <p class="area-map">
-<strong>推导来源：</strong>RF-04 故障注入与应急训练 + RF-05 地图监控与重新定位 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（故障状态 / 飞机物理状态域）、<a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 原则一</a>（全局原子状态标志） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-05</span> <span class="tag-pill tag-danger">GAP-06</span>
+<strong>推导来源：</strong>RF-04 故障注入与应急训练 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（故障状态 / 飞机物理状态域）、<a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 原则一</a>（全局原子状态标志） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-05</span>
 </p>
-<p>RF-04（故障注入）和 RF-05（重新定位）都是训练进行中的<strong>动态干预</strong>操作，它们打破了 RF-02 的常规执行节奏，对状态一致性有极高的实时性要求。本节推导它们的交互序列，并识别与冻结、课程执行等状态的组合约束。</p>
+<p>RF-04（故障注入）是训练进行中的<strong>动态干预</strong>操作，可在课程执行、初始化或冻结后随时触发。本节推导三种注入入口的统一汇聚模型、故障状态机以及系统损坏后的 Reset 级联机制。</p>
 
 <div class="highlight-box">
 <strong>前置阅读提示：</strong>本节涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
 </div>
-
 <h3>故障注入交互序列图（三种入口统一建模）</h3>
 <p>ch1_8 描述了三种故障注入入口（课程 MALF、AIRCRAFT Tab 底部、Advanced/INSTRUCTOR STATION），但从架构视角看，它们最终都应汇聚到一个统一的<strong>故障注册表（Malfunction Registry）</strong>中，再由 SSM 协调广播。</p>
 
@@ -448,181 +448,9 @@ sequenceDiagram
 <div class="highlight-box warn">
 <strong>级联 Reset 的架构原则：</strong>故障解除 ≠ 系统恢复。架构上必须将"故障状态移除"和"系统健康恢复"视为两个独立阶段，中间由<strong>强制健康检查</strong>连接。这避免了教员误以为"解除故障就万事大吉"，而实际上液压压力或发动机 EGT 仍处于异常区间。
 </div>
-
-<h3>重新定位交互序列图（四种方式统一建模）</h3>
-<p>RF-05 的四种重新定位方式在教员视角差异显著，但在架构视角下，它们都可以抽象为<strong>"位置变更请求 → 物理引擎更新 → 全工作区广播"</strong>的统一模式，差异仅在于变更源的精度和触发路径。</p>
-
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th style="width:18%">方式</th><th style="width:30%">变更源路径</th><th style="width:22%">精度/范围</th><th style="width:30%">架构特性</th></tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>SLEW 微调</strong></td>
-<td>MAP（拖拽）→ SSM → SC；或 ADV → SSM → SC</td>
-<td>米级，机场范围内</td>
-<td>高频低延迟；Map 渲染与物理更新允许最终一致性（&lt;200ms）</td>
-</tr>
-<tr>
-<td><strong>Airport Repo</strong></td>
-<td>CB（REFERENCE AIRPORT）→ SSM → SC</td>
-<td>跑道/停机位级，跨机场</td>
-<td>中频；触发环境参数联动（跑道条件绑定）；需重新加载地景</td>
-</tr>
-<tr>
-<td><strong>Footer Repo</strong></td>
-<td>FS → SSM → SC</td>
-<td>预设程序级（HOLD/TAXI/3nm/6nm 等）</td>
-<td>最高效率；一键配置飞机姿态/襟翼/速度/高度；SSM 需按优先级批量下发</td>
-</tr>
-<tr>
-<td><strong>Freeze + Repo</strong></td>
-<td>FS（Freeze）→ SSM → 上述任一方式 → FS（Unfreeze）</td>
-<td>任意</td>
-<td>组合操作；SSM 需维护操作互斥锁，禁止冻结期间其他全局状态变更</td>
-</tr>
-</tbody>
-</table>
-</div>
-
-<div class="seq-pair">
-<div class="seq-legend">
-  <div class="seq-legend-title">符号约定</div>
-  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
-  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
-  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
-  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
-  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
-  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
-
-  <div class="seq-legend-color">
-    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> SLEW 微调</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> Airport / Footer Repo</div>
-  </div>
-</div>
-<div class="mermaid">
-sequenceDiagram
-    autonumber
-    participant INST as Instructor<br/>教员
-    participant CB as Control Board<br/>控制面板
-    participant FS as Footer<br/>页脚
-    participant ADV as Advanced<br/>高级
-    participant MAP as Map<br/>地图
-    participant SSM as Session State Manager<br/>会话状态管理器
-    participant SC as Simulator Core<br/>模拟器核心
-    participant IR as Instruments Repeaters<br/>仪表复示器
-
-    rect rgb(219,234,254)
-    Note over INST,IR: SLEW 微调
-    INST->>MAP: 拖拽飞机图标
-    MAP->>SSM: 位置增量 {deltaX, deltaY, deltaH}
-    SSM->>SC: 更新飞机位置
-    SC-->>SSM: 新位置确认
-    SSM->>CB: 同步位置/航向参数
-    SSM-->>IR: 仪表数据更新
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,IR: Airport Repo / Footer Repo
-    INST->>CB: 选择新机场/跑道（或 FS 预设位置）
-    CB->>SSM: 位置变更请求 {targetType, targetParams}
-    SSM->>SC: 原子位置更新
-    SC-->>SSM: 位置确认 + FMS 航线重算
-    SSM->>CB: REFERENCE AIRPORT 参数更新
-    SSM-->>MAP: 视图中心切换 + 航迹更新
-    SSM-->>IR: 仪表数据更新
-    end
-</div>
-</div>
-
-<h3>2D/3D 视图状态：纯渲染层状态</h3>
-<p>RF-05 中的 2D/3D 视图切换、缩放级别、覆盖层选择等操作，从架构视角看属于<strong>纯渲染层状态</strong>，不影响模拟器核心的物理计算，也不应进入全局 Session State。</p>
-
-<div class="highlight-box">
-<strong>架构推导结论：</strong>Map 的视图状态（2D/3D、缩放、覆盖层开关）应作为 <strong>Map 工作区的本地状态</strong>管理，理由如下：
-<ul>
-<li>视图切换不改变模拟器核心状态，无跨工作区同步需求</li>
-<li>教员可能使用多个显示设备，每个设备的 Map 视图独立（如主屏 3D、副屏 2D）</li>
-<li>视图状态纳入全局 Session State 会增加不必要的状态版本开销</li>
-</ul>
-<strong>例外：</strong>如果视图状态需要被 Recording 捕获并在回放时恢复（如"教员当时在看 3D 进近视图"），则应在录制数据包中作为<strong>附属元数据</strong>保存，但不纳入核心状态管理。
-</div>
-
-<h3>FMS Memory Save/Recall 的数据流推导</h3>
-<p>FMS Memory 功能允许教员保存和召回飞行计划，但其边界在 ch1_8 中被明确限定：<strong>仅保存飞行计划数据，不保存飞机物理状态或环境参数</strong>。</p>
-
-<div class="seq-pair">
-<div class="seq-legend">
-  <div class="seq-legend-title">符号约定</div>
-  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
-  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
-  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
-  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
-  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
-  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
-
-  <div class="seq-legend-color">
-    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> FMS Memory Save</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> FMS Memory Recall</div>
-  </div>
-</div>
-<div class="mermaid">
-sequenceDiagram
-    autonumber
-    participant INST as Instructor<br/>教员
-    participant ADV as Advanced<br/>高级
-    participant SSM as Session State Manager<br/>会话状态管理器
-    participant SC as Simulator Core<br/>模拟器核心
-    participant MAP as Map<br/>地图
-
-    rect rgb(219,234,254)
-    Note over INST,MAP: FMS Memory Save
-    INST->>ADV: 点击 FMS Memory Save
-    ADV->>SSM: 保存请求
-    SSM->>SC: 读取当前 FMS 飞行计划
-    SC-->>SSM: 飞行计划数据 {waypoints, approach, SID/STAR}
-    SSM->>SSM: 持久化至 FMS Memory 存储区
-    SSM->>ADV: 保存成功确认
-    end
-
-    rect rgb(254,243,199)
-    Note over INST,MAP: FMS Memory Recall
-    INST->>ADV: 选择已保存的 FMS Memory
-    ADV->>SSM: 召回请求 {memoryId}
-    SSM->>SSM: 从存储区读取飞行计划
-    SSM->>SC: 写入 FMS 子模块
-    SC->>SC: 重新计算航线
-    SC-->>SSM: 航线确认
-    SSM-->>MAP: FMS 航线覆盖层更新
-    SSM->>ADV: 召回完成
-    end
-</div>
-</div>
-
-<div class="highlight-box warn">
-<strong>边界约束：</strong>FMS Memory Save/Recall <strong>不触发 State Version 递增</strong>，也不影响飞机位置/姿态/环境参数。因为它操作的是 FMS 子模块内部的飞行计划数据，而非全局 Session State。这与 Flight State Capture（FSC）有本质区别——FSC 保存的是全量状态，Recall 时必须遵循 2.1.4 原则四的 8 步恢复顺序。
-</div>
-
-<h3>交互断点识别（RF-04/05）</h3>
-
-<div class="speculation-box">
-<strong>GAP-06：重新定位操作互斥锁</strong><span class="confidence conf-high">高优先级</span><br/>
-ch1_8 6.2 节提到"冻结后调整"是一种重新定位方式，但未明确说明<strong>冻结期间是否允许其他全局状态变更</strong>（如课程执行推进、故障注入、环境参数修改）。<br/><br/>
-<strong>架构补充建议：</strong>Session State Manager 需维护一个<strong>操作互斥锁（Operation Mutex）</strong>，规则如下：
-<ul>
-<li>重新定位操作期间（从请求到确认），禁止其他工作区修改飞机位置/姿态/航向</li>
-<li>冻结期间允许重新定位，但重新定位完成后必须再次确认才能解冻</li>
-<li>课程执行引擎在重新定位期间可继续运行（如 Autorun 步骤计时），但 SIM 步骤的物理效果应延迟至重新定位确认后生效</li>
-</ul>
-</div>
-
-
 <div class="footer-nav">
 <a class="prev" href="ch2_2_4_rf03_initialization.html"><span>←</span><span>2.2.4 RF-03 初始化交互完整性</span></a>
-<a class="next" href="ch2_2_6_rf06_freeze.html"><span>2.2.6 RF-06 冻结、回放与录制交互完整性</span><span>→</span></a>
+<a class="next" href="ch2_2_6_rf05_reposition.html"><span>2.2.6 RF-05 重新定位交互完整性</span><span>→</span></a>
 </div>
     </div>
   </div>

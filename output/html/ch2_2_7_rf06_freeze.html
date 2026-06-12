@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2.2.3 RF-02 课程执行交互完整性 — CAE IOS 教员台</title>
+<title>2.2.7 RF-06 冻结、回放与录制交互完整性 — CAE IOS 教员台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -212,11 +212,11 @@ tr:last-child td{border-bottom:none}
   <div class="nav-children">
     <a class="nav-link" href="ch2_2_1_framework.html">2.2.1 交互完整性分析框架</a>
 <a class="nav-link" href="ch2_2_2_rf01_session.html">2.2.2 RF-01 标准训练 Session 交互序列与状态机</a>
-<a class="nav-link active" href="ch2_2_3_rf02_execution.html">2.2.3 RF-02 课程执行交互完整性</a>
+<a class="nav-link" href="ch2_2_3_rf02_execution.html">2.2.3 RF-02 课程执行交互完整性</a>
 <a class="nav-link" href="ch2_2_4_rf03_initialization.html">2.2.4 RF-03 初始化交互完整性</a>
 <a class="nav-link" href="ch2_2_5_rf04_fault_injection.html">2.2.5 RF-04 故障注入交互完整性</a>
 <a class="nav-link" href="ch2_2_6_rf05_reposition.html">2.2.6 RF-05 重新定位交互完整性</a>
-<a class="nav-link" href="ch2_2_7_rf06_freeze.html">2.2.7 RF-06 冻结、回放与录制交互完整性</a>
+<a class="nav-link active" href="ch2_2_7_rf06_freeze.html">2.2.7 RF-06 冻结、回放与录制交互完整性</a>
 <a class="nav-link" href="ch2_2_8_summary.html">2.2.8 跨流程状态衔接与交互断点汇总</a>
   </div>
 </div>
@@ -234,21 +234,22 @@ tr:last-child td{border-bottom:none}
     <span class="breadcrumb-sep">/</span>
     <a href="#">2.2 端到端交互完整性流程</a>
     <span class="breadcrumb-sep">/</span>
-    <span>2.2.3 RF-02 课程执行交互完整性</span>
+    <span>2.2.7 RF-06 冻结、回放与录制交互完整性</span>
   </div>
     <div class="content">
-      <h1>2.2.3 RF-02 课程执行交互完整性</h1>
-<h2 id="sec-2-2-3">2.2.3 RF-02 课程执行交互完整性</h2>
+      <h1>2.2.7 RF-06 冻结、回放与录制交互完整性</h1>
+<h2 id="sec-2-2-7">2.2.7 RF-06 冻结、回放与录制交互完整性</h2>
 <p class="area-map">
-<strong>推导来源：</strong>RF-02 课程执行 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-3">2.1.3 数据依赖矩阵</a>（LESSON PLAN / AIRCRAFT / CC / REF AIRPORT 域） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-danger">GAP-03</span> <span class="tag-pill tag-danger">GAP-04</span>
+<strong>推导来源：</strong>RF-06 冻结、回放与录制操作流 &nbsp;|&nbsp; <strong>输入约束：</strong><a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性设计原则</a>（原则一全局原子标志、原则四 8 步恢复顺序） &nbsp;|&nbsp; <strong>输出产物：</strong><span class="tag-pill tag-warn">GAP-07</span>
 </p>
-<p>RF-02 是 RF-01 主流程的<strong>核心执行阶段</strong>，负责将课程计划（Lesson Plan）中的步骤逐条推进。Autorun 模式下课程引擎自动推进，教员处于"监控者"角色；Step-by-Step 模式下教员的每次点击 Execute 都是一次显式的人机交互事件。本节推导 RF-02 的交互序列，以及 Freeplay / Nested 等异常分支的状态契约。</p>
+<p>RF-06 是 IOS 中<strong>影响范围最大</strong>的全局操作流程。冻结操作会同时停止所有工作区的状态更新；录制/回放操作涉及全量状态快照的持久化与恢复。本节严格对照 <a href="ch2_1_functional_architecture.html#sec-2-1-4">2.1.4 状态一致性设计原则</a>，推导其交互序列与原子性约束。</p>
 
 <div class="highlight-box">
-<strong>前置阅读提示：</strong>本节序列图涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
+<strong>前置阅读提示：</strong>本节涉及的 <strong>SSM（Session State Manager）</strong>与 <strong>SC（Simulator Core）</strong>的详细架构定义参见 <a href="ch2_2_1_framework.html#sec-ssm-sc-detail">2.2.1 核心推导架构实体详解</a>。
 </div>
-<h3>课程执行交互序列图</h3>
-<p>RF-02 的两种执行模式在架构层面有本质差异：<strong>Autorun</strong> 模式下课程引擎自动推进，教员处于"监控者"角色；<strong>Step-by-Step</strong> 模式下教员的每次点击 Execute 都是一次显式的人机交互事件。</p>
+
+<h3>冻结/解冻交互序列图</h3>
+<p>冻结是唯一的<strong>全局广播型</strong>操作——它必须被全部 6 个工作区和模拟器核心同时感知。2.1.4 原则一要求"全局原子状态标志"由单一协调者管理，此处即 Session State Manager。</p>
 
 <div class="seq-pair">
 <div class="seq-legend">
@@ -262,146 +263,264 @@ tr:last-child td{border-bottom:none}
 
   <div class="seq-legend-color">
     <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> Autorun 自动推进</div>
-    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> Step-by-Step 教员控制</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 冻结触发</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,242,242);border-color:#fca5a5"></span> 全局原子状态更新</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 冻结期间操作</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(220,252,231);border-color:#86efac"></span> 解冻恢复</div>
   </div>
 </div>
 <div class="mermaid">
 sequenceDiagram
     autonumber
     participant INST as Instructor<br/>教员
-    participant CB as Control Board<br/>控制面板
-    participant SSM as Session State Manager<br/>会话状态管理器
-    participant LPP as Lesson Plan Profile<br/>课程计划剖面
-    participant SC as Simulator Core<br/>模拟器核心
-    participant MAP as Map<br/>地图
     participant FS as Footer<br/>页脚
+    participant ADV as Advanced<br/>高级
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant CB as Control Board<br/>控制面板
+    participant MAP as Map<br/>地图
+    participant LPP as Lesson Plan Profile<br/>课程计划剖面
+    participant IR as Instruments Repeaters<br/>仪表复示器
+    participant SC as Simulator Core<br/>模拟器核心
+
+    rect rgb(254,243,199)
+    Note over INST,SC: 冻结触发
+    alt Footer 瞬时冻结
+        INST->>FS: 点击 Freeze
+        FS->>SSM: 冻结请求 {freezeType: global, source: footer}
+    else Advanced 精细冻结
+        INST->>ADV: 选择冻结类型（Position/Time/Motion 等）
+        ADV->>SSM: 冻结请求 {freezeType: specific, source: advanced}
+    end
+    end
+
+    rect rgb(254,242,242)
+    Note over INST,SC: 全局原子状态更新
+    SSM->>SSM: 更新全局冻结标志 {frozen: true, version: V+1}
+    SSM->>SSM: 捕获全量状态快照 Snapshot(S)
+    SSM->>SC: 暂停物理引擎 / 环境引擎
+    SC-->>SSM: 确认暂停
+
+    par 并行广播至所有工作区
+        SSM->>CB: 冻结通知 {version: V+1}
+        CB-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>MAP: 冻结通知 {version: V+1}
+        MAP-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>LPP: 冻结通知 {version: V+1}
+        LPP-->>SSM: 确认（&lt;50ms）
+    and
+        SSM->>IR: 冻结通知 {version: V+1}
+        IR-->>SSM: 确认（&lt;50ms）
+    end
+
+    Note over CB,IR: 全部工作区保持冻结瞬间快照
+    end
 
     rect rgb(219,234,254)
-    Note over INST,MAP: Autorun 模式
-    INST->>CB: 点击 Autorun
-    CB->>SSM: 执行模式变更 {mode: autorun}
-    SSM->>SC: 启动自动执行引擎
-    loop 自动步骤推进
-        SC->>SC: 评估当前步骤条件
-        SC-->>SSM: 步骤状态 {stepIndex, state}
-        SSM->>CB: 更新步骤高亮
-        SSM-->>LPP: 同步剖面进度
-        alt SIM 步骤
-            SC->>SC: 更新飞机状态
-            SC-->>MAP: 位置/航迹广播
-        else MALF 步骤
-            SC->>SC: 激活/预位故障
-            SSM->>CB: Malfunctions Panel 更新
-            SSM->>FS: Footer 故障计数器更新
-        end
-        opt 遇到手动确认步骤
-            SC-->>SSM: 等待教员确认
-            SSM->>CB: 高亮"等待 Execute"
-            INST->>CB: 点击 Execute
-            CB->>SSM: 手动确认
-            SSM->>SC: 继续推进
-        end
+    Note over INST,SC: 冻结期间操作
+    opt 教员预调整参数
+        INST->>CB: 修改参数（UI 值变化但不下发）
+        CB->>CB: 本地缓存预调整值
+        CB-->>INST: 显示"待解冻后生效"
     end
-    SC-->>SSM: 课程完成
-    SSM->>CB: 显示"课程结束"
+    opt 状态捕捉（FSC）
+        INST->>ADV: 点击 Flight State Capture
+        ADV->>SSM: 捕捉请求
+        SSM->>SSM: 保存 Snapshot(S) 至持久化存储
+    end
+    end
+
+    rect rgb(220,252,231)
+    Note over INST,SC: 解冻恢复
+    INST->>FS: 点击 Unfreeze
+    FS->>SSM: 解冻请求
+    SSM->>SSM: 更新全局冻结标志 {frozen: false, version: V+2}
+    SSM->>SSM: 批量下发预调整参数（如有）
+    SSM->>SC: 恢复物理引擎
+    par 并行恢复通知
+        SSM->>CB: 解冻通知 + 参数回显
+        SSM->>MAP: 解冻通知
+        SSM->>LPP: 解冻通知
+        SSM->>IR: 解冻通知
+    end
+    SC-->>MAP: 恢复实时位置广播
+    SC-->>IR: 恢复仪表数据广播
+    end
+</div>
+</div>
+
+<div class="highlight-box">
+<strong>严格对照 2.1.4 原则一：</strong>上述序列图中，SSM 在更新全局冻结标志后才并行广播至所有工作区，各工作区消费数据前校验 version。若某工作区在 50ms 内未响应冻结确认，SSM 强制标记该工作区为"冻结未响应"并记录警告日志（对照 2.1.4 原则三降级行为）。这保证了"冻结/解冻标志"的强一致性。
+</div>
+
+<h3>录制/回放交互序列图</h3>
+<p>录制（Recording）与回放（Playback）是比冻结更复杂的操作——它不仅涉及状态的暂停，还涉及状态的<strong>持久化存储</strong>和<strong>按序恢复</strong>。</p>
+
+<div class="seq-pair">
+<div class="seq-legend">
+  <div class="seq-legend-title">符号约定</div>
+  <div class="seq-legend-item"><span class="seq-line-solid"></span> 同步请求 / 响应</div>
+  <div class="seq-legend-item"><span class="seq-line-dashed"></span> 异步通知 / 广播</div>
+  <div class="seq-legend-item"><span class="seq-box"></span> 子流程 / 阶段</div>
+  <div class="seq-legend-item"><span class="seq-diamond"></span> 条件分支 (alt)</div>
+  <div class="seq-legend-item"><span class="seq-loop">↻</span> 循环 / 可选</div>
+  <div class="seq-legend-item"><span class="seq-par">‖</span> 并行块</div>
+
+  <div class="seq-legend-color">
+    <div class="seq-legend-title" style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">颜色分组</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(219,234,254);border-color:#93c5fd"></span> 录制（State Capture）</div>
+    <div class="seq-legend-item"><span class="seq-color" style="background:rgb(254,243,199);border-color:#fcd34d"></span> 回放（Recall）</div>
+  </div>
+</div>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant INST as Instructor<br/>教员
+    participant ADV as Advanced<br/>高级
+    participant SSM as Session State Manager<br/>会话状态管理器
+    participant SC as Simulator Core<br/>模拟器核心
+    participant CB as Control Board<br/>控制面板
+    participant MAP as Map<br/>地图
+    participant IR as Instruments Repeaters<br/>仪表复示器
+
+    rect rgb(219,234,254)
+    Note over INST,IR: 录制（Flight State Capture）
+    INST->>ADV: 进入 Recording → 选择参数组
+    ADV->>SSM: 录制请求 {captureProfile}
+    SSM->>SSM: 触发全局冻结（防止捕获过程中状态变更）
+    SSM->>SC: 读取全量状态
+    SC-->>SSM: 状态数据 {aircraft, env, airport, malf, lesson}
+    SSM->>SSM: 按 2.1.4 原则四顺序打包快照
+    SSM->>SSM: 写入持久化存储（临时捕获）
+    alt 教员选择永久保存
+        SSM->>SSM: 复制到永久存储区
+    end
+    SSM->>SSM: 解除冻结
+    SSM->>ADV: 捕获完成确认
     end
 
     rect rgb(254,243,199)
-    Note over INST,MAP: Step-by-Step 模式
-    INST->>CB: 点击 Step-by-Step
-    CB->>SSM: 执行模式变更 {mode: step}
-    loop 教员逐条控制
-        SC-->>SSM: 当前步骤 {stepIndex, detail}
-        SSM->>CB: 加载步骤详情
-        CB-->>INST: 显示步骤参数
-        INST->>CB: 决策：Execute / Skip / End
-        alt Execute
-            CB->>SSM: 执行当前步骤
-            SSM->>SC: 推进步骤
-        else Skip Condition
-            CB->>SSM: 跳过当前步骤
-            SSM->>SC: 跳至下一条
-        else End Lesson
-            CB->>SSM: 终止课程
-            SSM->>SC: 停止引擎
-            SSM->>CB: 课程中止状态
-        end
+    Note over INST,IR: 回放（Recall / Playback）
+    INST->>ADV: 选择已保存的状态
+    ADV->>SSM: 回放请求 {captureId}
+
+    SSM->>SSM: version += 1（恢复前）
+    SSM->>SC: 全局冻结
+    SC-->>SSM: 确认冻结
+
+    SSM->>SSM: 按 8 步顺序恢复：
+    Note over SSM: 1. 机场/跑道 → 2. 环境 → 3. 飞机 → 4. 故障 → 5. 课程 → 6. 通知 Map/IR → 7. 验证 → 8. 解冻
+
+    SSM->>SC: 恢复参考机场与跑道
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复环境参数
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复飞机物理状态
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复故障状态
+    SC-->>SSM: 确认
+    SSM->>SC: 恢复课程状态
+    SC-->>SSM: 确认
+
+    SSM-->>MAP: 刷新地图
+    SSM-->>IR: 刷新仪表
+    SSM->>SSM: 全参数一致性验证
+
+    alt 验证通过
+        SSM->>SSM: version += 1（恢复后）
+        SSM->>SC: 解除冻结
+        SSM->>CB: 新状态已就绪
+        SC-->>MAP: 恢复实时广播
+        SC-->>IR: 恢复实时广播
+    else 验证失败
+        SSM->>SSM: 回滚到调用前快照
+        SSM->>CB: 提示"恢复失败，保持冻结"
     end
     end
 </div>
 </div>
 
-<h3>LESSON PLAN Tab ↔ Lesson Plan Profile 双向同步契约推导</h3>
-<p>ch1_8 的 3.3 节描述了 Tab 与 Profile 的视图选择行为，但并未从架构层面定义它们之间的<strong>数据同步契约</strong>。基于 2.1.3 的状态同步规则，推导如下：</p>
+<h3>全局状态快照的原子性约束</h3>
+<p>录制操作的核心挑战是：在捕获状态快照的过程中，模拟器核心仍在运行，如果不对状态变更加以控制，捕获到的快照将是"中间态"（如飞机位置已更新但环境参数尚未更新），导致回放时出现不一致。</p>
 
 <div class="table-wrap">
 <table>
 <thead>
-<tr><th style="width:20%">同步场景</th><th style="width:25%">触发源</th><th style="width:30%">消息路径</th><th style="width:25%">一致性要求</th></tr>
+<tr><th style="width:22%">原子性策略</th><th style="width:38%">实现方式</th><th style="width:40%">适用场景与权衡</th></tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>当前步骤索引变更</strong></td>
-<td>LESSON PLAN Tab（Execute / Skip / Go to Current）</td>
-<td>CB -> SSM -> LPP（事件驱动）</td>
-<td>强一致性（&lt;100ms）；Profile 必须在 CB 高亮后同步滚动并高亮当前阶段</td>
+<td><strong>暂停-快照-恢复</strong></td>
+<td>录制前触发全局冻结 → 捕获快照 → 保存至存储 → 解冻</td>
+<td><strong>推荐方案。</strong>实现简单，与现有冻结机制复用；代价是录制瞬间有短暂冻结（约 100~300ms），对训练体验影响极小</td>
 </tr>
 <tr>
-<td><strong>剖面阶段跳转</strong></td>
-<td>Lesson Plan Profile（点击某阶段）</td>
-<td>LPP -> SSM -> CB（事件驱动）</td>
-<td>强一致性（&lt;100ms）；CB 自动定位到对应步骤，但不自动执行</td>
+<td><strong>复制-写时复制（COW）</strong></td>
+<td>Simulator Core 维护状态副本，录制引擎读取副本而不暂停主状态流</td>
+<td><strong>高复杂度方案。</strong>无冻结延迟，但要求物理引擎支持状态副本机制；若引擎为第三方闭源，可能不可行</td>
 </tr>
 <tr>
-<td><strong>课程加载完成</strong></td>
-<td>Session State Manager（课程引擎）</td>
-<td>SSM -> CB + SSM -> LPP（广播）</td>
-<td>强一致性；两者必须同时收到完整的课程结构数据</td>
-</tr>
-<tr>
-<td><strong>执行模式切换</strong></td>
-<td>教员（Autorun / Step-by-Step）</td>
-<td>CB -> SSM -> LPP（状态变更）</td>
-<td>强一致性；Profile 上的进度标记样式需随模式变化（Autorun 连续流动 vs Step 离散跳跃）</td>
+<td><strong>环形缓冲区回溯</strong></td>
+<td>SSM 维护最近 N 秒的状态帧环形缓冲区，录制时回溯到请求时刻的状态帧</td>
+<td><strong>折中方案。</strong>无冻结延迟，但只能捕获"请求时刻"而非"当前时刻"状态；内存开销与缓冲区大小成正比</td>
 </tr>
 </tbody>
 </table>
 </div>
 
-<div class="highlight-box">
-<strong>架构推导结论：</strong>当前步骤索引的<strong>单一事实来源</strong>应为 <strong>Session State Manager</strong>，而非 LESSON PLAN Tab 或 Lesson Plan Profile 中的任意一方。CB 和 LPP 都是该状态的<strong>消费视图</strong>，任何一方的用户操作（点击 Execute 或点击剖面阶段）都应先发送至 SSM，由 SSM 更新权威状态后再广播至所有视图。这避免了双向绑定导致的竞态条件。
-</div>
-
-<h3>Freeplay / Nested 异常分支的架构补充</h3>
-<p>ch1_8 的 3.2 节和 3.4 节提到了 Freeplay 和 Nested 两种打破常规步骤序列的异常机制。2.1 架构中未对这两种场景做专门设计，属于明确的交互断点。</p>
-
 <div class="speculation-box">
-<strong>GAP-03：Freeplay 优先级仲裁机制</strong><span class="confidence conf-high">高优先级</span><br/>
-ch1_8 描述："Freeplay 步骤可能与当前 Autorun 步骤冲突；Freeplay 优先执行，Autorun 在其完成后继续。"<br/><br/>
-<strong>架构补充建议：</strong>Session State Manager 需增加<strong>步骤优先级仲裁器</strong>。规则如下：
+<strong>架构假设</strong><span class="confidence conf-med">中优先级</span><br/>
+推荐采用<strong>"暂停-快照-恢复"</strong>策略作为默认实现，原因：
 <ul>
-<li>Freeplay 步骤的优先级高于常规 SIM/MALF 步骤</li>
-<li>当 Freeplay 触发时，SSM 暂停当前常规步骤的执行上下文（非冻结，只是挂起）</li>
-<li>Freeplay 完成后，SSM 恢复被挂起的常规步骤上下文</li>
-<li>若 Freeplay 与当前步骤修改了同一参数（如都修改飞机位置），Freeplay 的修改覆盖常规步骤，但需在课程日志中记录覆盖事件</li>
+<li>与 2.1.4 原则一的"全局原子状态标志"机制完全复用，不引入新架构组件</li>
+<li>CAE IOS 原始手册中 Recording 操作在 Advanced 页面内，远离主训练界面，暗示录制不是高频实时操作，短暂冻结可接受</li>
+<li>若未来需要无冻结录制，可在 COW 或环形缓冲区方案成熟后平滑替换，不影响上层接口</li>
 </ul>
 </div>
 
+<h3>状态恢复顺序的严格验证（对照 2.1.4 原则四）</h3>
+<p>2.1.4 原则四定义了状态恢复的 8 步顺序约束。本节为 RF-06 的 Recall 流程建立严格的序列图，每步标注"必须完成才能进入下一步"的验证门。</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th style="width:8%">步骤</th><th style="width:22%">恢复子系统</th><th style="width:35%">验证门（必须满足的条件）</th><th style="width:35%">失败行为</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>冻结模拟器</td><td>SC 确认物理引擎已暂停；所有工作区确认冻结</td><td>若某工作区未响应，强制冻结并记录警告；继续恢复流程但标记该工作区为"未同步"</td></tr>
+<tr><td>2</td><td>恢复参考机场与跑道</td><td>机场数据库中存在该 ICAO；跑道标识有效；地景加载成功</td><td>机场数据损坏或缺失 → 回滚到调用前快照，提示"机场数据异常，请联系维护"</td></tr>
+<tr><td>3</td><td>恢复环境参数</td><td>所有环境参数在物理包线内；Surface Wind 与 QNH 计算一致</td><td>参数超限 → 回滚或保持冻结，提示具体超限参数</td></tr>
+<tr><td>4</td><td>恢复飞机物理状态</td><td>GW = ZFW + Fuel；CG 在包线内；位置不陷入地形</td><td>等式不成立或地形碰撞 → 回滚，提示"飞机状态非法"</td></tr>
+<tr><td>5</td><td>恢复故障状态</td><td>所有故障代码在 Malfunction Registry 中存在；冲突检测通过</td><td>故障代码不存在 → 跳过该故障，记录日志，继续恢复其余状态</td></tr>
+<tr><td>6</td><td>恢复课程状态</td><td>步骤索引在有效范围；课程定义与当前加载课程一致</td><td>课程定义不匹配 → 仅恢复飞机/环境/故障状态，课程状态重置为初始</td></tr>
+<tr><td>7</td><td>通知 Map 和 Instruments 刷新</td><td>Map 渲染完成新场景；IR 显示与物理值一致</td><td>渲染超时（&gt;500ms）→ 保持冻结，提示"渲染未就绪"</td></tr>
+<tr><td>8</td><td>全参数一致性验证 + 解冻</td><td>所有子系统状态与快照一致；version 再次递增</td><td>一致性验证失败 → 回滚到调用前快照或保持冻结等待教员决策</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight-box danger">
+<strong>绝不允许"半恢复"状态：</strong>上述 8 步中任何一步失败，系统必须回滚到调用前快照或保持冻结。这是 2.1.4 原则四的硬性约束，也是飞行模拟器安全设计的底线——"飞机已恢复但环境未恢复"或"环境已恢复但故障未恢复"都是可能导致训练逻辑崩溃的危险中间态。
+</div>
+
+<h3>交互断点识别（RF-06）</h3>
+
 <div class="speculation-box">
-<strong>GAP-04：Nested 课程状态栈</strong><span class="confidence conf-high">高优先级</span><br/>
-ch1_8 描述："加载子课程并替换当前课程大纲；执行完成后可返回主课程。子课程执行期间，主课程的步骤计时器暂停。"<br/><br/>
-<strong>架构补充建议：</strong>SSM 需维护一个<strong>课程状态栈（Course State Stack）</strong>，支持 LIFO 的嵌套调用：
+<strong>GAP-07：录制过程中的动态干预状态处理</strong><span class="confidence conf-med">中优先级</span><br/>
+ch1_8 未明确描述：如果教员在<strong>录制过程中</strong>触发冻结、注入故障或重新定位，这些事件是否应被纳入录制数据流？<br/><br/>
+<strong>架构补充建议：</strong>录制数据流应采用<strong>"时间戳事件日志 + 状态快照"</strong>的双轨格式：
 <ul>
-<li>进入 Nested 时：将主课程的 {courseId, stepIndex, stepTimer, executionContext} 压栈</li>
-<li>子课程执行期间：栈顶为子课程状态，主课程计时器暂停</li>
-<li>子课程完成/中止时：弹出主课程状态，恢复 stepTimer 和 executionContext</li>
-<li>最大嵌套深度建议限制为 3 层，防止栈溢出导致状态混乱</li>
+<li><strong>状态快照</strong>：按固定间隔（如 1Hz）捕获全量状态，用于回放时的状态恢复</li>
+<li><strong>事件日志</strong>：记录离散事件（冻结/解冻、故障注入/解除、重新定位、步骤执行）及其时间戳</li>
+<li>回放时，先恢复初始状态快照，再按事件日志的时间顺序重放离散事件，实现"状态 + 动作"的完整复现</li>
 </ul>
 </div>
+
+
 <div class="footer-nav">
-<a class="prev" href="ch2_2_2_rf01_session.html"><span>←</span><span>2.2.2 RF-01 标准训练 Session 交互序列与状态机</span></a>
-<a class="next" href="ch2_2_4_rf03_initialization.html"><span>2.2.4 RF-03 初始化交互完整性</span><span>→</span></a>
+<a class="prev" href="ch2_2_6_rf05_reposition.html"><span>←</span><span>2.2.6 RF-05 重新定位交互完整性</span></a>
+<a class="next" href="ch2_2_8_summary.html"><span>2.2.8 跨流程状态衔接与交互断点汇总</span><span>→</span></a>
 </div>
     </div>
   </div>
