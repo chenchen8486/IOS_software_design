@@ -167,6 +167,17 @@ tr:last-child td{border-bottom:none}
 .seq-par{display:inline-block;font-size:12px;color:var(--text-secondary);font-weight:600}
 .seq-color{display:inline-block;width:12px;height:12px;border:1px solid transparent;border-radius:3px;flex-shrink:0}
 .seq-legend-color{margin-top:8px;border-top:1px solid var(--border);padding-top:6px}
+
+/* 序列图逐段解读表格（借鉴 ch2.2.2） */
+.seq-breakdown .phase-summary{background:#f1f5f9;color:#334155;font-weight:500}
+.seq-breakdown .phase-summary strong{color:var(--primary-dark)}
+.seq-breakdown td[rowspan]{background:#f8fafc;border-right:1px solid var(--border);text-align:center;vertical-align:middle;font-weight:600;color:var(--primary-dark);line-height:1.5}
+.seq-breakdown .branch-header td{background:#fffbeb;color:#92400e;font-weight:600;border-top:2px solid #fcd34d}
+.seq-breakdown .branch-header td strong{color:#78350f}
+.seq-breakdown tr:hover td[rowspan]{background:#f1f5f9}
+.seq-breakdown tr:hover .phase-summary{background:#e2e8f0}
+.seq-breakdown tr:hover .branch-header td{background:#fef3c7}
+
 @media(max-width:900px){
   .seq-pair{flex-direction:column}
   .seq-legend{flex:0 0 auto;width:100%;display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px}
@@ -294,8 +305,15 @@ sequenceDiagram
         CB-->>INST: 显示校验失败
     else 业务校验通过
         SSM->>SC: 下发 GW
-        SC-->>SSM: GW 确认
-        SSM->>CB: GW 回显确认
+        SC->>SC: L3 物理校验（起飞性能、越障等）
+        alt 物理校验失败
+            SC-->>SSM: GW 校验失败 {errorCode}
+            SSM->>CB: 报错提示，保持上次合法参数
+            CB-->>INST: 显示物理校验失败
+        else 物理校验通过
+            SC-->>SSM: GW 校验通过
+            SSM->>CB: GW 回显确认
+        end
     end
 
     INST->>CB: 输入 ZFW / Fuel
@@ -307,8 +325,15 @@ sequenceDiagram
         CB-->>INST: 显示校验失败
     else 校验成立
         SSM->>SC: 下发 ZFW / Fuel
-        SC-->>SSM: 确认
-        SSM->>CB: GW CG 自动计算回显
+        SC->>SC: L3 物理校验
+        alt 物理校验失败
+            SC-->>SSM: ZFW/Fuel 校验失败 {errorCode}
+            SSM->>CB: 报错提示，保持上次合法参数
+            CB-->>INST: 显示物理校验失败
+        else 物理校验通过
+            SC-->>SSM: ZFW/Fuel 校验通过
+            SSM->>CB: GW CG 自动计算回显
+        end
     end
     end
 
@@ -331,25 +356,111 @@ sequenceDiagram
     CB->>SSM: 多轮参数变更
     SSM->>SSM: 依赖校验：机场标高 / 温度剖面 → QNH/QFE 计算基础
     SSM->>SC: 下发环境参数
-    SC-->>SSM: 环境确认
+    SC->>SC: L3 物理校验（地形、FMS 可计算性等）
+    alt 物理校验失败
+        SC-->>SSM: 环境校验失败 {errorCode}
+        SSM->>CB: 报错提示，保持上次合法参数
+        CB-->>INST: 显示物理校验失败
+    else 物理校验通过
+        SC-->>SSM: 环境校验通过
+    end
     end
 
     rect rgb(220,252,231)
     Note over INST,MAP: 全局目视确认
     SSM-->>MAP: 推送机场/环境/飞机数据
     MAP-->>INST: 渲染完整场景
-    INST->>MAP: 目视确认
+    INST->>CB: 点击「初始化完成」确认
+    CB->>CB: UI 层校验（必填项/二次确认）
+    CB->>SSM: 确认初始化完成
     alt 确认通过
-        INST->>SSM: 确认初始化完成
         SSM->>SSM: State := INIT_COMPLETE
         SSM-->>CB: State Version +1，解锁 RF-02
         SSM-->>MAP: State Version +1，解锁 RF-02
-        MAP-->>INST: 初始化完成
+        CB-->>INST: 初始化完成
     else 需要调整
         INST->>CB: 返回对应 Tab 修正
     end
     end
 </div>
+</div>
+
+<h3>主流程交互序列逐段解读</h3>
+<p>下表按阶段拆解上图中的每一条消息流。每一阶段的首行给出该阶段整体业务目标，后续行逐条说明箭头编号、来源 → 目标、消息内容与业务含义；失败分支以独立区块呈现，便于与三层校验架构对应。</p>
+
+<div class="table-wrap">
+<table class="seq-breakdown">
+<thead>
+<tr><th style="width:13%">阶段</th><th style="width:7%">箭头</th><th style="width:18%">流向</th><th style="width:30%">消息 / 动作</th><th style="width:32%">业务含义</th></tr>
+</thead>
+<tbody>
+<tr class="phase-summary-row">
+  <td rowspan="14"><strong>阶段一</strong><br/>飞机参数初始化</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员在 AIRCRAFT Tab 输入 GW、ZFW、Fuel 等重量参数，依次经过 Control Board 的 UI 层校验、SSM 的业务层校验、Simulator Core 的物理层校验，最终生效并回显 GW CG。</td>
+</tr>
+<tr><td>1</td><td>Instructor → Control Board</td><td>进入 AIRCRAFT Tab，输入 GW</td><td>教员在 CB 上切换到 AIRCRAFT Tab 并输入全重 GW，是飞机参数配置的人机入口。</td></tr>
+<tr><td>2</td><td>Control Board → Control Board</td><td>UI 层校验（范围/格式）</td><td>CB 前端控件执行 L1 校验，检查 GW 是否为数字、是否在包线范围内；失败则即时拦截，不向 SSM 发送请求。</td></tr>
+<tr><td>3</td><td>Control Board → Session State Manager</td><td>参数变更 <code>{param: GW, value, source: CB}</code></td><td>L1 通过后，CB 将参数变更事件上报 SSM，由 SSM 成为该参数的单一事实来源。</td></tr>
+<tr><td>4</td><td>Session State Manager → Session State Manager</td><td>业务校验：GW 是否在包线内？</td><td>SSM 执行 L2 业务校验，检查 GW 是否满足机型重量包线约束。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 A：GW 业务校验失败</td></tr>
+<tr><td>5</td><td>Session State Manager → Control Board</td><td>报错提示，回滚至上次合法值</td><td>SSM 拒绝本次 GW 生效，将 SSM 内部状态回滚到上一次合法值，并通知 CB。</td></tr>
+<tr><td>6</td><td>Control Board → Instructor</td><td>显示校验失败</td><td>CB 向教员呈现具体失败原因（如 GW 超出包线），等待重新输入。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 B：GW 物理校验失败</td></tr>
+<tr><td>7–8</td><td>SSM → SC → SC</td><td>下发 GW → L3 物理校验（起飞性能、越障等）</td><td>业务校验通过后，SSM 将 GW 下发至 SC；SC 基于当前机场、跑道、温度等条件执行 L3 物理校验。</td></tr>
+<tr><td>9–11</td><td>SC → SSM → CB → Instructor</td><td>GW 校验失败 {errorCode} → 报错提示 → 显示物理校验失败</td><td>若当前 GW 在物理上不可行（如无法满足起飞越障），SC 返回错误码；SSM 保持上一次合法参数，CB 向教员展示失败详情。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 C：GW 校验通过的主路径</td></tr>
+<tr><td>12–13</td><td>SC → SSM → CB</td><td>GW 校验通过 → GW 回显确认</td><td>L3 校验通过后，SC 返回确认；SSM 通知 CB 回显 GW，标记该参数生效。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="16"><strong>阶段二</strong><br/>飞机参数初始化（续）<br/>ZFW / Fuel</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员继续输入 ZFW 与 Fuel，SSM 校验 GW = ZFW + Fuel 等式及 CG 包线，通过后经 SC 物理校验回显 GW CG。</td>
+</tr>
+<tr><td>14</td><td>Instructor → Control Board</td><td>输入 ZFW / Fuel</td><td>教员输入零油重量 ZFW 与燃油重量 Fuel。</td></tr>
+<tr><td>15</td><td>Control Board → Control Board</td><td>UI 层校验（范围/格式）</td><td>CB 执行 L1 校验，确保 ZFW、Fuel 为合法正数且在合理范围。</td></tr>
+<tr><td>16</td><td>Control Board → Session State Manager</td><td>参数变更 <code>{ZFW, Fuel}</code></td><td>CB 将变更上报 SSM。</td></tr>
+<tr><td>17</td><td>Session State Manager → Session State Manager</td><td>业务校验：GW = ZFW + Fuel？CG 是否在包线内？</td><td>SSM 执行 L2 校验：验证重量等式成立，并基于默认燃油分布估算 CG 是否在 MAC 包线内。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 D：ZFW/Fuel 业务校验失败</td></tr>
+<tr><td>18–19</td><td>SSM → CB → Instructor</td><td>报错提示，拒绝下发并回滚 → 显示校验失败</td><td>等式不成立或 CG 越限时，SSM 拒绝下发并回滚，CB 提示教员重新调整 ZFW/Fuel。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 E：ZFW/Fuel 物理校验失败</td></tr>
+<tr><td>20–21</td><td>SSM → SC → SC</td><td>下发 ZFW / Fuel → L3 物理校验</td><td>业务校验通过后，SSM 将 ZFW/Fuel 下发至 SC 进行物理可行性校验。</td></tr>
+<tr><td>22–24</td><td>SC → SSM → CB → Instructor</td><td>ZFW/Fuel 校验失败 {errorCode} → 报错提示 → 显示物理校验失败</td><td>若 SC 判定当前重量组合物理不可行，返回错误码；SSM 保持上一次合法参数。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 F：ZFW/Fuel 校验通过的主路径</td></tr>
+<tr><td>25–26</td><td>SC → SSM → CB</td><td>ZFW/Fuel 校验通过 → GW CG 自动计算回显</td><td>SC 校验通过后，SSM 基于完整重量参数计算 GW CG 并回显至 CB，供教员确认。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="14"><strong>阶段三</strong><br/>机场与环境初始化</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员依次选择参考机场、跑道，并在 CURRENT CONDITIONS 中配置环境参数；SSM 依据机场标高与温度剖面完成 QNH/QFE 等派生参数校验，再经 SC 物理校验后生效。</td>
+</tr>
+<tr><td>27</td><td>Instructor → Control Board</td><td>进入 REFERENCE AIRPORT，选择机场</td><td>教员切换到参考机场选项卡并选择机场 ICAO。</td></tr>
+<tr><td>28</td><td>Control Board → Control Board</td><td>UI 层校验</td><td>CB 校验 ICAO 格式与有效性（如是否在系统机场数据库中）。</td></tr>
+<tr><td>29</td><td>Control Board → Session State Manager</td><td>参数变更 <code>{airportICAO}</code></td><td>CB 将机场选择上报 SSM。</td></tr>
+<tr><td>30–31</td><td>SSM → SC → SSM</td><td>查询机场数据库 → 机场数据 {runways, gates, terrain}</td><td>SSM 向 SC 查询机场数据库，获取跑道、停机位、地形等数据，为后续跑道选择与环境校验做准备。</td></tr>
+<tr><td>32</td><td>Session State Manager → Control Board</td><td>跑道列表更新</td><td>SSM 将可用跑道列表推送给 CB，供教员选择。</td></tr>
+<tr><td>33</td><td>Instructor → Control Board</td><td>选择跑道</td><td>教员从 CB 呈现的跑道列表中选择目标跑道。</td></tr>
+<tr><td>34–36</td><td>CB → SSM → CB</td><td>UI 层校验 → 参数变更 {runwayId} → 跑道条件选项绑定</td><td>CB 校验跑道 ID 后上报 SSM；SSM 将跑道条件选项（如干燥/湿滑）绑定到 CB 的 CURRENT CONDITIONS 面板。</td></tr>
+<tr><td>37–39</td><td>Instructor → CB → SSM</td><td>进入 CURRENT CONDITIONS，逐项配置 → UI 层校验 → 多轮参数变更</td><td>教员在当前条件选项卡中逐项配置环境参数；每轮配置均先经 CB 的 L1 校验，再上报 SSM。</td></tr>
+<tr><td>40</td><td>Session State Manager → Session State Manager</td><td>依赖校验：机场标高 / 温度剖面 → QNH/QFE 计算基础</td><td>SSM 执行 L2 依赖校验：根据机场标高、温度剖面等推导 QNH/QFE 基准，确保环境参数自洽。</td></tr>
+<tr><td>41–42</td><td>SSM → SC → SC</td><td>下发环境参数 → L3 物理校验（地形、FMS 可计算性等）</td><td>SSM 将环境参数下发至 SC；SC 校验地形兼容性、FMS 航线可计算性等物理约束。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 G：环境参数物理校验失败</td></tr>
+<tr><td>43–45</td><td>SC → SSM → CB → Instructor</td><td>环境校验失败 {errorCode} → 报错提示 → 显示物理校验失败</td><td>若环境参数导致物理不可行（如地形冲突），SC 返回错误码；SSM 保持上一次合法环境配置。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 H：环境参数校验通过的主路径</td></tr>
+<tr><td>46</td><td>Simulator Core → Session State Manager</td><td>环境校验通过</td><td>SC 返回确认，环境参数正式生效。</td></tr>
+
+<tr class="phase-summary-row">
+  <td rowspan="11"><strong>阶段四</strong><br/>全局目视确认</td>
+  <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>Map 渲染完整初始化场景，教员通过 Control Board 确认初始化完成后，SSM 将全局状态置为 INIT_COMPLETE 并解锁 RF-02 课程执行流程。</td>
+</tr>
+<tr><td>47</td><td>Session State Manager → Map</td><td>推送机场/环境/飞机数据</td><td>SSM 将初始化完成的机场、环境、飞机数据一次性推送给 Map。</td></tr>
+<tr><td>48</td><td>Map → Instructor</td><td>渲染完整场景</td><td>Map 基于最新数据渲染飞机、跑道、地景与气象，供教员目视检查。</td></tr>
+<tr><td>49–51</td><td>Instructor → CB → SSM</td><td>点击「初始化完成」确认 → UI 层校验 → 确认初始化完成</td><td>教员在 CB 上点击确认；CB 执行必填项/二次确认等 L1 校验后，将完成指令转发给 SSM，保持 INST → CB → SSM 的分层链路。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 I：需要调整</td></tr>
+<tr><td>56</td><td>Instructor → Control Board</td><td>返回对应 Tab 修正</td><td>若教员发现场景不正确，直接回到对应配置 Tab 重新调整参数，重新进入相应初始化阶段。</td></tr>
+<tr class="branch-header"><td colspan="4">分支 J：确认通过的主路径</td></tr>
+<tr><td>52</td><td>Session State Manager → Session State Manager</td><td>State := INIT_COMPLETE</td><td>SSM 将全局 Session 状态迁移为 INIT_COMPLETE，表示 RF-03 初始化阶段结束。</td></tr>
+<tr><td>53–54</td><td>Session State Manager → CB / Map</td><td>State Version +1，解锁 RF-02</td><td>SSM 递增全局 State Version 并向 CB、MAP 广播，通知各工作区 RF-02 课程执行阶段已可进入。</td></tr>
+<tr><td>55</td><td>Control Board → Instructor</td><td>初始化完成</td><td>CB 向教员显示初始化完成提示，整个 RF-03 流程结束。</td></tr>
+</tbody>
+</table>
 </div>
 
 <h3>参数校验链的架构实现推导</h3>
@@ -362,12 +473,12 @@ sequenceDiagram
 <div class="label">L2 业务校验</div>
 <div class="content"><strong>执行者：</strong>Session State Manager<br/><strong>校验内容：</strong>跨参数等式（GW = ZFW + Fuel）、包线约束（CG 在 MAC 范围内）、依赖顺序（必须先选机场再选跑道）<br/><strong>失败行为：</strong>拒绝下发并回滚到上次合法状态，向 CB 返回具体错误码</div>
 <div class="label">L3 物理校验</div>
-<div class="content"><strong>执行者：</strong>Simulator Core<br/><strong>校验内容：</strong>物理可行性（如当前 GW、温度、标高、跑道长度条件下是否满足起飞性能越障要求）、地形碰撞检测、FMS 航线可计算性<br/><strong>失败行为：</strong>返回物理校验失败码，SSM 阻止本次参数生效；若 SC 支持快照则回滚到上一次通过物理校验的状态，否则保持上一次合法配置并要求教员调整</div>
+<div class="content"><strong>执行者：</strong>Simulator Core<br/><strong>校验内容：</strong>物理可行性（如当前 GW、温度、标高、跑道长度条件下是否满足起飞性能越障要求）、地形碰撞检测、FMS 航线可计算性<br/><strong>失败行为：</strong>返回物理校验失败码，SSM 阻止本次参数生效并保持上一次合法配置，要求教员调整</div>
 </div>
 </div>
 
 <div class="highlight-box warn">
-<strong>失败回滚策略：</strong>L1 失败无需回滚（CB 前端拦截，非法请求不会到达 SSM）；L2 失败回滚到 SSM 上一次合法状态；L3 失败时 SSM 阻止本次参数生效，若 SC 提供快照能力则回滚到上一次通过物理校验的快照，否则保持上一次合法配置并要求教员调整。三层校验的粒度逐层收紧，避免了"前端通过但后端崩溃"的状态不一致。
+<strong>失败回滚策略：</strong>L1 失败无需回滚（CB 前端拦截，非法请求不会到达 SSM）；L2 失败回滚到 SSM 上一次合法状态；L3 失败时 SC 返回错误码，SSM 阻止本次参数生效并保持上一次合法配置，要求教员调整。三层校验的粒度逐层收紧，避免了"前端通过但后端崩溃"的状态不一致。
 </div>
 
 <h3>Save/Recall Scenario 的状态持久化契约</h3>
@@ -383,7 +494,7 @@ sequenceDiagram
 <tr><td>QNH（高度表设定）</td><td>环境参数</td><td>✅ 直接保存</td><td>教员直接输入的高度表设定值，Recall 时原样恢复</td></tr>
 <tr><td>QFE（场面气压）</td><td>环境参数（派生）</td><td>🔄 Recall 时重新计算</td><td>由保留的温度/气压剖面与目标机场标高重新推导，保持大气剖面一致</td></tr>
 <tr><td>地面/中间层/对流层顶风</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
-<tr><td>云和能见度</td><td>环境参数</td><td>❌ 不保存</td><td>CAE IOS 使用手册的 Save Scenario 显式保存列表未包含此项；若需复现应通过课程或教员手动配置</td></tr>
+<tr><td>云和能见度</td><td>环境参数</td><td>❌ 不保存</td><td>云和能见度属于与具体训练场景强绑定的瞬时气象状态，跨场景复用价值低；CAE IOS 使用手册的 Save Scenario 显式保存列表也未包含此项</td></tr>
 <tr><td>活跃风暴、微下击暴流、预测/非预测风切变、结冰条件</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>属于触发式瞬时模拟状态，非配置参数；重新加载后应由教员按需重新配置</td></tr>
 <tr><td>飞机位置、重量、重心</td><td>飞机物理状态</td><td>❌ 不保存</td><td>Weather Scenario Save/Recall 仅保存环境参数，飞机状态由课程、FMS Memory 或教员单独管理</td></tr>
 </tbody>
@@ -391,7 +502,7 @@ sequenceDiagram
 </div>
 
 <div class="highlight-box">
-<strong>状态持久化契约：</strong>Save Scenario 操作的消息序列为：Instructor → CB → SSM → 持久化存储。SSM 在保存前需过滤掉"瞬时模拟状态"，只持久化"教员输入的配置参数"。Recall 时，SSM 从持久化存储读取配置参数，按 RF-03 的初始化顺序（机场 → 环境 → 验证）重新下发至 SC；校验通过后递增 State Version，通知 Control Board、Map 等所有工作区刷新。若校验失败，SSM 保持当前合法状态不变并向教员返回错误提示。
+<strong>状态持久化契约：</strong>Save Scenario 操作的消息序列为：Instructor → CB → SSM → 持久化存储。SSM 在保存前需过滤掉"瞬时模拟状态"，只持久化"教员输入的配置参数"。Recall 时，SSM 从持久化存储读取配置参数，按 Weather Scenario 保存范围对应的初始化顺序（参考机场 → 环境参数 → 物理校验）重新下发至 SC，其顺序与 RF-03 中"机场与环境初始化"阶段保持一致；校验通过后递增 State Version，通知 Control Board、Map 等所有工作区刷新。若校验失败，SSM 保持当前合法状态不变并向教员返回错误提示。
 </div>
 
 
