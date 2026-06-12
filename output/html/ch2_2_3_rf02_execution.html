@@ -373,7 +373,7 @@ sequenceDiagram
 <tr><td>4</td><td>Session State Manager → Session State Manager</td><td><code>currentStepIndex = 0</code></td><td>SSM 初始化权威步骤索引，作为课程自动推进的起点；后续步骤推进均由 SSM 决策。</td></tr>
 
 <tr class="phase-summary-row">
-  <td rowspan="13"><strong>阶段二</strong><br/>Autorun 自动执行循环</td>
+  <td rowspan="17"><strong>阶段二</strong><br/>Autorun 自动执行循环</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>SSM 逐条向 SC 下发当前步骤指令，根据 SC 返回结果推进索引并同步所有视图；遇到 SIM/MALF/手动确认步骤时进入对应分支。</td>
 </tr>
 <tr><td>5</td><td>Session State Manager → Simulator Core</td><td>执行当前步骤 <code>{stepIndex}</code></td><td>SSM 向 SC 下发当前步骤执行指令；SC 只负责执行，不决定步骤索引。</td></tr>
@@ -412,7 +412,7 @@ sequenceDiagram
 <tr><td>24</td><td>Control Board → Instructor</td><td>显示步骤参数</td><td>CB 向教员呈现当前步骤参数，等待决策。</td></tr>
 
 <tr class="phase-summary-row">
-  <td rowspan="12"><strong>阶段五</strong><br/>Step-by-Step 执行循环</td>
+  <td rowspan="16"><strong>阶段五</strong><br/>Step-by-Step 执行循环</td>
   <td colspan="4" class="phase-summary"><strong>阶段目标：</strong>教员对每一步执行 Execute 或 Skip 决策；SSM 根据决策更新索引并同步视图，执行成功后按步骤类型广播飞机状态或故障计数。</td>
 </tr>
 <tr><td>25</td><td>Instructor → Control Board</td><td>决策：Execute / Skip</td><td>教员针对当前步骤做出执行或跳过决策。</td></tr>

@@ -383,7 +383,7 @@ sequenceDiagram
 <tr><td>QNH（高度表设定）</td><td>环境参数</td><td>✅ 直接保存</td><td>教员直接输入的高度表设定值，Recall 时原样恢复</td></tr>
 <tr><td>QFE（场面气压）</td><td>环境参数（派生）</td><td>🔄 Recall 时重新计算</td><td>由保留的温度/气压剖面与目标机场标高重新推导，保持大气剖面一致</td></tr>
 <tr><td>地面/中间层/对流层顶风</td><td>环境参数</td><td>✅ 保存</td><td>属于教员输入的配置参数</td></tr>
-<tr><td>云和能见度</td><td>环境参数</td><td>✅ 保存*（待原始手册核对）</td><td>ch1_8 4.3 节列入保存范围，但 CAE IOS 使用手册的显式保存列表未包含此项，建议回溯核对截图</td></tr>
+<tr><td>云和能见度</td><td>环境参数</td><td>❌ 不保存</td><td>CAE IOS 使用手册的 Save Scenario 显式保存列表未包含此项；若需复现应通过课程或教员手动配置</td></tr>
 <tr><td>活跃风暴、微下击暴流、预测/非预测风切变、结冰条件</td><td>环境参数（瞬时态）</td><td>❌ 不保存</td><td>属于触发式瞬时模拟状态，非配置参数；重新加载后应由教员按需重新配置</td></tr>
 <tr><td>飞机位置、重量、重心</td><td>飞机物理状态</td><td>❌ 不保存</td><td>Weather Scenario Save/Recall 仅保存环境参数，飞机状态由课程、FMS Memory 或教员单独管理</td></tr>
 </tbody>
