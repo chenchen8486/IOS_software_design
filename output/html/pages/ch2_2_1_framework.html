@@ -275,6 +275,8 @@
 <li><strong>广播接口：</strong>SC 以固定频率（如 30Hz）向 IOS 推送飞机位置/姿态/仪表数据，供 Map、Instruments Repeaters 消费</li>
 </ul>
 </div>
+<div class="label">内部逻辑组件</div>
+<div class="content">从 IOS 架构视角看，SC 内部可进一步抽象为 <strong>Course Execution Engine（课程执行引擎）</strong> 与 <strong>Simulation Engine（仿真引擎）</strong>。CE 负责课程步骤评估、推进、Freeplay / Nested 上下文管理；SE 负责物理仿真、视景 / 声音驱动。IOS 通过 SSM 下发的课程相关指令由 CE 解释执行，CE 再调用 SE 完成具体模拟动作。这一内部划分有助于解释 2.2.3 中 SC 既“推进步骤”又“更新飞机状态”的表象：前者是 CE 行为，后者是 SE 行为。</div>
 <div class="label">与 2.1 的对应关系</div>
 <div class="content">SC 是 <a href="ch2_1_functional_architecture.html#sec-2-1-2">2.1.2</a> 中<strong>模拟器核心层</strong>的接口抽象，对应数据依赖矩阵中"飞机物理状态"、"环境参数"等强一致性数据项的<strong>外部所有者</strong>。从 IOS 软件架构看，SC 是<strong>必须对接的外部系统边界</strong>，而非内部实现单元。</div>
 </div>
